@@ -442,11 +442,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\iSmart.Server\\iSmartAPI\\iSmartAPI.csproj",
+      "projectUniqueName": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj",
       "projectName": "iSmartAPI",
-      "projectPath": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\iSmart.Server\\iSmartAPI\\iSmartAPI.csproj",
+      "projectPath": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj",
       "packagesPath": "C:\\Users\\huynq\\.nuget\\packages\\",
-      "outputPath": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\iSmart.Server\\iSmartAPI\\obj\\",
+      "outputPath": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\ismart-server\\iSmartAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\huynq\\AppData\\Roaming\\NuGet\\NuGet.Config",

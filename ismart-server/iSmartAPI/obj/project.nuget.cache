@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rFYwGZFbGQ9rOOFRVl8PtOAdT6YRu7EX7mdXhYEXK7OFd2Xu4cXwwDN/EmARd1/Zy4gDwG0P79kfTLlj9eHODA==",
+  "dgSpecHash": "/JAQFaiEg9N/7YgcjkjBBofxYpaE+rKhzgseHpp3itBDQGxvEUNtISZnZBbV8oK4OLJD5f4weHe3cqjW7IEguw==",
   "success": true,
-  "projectFilePath": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\iSmart.Server\\iSmartAPI\\iSmartAPI.csproj",
+  "projectFilePath": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\huynq\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\huynq\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
