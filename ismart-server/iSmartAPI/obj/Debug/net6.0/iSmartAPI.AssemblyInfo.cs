@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("iSmartAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+97bad59ecde2438ce79da806d5bcafb10c4408f2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7185fcdce1558dd985822960c35152a401a7234")]
 [assembly: System.Reflection.AssemblyProductAttribute("iSmartAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("iSmartAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
