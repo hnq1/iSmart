@@ -28,6 +28,7 @@ namespace iSmartAPI.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+            Console.WriteLine("abdc");
         }
     }
 }
