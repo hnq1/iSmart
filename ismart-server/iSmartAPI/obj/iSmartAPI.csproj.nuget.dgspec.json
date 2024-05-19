@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj": {}
+    "E:\\FULearning\\Ky9\\DoAnTotNghiep\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj": {}
   },
   "projects": {
-    "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj": {
+    "E:\\FULearning\\Ky9\\DoAnTotNghiep\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj",
+        "projectUniqueName": "E:\\FULearning\\Ky9\\DoAnTotNghiep\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj",
         "projectName": "iSmartAPI",
-        "projectPath": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj",
-        "packagesPath": "C:\\Users\\huynq\\.nuget\\packages\\",
-        "outputPath": "E:\\Đồ-án-tốt-nghiệp\\Code\\iSmart\\ismart-server\\iSmartAPI\\obj\\",
+        "projectPath": "E:\\FULearning\\Ky9\\DoAnTotNghiep\\iSmart\\ismart-server\\iSmartAPI\\iSmartAPI.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "E:\\FULearning\\Ky9\\DoAnTotNghiep\\iSmart\\ismart-server\\iSmartAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\huynq\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -34,11 +34,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -69,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }
