@@ -38,7 +38,7 @@ const Login = () => {
 
 
             loginContext(username, res.token.accessToken, res.userId, res.roleId);
-            navigate("/danh-sach-mat-hang");
+            navigate("/thong-ke");
             // Xử lý đăng nhập thành công
         }
 
