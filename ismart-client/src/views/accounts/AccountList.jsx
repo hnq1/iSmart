@@ -117,13 +117,26 @@ const ListAccount = () => {
                             </Form.Select>
 
                         </div>
-                        <div className='col-2'>
+                        <div className='col-4'>
                             <Col md={2}>
                                 <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
                                     {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
                                         <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
                                     ))}
                                 </DropdownButton>
+                            </Col>
+                        </div>
+                        {/* add account */}
+                        <div className='col-2'>
+                            <Col md={2}>
+                                <Button 
+                                className="btn btn-success border-left-3 rounded ButtonCSS"
+                                type="button"
+                                onClick={() => setIsShowModelAdd(true)}
+                                style={{ width: '150px' }}
+                                >
+                                &nbsp;Tạo tài khoản
+                                </Button>
                             </Col>
                         </div>
                         <div className="col-2">

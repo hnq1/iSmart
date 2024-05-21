@@ -150,7 +150,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                     Đóng
                 </Button>
                 <Button variant="primary" className="ButtonCSS" onClick={handleSave}>
-                    Lưu
+                    Thêm tài khoản mới
                 </Button>
             </Modal.Footer>
         </Modal>
