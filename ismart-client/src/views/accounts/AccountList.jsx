@@ -181,6 +181,7 @@ const ListAccount = () => {
                                     <th className="align-middle  text-nowrap">Mã nhân viên</th>
                                     <th className="align-middle  text-nowrap">Vai trò</th>
                                     <th className="align-middle  text-nowrap">Tên đầy đủ</th>
+                                    <th className="align-middle  text-nowrap">Email</th>
                                     <th className="align-middle  text-nowrap">Số điện thoại</th>
                                     <th className="align-middle  text-nowrap">Địa chỉ</th>
                                     <th className="align-middle  text-nowrap">Hình ảnh</th>
@@ -197,6 +198,7 @@ const ListAccount = () => {
                                             <td className="align-middle">{i.userCode}</td>
                                             <td className="align-middle">{i.roleName}</td>
                                             <td className="align-middle">{i.fullName}</td>
+                                            <td className="align-middle">{i.email}</td>
                                             <td className="align-middle">{i.phone}</td>
                                             <td className="align-middle">{i.address}</td>
                                             <td className="align-middle"><img src={i.image} alt="alt" style={{ width: '50px', height: '50px' }} /></td>
