@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using iSmart.Entity.DTOs.CategoryDTO;
 using iSmart.Service;
 
-namespace WM.API.Controllers
+namespace iSmart.API.Controllers
 {
     [Route("api/category")]
     [ApiController]
