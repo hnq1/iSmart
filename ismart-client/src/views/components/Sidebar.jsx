@@ -1,6 +1,5 @@
 import React from 'react';
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
-
 import logo from '../../assets/images/logo.png';
 import { Link } from 'react-router-dom';
 
@@ -8,11 +7,11 @@ const Sidebar = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
 
     return (
-        <Col sm={3} md={3} xl={2} className="px-sm-2  px-0  " style={{ width: '270px', backgroundColor:'#00FFFF' }}>
-            
+        <Col sm={3} md={3} xl={2} className="px-sm-2  px-0  " style={{ width: '240px', backgroundColor: '#00FFFF' }}>
+
             {/* Thêm nút bấm thụt ra thụt vào của full menu */}
 
-            <div className="d-flex flex-column   align-items-center px-3 pt-2 text-white min-vh-100">
+            <div className="d-flex flex-column  align-items-center px-3 pt-2 text-white min-vh-100">
                 <div
                     href="/"
                     className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-sidebar text-decoration-none"

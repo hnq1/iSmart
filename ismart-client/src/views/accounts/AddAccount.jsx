@@ -64,7 +64,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
 
 
     }
-
+    // Điều kiện login
     const handleSave = async () => {
         if (!email && !validateEmail.test(email)) {
             toast.warning("Email không hợp lệ");
