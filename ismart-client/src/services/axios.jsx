@@ -2,7 +2,7 @@ import axios from "axios";
 
 const instance = axios.create({
     //  baseURL: `https://warehousemanagement.azurewebsites.net/`,
-     baseURL: `https://localhost:7033/`,
+    baseURL: `https://localhost:7033/`,
 });
 
 instance.interceptors.response.use(function (response) {
