@@ -10,11 +10,11 @@ namespace iSmart.Entity.Models
         public int ActionId { get; set; }
         public DateTime Date { get; set; }
         public float? CostPrice { get; set; }
-        public string CostPriceDifferential { get; set; }
+        public string? CostPriceDifferential { get; set; }
         public int? Quantity { get; set; }
-        public string QuantityDifferential { get; set; }
-        public string Note { get; set; }
-        public string OrderCode { get; set; }
+        public string? QuantityDifferential { get; set; }
+        public string? Note { get; set; }
+        public string? OrderCode { get; set; }
         public int UserId { get; set; }
 
         public virtual ActionType Action { get; set; }

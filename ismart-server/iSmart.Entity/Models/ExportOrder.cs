@@ -16,7 +16,7 @@ namespace iSmart.Entity.Models
         public string ExportCode { get; set; }
         public int UserId { get; set; }
         public float TotalPrice { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         public int StatusId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? ExportedDate { get; set; }
@@ -24,10 +24,10 @@ namespace iSmart.Entity.Models
         public int ProjectId { get; set; }
         public DateTime? CancelDate { get; set; }
         public int? DeliveryId { get; set; }
-        public string Image { get; set; }
+        public string? Image { get; set; }
         public int? StaffId { get; set; }
-        public string Customer { get; set; }
-        public string Address { get; set; }
+        public string? Customer { get; set; }
+        public string? Address { get; set; }
 
         public virtual Delivery Delivery { get; set; }
         public virtual Status Status { get; set; }

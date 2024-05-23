@@ -12,7 +12,7 @@ namespace iSmart.Entity.Models
 
         public int FeatureId { get; set; }
         public string Featurename { get; set; }
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         public virtual ICollection<Role> Roles { get; set; }
     }

@@ -12,7 +12,7 @@ namespace iSmart.Entity.Models
 
         public int ActionId { get; set; }
         public string Action { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public virtual ICollection<GoodsHistory> GoodsHistories { get; set; }
     }

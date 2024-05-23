@@ -15,8 +15,8 @@ namespace iSmart.Entity.Models
         public int? ExportId { get; set; }
         public int? SupplierId { get; set; }
         public int UserId { get; set; }
-        public string Note { get; set; }
-        public string Image { get; set; }
+        public string? Note { get; set; }
+        public string? Image { get; set; }
         public DateTime CreatedDate { get; set; }
         public string ReturnsCode { get; set; }
         public int WarehouseId { get; set; }

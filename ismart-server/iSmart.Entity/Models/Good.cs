@@ -17,16 +17,16 @@ namespace iSmart.Entity.Models
 
         public int GoodsId { get; set; }
         public string GoodsName { get; set; }
-        public string GoodsCode { get; set; }
+        public string? GoodsCode { get; set; }
         public int CategoryId { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public int SupplierId { get; set; }
-        public string MeasuredUnit { get; set; }
+        public string? MeasuredUnit { get; set; }
         public int InStock { get; set; }
-        public string Image { get; set; }
+        public string? Image { get; set; }
         public int? StatusId { get; set; }
         public float StockPrice { get; set; }
-        public string Barcode { get; set; }
+        public string? Barcode { get; set; }
         public int WarehouseId { get; set; }
         public int? MaxStock { get; set; }
         public int? MinStock { get; set; }

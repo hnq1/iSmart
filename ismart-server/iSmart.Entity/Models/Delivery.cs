@@ -12,7 +12,7 @@ namespace iSmart.Entity.Models
         }
 
         public int DeliveyId { get; set; }
-        public string DeliveryName { get; set; }
+        public string? DeliveryName { get; set; }
 
         public virtual ICollection<ExportOrder> ExportOrders { get; set; }
         public virtual ICollection<ImportOrder> ImportOrders { get; set; }

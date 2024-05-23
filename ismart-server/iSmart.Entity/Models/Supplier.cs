@@ -16,8 +16,8 @@ namespace iSmart.Entity.Models
         public string SupplierName { get; set; }
         public string SupplierPhone { get; set; }
         public int StatusId { get; set; }
-        public string SupplierEmail { get; set; }
-        public string Note { get; set; }
+        public string? SupplierEmail { get; set; }
+        public string? Note { get; set; }
 
         public virtual Status Status { get; set; }
         public virtual ICollection<Good> Goods { get; set; }
