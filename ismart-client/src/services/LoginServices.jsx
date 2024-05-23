@@ -1,8 +1,8 @@
 import axios from "./axios"
 
-const loginApi = (username, password) => {
+const loginApi = (userName, password) => {
 
-    return axios.post("api/auth/login", { username, password });
+    return axios.post("api/auth/login", { userName, password });
 }
 const logoutApi = (userId) => {
     return axios.post(`api/auth/logout?id=${userId}`, {});

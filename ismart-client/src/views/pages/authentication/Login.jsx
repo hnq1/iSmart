@@ -9,7 +9,7 @@ import {
 }
     from 'mdb-react-ui-kit';
 import GlobalStyles from '~/components/GlobalStyles';
-// import { Form, Button } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -50,8 +50,8 @@ const Login = () => {
             setShowWarning(false);
 
 
-            loginContext(username, res.token.accessToken, res.userId, res.roleId);
-            navigate("/thong-ke");
+            loginContext(username, res.token.accessToken, res.UserId, res.roleId);
+            navigate("/quan-ly-tai-khoan");
             // Xử lý đăng nhập thành công
         }
 

@@ -18,7 +18,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import Doashboard from '~/views/doashboard/Doashboard';
 import PrivateRoute from './PrivateRoute';
 const AppRoutes = () => {
-    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const roleId = parseInt(localStorage.getItem('RoleId'), 10);
     return (
         <>
             <Routes>
