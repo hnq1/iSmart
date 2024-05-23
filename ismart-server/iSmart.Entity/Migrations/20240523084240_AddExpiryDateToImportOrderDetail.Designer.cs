@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using iSmart.Entity.Models;
 
@@ -11,9 +12,10 @@ using iSmart.Entity.Models;
 namespace iSmart.Entity.Migrations
 {
     [DbContext(typeof(iSmartContext))]
-    partial class iSmartContextModelSnapshot : ModelSnapshot
+    [Migration("20240523084240_AddExpiryDateToImportOrderDetail")]
+    partial class AddExpiryDateToImportOrderDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -588,18 +590,12 @@ namespace iSmart.Entity.Migrations
                     b.Property<float>("CostPrice")
                         .HasColumnType("real");
 
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int?>("GoodsId")
                         .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("ImportId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("ManufactureDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
