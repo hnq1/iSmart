@@ -22,8 +22,6 @@ namespace iSmart.Entity.DTOs.UserDTO
 
         public string? UserName { get; set; }
 
-        public int StorageId { get; set; }
-
         public string? UserCode { get; set; }
 
         public string? Address { get; set; }
