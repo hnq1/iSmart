@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WM.Entity.DTOs.GoodsDTO
+namespace iSmart.Entity.DTOs.GoodsDTO
 {
     public class CreateGoodsResponse: BaseResponseDTO
     {
