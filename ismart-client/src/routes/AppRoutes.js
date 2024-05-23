@@ -1,4 +1,25 @@
 import { Routes, Route } from 'react-router-dom';
+import {
+    MDBContainer,
+    MDBNavbar,
+    MDBNavbarBrand,
+    MDBNavbarToggler,
+    MDBIcon,
+    MDBNavbarNav,
+    MDBNavbarItem,
+    MDBNavbarLink,
+    MDBDropdown,
+    MDBDropdownToggle,
+    MDBDropdownMenu,
+    MDBDropdownItem,
+    MDBDropdownLink,
+    MDBCollapse,
+    MDBRipple,
+    MDBBadge,
+    MDBInput,
+    MDBListGroup,
+    MDBListGroupItem
+} from 'mdb-react-ui-kit';
 import Login from '../views/pages/authentication/Login';
 import ForgotPassword from '../views/pages/authentication/ForgotPassword';
 import ChangePassword from '../views/pages/authentication/ChangePassword';
@@ -67,16 +88,18 @@ const AppRoutes = () => {
                     path="/nha-cung-cap"
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col className="py-3 background-primary">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <SupplierList />
-                                    </Col>
+                                    </MDBCollapse>
+
                                 </Row>
-                            </Container></PrivateRoute>
+                            </MDBContainer>
+                        </PrivateRoute>
                     }
                 />
 
@@ -84,16 +107,17 @@ const AppRoutes = () => {
                     path="/cac-kho-hang"
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col className="py-3 background-primary">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <StorageList />
-                                    </Col>
+                                    </MDBCollapse>
                                 </Row>
-                            </Container></PrivateRoute>
+                            </MDBContainer>
+                        </PrivateRoute>
                     }
                 />
 
@@ -101,32 +125,36 @@ const AppRoutes = () => {
                     path="/cac-danh-muc"
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col className="py-3 background-primary">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <CategoryList />
-                                    </Col>
+                                    </MDBCollapse>
+
                                 </Row>
-                            </Container></PrivateRoute>
+                            </MDBContainer>
+                        </PrivateRoute>
                     }
                 />
                 <Route
                     path="/cac-lo-hang-nhap"
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col className="py-3 background-primary overflow-auto">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <ImportOrderList />
-                                    </Col>
+                                    </MDBCollapse>
+
                                 </Row>
-                            </Container></PrivateRoute>
+                            </MDBContainer>
+                        </PrivateRoute>
                     }
                 />
 
@@ -134,31 +162,35 @@ const AppRoutes = () => {
                     path="/cac-lo-hang-xuat"
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col className="py-3 background-primary overflow-auto">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <ExportOrderList />
-                                    </Col>
+                                    </MDBCollapse>
+
                                 </Row>
-                            </Container></PrivateRoute>
+                            </MDBContainer>
+                        </PrivateRoute>
                     }
                 />
                 <Route path='/thong-ke'
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col className="py-3 background-primary">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <Doashboard className="overflow-auto" />
-                                    </Col>
+                                    </MDBCollapse>
+
                                 </Row>
-                            </Container></PrivateRoute>
+                            </MDBContainer>
+                        </PrivateRoute>
                     }
 
                 >
@@ -167,39 +199,41 @@ const AppRoutes = () => {
                 <Route path='/ben-van-chuyen'
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col className="py-3 background-primary">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <DeliveryList />
-                                    </Col>
+                                    </MDBCollapse>
                                 </Row>
-                            </Container></PrivateRoute>
+                            </MDBContainer>
+                        </PrivateRoute>
                     }
 
                 ></Route>
                 <Route path='/du-an'
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col className="py-3 background-primary">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <ProjectList />
-                                    </Col>
+                                    </MDBCollapse>
                                 </Row>
-                            </Container></PrivateRoute>
+                            </MDBContainer>
+                        </PrivateRoute>
                     }
 
                 ></Route>
                 <Route path='/kiem-ke'
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
@@ -208,22 +242,23 @@ const AppRoutes = () => {
                                         <StockTakeList />
                                     </Col>
                                 </Row>
-                            </Container></PrivateRoute>
+                            </MDBContainer>
+                        </PrivateRoute>
                     }
                 >
                 </Route >
                 <Route path='/danh-sach-mat-hang'
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
-                                    <Col className="py-3 background-primary overflow-auto">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <GoodList />
-                                    </Col>
+                                    </MDBCollapse>
                                 </Row>
-                            </Container>
+                            </MDBContainer>
                         </PrivateRoute>
                     }
 
@@ -231,15 +266,15 @@ const AppRoutes = () => {
                 <Route path='/quan-ly-tai-khoan'
                     element={
                         <PrivateRoute>
-                            <Container fluid>
+                            <MDBContainer className="d-flex justify-content-center">
                                 <Row className="flex-nowrap">
                                     <Sidebar />
-                                    <Col className="py-3 background-primary overflow-auto">
+                                    <MDBCollapse className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <ListAccount />
-                                    </Col>
+                                    </MDBCollapse>
                                 </Row>
-                            </Container>
+                            </MDBContainer >
                         </PrivateRoute>
                     }
 
