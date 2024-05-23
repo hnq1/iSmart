@@ -13,5 +13,8 @@ namespace iSmart.Entity.Models
 
         public virtual Good Goods { get; set; }
         public virtual ImportOrder Import { get; set; }
+        public DateTime ManufactureDate { get; set; }
+        public DateTime ExpiryDate { get; set; }
+
     }
 }
