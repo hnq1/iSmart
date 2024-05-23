@@ -20,8 +20,8 @@ namespace iSmart.API.Controllers
         {
             _userService = userService;
         }
-        // GET: api/<UserController>
-        [AllowAnonymous]
+
+        //[AllowAnonymous]
         [HttpGet("get-all-user")]
         public IActionResult GetAllUser()
         {

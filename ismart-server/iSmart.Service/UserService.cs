@@ -98,7 +98,7 @@ namespace iSmart.Service
                         StatusId = u.StatusId,
                         StatusName = u.Status.StatusType,
                         Image = u.Image,
-                        WarehouseNames = u.UserWarehouses.Select(uw => uw.Warehouse.WarehouseName).ToList()
+                        //WarehouseNames = u.UserWarehouses.Select(uw => uw.Warehouse.WarehouseName).ToList()
                     })
                     .ToList();
 
@@ -146,7 +146,7 @@ namespace iSmart.Service
                         StatusId = user.StatusId,
                         StatusName = user.Status.StatusType,
                         Image = user.Image,
-                        WarehouseNames = user.UserWarehouses.Select(uw => uw.Warehouse.WarehouseName).ToList()
+                        //WarehouseNames = user.UserWarehouses.Select(uw => uw.Warehouse.WarehouseName).ToList()
                     };
 
                     return u;
@@ -200,7 +200,7 @@ namespace iSmart.Service
                         StatusId = u.StatusId,
                         StatusName = u.Status.StatusType,
                         Image = u.Image,
-                        WarehouseNames = u.UserWarehouses.Select(uw => uw.Warehouse.WarehouseName).ToList() // Lấy tên kho từ UserWarehouses
+                        //WarehouseNames = u.UserWarehouses.Select(uw => uw.Warehouse.WarehouseName).ToList() // Lấy tên kho từ UserWarehouses
                     })
                     .ToList();
 
