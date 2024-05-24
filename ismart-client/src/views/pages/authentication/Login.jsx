@@ -39,9 +39,12 @@ const Login = () => {
             toast.error('Vui lòng nhập tài khoản và mật khẩu');
             return;
         }
-
+        // console.log('Attempting login with username:', username, 'and password:', password);
 
         let res = await loginApi(username, password);
+
+        // console.log('Response from loginApi:', res);
+
 
 
         if (res && res.status === 400) {
@@ -49,8 +52,12 @@ const Login = () => {
         } else if (res.token && res.token.accessToken) {
             setShowWarning(false);
 
+            // console.log('Response from loginApi:', res);
+            // console.log('Login successful:', res);
+
 
             loginContext(username, res.token.accessToken, res.UserId, res.roleId);
+
             navigate("/quan-ly-tai-khoan");
             // Xử lý đăng nhập thành công
         }
@@ -164,12 +171,18 @@ const Login = () => {
 
                         <p>Please login to your account</p>
 
-                        <MDBInput wrapperClass='mb-4' label='Usename' id='form1' type='type' onChange={(event) => setUsername(event.target.value)} />
-                        <MDBInput wrapperClass='mb-4' label='Password' id='form2' type='password' onChange={(event) => setPassword(event.target.value)} />
+                        <MDBInput wrapperClass='mb-4' label='Usename' id='form1' type='type' 
+                            onChange={(event) => setUsername(event.target.value)} />
+                        <MDBInput wrapperClass='mb-4' label='Password' id='form2' type='password' 
+                            onChange={(event) => setPassword(event.target.value)} />
 
 
                         <div className="text-center pt-1 mb-5 pb-1">
-                            <MDBBtn className="mb-4 w-100 gradient-custom-2" type="button" onClick={() => handleLogin()} >Sign in</MDBBtn>
+                            <MDBBtn className="mb-4 w-100 gradient-custom-2" type="button"
+                                onClick={() => handleLogin()} >
+                                Sign in
+                            </MDBBtn>
+                            {showWarning && <div>Login failed</div>}
                             <Link to="/quen-mat-khau" className="text-muted" >Forgot password?
                             </Link>
                         </div>
