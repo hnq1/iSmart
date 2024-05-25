@@ -107,6 +107,7 @@ namespace iSmart.API.Controllers
                 _configuration["Jwt:Audience"],
                 claims,
                 expires: DateTime.UtcNow.AddHours(12),
+                //expires: DateTime.UtcNow.AddSeconds(60),
                 signingCredentials: signIn
             );
 
