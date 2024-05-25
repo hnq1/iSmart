@@ -26,9 +26,9 @@ namespace iSmart.Entity.Models
         public int StatusId { get; set; }
         public string UserName { get; set; }
         public string UserCode { get; set; }
-        public string Address { get; set; }
-        public string Image { get; set; }
-        public string FullName { get; set; }
+        public string? Address { get; set; }
+        public string? Image { get; set; }
+        public string? FullName { get; set; }
 
         public virtual Role Role { get; set; }
         public virtual Status Status { get; set; }
