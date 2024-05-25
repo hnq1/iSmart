@@ -20,7 +20,7 @@ internal class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
 
-        //JWt
+        //JWT Authentication
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -74,13 +74,16 @@ internal class Program
                        .AllowAnyMethod()
                        .AllowAnyHeader());
         });
-        /*builder.Services.AddAutoMapper(typeof(Program).Assembly);*/
+
         builder.Services.AddDbContext<iSmartContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IStatusService, StatusService>();
+        builder.Services.AddScoped<ISupplierService, SupplierService>();
 
         var app = builder.Build();
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
