@@ -30,9 +30,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-users")]
-        public IActionResult GetUserByKeyword(int pageNum, int? role, int? statusId, IEnumerable<int> warehouseIds, string? keyword = "") 
+        public IActionResult GetUserByKeyword(int pageNum, int? role, int? statusId, string? keyword = "") 
         {
-            var reult = _userService.GetUsersByKeyword(pageNum,role,statusId, warehouseIds, keyword);
+            var reult = _userService.GetUsersByKeyword(pageNum,role,statusId, keyword);
             return Ok(reult);
         }
 
@@ -80,7 +80,7 @@ namespace iSmart.API.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("update-user")]
-        public IActionResult UpdateUser(UpdateUserRequest user)
+        public IActionResult UpdateUser(UpdateUserDTO user)
         {
             var result = _userService.UpdateUser(user);
             return Ok(result);

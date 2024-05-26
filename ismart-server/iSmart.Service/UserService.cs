@@ -14,13 +14,13 @@ namespace iSmart.Service
 {
     public interface IUserService
     {
-        UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? statusId, IEnumerable<int> warehouseIds, string? keyword = "");
+        UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? statusId,string? keyword = "");
         List<UserDTO>? GetAllUser();
         UserDTO? GetUserById(int id);
         User? GetUserByEmailAndPassword(string email, string password);
         User? GetUserByEmail(string email);
         CreateUserResponse AddUser(CreateUserRequest user);
-        UpdateUserResponse UpdateUser(UpdateUserRequest user);
+        UpdateUserResponse UpdateUser(UpdateUserDTO user);
         bool UpdateDeleteStatusUser(int id);
         UserFilterPagingResponse GetUsersByRoleId(int pageNum, int? roleId);
     }
@@ -162,7 +162,7 @@ namespace iSmart.Service
             }
         }
 
-        public UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? statusId, IEnumerable<int> warehouseIds, string? keyword = "")
+        public UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? statusId, string? keyword = "")
         {
             try
             {
@@ -180,7 +180,6 @@ namespace iSmart.Service
                                                       || u.Email.ToLower().Contains(keyword.ToLower()))
                         && (!role.HasValue || u.RoleId == role)
                         && (!statusId.HasValue || u.StatusId == statusId)
-                        && (warehouseIds == null || warehouseIds.Any(id => u.UserWarehouses.Any(uw => uw.WarehouseId == id)))
                     )
                     .OrderBy(u => u.UserId);
 
@@ -200,7 +199,6 @@ namespace iSmart.Service
                         StatusId = u.StatusId,
                         StatusName = u.Status.StatusType,
                         Image = u.Image,
-                        //WarehouseNames = u.UserWarehouses.Select(uw => uw.Warehouse.WarehouseName).ToList() // Lấy tên kho từ UserWarehouses
                     })
                     .ToList();
 
@@ -230,9 +228,36 @@ namespace iSmart.Service
             throw new NotImplementedException();
         }
 
-        public UpdateUserResponse UpdateUser(UpdateUserRequest user)
+        public UpdateUserResponse UpdateUser(UpdateUserDTO user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Kiểm tra xem người dùng có tồn tại không
+                var existingUser = _context.Users.FirstOrDefault(u => u.UserId == user.UserId);
+                if (existingUser == null)
+                {
+                    return new UpdateUserResponse { IsSuccess = false, Message = "User not found." };
+                }
+
+                existingUser.UserCode = user.UserCode;
+                existingUser.UserName = user.UserName;
+                existingUser.FullName = user.FullName;
+                existingUser.Email = user.Email;
+                existingUser.Address = user.Address;
+                existingUser.Phone = user.Phone;
+                existingUser.RoleId = user.RoleId;
+                existingUser.StatusId = user.StatusId;
+                existingUser.Image = user.Image;
+
+                _context.SaveChanges();
+
+                return new UpdateUserResponse { IsSuccess = true, Message = "Update account complete." };
+            }
+            catch (Exception e)
+            {
+                return new UpdateUserResponse { IsSuccess = false, Message = "Update account failed. " + e.Message };
+            }
         }
+
     }
 }

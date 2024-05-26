@@ -12,7 +12,7 @@ namespace iSmart.Entity.Models
 
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public virtual ICollection<Good> Goods { get; set; }
     }
