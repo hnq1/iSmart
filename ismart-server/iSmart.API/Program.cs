@@ -88,10 +88,11 @@ internal class Program
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IStatusService, StatusService>();
         builder.Services.AddScoped<ISupplierService, SupplierService>();
+        builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 
 
         // Đăng ký các dịch vụ
-        builder.Services.AddScoped<ICategoryService, CategoryService>();
+        // builder.Services.AddScoped<ICategoryService, CategoryService>();
         // builder.Services.AddScoped<IStorageService, StorageService>();
         // builder.Services.AddScoped<IGoodsService, GoodsService>();
         // builder.Services.AddScoped<ISupplierService, SupplierService>();
@@ -102,7 +103,6 @@ internal class Program
         // builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
         // builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
         // builder.Services.AddScoped<IProjectService, ProjectService>();
-        // builder.Services.AddScoped<IDeliveryService, DeliveryService>();
         // builder.Services.AddScoped<IStocktakeNoteService, StocktakeNoteService>();
         // builder.Services.AddScoped<IStocktakeNoteDetailService, StocktakeNoteDetailService>();
 

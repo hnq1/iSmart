@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WM.Entity.Models;
-namespace WM.Entity.DTOs
+using iSmart.Entity.Models;
+namespace iSmart.Entity.DTOs
 {
     public class ResponseData<T>
     {
