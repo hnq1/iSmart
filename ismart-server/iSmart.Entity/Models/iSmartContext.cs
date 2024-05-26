@@ -41,6 +41,7 @@ namespace iSmart.Entity.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserWarehouse> UserWarehouses { get; set; }
         public virtual DbSet<Warehouse> Warehouses { get; set; }
+        public virtual DbSet<GoodsWarehouse> GoodsWarehouses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -58,6 +59,21 @@ namespace iSmart.Entity.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<GoodsWarehouse>(entity =>
+            {
+                entity.HasKey(e => new { e.GoodsId, e.WarehouseId });
+
+                entity.HasOne(d => d.Good)
+                    .WithMany(p => p.GoodsWarehouses)
+                    .HasForeignKey(d => d.GoodsId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.Warehouse)
+                    .WithMany(p => p.GoodsWarehouses)
+                    .HasForeignKey(d => d.WarehouseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
             modelBuilder.Entity<ActionType>(entity =>
             {
                 entity.HasKey(e => e.ActionId);
@@ -274,11 +290,6 @@ namespace iSmart.Entity.Models
                     .WithMany(p => p.Goods)
                     .HasForeignKey(d => d.SupplierId);
 
-                entity.HasOne(d => d.Warehouse)
-                    .WithMany(p => p.Goods)
-                    .HasForeignKey(d => d.WarehouseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Goods_Storage_StorageId");
             });
 
             modelBuilder.Entity<GoodsHistory>(entity =>

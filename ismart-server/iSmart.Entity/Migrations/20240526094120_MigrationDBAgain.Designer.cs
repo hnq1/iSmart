@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using iSmart.Entity.Models;
 
@@ -11,9 +12,10 @@ using iSmart.Entity.Models;
 namespace iSmart.Entity.Migrations
 {
     [DbContext(typeof(iSmartContext))]
-    partial class iSmartContextModelSnapshot : ModelSnapshot
+    [Migration("20240526094120_MigrationDBAgain")]
+    partial class MigrationDBAgain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -431,6 +433,9 @@ namespace iSmart.Entity.Migrations
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("WarrantyTime")
                         .HasColumnType("int");
 
@@ -441,6 +446,8 @@ namespace iSmart.Entity.Migrations
                     b.HasIndex("StatusId");
 
                     b.HasIndex("SupplierId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Goods");
                 });
@@ -1156,6 +1163,10 @@ namespace iSmart.Entity.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("iSmart.Entity.Models.Warehouse", null)
+                        .WithMany("Goods")
+                        .HasForeignKey("WarehouseId");
+
                     b.Navigation("Category");
 
                     b.Navigation("Status");
@@ -1535,6 +1546,8 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("Bills");
 
                     b.Navigation("ExportOrders");
+
+                    b.Navigation("Goods");
 
                     b.Navigation("GoodsWarehouses");
 
