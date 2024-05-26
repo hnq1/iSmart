@@ -15,15 +15,13 @@ using iSmart.Entity.Models;
 internal class Program
 {
     private static void Main(string[] args)
-    
+
     {
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-
-        // JWT
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -80,12 +78,16 @@ internal class Program
                        .AllowAnyHeader());
         });
 
+
         /*builder.Services.AddAutoMapper(typeof(Program).Assembly);*/
+
 
         builder.Services.AddDbContext<iSmartContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IStatusService, StatusService>();
+        builder.Services.AddScoped<ISupplierService, SupplierService>();
 
 
         // Đăng ký các dịch vụ
@@ -105,7 +107,6 @@ internal class Program
         // builder.Services.AddScoped<IStocktakeNoteDetailService, StocktakeNoteDetailService>();
 
         var app = builder.Build();
-
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

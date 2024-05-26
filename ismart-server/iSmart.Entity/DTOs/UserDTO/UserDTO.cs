@@ -20,7 +20,7 @@ namespace iSmart.Entity.DTOs.UserDTO
         public string FullName { get; set; }
         public string RoleName { get; set; }
         public string StatusName { get; set; }
-        public List<string> WarehouseNames { get; set; }
+        //public List<string> WarehouseNames { get; set; }
 
 
     }
