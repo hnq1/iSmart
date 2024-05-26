@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WM.Entity.DTOs.DeliveryDTO;
-using WM.Entity.DTOs.StorageDTO;
-using WM.Entity.Models;
+using iSmart.Entity.DTOs.DeliveryDTO;
+using iSmart.Entity.Models;
 
-namespace WM.Service
+namespace iSmart.Service
 {
     public interface IDeliveryService
     {
@@ -20,9 +19,9 @@ namespace WM.Service
     }
     public class DeliveryService : IDeliveryService
     {
-        private readonly WarehouseManagementContext _context;
+        private readonly iSmartContext _context;
 
-        public DeliveryService(WarehouseManagementContext context)
+        public DeliveryService(iSmartContext context)
         {
             _context = context;
         }
