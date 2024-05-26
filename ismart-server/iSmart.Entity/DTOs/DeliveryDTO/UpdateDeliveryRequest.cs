@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WM.Entity.DTOs.DeliveryDTO
+namespace iSmart.Entity.DTOs.DeliveryDTO
 {
     public class UpdateDeliveryRequest
     {
