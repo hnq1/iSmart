@@ -19,7 +19,6 @@ import Doashboard from '~/views/doashboard/Doashboard';
 import PrivateRoute from './PrivateRoute';
 import { useContext } from 'react';
 const AppRoutes = () => {
-    const { user } = useContext(UserContext);
     const roleId = parseInt(localStorage.getItem('RoleId'), 10);
     ;
     return (

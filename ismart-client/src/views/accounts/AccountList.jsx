@@ -129,13 +129,13 @@ const ListAccount = () => {
                         {/* add account */}
                         <div className='col-2'>
                             <Col md={2}>
-                                <Button 
-                                className="btn btn-success border-left-3 rounded ButtonCSS"
-                                type="button"
-                                onClick={() => setIsShowModelAdd(true)}
-                                style={{ width: '150px' }}
+                                <Button
+                                    className="btn btn-success border-left-3 rounded ButtonCSS"
+                                    type="button"
+                                    onClick={() => setIsShowModelAdd(true)}
+                                    style={{ width: '150px' }}
                                 >
-                                &nbsp;Tạo tài khoản
+                                    &nbsp;Tạo tài khoản
                                 </Button>
                             </Col>
                         </div>
@@ -160,17 +160,20 @@ const ListAccount = () => {
                                 </div>
                             </div>
                         </div>
-                        {roleId === 1 ? '' : <div className="col-auto ButtonCSSDropdown">
-                            <button
-                                className="btn btn-success border-left-0 rounded"
-                                type="button"
-                                onClick={() => setIsShowModelAdd(true)}
-                            ><i className="fa-solid fa-plus"></i>
-                                &nbsp;
-                                Tạo tài khoản
+                        {roleId === 1 ? '' :
+                            <div className="col-auto ButtonCSSDropdown">
+                                <button
+                                    className="btn btn-success border-left-0 rounded"
+                                    type="button"
+                                    onClick={() => setIsShowModelAdd(true)}
+                                ><i className="fa-solid fa-plus"></i>
+                                    &nbsp;
+                                    Tạo tài khoản
 
-                            </button>
-                        </div>}
+                                </button>
+                            </div>
+                        }
+
 
                     </div>
                     <div className=" table-responsive">

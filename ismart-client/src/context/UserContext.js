@@ -3,12 +3,20 @@ import React, { useState, useEffect } from 'react';
 import { logoutApi } from '../services/LoginServices';
 
 
-const UserContext = React.createContext({ userName: '', auth: false, userId: '', roleId: '' });
+const UserContext = React.createContext({
+    userName: '', auth: false, userId: '',
+    roleId: ''
+});
 
 
 const UserProvider = ({ children }) => {
-    const [user, setUser] = React.useState({ userName: '', auth: false, userId: '', roleId: '' });
-    const loginContext = (userName, token, userId, roleId) => {
+    const [user, setUser] = React.useState({
+        userName: '', auth: false, userId: '',
+        roleId: ''
+    });
+    const loginContext = (userName, token, userId,
+        roleId
+    ) => {
         setUser((user) => ({
             userName: userName,
             auth: true,
@@ -20,8 +28,10 @@ const UserProvider = ({ children }) => {
         localStorage.setItem('token', token);
         localStorage.setItem('userName', userName);
         if (localStorage.getItem('userId') === null && localStorage.getItem('roleId') === null) {
-            localStorage.setItem('userId', userId); // Store userId
-            localStorage.setItem('roleId', roleId); // Store roleId
+            localStorage.setItem('userId', userId);
+            // Store userId
+            localStorage.setItem('roleId', roleId);
+            // Store roleId
         }
 
 

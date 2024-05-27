@@ -109,17 +109,20 @@ function DeliveryList() {
                                     </div>
                                 </div>
                             </div>
-                            {roleId === 4 ? '' : <div className="col-auto ButtonCSSDropdown">
-                                <button
-                                    className="btn btn-success border-left-0 rounded"
-                                    type="button"
-                                    onClick={() => setIsShowModelAddNew(true)}
-                                ><i className="fa-solid fa-plus"></i>
-                                    &nbsp;
-                                    Thêm bên vận chuyển
+                            {
+                                roleId === 4 ? '' :
+                                    <div className="col-auto ButtonCSSDropdown">
+                                        <button
+                                            className="btn btn-success border-left-0 rounded"
+                                            type="button"
+                                            onClick={() => setIsShowModelAddNew(true)}
+                                        ><i className="fa-solid fa-plus"></i>
+                                            &nbsp;
+                                            Thêm bên vận chuyển
 
-                                </button>
-                            </div>}
+                                        </button>
+                                    </div>
+                            }
 
                         </div>
                         <div className=" table-responsive">

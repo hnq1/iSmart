@@ -7,7 +7,12 @@ const Sidebar = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
 
     return (
-        <Col sm={3} md={3} xl={2} className="px-sm-2  px-0  " style={{ width: '240px', backgroundColor: '#00FFFF' }}>
+
+        <Col sm={3} md={3} xl={2} className="px-sm-2  px-0  
+        " style={{
+                width: '240px',
+                background: 'linear-gradient(to right, #2c9d69, #31b176, #37c484, #49cc90, #5dd29c, #71d7a8, #85ddb4)'
+            }}>
 
             {/* Thêm nút bấm thụt ra thụt vào của full menu */}
 

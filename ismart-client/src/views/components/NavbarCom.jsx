@@ -33,7 +33,8 @@ function NavbarCom() {
 
     return (
         <>
-            <Navbar bg="body-tertiary" expand="lg">
+            <Navbar bg="body-tertiary"
+                expand="lg" style={{ background: 'linear-gradient(to right, #a5e6c8, #b4ead1, #c4eedb, #d3f3e4, #e2f7ed, #f2fbf7)' }}>
                 {!hideHeader &&
 
                     <Container>

@@ -96,17 +96,21 @@ function CategoryList() {
                                 </div>
                             </div>
 
-                            {roleId !== 4 ? <div className="col-auto ButtonCSSDropdown">
-                                <button
-                                    className="btn btn-success border-left-0 rounded"
-                                    type="button"
-                                    onClick={() => setIsShowModelAddNew(true)}
-                                ><i className="fa-solid fa-plus"></i>
-                                    &nbsp;
-                                    Thêm danh mục
+                            {
+                                roleId !== 4 ?
+                                    <div className="col-auto ButtonCSSDropdown">
+                                        <button
+                                            className="btn btn-success border-left-0 rounded"
+                                            type="button"
+                                            onClick={() => setIsShowModelAddNew(true)}
+                                        ><i className="fa-solid fa-plus"></i>
+                                            &nbsp;
+                                            Thêm danh mục
 
-                                </button>
-                            </div> : ''}
+                                        </button>
+                                    </div>
+                                    : ''
+                            }
                         </div>
                         <div className=" table-responsive">
                             <Table className="table text-center table-border table-hover  border-primary table-sm">
