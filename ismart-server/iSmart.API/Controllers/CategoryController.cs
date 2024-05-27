@@ -12,6 +12,7 @@ namespace iSmart.API.Controllers
 
     public class CategoryController : ControllerBase
     {
+//context
         private readonly ICategoryService _categoryService;
         public CategoryController(ICategoryService categoryService)
         {
