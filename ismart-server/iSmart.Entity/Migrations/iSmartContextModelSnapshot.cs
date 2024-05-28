@@ -577,14 +577,17 @@ namespace iSmart.Entity.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetailId"), 1L, 1);
 
+                    b.Property<string>("BatchCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("CostPrice")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("GoodsId")
-                        .IsRequired()
+                    b.Property<int>("GoodsId")
                         .HasColumnType("int");
 
                     b.Property<int>("ImportId")
@@ -593,7 +596,7 @@ namespace iSmart.Entity.Migrations
                     b.Property<DateTime>("ManufactureDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Quantity")
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("DetailId");

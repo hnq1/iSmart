@@ -368,6 +368,12 @@ namespace iSmart.Entity.Models
 
                 entity.ToTable("ImportOrderDetail");
 
+                entity.Property(e => e.BatchCode).IsRequired();
+                entity.Property(e => e.CostPrice).IsRequired();
+                entity.Property(e => e.ManufactureDate).IsRequired();
+                entity.Property(e => e.ExpiryDate).IsRequired();
+                entity.Property(e => e.Quantity).IsRequired();
+
                 entity.HasOne(d => d.Goods)
                     .WithMany(p => p.ImportOrderDetails)
                     .HasForeignKey(d => d.GoodsId)
@@ -377,6 +383,7 @@ namespace iSmart.Entity.Models
                     .WithMany(p => p.ImportOrderDetails)
                     .HasForeignKey(d => d.ImportId);
             });
+
 
             modelBuilder.Entity<MeasuredUnit>(entity =>
             {
