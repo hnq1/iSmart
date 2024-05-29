@@ -9,9 +9,10 @@ import { updateUserStatus } from '~/services/UserServices';
 import ReactPaginate from 'react-paginate';
 
 import ModalAddAccount from './AddAccount';
-
+import ModalEditAccount from './EditAccount';
 import { fetchUserWithFilter } from '~/services/UserServices';
 import { fetchAllStorages } from "~/services/StorageServices";
+import { set } from 'lodash';
 
 
 
@@ -21,6 +22,7 @@ const ListAccount = () => {
 
 
     const [isShowModelAdd, setIsShowModelAdd] = useState(false);
+    const [isShowModelEdit, setIsShowModelEdit] = useState(false);
     const [totalUser, setTotalUser] = useState([]);
     const [totalPage, setTotalPage] = useState(5);
 
@@ -79,6 +81,10 @@ const ListAccount = () => {
 
     const handleSearch = () => {
         getUsers(1);
+    }
+
+    const ModelEditAccount = () => {
+        setIsShowModelEdit(true);
     }
 
     const updateTable = () => {
@@ -189,7 +195,7 @@ const ListAccount = () => {
                                     <th className="align-middle  text-nowrap">Địa chỉ</th>
                                     <th className="align-middle  text-nowrap">Hình ảnh</th>
                                     <th className="align-middle  text-nowrap">Tình trạng</th>
-                                    {/* <th className="align-middle  text-nowrap"></th> */}
+                                    <th className="align-middle  text-nowrap"></th>
 
                                 </tr>
                             </thead>
@@ -210,11 +216,12 @@ const ListAccount = () => {
                                                 <SwitchButtonUser status={i.status} handleChangeStatus={() => handleChangeStatus(i)} />
                                             </td>
 
-                                            {/* 
+                                            {roleId === 1 ? 
                                             <td className="align-middle " style={{ padding: '10px' }}>
 
                                                 <i className="fa-duotone fa-pen-to-square actionButtonCSS"></i>
-                                            </td> */}
+                                            </td> 
+                                            : ''}
                                         </tr>
                                     ))}
 
