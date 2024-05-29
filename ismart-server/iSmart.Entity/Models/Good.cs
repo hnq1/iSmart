@@ -18,9 +18,9 @@ namespace iSmart.Entity.Models
 
         public int GoodsId { get; set; }
         public string GoodsName { get; set; }
-        public string GoodsCode { get; set; }
+        public string? GoodsCode { get; set; }
         public int CategoryId { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public int SupplierId { get; set; }
         public string? MeasuredUnit { get; set; }
         public int InStock { get; set; }

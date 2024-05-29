@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace iSmart.Entity.Migrations
 {
-    public partial class initialDB : Migration
+    public partial class initialDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,7 @@ namespace iSmart.Entity.Migrations
                 {
                     ActionId = table.Column<int>(type: "int", nullable: false),
                     Action = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,7 +29,7 @@ namespace iSmart.Entity.Migrations
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CategoryName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -42,7 +42,7 @@ namespace iSmart.Entity.Migrations
                 {
                     DeliveyId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DeliveryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    DeliveryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,7 @@ namespace iSmart.Entity.Migrations
                     featureId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     featurename = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    url = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    url = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -110,8 +110,8 @@ namespace iSmart.Entity.Migrations
                     WarehouseId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     WarehouseName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    WarehouseAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    WarehousePhone = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false)
+                    WarehouseAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    WarehousePhone = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -149,8 +149,8 @@ namespace iSmart.Entity.Migrations
                     SupplierName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SupplierPhone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
-                    SupplierEmail = table.Column<string>(type: "nvarchar(62)", maxLength: 62, nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                    SupplierEmail = table.Column<string>(type: "nvarchar(62)", maxLength: 62, nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -168,16 +168,16 @@ namespace iSmart.Entity.Migrations
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(62)", maxLength: 62, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(62)", maxLength: 62, nullable: true),
                     Password = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RoleId = table.Column<int>(type: "int", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false, defaultValueSql: "(CONVERT([bit],(0)))"),
-                    UserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UserCode = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    UserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    UserCode = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -202,17 +202,16 @@ namespace iSmart.Entity.Migrations
                     GoodsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GoodsName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    GoodsCode = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
+                    GoodsCode = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     SupplierId = table.Column<int>(type: "int", nullable: false),
-                    MeasuredUnit = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MeasuredUnit = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     InStock = table.Column<int>(type: "int", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     StockPrice = table.Column<float>(type: "real", nullable: false),
-                    Barcode = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
-                    WarehouseId = table.Column<int>(type: "int", nullable: false),
+                    Barcode = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: true),
                     MaxStock = table.Column<int>(type: "int", nullable: true),
                     MinStock = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -234,11 +233,6 @@ namespace iSmart.Entity.Migrations
                         principalColumn: "StatusId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Goods_Storage_StorageId",
-                        column: x => x.WarehouseId,
-                        principalTable: "Warehouse",
-                        principalColumn: "WarehouseId");
-                    table.ForeignKey(
                         name: "FK_Goods_Supplier_SupplierId",
                         column: x => x.SupplierId,
                         principalTable: "Supplier",
@@ -258,7 +252,7 @@ namespace iSmart.Entity.Migrations
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     UpdatedId = table.Column<int>(type: "int", nullable: true),
                     WarehouseId = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreatedId = table.Column<int>(type: "int", nullable: false),
                     BillCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
@@ -321,7 +315,7 @@ namespace iSmart.Entity.Migrations
                     ExportCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<float>(type: "real", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExportedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -329,10 +323,10 @@ namespace iSmart.Entity.Migrations
                     ProjectId = table.Column<int>(type: "int", nullable: false),
                     CancelDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeliveryId = table.Column<int>(type: "int", nullable: false),
-                    image = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
+                    image = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
                     StaffId = table.Column<int>(type: "int", nullable: true),
-                    Customer = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Customer = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -370,14 +364,14 @@ namespace iSmart.Entity.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     SupplierId = table.Column<int>(type: "int", nullable: false),
                     TotalCost = table.Column<float>(type: "real", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ImportedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     ImportCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     WarehouseId = table.Column<int>(type: "int", nullable: false),
                     DeliveryId = table.Column<int>(type: "int", nullable: false),
-                    image = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
+                    image = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
                     StaffId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -469,11 +463,11 @@ namespace iSmart.Entity.Migrations
                     ActionId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CostPrice = table.Column<float>(type: "real", nullable: true),
-                    CostPriceDifferential = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CostPriceDifferential = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: true),
-                    QuantityDifferential = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    OrderCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    QuantityDifferential = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    OrderCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -500,6 +494,29 @@ namespace iSmart.Entity.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GoodsWarehouses",
+                columns: table => new
+                {
+                    GoodsId = table.Column<int>(type: "int", nullable: false),
+                    WarehouseId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GoodsWarehouses", x => new { x.GoodsId, x.WarehouseId });
+                    table.ForeignKey(
+                        name: "FK_GoodsWarehouses_Goods_GoodsId",
+                        column: x => x.GoodsId,
+                        principalTable: "Goods",
+                        principalColumn: "GoodsId");
+                    table.ForeignKey(
+                        name: "FK_GoodsWarehouses_Warehouse_WarehouseId",
+                        column: x => x.WarehouseId,
+                        principalTable: "Warehouse",
+                        principalColumn: "WarehouseId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BillDetail",
                 columns: table => new
                 {
@@ -510,7 +527,7 @@ namespace iSmart.Entity.Migrations
                     CurrentStock = table.Column<int>(type: "int", nullable: false),
                     ActualStock = table.Column<int>(type: "int", nullable: false),
                     AmountDifferential = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -587,7 +604,7 @@ namespace iSmart.Entity.Migrations
                         column: x => x.ImportId,
                         principalTable: "ImportOrder",
                         principalColumn: "ImportId",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -596,10 +613,13 @@ namespace iSmart.Entity.Migrations
                 {
                     DetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    BatchCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImportId = table.Column<int>(type: "int", nullable: false),
-                    CostPrice = table.Column<float>(type: "real", nullable: false),
                     GoodsId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: true)
+                    CostPrice = table.Column<float>(type: "real", nullable: false),
+                    ManufactureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -628,8 +648,8 @@ namespace iSmart.Entity.Migrations
                     ExportId = table.Column<int>(type: "int", nullable: false),
                     SupplierId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "('0001-01-01T00:00:00.0000000')"),
                     ReturnsCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     WarehouseId = table.Column<int>(type: "int", nullable: false),
@@ -801,11 +821,6 @@ namespace iSmart.Entity.Migrations
                 column: "SupplierId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Goods_WarehouseId",
-                table: "Goods",
-                column: "WarehouseId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_GoodsHistory_ActionId",
                 table: "GoodsHistory",
                 column: "ActionId");
@@ -819,6 +834,11 @@ namespace iSmart.Entity.Migrations
                 name: "IX_GoodsHistory_UserId",
                 table: "GoodsHistory",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GoodsWarehouses_WarehouseId",
+                table: "GoodsWarehouses",
+                column: "WarehouseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ImportOrder_DeliveryId",
@@ -948,6 +968,9 @@ namespace iSmart.Entity.Migrations
 
             migrationBuilder.DropTable(
                 name: "GoodsHistory");
+
+            migrationBuilder.DropTable(
+                name: "GoodsWarehouses");
 
             migrationBuilder.DropTable(
                 name: "ImportOrderDetail");

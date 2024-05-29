@@ -17,8 +17,8 @@ namespace iSmart.Entity.Models
 
         public int WarehouseId { get; set; }
         public string WarehouseName { get; set; }
-        public string WarehouseAddress { get; set; }
-        public string WarehousePhone { get; set; }
+        public string? WarehouseAddress { get; set; }
+        public string? WarehousePhone { get; set; }
 
         public virtual ICollection<Bill> Bills { get; set; }
         public virtual ICollection<ExportOrder> ExportOrders { get; set; }
