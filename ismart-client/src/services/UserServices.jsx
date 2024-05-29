@@ -2,7 +2,11 @@ import axios from "./axios"
 
 
 const fetchUserByUserId = (id) => {
-    return axios.get(`api/user/get-user-by-id?id=${id}`);
+    return axios.get(`api/user/get-user-by-id?id=${id}`)
+        .then(response => {
+            console.log(response);
+            return response;
+        });
 }
 
 const fetchUserWithFilter = (pageNum, role, statusId, storageId, keyword) => {
