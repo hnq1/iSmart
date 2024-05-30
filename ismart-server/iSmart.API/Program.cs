@@ -91,6 +91,7 @@ internal class Program
         builder.Services.AddScoped<IDeliveryService, DeliveryService>();
         builder.Services.AddScoped<IGoodsService, GoodsService>();
         builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+        builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
 
 
         // Đăng ký các dịch vụ
