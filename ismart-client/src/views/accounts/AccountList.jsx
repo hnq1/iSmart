@@ -39,6 +39,7 @@ const ListAccount = () => {
 
     const [isShowModalChangeStatus, setIsShowModalChangeStatus] = useState(false);
     const [dataUpdateStatus, setdataUpdateStatus] = useState([]);
+    const [editAccount, setEditAccount] = useState([]);
 
     useEffect(() => {
         getUsers(1);
@@ -83,9 +84,17 @@ const ListAccount = () => {
         getUsers(1);
     }
 
-    const ModelEditAccount = () => {
+
+
+    const showModelEditAccount = (user) => {
+        setEditAccount(user);
         setIsShowModelEdit(true);
+        console.log(user);
+
     }
+
+
+
 
     const updateTable = () => {
         getUsers(currentPage + 1);
@@ -216,12 +225,12 @@ const ListAccount = () => {
                                                 <SwitchButtonUser status={i.status} handleChangeStatus={() => handleChangeStatus(i)} />
                                             </td>
 
-                                            {roleId === 1 ? 
-                                            <td className="align-middle " style={{ padding: '10px' }}>
+                                            {roleId === 1 ?
+                                                <td className="align-middle " style={{ padding: '10px' }}>
 
-                                                <i className="fa-duotone fa-pen-to-square actionButtonCSS"></i>
-                                            </td> 
-                                            : ''}
+                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => showModelEditAccount(i)}></i>
+                                                </td>
+                                                : ''}
                                         </tr>
                                     ))}
 
@@ -259,7 +268,8 @@ const ListAccount = () => {
             confirmChangeStatus={confirmChangeStatus} name={<span style={{ color: 'black' }}>{dataUpdateStatus.supplierName}</span>} status={dataUpdateStatus.status}
 
         />
+        <ModalEditAccount isShow={isShowModelEdit} handleClose={() => setIsShowModelEdit(false)} updateTable={updateTable} dataUpdateAccount={editAccount} />
     </>)
 }
 
-export default ListAccount
+export default ListAccount;

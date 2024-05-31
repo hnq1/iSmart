@@ -20,8 +20,18 @@ const fetchUserWithFilter = (pageNum, role, statusId, storageId, keyword) => {
     ${keyword ? `&keyword=${keyword}` : ``}`)
 }
 
-const updateUser = (userId, email, password, phone, roleId, statusId, userName, storageId, userCode, address, image, fullName) => {
-    return axios.put(`api/user/update-user`, { userId, email, password, phone, roleId, statusId, userName, storageId, userCode, address, image, fullName })
+const updateUser = (userId,
+    email, password, phone,
+    roleId, statusId, userName,
+    storageId, userCode,
+    address, image, fullName) => {
+    return axios.put(`api/user/update-user`,
+        {
+            userId, email, password,
+            phone, roleId, statusId,
+            userName, storageId, userCode,
+            address, image, fullName
+        })
 }
 
 const addUser = (email, password, phone, roleId, statusId, userName, storageId, userCode, address, image, fullName) => {

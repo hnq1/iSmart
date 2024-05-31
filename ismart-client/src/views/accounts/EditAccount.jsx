@@ -1,102 +1,128 @@
-import { useEffect, useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Row, Col, Form, DropdownButton, Dropdown } from 'react-bootstrap';
+import { updateUser } from "~/services/UserServices";
+import { validatePhone, validateTextRequired, removeWhiteSpace } from "~/validate";
 import { toast } from 'react-toastify';
-import { EditAccount } from "~/services/AccountServices";
-import { validatePhone, validateText, validateTextRequired, removeWhiteSpace } from "~/validate";
 
+const ModalEditAccount = ({ isShow, handleClose, dataUpdateUser, updateTableUser }) => {
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [userName, setUserName] = useState("");
+    const [roleId, setRoleId] = useState("");
+    const [statusId, setStatusId] = useState("");
+    const [storageId, setStorageId] = useState("");
+    const [userCode, setUserCode] = useState("");
+    const [address, setAddress] = useState("");
+    const [image, setImage] = useState("");
+    const [fullName, setFullName] = useState("");
+    const [roleName, setRoleName] = useState("");
 
-const ModelEditAccount = ({ isShow, handleClose, dataUpdateAccount, updateTableAccount }) => {
-    const [accountName, setAccountName] = useState("");
-    const [accountPhone, setAccountPhone] = useState("");
-    const [accountEmail, setAccountEmail] = useState("");
-    const [accountAddress, setAccountAddress] = useState("");
-    const [accountRole, setAccountRole] = useState("");
-    const [accountStatus, setAccountStatus] = useState("");
     useEffect(() => {
-        if (isShow) {
-            setAccountName(dataUpdateAccount.accountName);
-            setAccountPhone(dataUpdateAccount.phone);
-            setAccountEmail(dataUpdateAccount.email);
-            setAccountAddress(dataUpdateAccount.address);
-            setAccountRole(dataUpdateAccount.roleId);
-            setAccountStatus(dataUpdateAccount.status);
+        console.log('ModalEditAccount - isShow:', isShow);
+        console.log('ModalEditAccount - dataUpdateUser:', dataUpdateUser);
+        if (isShow && dataUpdateUser) {
+            console.log("Modal is showing. Data Update User: ", dataUpdateUser);
+
+            setEmail(dataUpdateUser.email ? dataUpdateUser.email : "");
+            setPhone(dataUpdateUser.phone ? dataUpdateUser.phone : "");
+            setUserName(dataUpdateUser.userName ? dataUpdateUser.userName : "");
+            setRoleId(dataUpdateUser.roleId ? dataUpdateUser.roleId : "");
+            setStatusId(dataUpdateUser.statusId ? dataUpdateUser.statusId : "");
+            setStorageId(dataUpdateUser.storageId ? dataUpdateUser.storageId : "");
+            setUserCode(dataUpdateUser.userCode ? dataUpdateUser.userCode : "");
+            setAddress(dataUpdateUser.address ? dataUpdateUser.address : "");
+            setImage(dataUpdateUser.image ? dataUpdateUser.image : "");
+            setFullName(dataUpdateUser.fullName ? dataUpdateUser.fullName : "");
+
+            console.log("Email: ", dataUpdateUser.email);
+            console.log("Phone: ", dataUpdateUser.phone);
+            console.log("UserName: ", dataUpdateUser.userName);
+            console.log("RoleId: ", dataUpdateUser.roleId);
+            console.log("StatusId: ", dataUpdateUser.statusId);
+            console.log("StorageId: ", dataUpdateUser.storageId);
+            console.log("UserCode: ", dataUpdateUser.userCode);
+            console.log("Address: ", dataUpdateUser.address);
+            console.log("Image: ", dataUpdateUser.image);
+            console.log("FullName: ", dataUpdateUser.fullName);
+            console.log("RoleName: ", dataUpdateUser.roleName);
         }
-    }, [dataUpdateAccount])
+        else {
+            console.log("Modal is not showing or dataUpdateUser is not available.");
+        }
+    }, [isShow, dataUpdateUser]);
+
     const handleSave = async () => {
-        if (!validateTextRequired.test(accountName)) {
-            toast.error("Tên không được trống và chứa ký tự đặc biệt");
-        } else if (!validatePhone.test(accountPhone)) {
-            toast.error("Số điện thoại không đúng định dạng");
-        } else if (!validateText.test(accountAddress)) {
-            toast.error("Địa chỉ không được chứa ký tự đặc biệt");
-        } else if (!validateText.test(accountRole)) {
-            toast.error("Vui lòng chọn quyền");
-        } else if (!validateText.test(accountStatus)) {
-            toast.error("Vui lòng chọn trạng thái");
-        } else {
-            let res = await EditAccount(dataUpdateAccount.accountId, removeWhiteSpace(accountName), removeWhiteSpace(accountPhone), removeWhiteSpace(accountEmail), removeWhiteSpace(accountAddress), removeWhiteSpace(accountRole), removeWhiteSpace(accountStatus));
-            toast.success("Sửa thông tin tài khoản thành công", {
-                className: 'toast-success',
-            });
-            updateTableAccount();
-            handleClose();
+        if (!validateTextRequired.test(email)) {
+            toast.error('Email không được để trống');
+            return;
         }
-    }
+        if (!validatePhone.test(phone)) {
+            toast.error('Số điện thoại không hợp lệ');
+            return;
+        }
+        const data = {
+            email: removeWhiteSpace(email),
+            phone: removeWhiteSpace(phone),
+            userName: removeWhiteSpace(userName),
+            roleId: roleId,
+            statusId: statusId,
+            storageId: storageId,
+            userCode: removeWhiteSpace(userCode),
+            address: removeWhiteSpace(address),
+            image: image,
+            fullName: removeWhiteSpace(fullName)
+        };
+        const result = await updateUser(data);
+        if (result.status === 200) {
+            toast.success('Cập nhật tài khoản thành công');
+            updateTableUser();
+            handleClose();
+        } else {
+            toast.error('Cập nhật tài khoản thất bại');
+        }
+    };
 
-    const handleReset = () => {
-        setAccountName(dataUpdateAccount.accountName);
-        setAccountPhone(dataUpdateAccount.phone);
-        setAccountEmail(dataUpdateAccount.email);
-        setAccountAddress(dataUpdateAccount.address);
-        setAccountRole(dataUpdateAccount.roleId);
-        setAccountStatus(dataUpdateAccount.status);
-    }
-    const handleCloseModal = () => {
-        handleClose();
-    }
-
-    return (<>
-        <Modal show={isShow} onHide={handleCloseModal}>
+    return (
+        <Modal show={isShow} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Sửa thông tin tài khoản</Modal.Title>
+                <Modal.Title>Chỉnh sửa tài khoản</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div className="body-add-new">
-                    <div className="form-group mb-3">
-                        <label >Tên tài khoản</label>
-                        <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={accountName} onChange={(event) => setAccountName(event.target.value)} />
-                    </div>
-                    <div className="form-group mb-3">
-                        <label >Số điện thoại</label>
-                        <input type="text" className="form-control inputCSS" value={accountPhone} onChange={(event) => setAccountPhone(event.target.value)} />
-                    </div>
-                    <div className="form-group mb-3">
-                        <label >Email</label>
-                        <input type="text" className="form-control inputCSS" value={accountEmail} onChange={(event) => setAccountEmail(event.target.value)} />
-                    </div>
-                    <div className="form-group mb-3">
-                        <label >Địa chỉ</label>
-                        <input type="text" className="form-control inputCSS" value={accountAddress} onChange={(event) => setAccountAddress(event.target.value)} />
-                    </div>
-                    <div className="form-group mb-3">
-                        <label >Quyền</label>
-                        <input type="text" className="form-control inputCSS" value={accountRole} onChange={(event) => setAccountRole(event.target.value)} />
-                    </div>
-                    <div className="form-group mb-3">
-                        <label >Trạng thái</label>
-                        <input type="text" className="form-control inputCSS" value={accountStatus} onChange={(event) => setAccountStatus(event.target.value)} />
-                    </div>
-                </div>
+                <Form.Group>
+                    <Form.Label>Mã nhân viên</Form.Label>
+                    <Form.Control type="text" value={roleName} onChange={(e) => setRoleName(e.target.value)} />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Họ và tên</Form.Label>
+                    <Form.Control type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Phone</Form.Label>
+                    <Form.Control type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Địa chỉ</Form.Label>
+                    <Form.Control type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Ảnh</Form.Label>
+                    <Form.Control type="file" onChange={(e) => setImage(e.target.files[0])} />
+                </Form.Group>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseModal}>
+                <Button variant="secondary" onClick={handleClose}>
                     Đóng
                 </Button>
                 <Button variant="primary" onClick={handleSave}>
-                    Lưu
+                    Cập nhật tài khoản
                 </Button>
             </Modal.Footer>
         </Modal>
-    </>)
-}
-export default ModelEditAccount;
+    );
+};
+
+export default ModalEditAccount;

@@ -48,6 +48,7 @@ function CategoryList() {
 
     const showModelEditCategory = (c) => {
         setIsShowModelEdit(true);
+        console.log(c);
         setDataUpdateCategory(c);
     }
 

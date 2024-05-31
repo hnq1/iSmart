@@ -29,7 +29,13 @@ const ModelEditSupplier = ({ isShow, handleClose, dataUpdateSupplier, updateTabl
         } else if (!validateText.test(noteSupplier)) {
             toast.error("Lưu ý không được chứa ký tự đặc biệt");
         } else {
-            let res = await updateSupplier(dataUpdateSupplier.supplierId, removeWhiteSpace(nameSupplier), phoneSupplier, dataUpdateSupplier.statusId, removeWhiteSpace(emailSupplier), removeWhiteSpace(noteSupplier));
+            let res = await updateSupplier(
+                dataUpdateSupplier.supplierId,
+                removeWhiteSpace(nameSupplier),
+                phoneSupplier,
+                dataUpdateSupplier.statusId,
+                removeWhiteSpace(emailSupplier),
+                removeWhiteSpace(noteSupplier));
             console.log(res);
             if (res) {
                 toast.success("Sửa thông tin nhà cung cấp thành công", {
