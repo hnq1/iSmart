@@ -25,9 +25,7 @@ namespace iSmart.Entity.DTOs.ImportOrderDTO
        
         public string ImportCode { get; set; } = null!;
 
-        public int StorageId { get; set; }
-       
-       
+        public int WarehouseId { get; set; }      
        
         public int? DeliveryId { get; set; }
        

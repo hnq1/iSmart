@@ -19,5 +19,9 @@ namespace iSmart.Entity.DTOs.ImportOrderDTO
         public int? Quantity { get; set; }
 
         public string GoodsCode { get; set; }
+
+        public string BatchCode { get; set; }
+        public DateTime ManufactureDate { get; set; }
+        public DateTime ExpiryDate { get; set; }
     }
 }
