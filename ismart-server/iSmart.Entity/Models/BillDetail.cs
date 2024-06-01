@@ -11,7 +11,7 @@ namespace iSmart.Entity.Models
         public int CurrentStock { get; set; }
         public int ActualStock { get; set; }
         public int AmountDifferential { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         public virtual Bill Bill { get; set; }
         public virtual Good Goods { get; set; }

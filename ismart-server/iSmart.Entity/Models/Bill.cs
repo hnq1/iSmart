@@ -17,7 +17,7 @@ namespace iSmart.Entity.Models
         public int StatusId { get; set; }
         public int? UpdatedId { get; set; }
         public int WarehouseId { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         public int CreatedId { get; set; }
         public string BillCode { get; set; }
 

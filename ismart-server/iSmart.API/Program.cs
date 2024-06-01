@@ -1,3 +1,4 @@
+
 using iSmart.Entity.Models;
 using iSmart.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,10 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using iSmart.Entity.Models;
 
 internal class Program
 {
     private static void Main(string[] args)
+
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +23,6 @@ internal class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
 
-        //JWT Authentication
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -57,6 +59,7 @@ internal class Program
                     {
                         Reference = new OpenApiReference
                         {
+
                             Type=ReferenceType.SecurityScheme,
                             Id="Bearer"
                         }
@@ -75,12 +78,34 @@ internal class Program
                        .AllowAnyHeader());
         });
 
+
+        /*builder.Services.AddAutoMapper(typeof(Program).Assembly);*/
+
+
         builder.Services.AddDbContext<iSmartContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IStatusService, StatusService>();
         builder.Services.AddScoped<ISupplierService, SupplierService>();
+        builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+        builder.Services.AddScoped<IGoodsService, GoodsService>();
+        builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+        builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
+
+
+        // Đăng ký các dịch vụ
+        // builder.Services.AddScoped<ICategoryService, CategoryService>();
+        // builder.Services.AddScoped<ISupplierService, SupplierService>();
+        // builder.Services.AddScoped<IUserService, UserService>();
+        // builder.Services.AddScoped<IStatusService, StatusService>();
+        // builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
+        // builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
+        // builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
+        // builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
+        // builder.Services.AddScoped<IProjectService, ProjectService>();
+        // builder.Services.AddScoped<IStocktakeNoteService, StocktakeNoteService>();
+        // builder.Services.AddScoped<IStocktakeNoteDetailService, StocktakeNoteDetailService>();
 
         var app = builder.Build();
 
@@ -89,7 +114,9 @@ internal class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI(option => option.RoutePrefix = string.Empty);
+
             app.UseSwaggerUI(option => option.SwaggerEndpoint("/swagger/v1/swagger.json", "iSmartAPI v1"));
+
         }
 
         app.UseHttpsRedirection();

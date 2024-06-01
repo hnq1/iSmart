@@ -4,7 +4,7 @@
 
 namespace iSmart.Entity.Migrations
 {
-    public partial class AddExpiryDateToImportOrderDetail : Migration
+    public partial class AddBatchEntity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

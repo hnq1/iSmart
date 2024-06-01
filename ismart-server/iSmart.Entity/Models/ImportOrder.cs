@@ -16,14 +16,14 @@ namespace iSmart.Entity.Models
         public int UserId { get; set; }
         public int SupplierId { get; set; }
         public float TotalCost { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? ImportedDate { get; set; }
         public int StatusId { get; set; }
         public string ImportCode { get; set; }
         public int WarehouseId { get; set; }
         public int? DeliveryId { get; set; }
-        public string Image { get; set; }
+        public string? Image { get; set; }
         public int? StaffId { get; set; }
 
         public virtual Delivery Delivery { get; set; }

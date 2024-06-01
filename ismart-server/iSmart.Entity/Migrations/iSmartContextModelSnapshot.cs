@@ -33,7 +33,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -98,7 +97,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -151,7 +149,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -196,7 +193,6 @@ namespace iSmart.Entity.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DeliveyId"), 1L, 1);
 
                     b.Property<string>("DeliveryName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -249,7 +245,6 @@ namespace iSmart.Entity.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExportId"), 1L, 1);
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CancelDate")
@@ -259,7 +254,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Customer")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -276,13 +270,11 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)")
                         .HasColumnName("image");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -363,7 +355,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnName("featurename");
 
                     b.Property<string>("Url")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("url");
 
@@ -391,12 +382,10 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("GoodsCode")
-                        .IsRequired()
                         .HasMaxLength(24)
                         .HasColumnType("nvarchar(24)");
 
@@ -431,9 +420,6 @@ namespace iSmart.Entity.Migrations
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("WarrantyTime")
                         .HasColumnType("int");
 
@@ -444,8 +430,6 @@ namespace iSmart.Entity.Migrations
                     b.HasIndex("StatusId");
 
                     b.HasIndex("SupplierId");
-
-                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Goods");
                 });
@@ -465,7 +449,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("CostPriceDifferential")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -476,19 +459,16 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("OrderCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<string>("QuantityDifferential")
-                        .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
@@ -504,6 +484,24 @@ namespace iSmart.Entity.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("GoodsHistory", (string)null);
+                });
+
+            modelBuilder.Entity("iSmart.Entity.Models.GoodsWarehouse", b =>
+                {
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("GoodsId", "WarehouseId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("GoodsWarehouses");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.ImportOrder", b =>
@@ -522,7 +520,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)")
                         .HasColumnName("image");
@@ -536,7 +533,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -581,14 +577,17 @@ namespace iSmart.Entity.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetailId"), 1L, 1);
 
+                    b.Property<string>("BatchCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("CostPrice")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("GoodsId")
-                        .IsRequired()
+                    b.Property<int>("GoodsId")
                         .HasColumnType("int");
 
                     b.Property<int>("ImportId")
@@ -597,7 +596,7 @@ namespace iSmart.Entity.Migrations
                     b.Property<DateTime>("ManufactureDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Quantity")
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("DetailId");
@@ -688,7 +687,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("image");
 
@@ -700,7 +698,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -856,7 +853,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(62)
                         .HasColumnType("nvarchar(62)");
 
@@ -873,7 +869,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RoleId")
@@ -885,12 +880,10 @@ namespace iSmart.Entity.Migrations
                         .HasDefaultValueSql("(CONVERT([bit],(0)))");
 
                     b.Property<string>("UserCode")
-                        .IsRequired()
                         .HasMaxLength(24)
                         .HasColumnType("nvarchar(24)");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -936,7 +929,6 @@ namespace iSmart.Entity.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WarehouseId"), 1L, 1);
 
                     b.Property<string>("WarehouseAddress")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -946,7 +938,6 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("WarehousePhone")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
@@ -1143,19 +1134,11 @@ namespace iSmart.Entity.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("iSmart.Entity.Models.Warehouse", "Warehouse")
-                        .WithMany("Goods")
-                        .HasForeignKey("WarehouseId")
-                        .IsRequired()
-                        .HasConstraintName("FK_Goods_Storage_StorageId");
-
                     b.Navigation("Category");
 
                     b.Navigation("Status");
 
                     b.Navigation("Supplier");
-
-                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.GoodsHistory", b =>
@@ -1183,6 +1166,23 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("Goods");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("iSmart.Entity.Models.GoodsWarehouse", b =>
+                {
+                    b.HasOne("iSmart.Entity.Models.Good", "Good")
+                        .WithMany("GoodsWarehouses")
+                        .HasForeignKey("GoodsId")
+                        .IsRequired();
+
+                    b.HasOne("iSmart.Entity.Models.Warehouse", "Warehouse")
+                        .WithMany("GoodsWarehouses")
+                        .HasForeignKey("WarehouseId")
+                        .IsRequired();
+
+                    b.Navigation("Good");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.ImportOrder", b =>
@@ -1435,6 +1435,8 @@ namespace iSmart.Entity.Migrations
 
                     b.Navigation("GoodsHistories");
 
+                    b.Navigation("GoodsWarehouses");
+
                     b.Navigation("ImportOrderDetails");
 
                     b.Navigation("ReturnsOrderDetails");
@@ -1512,7 +1514,7 @@ namespace iSmart.Entity.Migrations
 
                     b.Navigation("ExportOrders");
 
-                    b.Navigation("Goods");
+                    b.Navigation("GoodsWarehouses");
 
                     b.Navigation("ImportOrders");
 
