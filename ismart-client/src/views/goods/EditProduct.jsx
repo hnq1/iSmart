@@ -127,7 +127,12 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
     const handleSave = async () => {
 
-        let res = await updateGood(dataGoodEdit.goodsId, goodName, goodCode, selectedCategoryId, description, selectedSupplierId, "Chiếc", imageGood, 1, warranty, barCode, selectedStorageId);
+        let res = await updateGood(dataGoodEdit.goodsId,
+            goodName, goodCode,
+            selectedCategoryId,
+            description, selectedSupplierId,
+            "Chiếc", imageGood, 1, warranty,
+            barCode, selectedStorageId);
         console.log(res);
         updateTable();
         toast.success("Sửa mặt hàng thành công");

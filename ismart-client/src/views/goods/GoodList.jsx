@@ -347,7 +347,8 @@ function MyTable() {
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
             <ModalGoodHistory isShow={isShowGoodHistory} handleClose={() => setIsShowGoodHistory(false)}
                 dataGood={dataGood} />
-            <ModalEditGood isShow={isShowModelEditGood} handleClose={() => setIsShowModelEditGood(false)}
+            <ModalEditGood isShow={isShowModelEditGood}
+                handleClose={() => setIsShowModelEditGood(false)}
                 dataGoodEdit={dataGoodEdit} updateTable={updateTable} />
             <ModalAddGood isShow={isShowModelAddGood} handleClose={() => setIsShowModelAddGood(false)} updateTable={updateTable} />
         </div >

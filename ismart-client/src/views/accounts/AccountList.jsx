@@ -7,7 +7,6 @@ import SwitchButtonUser from '../components/others/SwitchButton/SwitchButtonUser
 import ModalChangeStatusUser from '../components/others/Modal/ModalChangeStatusUser';
 import { updateUserStatus } from '~/services/UserServices';
 import ReactPaginate from 'react-paginate';
-
 import ModalAddAccount from './AddAccount';
 import ModalEditAccount from './EditAccount';
 import { fetchUserWithFilter } from '~/services/UserServices';
@@ -22,7 +21,10 @@ const ListAccount = () => {
 
 
     const [isShowModelAdd, setIsShowModelAdd] = useState(false);
-    const [isShowModelEdit, setIsShowModelEdit] = useState(false);
+
+    const [isShowModelEdit, setIsShowModelEdit] = useState(true);
+    const [dataUserEdit, setDataUserEdit] = useState([]);
+
     const [totalUser, setTotalUser] = useState([]);
     const [totalPage, setTotalPage] = useState(5);
 
@@ -39,7 +41,8 @@ const ListAccount = () => {
 
     const [isShowModalChangeStatus, setIsShowModalChangeStatus] = useState(false);
     const [dataUpdateStatus, setdataUpdateStatus] = useState([]);
-    const [editAccount, setEditAccount] = useState([]);
+
+
 
     useEffect(() => {
         getUsers(1);
@@ -49,6 +52,8 @@ const ListAccount = () => {
     useEffect(() => {
         getUsers(1);
     }, [optionRole, optionStatus, selectedStorageId])
+
+
     const getUsers = async (page) => {
         setcurrentPage(page - 1);
         let res = await fetchUserWithFilter(page, optionRole, optionStatus, selectedStorageId, keywordSearch);
@@ -87,7 +92,7 @@ const ListAccount = () => {
 
 
     const showModelEditAccount = (user) => {
-        setEditAccount(user);
+        setDataUserEdit(user);
         setIsShowModelEdit(true);
         console.log(user);
 
@@ -262,13 +267,18 @@ const ListAccount = () => {
                 activeClassName="active"
             />
         </div>
-        <ModalAddAccount isShow={isShowModelAdd} handleClose={() => setIsShowModelAdd(false)} updateTable={updateTable} />
+        <ModalAddAccount isShow={isShowModelAdd}
+            handleClose={() => setIsShowModelAdd(false)}
+            updateTable={updateTable} />
         <ModalChangeStatusUser title="nhân viên" statusText1={<span style={{ color: '#24cbc7' }}>Đang làm việc</span>} statusText2={<span style={{ color: '#ff0000' }}>Ngừng làm việc</span>} isShow={isShowModalChangeStatus}
             handleClose={() => setIsShowModalChangeStatus(false)}
             confirmChangeStatus={confirmChangeStatus} name={<span style={{ color: 'black' }}>{dataUpdateStatus.supplierName}</span>} status={dataUpdateStatus.status}
 
         />
-        <ModalEditAccount isShow={isShowModelEdit} handleClose={() => setIsShowModelEdit(false)} updateTable={updateTable} dataUpdateAccount={editAccount} />
+        {/* <ModalEditAccount isShow={isShowModelEdit}
+            handleClose={() => setIsShowModelEdit(false)}
+            dataUserEdit={dataUserEdit} updateTable={updateTable}
+        /> */}
     </>)
 }
 

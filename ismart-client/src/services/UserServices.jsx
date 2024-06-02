@@ -41,4 +41,8 @@ const updateUserStatus = (id) => {
     return axios.put(`api/user/update-user-status?id=${id}`)
 }
 
-export { updateUserStatus, fetchUserByUserId, updateUser, fetchUserWithFilter, addUser }
+const fetchAllRole = () => {
+    return axios.get(`api/user/get-all-user-roles`)
+}
+
+export { updateUserStatus, fetchUserByUserId, updateUser, fetchUserWithFilter, addUser, fetchAllRole }
