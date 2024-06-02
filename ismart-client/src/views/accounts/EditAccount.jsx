@@ -5,6 +5,10 @@ import { validatePhone, validateTextRequired, removeWhiteSpace } from "~/validat
 import { toast } from 'react-toastify';
 
 const ModalEditAccount = ({ isShow, handleClose, dataUpdateUser, updateTableUser }) => {
+
+    const [selectedOptionRole, setSelectedOption] = useState('3'); // Giá trị mặc định cho tùy chọn được chọn
+
+
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [userName, setUserName] = useState("");
@@ -17,101 +21,42 @@ const ModalEditAccount = ({ isShow, handleClose, dataUpdateUser, updateTableUser
     const [fullName, setFullName] = useState("");
     const [roleName, setRoleName] = useState("");
 
-    useEffect(() => {
-        console.log('ModalEditAccount - isShow:', isShow);
-        console.log('ModalEditAccount - dataUpdateUser:', dataUpdateUser);
-        if (isShow && dataUpdateUser) {
-            console.log("Modal is showing. Data Update User: ", dataUpdateUser);
 
-            setEmail(dataUpdateUser.email ? dataUpdateUser.email : "");
-            setPhone(dataUpdateUser.phone ? dataUpdateUser.phone : "");
-            setUserName(dataUpdateUser.userName ? dataUpdateUser.userName : "");
-            setRoleId(dataUpdateUser.roleId ? dataUpdateUser.roleId : "");
-            setStatusId(dataUpdateUser.statusId ? dataUpdateUser.statusId : "");
-            setStorageId(dataUpdateUser.storageId ? dataUpdateUser.storageId : "");
-            setUserCode(dataUpdateUser.userCode ? dataUpdateUser.userCode : "");
-            setAddress(dataUpdateUser.address ? dataUpdateUser.address : "");
-            setImage(dataUpdateUser.image ? dataUpdateUser.image : "");
-            setFullName(dataUpdateUser.fullName ? dataUpdateUser.fullName : "");
 
-            console.log("Email: ", dataUpdateUser.email);
-            console.log("Phone: ", dataUpdateUser.phone);
-            console.log("UserName: ", dataUpdateUser.userName);
-            console.log("RoleId: ", dataUpdateUser.roleId);
-            console.log("StatusId: ", dataUpdateUser.statusId);
-            console.log("StorageId: ", dataUpdateUser.storageId);
-            console.log("UserCode: ", dataUpdateUser.userCode);
-            console.log("Address: ", dataUpdateUser.address);
-            console.log("Image: ", dataUpdateUser.image);
-            console.log("FullName: ", dataUpdateUser.fullName);
-            console.log("RoleName: ", dataUpdateUser.roleName);
-        }
-        else {
-            console.log("Modal is not showing or dataUpdateUser is not available.");
-        }
-    }, [isShow, dataUpdateUser]);
 
-    const handleSave = async () => {
-        if (!validateTextRequired.test(email)) {
-            toast.error('Email không được để trống');
-            return;
-        }
-        if (!validatePhone.test(phone)) {
-            toast.error('Số điện thoại không hợp lệ');
-            return;
-        }
-        const data = {
-            email: removeWhiteSpace(email),
-            phone: removeWhiteSpace(phone),
-            userName: removeWhiteSpace(userName),
-            roleId: roleId,
-            statusId: statusId,
-            storageId: storageId,
-            userCode: removeWhiteSpace(userCode),
-            address: removeWhiteSpace(address),
-            image: image,
-            fullName: removeWhiteSpace(fullName)
-        };
-        const result = await updateUser(data);
-        if (result.status === 200) {
-            toast.success('Cập nhật tài khoản thành công');
-            updateTableUser();
-            handleClose();
-        } else {
-            toast.error('Cập nhật tài khoản thất bại');
-        }
-    };
-
+    
+    const handleCloseModal = () => {
+        handleClose();
+    }
     return (
-        <Modal show={isShow} onHide={handleClose}>
+        <Modal show={isShow} onHide={handleCloseModal}>
             <Modal.Header closeButton>
                 <Modal.Title>Chỉnh sửa tài khoản</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Group>
-                    <Form.Label>Mã nhân viên</Form.Label>
-                    <Form.Control type="text" value={roleName} onChange={(e) => setRoleName(e.target.value)} />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Họ và tên</Form.Label>
-                    <Form.Control type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Phone</Form.Label>
-                    <Form.Control type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Địa chỉ</Form.Label>
-                    <Form.Control type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Ảnh</Form.Label>
-                    <Form.Control type="file" onChange={(e) => setImage(e.target.files[0])} />
-                </Form.Group>
+                <div className="body-add-new">
+                    <Row>
+                        <Col md={5}>
+                            <label >Mã nhân viên</label>
+                            <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleChangeUserCode} >
+                                <option value="3">Administrator	</option>
+                                <option value="2">ProjectManager</option>
+                                <option value="4">Storekeeper </option>
+                            </Form.Select>
+                        </Col>
+
+                    </Row>
+                    {/* <Row>
+                        <Col md={5}>
+                            <label >Vai trò</label>
+                            <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
+                                <option value="3">Thủ kho</option>
+                                <option value="2">Quản trị dự án</option>
+                                <option value="4">Kế toán</option>
+                            </Form.Select>
+                        </Col>
+                    </Row> */}
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>

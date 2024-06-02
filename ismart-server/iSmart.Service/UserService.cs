@@ -23,6 +23,8 @@ namespace iSmart.Service
         UpdateUserResponse UpdateUser(UpdateUserDTO user);
         bool UpdateDeleteStatusUser(int id);
         UserFilterPagingResponse GetUsersByRoleId(int pageNum, int? roleId);
+
+        List<Role> GetAllRole();
     }
     public class UserService : IUserService
     {
@@ -259,5 +261,10 @@ namespace iSmart.Service
             }
         }
 
+        public List<Role> GetAllRole()
+        {
+            var roles = _context.Roles.ToList();
+            return roles;
+        }
     }
 }

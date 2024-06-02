@@ -72,7 +72,8 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Mật khẩu phải có ít nhất 6 chữ số và 1 chữ cái");
         } else if (!userName) {
             toast.warning("Tên đăng nhập không được để trống");
-        } else if (!selectedStorageId) {
+        }
+        else if (!selectedStorageId) {
             toast.warning("Vui lòng chọn kho");
         } else {
             let res = await addUser(email, password, '', selectedOptionRole, 1, userName, selectedStorageId, userCode, "", "", "");
@@ -102,7 +103,12 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                     <Row>
                         <Col md={5}>
                             <label >Mã nhân viên</label>
-                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} />
+                            {/* <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} /> */}
+                            <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleChangeUserCode}>
+                                <option value="3">Administrator	</option>
+                                <option value="2">ProjectManager</option>
+                                <option value="4">Storekeeper </option>
+                            </Form.Select>
                         </Col>
 
                     </Row>
