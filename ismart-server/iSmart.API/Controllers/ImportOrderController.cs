@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using iSmart.Entity.DTOs.ImportOrderDTO;
 using iSmart.Entity.DTOs.UserDTO;
 using iSmart.Entity.Models;
-using WM.Service;
+using iSmart.Service;
 
-namespace WM.API.Controllers
+namespace iSmart.API.Controllers
 {
     [Route("api/import-order")]
     [ApiController]
