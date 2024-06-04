@@ -368,33 +368,20 @@ namespace iSmart.Entity.Models
 
                 entity.ToTable("ImportOrderDetail");
 
-                entity.Property(e => e.BatchCode)
-                      .IsRequired();
-
-                entity.Property(e => e.CostPrice)
-                      .IsRequired();
-
-                entity.Property(e => e.ManufactureDate)
-                      .IsRequired();
-
-                entity.Property(e => e.ExpiryDate)
-                      .IsRequired();
-
-                entity.Property(e => e.Quantity)
-                      .IsRequired();
+                entity.Property(e => e.BatchCode).IsRequired();
+                entity.Property(e => e.CostPrice).IsRequired();
+                entity.Property(e => e.ManufactureDate).IsRequired();
+                entity.Property(e => e.ExpiryDate).IsRequired();
+                entity.Property(e => e.Quantity).IsRequired();
 
                 entity.HasOne(d => d.Goods)
-                      .WithMany(p => p.ImportOrderDetails)
-                      .HasForeignKey(d => d.GoodsId)
-                      .HasConstraintName("FK_ImportOrderDetail_Goods");
+                    .WithMany(p => p.ImportOrderDetails)
+                    .HasForeignKey(d => d.GoodsId)
+                    .HasConstraintName("FK_ImportOrderDetail_Goods");
 
                 entity.HasOne(d => d.Import)
-                      .WithMany(p => p.ImportOrderDetails)
-                      .HasForeignKey(d => d.ImportId);
-
-                // Ensure BatchCode is unique
-                entity.HasIndex(e => e.BatchCode)
-                      .IsUnique();
+                    .WithMany(p => p.ImportOrderDetails)
+                    .HasForeignKey(d => d.ImportId);
             });
 
 

@@ -21,6 +21,13 @@ namespace iSmart.API.Controllers
             _userService = userService;
         }
 
+        [HttpGet("get-all-role")]
+        public IActionResult GetAllRole()
+        {
+            var result = _userService.GetAllRole();
+            return Ok(result);
+        }
+
         //[AllowAnonymous]
         [HttpGet("get-all-user")]
         public IActionResult GetAllUser()

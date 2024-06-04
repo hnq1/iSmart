@@ -17,12 +17,11 @@ namespace iSmart.Service
         UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? statusId,string? keyword = "");
         List<UserDTO>? GetAllUser();
         UserDTO? GetUserById(int id);
-        User? GetUserByEmailAndPassword(string email, string password);
-        User? GetUserByEmail(string email);
         CreateUserResponse AddUser(CreateUserRequest user);
         UpdateUserResponse UpdateUser(UpdateUserDTO user);
         bool UpdateDeleteStatusUser(int id);
-        UserFilterPagingResponse GetUsersByRoleId(int pageNum, int? roleId);
+
+        List<Role> GetAllRole();
     }
     public class UserService : IUserService
     {
@@ -110,16 +109,6 @@ namespace iSmart.Service
             }
         }
 
-
-        public User? GetUserByEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User? GetUserByEmailAndPassword(string email, string password)
-        {
-            throw new NotImplementedException();
-        }
 
         public UserDTO? GetUserById(int id)
         {
@@ -218,14 +207,29 @@ namespace iSmart.Service
         }
 
 
-        public UserFilterPagingResponse GetUsersByRoleId(int pageNum, int? roleId)
-        {
-            throw new NotImplementedException();
-        }
 
         public bool UpdateDeleteStatusUser(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = _context.Users.FirstOrDefault(a => a.UserId == id);
+                if (user == null)
+                {
+                    return false;
+                }
+                else if (user.StatusId == 1)
+                {
+                    user.StatusId = 2;
+                }
+                else user.StatusId = 1;
+                _context.Update(user);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public UpdateUserResponse UpdateUser(UpdateUserDTO user)
@@ -259,5 +263,10 @@ namespace iSmart.Service
             }
         }
 
+        public List<Role> GetAllRole()
+        {
+            var roles = _context.Roles.ToList();
+            return roles;
+        }
     }
 }

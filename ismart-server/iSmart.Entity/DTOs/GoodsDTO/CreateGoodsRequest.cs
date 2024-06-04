@@ -8,7 +8,6 @@ namespace iSmart.Entity.DTOs.GoodsDTO
 {
     public class CreateGoodsRequest
     {
-        //public int GoodsId { get; set; }
 
         public string GoodsName { get; set; } = null!;
 
@@ -36,8 +35,6 @@ namespace iSmart.Entity.DTOs.GoodsDTO
         public int? WarrantyTime { get; set; }
 
         public string? Barcode { get; set; }
-
-        public int StorageId { get; set; }
 
         public int? MaxStock { get; set; }
 

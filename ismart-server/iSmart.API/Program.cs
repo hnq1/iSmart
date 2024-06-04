@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using iSmart.Entity.Models;
+using WM.Service;
 
 internal class Program
 {
@@ -89,16 +90,17 @@ internal class Program
         builder.Services.AddScoped<IStatusService, StatusService>();
         builder.Services.AddScoped<ISupplierService, SupplierService>();
         builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+        builder.Services.AddScoped<IGoodsService, GoodsService>();
+        builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+        builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
+        builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
 
 
         // Đăng ký các dịch vụ
         // builder.Services.AddScoped<ICategoryService, CategoryService>();
-        // builder.Services.AddScoped<IStorageService, StorageService>();
-        // builder.Services.AddScoped<IGoodsService, GoodsService>();
         // builder.Services.AddScoped<ISupplierService, SupplierService>();
         // builder.Services.AddScoped<IUserService, UserService>();
         // builder.Services.AddScoped<IStatusService, StatusService>();
-        // builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
         // builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
         // builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
         // builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
