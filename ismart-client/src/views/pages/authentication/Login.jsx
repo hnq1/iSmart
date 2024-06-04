@@ -61,13 +61,13 @@ const Login = () => {
                 // console.log('Response from loginApi:', res);
                 // console.log('Login successful:', res);
 
-                if (res.roleId === 1) {
-                    loginContext(username, res.token.accessToken, res.UserId, res.roleId);
-                    // toast.error('Bạn không có quyền truy cập vao day');
-                    navigate("/danh-sach-mat-hang");
 
-                    // Xử lý đăng nhập thành công
-                }
+                loginContext(username, res.token.accessToken, res.UserId, res.roleId);
+                // toast.error('Bạn không có quyền truy cập vao day');
+                navigate("/danh-sach-mat-hang");
+
+                // Xử lý đăng nhập thành công
+                // if (res.roleId === 1) {
                 // else {
                 //     toast.error('Bạn không có quyền truy cập');
                 // }

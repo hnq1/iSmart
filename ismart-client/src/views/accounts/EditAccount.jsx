@@ -5,159 +5,130 @@ import { toast } from 'react-toastify';
 import uploadImage from '~/services/ImageServices';
 import { set } from 'lodash';
 
-const ModalEditAccount = ({ isShow, handleClose, dataUpdateUser, updateTableUser }) => {
-    // Define state for roles and selected role
-    const [totalRoles, setTotalRoles] = useState([]);
-    const [selectedRole, setSelectedRole] = useState(null);
-    const [selectedRoleId, setSelectedRoleId] = useState(null);
+const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) => {
+    const [selectedOptionRole, setSelectedOption] = useState('3');
 
     // Define state for account details
-    const [userCode, setUserCode] = useState();
-    const [userName, setUserName] = useState();
-    const { phone, setPhone } = useState();
+    const [userCode, setUserCode] = useState("");
+    const [userName, setUserName] = useState("");
+    const [fullName, setFullName] = useState("");
+    const [phone, setPhone] = useState();
+    const [email, setEmail] = useState();
     const [address, setAddress] = useState();
     const [image, setImage] = useState();
-    const [email, setEmail] = useState(null);
 
-    // Fetch roles when component mounts
+
     useEffect(() => {
-        getAllByRole();
-    }, [])
+        if (isShow) {
 
-    // Update state when dataAccountEdit changes
-    useEffect(() => {
-        if (dataUpdateUser) {
-            console.log(dataUpdateUser);
+            setUserName(dataUserEdit.userName);
+            setUserCode(dataUserEdit.userCode);
+            setFullName(dataUserEdit.fullName);
+            setPhone(dataUserEdit.phone);
+            setEmail(dataUserEdit.email);
+            setAddress(dataUserEdit.address);
 
-            setSelectedRole(dataUpdateUser.roleId);
-            setSelectedRoleId(dataUpdateUser.roleId);
-
-            setUserCode(dataUpdateUser.userCode);
-            setUserName(dataUpdateUser.userName);
-            setPhone(dataUpdateUser.phone);
-            setEmail(dataUpdateUser.email);
-            setAddress(dataUpdateUser.address);
-            setImage(dataUpdateUser.image);
-            ;
         }
-    }, [dataUpdateUser]);
+    }, [dataUserEdit])
 
-    // Fetch all roles
-    const getAllByRole = async () => {
-        let res = await fetchAllRole();
-        setTotalRoles(res);
-    }
 
-    // Handle role change
-    const handRoleClick = (role, event) => {
-        setSelectedRoleId(role.roleId);
-        setSelectedRole(role.roleName);
-    }
-    const handleChooseFile = async (event) => {
-        const file = event.target.files[0];
-        let res = await uploadImage(file);
-        setImage(res);
-        console.log(res);
-    }
-    // const handleUserCode = (event) => {
-    //     setUserCode(event.target.value);
-    // }
     const handleUserName = (event) => {
         setUserName(event.target.value);
     }
-
+    const handleUserCode = (event) => {
+        setUserCode(event.target.value);
+    }
+    const handleFullName = (event) => {
+        setFullName(event.target.value);
+    }
+    const handlePhone = (event) => {
+        setPhone(event.target.value);
+    }
     const handleEmail = (event) => {
         setEmail(event.target.value);
     }
 
-    const handlePhone = (event) => {
-        setPhone(event.target.value);
-    }
     const handleAddress = (event) => {
         setAddress(event.target.value);
     }
 
+    // const handleChooseFile = async (event) => {
+    //     const file = event.target.files[0];
+    //     let res = await uploadImage(file);
+    //     setImage(res);
+    //     console.log(res);
+    // }
+    
+    const handleSave = async () => {
+        let res = await updateUser(dataUserEdit.userId,
+            email, null, phone,
+            dataUserEdit.roleId,
+            1, userName,
+            1, userCode,
+            address, null, fullName);
+        console.log("check res: ", res)
+        if (res) { // Check if the update was successful
+            toast.success("Cập nhật thông tin người dùng thành công");
+            updateTable(); // Update the user list
+            handleCloseModal(); // Close the modal
+        } else {
+            toast.error("Có lỗi xảy ra khi cập nhật thông tin người dùng");
+        }
+    }
     const handleCloseModal = () => {
         handleClose();
     }
-    const handleSave = async () => {
-        let res = await updateUser(dataUpdateUser.userId,
-            email,
-            //  password,
-            phone,
-            selectedRoleId,
-            // roleId,
-            // statusId,
-            userName,
-            // storageId,
-            userCode,
-            address,
-            image,
-            // fullName
-        );
-        console.log(res);
-        updateTableUser();
-        toast.success("Cập nhật tài khoản thành công");
-        handleCloseModal();
 
 
-    };
+
     return (
 
         <>
-            <Modal show={isShow} >
+            <Modal show={isShow} onHide={handleCloseModal} >
                 <Modal.Header closeButton>
                     <Modal.Title>Chỉnh sửa tài khoản
-                        {dataUpdateUser.userName}
+                        {dataUserEdit.fullName}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className='body-add-new'>
-                        <Row>
-                            <label>
-                                Mã Nhân Viên
-                            </label>
-
-                            <col md={5}>
-                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedRole !== null ? selectedRole : "Tất cả Role"} variant="success" style={{ zIndex: 999 }}>
-                                    {totalRoles && totalRoles.length > 0 && totalRoles.map((role, index) => (
-                                        <Dropdown.Item key={`role ${index}`} eventKey={role.roleName} onClick={(e) => handRoleClick(role, e)}>{role.roleName}</Dropdown.Item>
-                                    ))}
-                                </DropdownButton>
-                            </col>
-                        </Row>
-                        <Row>
-                            <label>
-                                Tên Đăng Nhập & userName
-                            </label>
+                    <Row>
+                        <Col md={5}>
+                            <label >UseCode</label>
+                            <input type="text" className="form-control inputCSS" value={userCode} onChange={handleUserCode} />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={5}>
+                            <label >FullName</label>
+                            <input type="text" className="form-control inputCSS" value={fullName} onChange={handleFullName} />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={5}>
+                            <label >Tên Đăng Nhập</label>
                             <input type="text" className="form-control inputCSS" value={userName} onChange={handleUserName} />
-                        </Row>
-                        <Row>
-                            <label>
-                                Email
-                            </label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={5}>
+                            <label >Số điện thoại</label>
+                            <input type="number" className="form-control inputCSS" value={phone} onChange={handlePhone} />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={5}>
+                            <label >Email</label>
                             <input type="text" className="form-control inputCSS" value={email} onChange={handleEmail} />
-                        </Row>
-
-                        <Row>
-                            <label>
-                                Số Điện Thoại
-                            </label>
-                            <input type="text" className="form-control inputCSS" value={phone} onChange={handlePhone} />
-                        </Row>
-                        <Row>
-                            <label>
-                                Địa Chỉ
-                            </label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={5}>
+                            <label >Adress</label>
                             <input type="text" className="form-control inputCSS" value={address} onChange={handleAddress} />
-                        </Row>
-                        <Row>
-                            <label>
-                                Ảnh
-                            </label>
-                            <input type="file" className="form-control inputCSS" onChange={handleChooseFile} />
-                        </Row>
-                    </div>
+                        </Col>
+                    </Row>
+
+
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModal}>

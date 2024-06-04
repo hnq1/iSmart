@@ -173,8 +173,13 @@ function CategoryList() {
                     activeClassName="active"
                 />
             </div>
-            <ModelAddCategory isShow={isShowModelAddNew} handleClose={() => setIsShowModelAddNew(false)} updateTableCategory={updateTableCategory} />
-            <ModelEditCategory isShow={isShowModelEdit} handleClose={() => setIsShowModelEdit(false)} updateTableCategory={updateTableCategory} dataUpdateCategory={dataUpdateCategory} />
+            <ModelAddCategory isShow={isShowModelAddNew}
+                handleClose={() => setIsShowModelAddNew(false)}
+                updateTableCategory={updateTableCategory} />
+            <ModelEditCategory isShow={isShowModelEdit}
+                handleClose={() => setIsShowModelEdit(false)}
+                updateTableCategory={updateTableCategory}
+                dataUpdateCategory={dataUpdateCategory} />
         </>
 
 

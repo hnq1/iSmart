@@ -5,6 +5,7 @@ const ModalChangeStatusUser = ({ isShow, handleClose, confirmChangeStatus, title
 
     const handleSave = () => {
         confirmChangeStatus(true);
+        console.log("Save", true);
         handleClose();
 
     }

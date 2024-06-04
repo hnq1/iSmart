@@ -34,8 +34,30 @@ const updateUser = (userId,
         })
 }
 
-const addUser = (email, password, phone, roleId, statusId, userName, storageId, userCode, address, image, fullName) => {
-    return axios.post(`api/user/add-user`, { email, password, phone, roleId, statusId, userName, storageId, userCode, address, image, fullName })
+const addUser = (email,
+    password,
+    phone,
+    roleId,
+    statusId,
+    userName,
+    storageId,
+    userCode,
+    address,
+    image,
+    fullName) => {
+    return axios.post(`api/user/add-user`, {
+        email,
+        password,
+        phone,
+        roleId,
+        statusId,
+        userName,
+        storageId,
+        userCode,
+        address,
+        image,
+        fullName
+    })
 }
 const updateUserStatus = (id) => {
     return axios.put(`api/user/update-user-status?id=${id}`)

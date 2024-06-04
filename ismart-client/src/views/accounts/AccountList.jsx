@@ -22,9 +22,10 @@ const ListAccount = () => {
 
     const [isShowModelAdd, setIsShowModelAdd] = useState(false);
 
-    const [isShowModelEdit, setIsShowModelEdit] = useState(true);
+    const [isShowModelEdit, setIsShowModelEdit] = useState(false);
     const [dataUserEdit, setDataUserEdit] = useState([]);
 
+    const [listUser, setListUser] = useState([]);
     const [totalUser, setTotalUser] = useState([]);
     const [totalPage, setTotalPage] = useState(5);
 
@@ -90,7 +91,6 @@ const ListAccount = () => {
     }
 
 
-
     const showModelEditAccount = (user) => {
         setDataUserEdit(user);
         setIsShowModelEdit(true);
@@ -100,14 +100,15 @@ const ListAccount = () => {
 
 
 
-
     const updateTable = () => {
         getUsers(currentPage + 1);
     }
 
     const handleChangeStatus = async (user) => {
         setdataUpdateStatus(user);
+        console.log(user);
         setIsShowModalChangeStatus(true);
+
     }
     const confirmChangeStatus = async (confirm) => {
         if (confirm) {
@@ -269,16 +270,23 @@ const ListAccount = () => {
         </div>
         <ModalAddAccount isShow={isShowModelAdd}
             handleClose={() => setIsShowModelAdd(false)}
-            updateTable={updateTable} />
-        <ModalChangeStatusUser title="nhân viên" statusText1={<span style={{ color: '#24cbc7' }}>Đang làm việc</span>} statusText2={<span style={{ color: '#ff0000' }}>Ngừng làm việc</span>} isShow={isShowModalChangeStatus}
+            updateTable={updateTable}
+        />
+        <ModalChangeStatusUser title="nhân viên"
+            statusText1={<span style={{ color: '#24cbc7' }}>Đang làm việc</span>}
+            statusText2={<span style={{ color: '#ff0000' }}>Ngừng làm việc</span>}
+            isShow={isShowModalChangeStatus}
             handleClose={() => setIsShowModalChangeStatus(false)}
-            confirmChangeStatus={confirmChangeStatus} name={<span style={{ color: 'black' }}>{dataUpdateStatus.supplierName}</span>} status={dataUpdateStatus.status}
+            confirmChangeStatus={confirmChangeStatus}
+            name={<span style={{ color: 'black' }}>{dataUpdateStatus.supplierName}</span>}
+            status={dataUpdateStatus.status}
 
         />
-        {/* <ModalEditAccount isShow={isShowModelEdit}
+        <ModalEditAccount isShow={isShowModelEdit}
             handleClose={() => setIsShowModelEdit(false)}
-            dataUserEdit={dataUserEdit} updateTable={updateTable}
-        /> */}
+            dataUserEdit={dataUserEdit}
+            updateTable={updateTable}
+        />
     </>)
 }
 
