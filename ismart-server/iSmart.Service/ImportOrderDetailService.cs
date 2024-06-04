@@ -15,7 +15,7 @@ namespace iSmart.Service
     {
         List<ImportOrderDetail> GetAllOrderDetails();
         //ImportOrderDetail? GetOrderDetailByOrderIdAndProductId(int oid, int pid);
-        //CreateImportOrderDetailResponse AddOrderDetail(CreateImportOrderDetailRequest detail);
+        CreateImportOrderDetailResponse AddOrderDetail(CreateImportOrderDetailRequest detail);
         //UpdateImportOrderDetailResponse UpdateOrderDetail(UpdateImportOrderDetailRequest detail);
         //bool DeleteImportOrderDetail(int id);
         //List<ImportOrderDetail> GetOrderDetailsProcessByCustomerId(int cid);
@@ -45,27 +45,54 @@ namespace iSmart.Service
             }
         }
 
-        //public CreateImportOrderDetailResponse AddOrderDetail(CreateImportOrderDetailRequest detail)
-        //{
-        //    try
-        //    {
-        //        var requestOrder = new ImportOrderDetail
-        //        {
-        //            ImportId = detail.ImportId,
-        //            GoodsId = detail.GoodsId,
-        //            Quantity = detail.Quantity,
-        //            CostPrice = detail.CostPrice,
-        //        };
-        //        _context.ImportOrderDetails.Add(requestOrder);
-        //        _context.SaveChanges();
-        //        return new CreateImportOrderDetailResponse { IsSuccess = true, Message = "Add order detail complete" };
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return new CreateImportOrderDetailResponse { IsSuccess = false, Message = $"Add order detail failed {e.Message}" };
+        public CreateImportOrderDetailResponse AddOrderDetail(CreateImportOrderDetailRequest detail)
+        {
+            try
+            {
+                var requestOrder = new ImportOrderDetail
+                {
+                    ImportId = detail.ImportId,
+                    GoodsId = (int)detail.GoodsId,
+                    Quantity = (int)detail.Quantity,
+                    CostPrice = detail.CostPrice,
+                    BatchCode = detail.BatchCode,
+                    ExpiryDate = detail.ExpiryDate,
+                    ManufactureDate = detail.ManufactureDate,
+                };
 
-        //    }
-        //}
+                var product = _context.Goods.Find(requestOrder.GoodsId);
+                if (product == null)
+                {
+                    return new CreateImportOrderDetailResponse
+                    {
+                        IsSuccess = false,
+                        Message = $"Product with ID {requestOrder.GoodsId} not found"
+                    };
+                }
+
+                // Cập nhật số lượng tồn kho
+                product.InStock += requestOrder.Quantity;
+
+                // Thêm chi tiết đơn hàng nhập
+                _context.ImportOrderDetails.Add(requestOrder);
+                _context.SaveChanges();
+
+                return new CreateImportOrderDetailResponse
+                {
+                    IsSuccess = true,
+                    Message = "Add order detail complete"
+                };
+            }
+            catch (Exception e)
+            {
+                return new CreateImportOrderDetailResponse
+                {
+                    IsSuccess = false,
+                    Message = $"Add order detail failed: {e.Message}"
+                };
+            }
+        }
+
 
         //public bool DeleteImportOrderDetail(int id)
         //{

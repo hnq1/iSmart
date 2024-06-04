@@ -33,6 +33,19 @@ namespace iSmart.API.Controllers
 
         }
 
+        [HttpPost("add-order-detail")]
+        public IActionResult AddImportOrderDetail([FromBody] CreateImportOrderDetailRequest detail)
+        {
+            var result = _orderDetailService.AddOrderDetail(detail);
+            if (result == null)
+            {
+                return StatusCode(500);
+            }
+            return Ok(result);
+        }
+
+
+
         //// GET api/<ImportOrderDetailController>/5
         //[HttpGet("get-import-order-details")]
         //public IActionResult GetOrderDetailsByOrderID(int oid)
@@ -45,16 +58,8 @@ namespace iSmart.API.Controllers
         //    return Ok(order);
         //}
         //// POST api/<ImportOrderDetailController>
-        //[HttpPost("add-order-detail")]
-        //public IActionResult AddOrderDetail([FromBody] CreateImportOrderDetailRequest detail)
-        //{
-        //    var result = _orderDetailService.AddOrderDetail(detail);
-        //    if (result == null)
-        //    {
-        //        return StatusCode(500);
-        //    }
-        //    return Ok(result);
-        //}
+
+
 
         //// PUT api/<ImportOrderDetailController>/5
         //[HttpPut("update-import-order-detail")]
