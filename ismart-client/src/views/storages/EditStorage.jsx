@@ -6,44 +6,44 @@ import { validatePhone, validateText, validateTextRequired, removeWhiteSpace } f
 
 
 const ModelEditStorage = ({ isShow, handleClose, dataUpdateStorage, updateTableStorage }) => {
-    const [storageName, setStorageName] = useState("");
-    const [storageAddress, setStorageAddress] = useState("");
-    const [storagePhone, setStoragePhone] = useState("");
+    const [warehouseName, setWarehouseName] = useState("");
+    const [warehouseAddress, setWarehouseAddress] = useState("");
+    const [warehousePhone, setWarehousePhone] = useState("");
     useEffect(() => {
         if (isShow) {
-            setStorageName(dataUpdateStorage.storageName);
-            setStorageAddress(dataUpdateStorage.storageAddress);
-            setStoragePhone(dataUpdateStorage.storagePhone);
+
+            setWarehouseName(dataUpdateStorage.warehouseName);
+            setWarehouseAddress(dataUpdateStorage.warehouseAddress);
+            setWarehousePhone(dataUpdateStorage.warehousePhone);
         }
     }, [dataUpdateStorage])
 
+    console.log(dataUpdateStorage);
+
+
     const handleSave = async () => {
-
-        if (!validatePhone.test(storagePhone.trim())) {
-            toast.error("Định dạng số điện thoại sai");
-        }
-
-        else if (!validateTextRequired.test(storageName)) {
-            toast.error("Tên không được trống và chứa ký tự đặc biệt");
-        } else if (!validateText.test(storageAddress)) {
-            toast.error("Địa chỉ không được chứa ký tự đặc biệt");
-        }
-
-        else {
-            let res = await EditStorage(dataUpdateStorage.storageId, removeWhiteSpace(storageName), removeWhiteSpace(storageAddress), storagePhone);
-            toast.success("Sửa thông tin nhà cung cấp thành công", {
-                className: 'toast-success',
-            });
+        let res = await EditStorage(dataUpdateStorage.warehouseId,
+            warehouseName,
+            warehouseAddress,
+            warehousePhone
+        );
+        // console.log(res);
+        if (res) {
+            toast.success("Sửa thông tin kho hàng thành công");
             updateTableStorage();
             handleClose();
         }
+        else {
+            toast.error("Sửa thông tin kho hàng thất bại");
+        }
+
     }
 
     const handleReset = () => {
 
-        setStorageName(dataUpdateStorage.storageName);
-        setStorageAddress(dataUpdateStorage.storageAddress ? dataUpdateStorage.storageAddress : "");
-        setStoragePhone(dataUpdateStorage.storagePhone ? dataUpdateStorage.storagePhone : "");
+        setWarehouseName(dataUpdateStorage.storageName);
+        setWarehouseAddress(dataUpdateStorage.storageAddress ? dataUpdateStorage.storageAddress : "");
+        setWarehousePhone(dataUpdateStorage.storagePhone ? dataUpdateStorage.storagePhone : "");
 
     }
 
@@ -55,25 +55,22 @@ const ModelEditStorage = ({ isShow, handleClose, dataUpdateStorage, updateTableS
     return (<>
         <Modal show={isShow} onHide={handleCloseModal}>
             <Modal.Header closeButton>
-                <Modal.Title>Sửa thông tin nhà cung cấp</Modal.Title>
+                <Modal.Title>Sửa thông tin nhà cung cấp {dataUpdateStorage.setStorageName}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
                     <div className="form-group mb-3">
                         <label >Tên kho hàng</label>
-                        <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" placeholder="Tên kho hàng" value={storageName} onChange={(event) => setStorageName(event.target.value)} />
+                        <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={warehouseName} onChange={(event) => setWarehouseName(event.target.value)} />
                     </div>
                     <div className="form-group mb-3">
                         <label >Địa chỉ</label>
-                        <input type="text" className="form-control inputCSS" placeholder="Địa chỉ" value={storageAddress} onChange={(event) => setStorageAddress(event.target.value)} />
+                        <input type="text" className="form-control inputCSS" value={warehouseAddress} onChange={(event) => setWarehouseAddress(event.target.value)} />
                     </div>
                     <div className="form-group mb-3">
                         <label >Số điện thoại nhà cung cấp</label>
-                        <input type="text" className="form-control inputCSS" placeholder="0123xxx" value={storagePhone} onChange={(event) => setStoragePhone(event.target.value)} />
+                        <input type="text" className="form-control inputCSS" value={warehousePhone} onChange={(event) => setWarehousePhone(event.target.value)} />
                     </div>
-
-
-
                 </div>
             </Modal.Body>
             <Modal.Footer>

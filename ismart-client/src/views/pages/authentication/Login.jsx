@@ -42,7 +42,7 @@ const Login = () => {
         // console.log('Attempting login with username:', username, 'and password:', password);
 
         let res = await loginApi(username, password);
-
+        console.log('Response from loginApi:', res);
         // console.log('Response from loginApi:', res.token);
         // console.log('Response from loginApi:', res.roleId);
         // console.log('Response from loginApi:', res.token.accessToken);
@@ -62,9 +62,9 @@ const Login = () => {
                 // console.log('Login successful:', res);
 
 
-                loginContext(username, res.token.accessToken, res.UserId, res.roleId);
+                loginContext(username, res.token.accessToken, res.userId, res.roleId);
                 // toast.error('Bạn không có quyền truy cập vao day');
-                navigate("/danh-sach-mat-hang");
+                navigate("/quan-ly-tai-khoan");
 
                 // Xử lý đăng nhập thành công
                 // if (res.roleId === 1) {

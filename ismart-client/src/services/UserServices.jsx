@@ -3,13 +3,6 @@ import axios from "./axios"
 
 const fetchUserByUserId = (id) => {
     return axios.get(`api/user/get-user-by-id?id=${id}`)
-        .then(response => {
-            console.log(response);
-            return response.data;
-        })
-        .catch(error => {
-            console.error(error);
-        });
 }
 
 const fetchUserWithFilter = (pageNum, role, statusId, storageId, keyword) => {

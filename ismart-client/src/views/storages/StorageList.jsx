@@ -6,9 +6,15 @@ import { fetchStoragesWithKeyword } from '~/services/StorageServices';
 import { removeWhiteSpace } from '~/validate';
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify';
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
+import { updateUserWarehouseToUser } from '~/services/UserWarehouseServices';
+import { deleteUserWarehouseToUser } from '~/services/UserWarehouseServices';
+import { set } from 'lodash';
 
 function StorageList() {
-    const roleId = parseInt(localStorage.getItem('roleId'), 10);;
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
+
     const [isShowModelAddNew, setIsShowModelAddNew] = useState(false);
     const [isShowModelEdit, setIsShowModelEdit] = useState(false);
 
@@ -21,21 +27,33 @@ function StorageList() {
 
 
 
-    useEffect(() => {
-        getStorages(1);
 
+    useEffect(() => {
+        if (userId) {
+            console.log('User ID:', userId);
+            getStorages(1,);
+        } else {
+            console.error('User ID is not defined.');
+            toast.error('User ID is not defined.');
+        }
         document.title = "danh sách kho";
-    }, [])
+    }, [userId])
+
+
 
     const getStorages = async (page, keyword) => {
-        let res = await fetchStoragesWithKeyword(page, removeWhiteSpace(keyword ? keyword : ""));
-        if (res) {
-            setListStorage(res.data);
-            setTotalPages(res.totalPages);
-        }
-        return res;
-    }
 
+        let res = await getUserIdWarehouse(userId);
+        if (roleId === 4) {
+            // Nhân viên: lấy danh sách kho cụ thể mà họ quản lý
+            let res = await getUserIdWarehouse(userId);
+            setListStorage(res);
+        } else {
+            // Quản lý và các vai trò khác: lấy danh sách kho với từ khóa tìm kiếm
+            res = await fetchStoragesWithKeyword(page, removeWhiteSpace(keyword ? keyword : ""));
+        }
+
+    }
     const updateTableStorage = () => {
         getStorages(currentPage + 1);
 
@@ -91,17 +109,21 @@ function StorageList() {
                                     </div>
                                 </div>
                             </div>
-                            {roleId === 4 ? '' : <div className="col-auto ButtonCSSDropdown">
-                                <button
-                                    className="btn btn-success border-left-0 rounded"
-                                    type="button"
-                                    onClick={() => setIsShowModelAddNew(true)}
-                                ><i className="fa-solid fa-plus"></i>
-                                    &nbsp;
-                                    Thêm kho hàng
+                            {
+                                roleId !== 4 && (
+                                    // roleId === 4 ? '' :
+                                    <div className="col-auto ButtonCSSDropdown">
+                                        <button
+                                            className="btn btn-success border-left-0 rounded"
+                                            type="button"
+                                            onClick={() => setIsShowModelAddNew(true)}
+                                        ><i className="fa-solid fa-plus"></i>
+                                            &nbsp;
+                                            Thêm kho hàng
 
-                                </button>
-                            </div>}
+                                        </button>
+                                    </div>
+                                )}
 
                         </div>
                         <div className=" table-responsive">
@@ -123,15 +145,22 @@ function StorageList() {
                                         listStorage.map((s, index) => (
                                             <tr key={`storage${index}`}>
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
-                                                <td className="align-middle">{s.storageName}</td>
-                                                <td className="align-middle">{s.storageAddress}</td>
-                                                <td className="align-middle">{s.storagePhone}</td>
-                                                {roleId === 4 ? '' : <td className="align-middle " style={{ padding: '10px' }}>
+                                                <td className="align-middle">{s.warehouseName}</td>
+                                                <td className="align-middle">{s.warehouseAddress}</td>
+                                                <td className="align-middle">{s.warehousePhone}</td>
+                                                {
+                                                    roleId !== 4 && (
+                                                        // roleId === 4 ? '' :
+                                                        <td className="align-middle " style={{ padding: '10px' }}>
 
-                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => showModelEditStorage(s)}></i>
+                                                            <i className="fa-duotone fa-pen-to-square actionButtonCSS"
+                                                                onClick={() => showModelEditStorage(s)}>
+
+                                                            </i>
 
 
-                                                </td>}
+                                                        </td>
+                                                    )}
 
                                             </tr>
                                         ))
@@ -168,8 +197,13 @@ function StorageList() {
                 />
             </div>
 
-            <ModelAddStorage isShow={isShowModelAddNew} handleClose={() => setIsShowModelAddNew(false)} updateTableStorage={updateTableStorage} />
-            <ModelEditStorage isShow={isShowModelEdit} dataUpdateStorage={dataUpdateStorage} handleClose={() => setIsShowModelEdit(false)} updateTableStorage={updateTableStorage} />
+            <ModelAddStorage isShow={isShowModelAddNew}
+                handleClose={() => setIsShowModelAddNew(false)}
+                updateTableStorage={updateTableStorage} />
+            <ModelEditStorage isShow={isShowModelEdit}
+                dataUpdateStorage={dataUpdateStorage}
+                handleClose={() => setIsShowModelEdit(false)}
+                updateTableStorage={updateTableStorage} />
         </>
 
     );

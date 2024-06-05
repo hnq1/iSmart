@@ -20,7 +20,7 @@ import PrivateRoute from './PrivateRoute';
 import { useContext } from 'react';
 const AppRoutes = () => {
     const roleId = parseInt(localStorage.getItem('RoleId'), 10);
-    ;
+    
     return (
         <>
             <Routes>

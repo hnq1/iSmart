@@ -80,6 +80,7 @@ function MyTable() {
 
     const getGoods = async (page, storageId, categoryId, supplierId, sortPrice, wordSearch) => {
         let res = await fetchGoodsWithFilter(page, storageId, categoryId, supplierId, sortPrice, wordSearch);
+        console.log(res);
         setListGoods(res.data);
         setTotalPages(res.totalPages);
         setcurrentPage(page - 1);
@@ -121,10 +122,10 @@ function MyTable() {
         setSelectedCategoryId("");
     }
 
-    const handleStorageClickTotal = () => {
-        setSelectedStorage("Tất cả kho");
-        setSelectedStorageId("");
-    }
+    // const handleStorageClickTotal = () => {
+    //     setSelectedStorage("Tất cả kho");
+    //     setSelectedStorageId("");
+    // }
 
     const handleStorageClick = (storage) => {
         setSelectedStorage(storage.storageName);
@@ -171,7 +172,9 @@ function MyTable() {
                 <div className="col-sm-12">
                     <h5 style={{ color: '#a5a2ad' }}>Quản lý hàng hóa</h5>
                     <div className="row no-gutters my-3 ">
-                        {roleId == 2 || roleId == 4 || roleId == 1 ? <div className="col-2">
+                        {/* {roleId == 2 || roleId == 4 || roleId == 1 ? <div className="col-2">
+
+
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
                                 <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
                                 {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
@@ -180,7 +183,7 @@ function MyTable() {
                             </DropdownButton>
                         </div> : <Col md={2}>
                             <input type="text" className="form-control inputCSS"
-                                aria-describedby="emailHelp" value={selectedStorage} disabled /></Col>}
+                                aria-describedby="emailHelp" value={selectedStorage} disabled /></Col>} */}
 
                         <div className="col-2">
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByPriceName ? sortedByPriceName : "Giá"} variant="success" style={{ zIndex: 999 }}>

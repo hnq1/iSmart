@@ -66,7 +66,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
             1, userName,
             1, userCode,
             address, null, fullName);
-        console.log("check res: ", res)
+        // console.log("check res: ", res)
         if (res) { // Check if the update was successful
             toast.success("Cập nhật thông tin người dùng thành công");
             updateTable(); // Update the user list

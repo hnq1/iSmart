@@ -94,8 +94,6 @@ const ListAccount = () => {
     const showModelEditAccount = (user) => {
         setDataUserEdit(user);
         setIsShowModelEdit(true);
-        console.log(user);
-
     }
 
 
@@ -142,7 +140,7 @@ const ListAccount = () => {
                             <Col md={2}>
                                 <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
                                     {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                        <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                        <Dropdown.Item key={`storage ${index}`} eventKey={c.ware} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
                                     ))}
                                 </DropdownButton>
                             </Col>

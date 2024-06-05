@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import React from 'react'
-import Barcode from 'react-jsbarcode'
 import ReactToPrint from 'react-to-print'
 import { useRef } from 'react'
 import { formatDate } from '~/validate'
+import { ReactBarcode } from 'react-jsbarcode';
 
 const BarCode = (barCodeDetail) => {
     const [supplierName, setSupplierName] = useState("");
@@ -45,7 +45,7 @@ const BarCode = (barCodeDetail) => {
         <div className="App">
             {/* Truyền giá trị và cấu hình vào component Barcode */}
             <div ref={componentRef}>
-                <Barcode value={barcodeValue} options={barcodeOptions} />
+                <ReactBarcode value={barcodeValue} options={barcodeOptions} />
                 <br />
             </div>
             <ReactToPrint

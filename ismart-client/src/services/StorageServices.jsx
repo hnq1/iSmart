@@ -1,19 +1,19 @@
 import axios from "./axios"
 
 const fetchAllStorages = () => {
-    return axios.get(`api/storage/get-all-storage`);
+    return axios.get(`api/warehouse/get-all-warehouses`);
 }
 
 const fetchStoragesWithKeyword = (page, keyword) => {
-    return axios.get(`api/storage/get-storage?page=${page}${keyword ? `&keyword=${keyword}` : ''}`);
+    return axios.get(`api/warehouse/get-warehouse?page=${page}${keyword ? `&keyword=${keyword}` : ''}`);
 }
 
 const createNewStorage = (storageName, storageAddress, storagePhone) => {
-    return axios.post(`api/storage/add-storage`, { storageName, storageAddress, storagePhone });
+    return axios.post(`api/warehouse/add-warehouse`, { storageName, storageAddress, storagePhone });
 }
 
 const EditStorage = (storageId, storageName, storageAddress, storagePhone) => {
-    return axios.put(`api/storage/update-storage`, { storageId, storageName, storageAddress, storagePhone });
+    return axios.put(`api/warehouse/update-warehouse`, { storageId, storageName, storageAddress, storagePhone });
 }
 
 
