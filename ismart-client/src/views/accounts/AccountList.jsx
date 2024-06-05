@@ -36,9 +36,9 @@ const ListAccount = () => {
     const [optionStatus, setOptionStatus] = useState();
 
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
     const [isShowModalChangeStatus, setIsShowModalChangeStatus] = useState(false);
     const [dataUpdateStatus, setdataUpdateStatus] = useState([]);
@@ -52,12 +52,12 @@ const ListAccount = () => {
 
     useEffect(() => {
         getUsers(1);
-    }, [optionRole, optionStatus, selectedStorageId])
+    }, [optionRole, optionStatus, selectedWarehouseId, keywordSearch])
 
 
     const getUsers = async (page) => {
         setcurrentPage(page - 1);
-        let res = await fetchUserWithFilter(page, optionRole, optionStatus, selectedStorageId, keywordSearch);
+        let res = await fetchUserWithFilter(page, optionRole, optionStatus, selectedWarehouseId, keywordSearch);
         setTotalUser(res.data);
         setTotalPage(res.totalPages);
         console.log(res);
@@ -65,7 +65,7 @@ const ListAccount = () => {
     }
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
     const handlePageClick = (event) => {
@@ -81,9 +81,12 @@ const ListAccount = () => {
         setOptionStatus(event.target.value);
     }
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+    const handleStorageClick = (warehouse) => {
+        // let res = await setSelectedStorage(storage.storageName);
+
+        setSelectedWarehouse(warehouse.warehouseName);
+        console.log("storage.storageId: ", warehouse.warehouseId);
+        selectedWarehouseId(warehouse.warehouseId);
     }
 
     const handleSearch = () => {
@@ -104,13 +107,15 @@ const ListAccount = () => {
 
     const handleChangeStatus = async (user) => {
         setdataUpdateStatus(user);
-        console.log(user);
+        // console.log("handleChangeStatus: ", user);
         setIsShowModalChangeStatus(true);
 
     }
     const confirmChangeStatus = async (confirm) => {
         if (confirm) {
-            await updateUserStatus(dataUpdateStatus.userId);
+            let res = await updateUserStatus(dataUpdateStatus.userId);
+            // console.log(res);
+            // await updateUserStatus(dataUpdateStatus.userId);
             getUsers(currentPage + 1);
         }
     }
@@ -123,7 +128,7 @@ const ListAccount = () => {
                         <div className="col-2">
                             <Form.Select className='FormSelectCSS' onChange={handleSelectRole}>
                                 <option value="">Vai trò</option>
-                                <option value="2">Project Manager</option>
+                                <option value="2">Warehouse Manager</option>
                                 <option value="3">Thủ kho</option>
                                 <option value="4">Kế toán</option>
                             </Form.Select>
@@ -138,9 +143,9 @@ const ListAccount = () => {
                         </div>
                         <div className='col-4'>
                             <Col md={2}>
-                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                    {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                        <Dropdown.Item key={`storage ${index}`} eventKey={c.ware} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
+                                    {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                        <Dropdown.Item key={`warehouse ${index}`} eventKey={c.warehouseName} onClick={(e) => handleStorageClick(c, e)}>{c.warehouseName}</Dropdown.Item>
                                     ))}
                                 </DropdownButton>
                             </Col>
@@ -226,7 +231,7 @@ const ListAccount = () => {
                                             <td className="align-middle"><img src={i.image} alt="alt" style={{ width: '50px', height: '50px' }} /></td>
 
                                             <td className="align-middle">
-                                                <SwitchButtonUser status={i.status} handleChangeStatus={() => handleChangeStatus(i)} />
+                                                <SwitchButtonUser status={i.statusId} handleChangeStatus={() => handleChangeStatus(i)} />
                                             </td>
 
                                             {roleId === 1 ?

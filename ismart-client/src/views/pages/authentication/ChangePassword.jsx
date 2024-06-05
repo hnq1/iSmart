@@ -26,8 +26,8 @@ const ChangePassword = () => {
 
         console.log('Form has been submitted');
 
-        const response = await changePassword(userId, newPassword, oldPassword);
-
+        let response = await changePassword(userId, newPassword, oldPassword);
+        console.log("change password", response);
 
         // Cần thêm điều kiên thay đổi mật khẩu như yêu cầu add tài khoản và đổi mật khẩu
         if (response.status === 400) {

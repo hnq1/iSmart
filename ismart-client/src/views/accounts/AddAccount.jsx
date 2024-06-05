@@ -153,14 +153,14 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             </Form.Select>
                         </Col>
 
-                        {/* <Col md={5}>
+                        <Col md={5}>
                             <label >Kho làm việc</label>
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
                                 {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
                                     <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
                                 ))}
                             </DropdownButton>
-                        </Col> */}
+                        </Col>
                     </Row>
                     <Row>
                         <Col md={5}>

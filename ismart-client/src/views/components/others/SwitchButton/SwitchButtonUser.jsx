@@ -8,8 +8,8 @@ const SwitchButtonUser = ({ status, handleChangeStatus }) => {
                 type="switch"
                 className="custom-switch"
                 id="custom-switch"
-                label={status === "Active" ? "Đang làm việc" : "Ngừng làm việc"}
-                checked={status === "Active" ? true : false}
+                label={status === 1 ? "Đang làm việc" : "Ngừng làm việc"}
+                checked={status === 1 ? true : false}
                 onChange={handleChangeStatus}
             />
         </Form>

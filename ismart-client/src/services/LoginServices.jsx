@@ -15,7 +15,8 @@ const forgotPassword = (email) => {
     // return axios.post(`api/Authentication/reset-password-by-email?email=${encodedEmail}`, {});
 };
 const changePassword = (userId, password, oldPassword) => {
-
     return axios.put("/api/auth/change-password", { userId, password, oldPassword });
 };
+
+
 export { loginApi, logoutApi, forgotPassword, changePassword }

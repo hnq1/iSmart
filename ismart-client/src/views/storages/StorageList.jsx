@@ -31,7 +31,7 @@ function StorageList() {
     useEffect(() => {
         if (userId) {
             console.log('User ID:', userId);
-            getStorages(1,);
+            getStorages(1);
         } else {
             console.error('User ID is not defined.');
             toast.error('User ID is not defined.');
@@ -160,7 +160,8 @@ function StorageList() {
 
 
                                                         </td>
-                                                    )}
+                                                    )
+                                                }
 
                                             </tr>
                                         ))
