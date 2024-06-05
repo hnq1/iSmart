@@ -12,10 +12,14 @@ namespace iSmart.Entity.DTOs.ImportOrderDetailDTO
 
         public float CostPrice { get; set; }
 
-        // public int DetailId { get; set; }
+        public string BatchCode { get; set; }
 
+        public DateTime ManufactureDate { get; set; }
+        public DateTime ExpiryDate { get; set; }
         public int? GoodsId { get; set; }
 
         public int? Quantity { get; set; }
+
+
     }
 }

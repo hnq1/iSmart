@@ -10,7 +10,7 @@ using iSmart.Entity.DTOs.ImportOrderDTO;
 using iSmart.Entity.DTOs.UserDTO;
 using iSmart.Entity.Models;
 
-namespace WM.Service
+namespace iSmart.Service
 {
     public interface IImportOrderService
     {
