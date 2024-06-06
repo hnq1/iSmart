@@ -203,7 +203,10 @@ namespace iSmart.API.Controllers
         {
             try
             {
+<<<<<<< HEAD
                 // Xác thực người dùng
+=======
+>>>>>>> origin/anhddhe170353
                 var result = await _context.Users.SingleOrDefaultAsync(x => x.UserId == p.UserId);
                 if (p.OldPassword != HashHelper.Decrypt(result.Password, _configuration))
                 {
@@ -213,8 +216,11 @@ namespace iSmart.API.Controllers
                 //}
                 else
                 {
+<<<<<<< HEAD
                     /// result = await _context.Users.SingleOrDefaultAsync(x => x.UserId == p.UserId);
                     // }
+=======
+>>>>>>> origin/anhddhe170353
                     if (result != null && result.StatusId == 1 && RegexConstant.validateGuidRegex.IsMatch(result.Password))
                     {
                         result.Password = HashHelper.Encrypt(p.Password, _configuration);
@@ -226,6 +232,10 @@ namespace iSmart.API.Controllers
                         return BadRequest("Không có dữ liệu");
                     }
                 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/anhddhe170353
             }
             catch (Exception ex)
             {

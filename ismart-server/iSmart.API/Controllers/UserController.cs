@@ -37,10 +37,10 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-users")]
-        public IActionResult GetUserByKeyword(int pageNum, int? role, int? statusId, string? keyword = "") 
+        public IActionResult GetUserByKeyword(int pageNum, int? role, int? warehouseId, int? statusId, string? keyword = "") 
         {
-            var reult = _userService.GetUsersByKeyword(pageNum,role,statusId, keyword);
-            return Ok(reult);
+            var result = _userService.GetUsersByKeyword(pageNum,role, warehouseId, statusId, keyword);
+            return Ok(result);
         }
 
         // GET api/<UserController>/5
