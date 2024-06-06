@@ -14,7 +14,7 @@ namespace iSmart.Service
 {
     public interface IUserService
     {
-        UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? statusId,string? keyword = "");
+        UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? warehouseId, int? statusId,string? keyword = "");
         List<UserDTO>? GetAllUser();
         UserDTO? GetUserById(int id);
         CreateUserResponse AddUser(CreateUserRequest user);
@@ -151,7 +151,7 @@ namespace iSmart.Service
             }
         }
 
-        public UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? statusId, string? keyword = "")
+        public UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? warehouseId, int? statusId, string? keyword = "")
         {
             try
             {
@@ -166,9 +166,11 @@ namespace iSmart.Service
                     .Where(u =>
                         (string.IsNullOrEmpty(keyword) || u.UserCode.ToLower().Contains(keyword.ToLower())
                                                       || u.UserName.ToLower().Contains(keyword.ToLower())
-                                                      || u.Email.ToLower().Contains(keyword.ToLower()))
+                                                      || u.Email.ToLower().Contains(keyword.ToLower())
+                                                      || u.UserWarehouses.Any(uw => uw.Warehouse.WarehouseName.ToLower().Contains(keyword.ToLower())))
                         && (!role.HasValue || u.RoleId == role)
                         && (!statusId.HasValue || u.StatusId == statusId)
+                        && (!warehouseId.HasValue || u.UserWarehouses.Any(uw => uw.WarehouseId == warehouseId))
                     )
                     .OrderBy(u => u.UserId);
 
