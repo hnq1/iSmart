@@ -12,7 +12,7 @@ import ModalEditAccount from './EditAccount';
 import { fetchUserWithFilter } from '~/services/UserServices';
 import { fetchAllStorages } from "~/services/StorageServices";
 import { set } from 'lodash';
-
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 
 
 const ListAccount = () => {
@@ -58,9 +58,9 @@ const ListAccount = () => {
     const getUsers = async (page) => {
         setcurrentPage(page - 1);
         let res = await fetchUserWithFilter(page, optionRole, optionStatus, selectedWarehouseId, keywordSearch);
+        console.log("res: ", res);
         setTotalUser(res.data);
         setTotalPage(res.totalPages);
-        console.log(res);
 
     }
     const getAllStorages = async () => {
@@ -85,8 +85,10 @@ const ListAccount = () => {
         // let res = await setSelectedStorage(storage.storageName);
 
         setSelectedWarehouse(warehouse.warehouseName);
-        console.log("storage.storageId: ", warehouse.warehouseId);
-        selectedWarehouseId(warehouse.warehouseId);
+        console.log("warehouse.warehouseId: ", warehouse.warehouseId);
+        setSelectedWarehouseId(warehouse.warehouseId);
+        console.log("setSelectedWarehouse: ", warehouse.warehouseName);
+        getUsers(1);
     }
 
     const handleSearch = () => {
@@ -129,8 +131,8 @@ const ListAccount = () => {
                             <Form.Select className='FormSelectCSS' onChange={handleSelectRole}>
                                 <option value="">Vai trò</option>
                                 <option value="2">Warehouse Manager</option>
-                                <option value="3">Thủ kho</option>
-                                <option value="4">Kế toán</option>
+                                <option value="3">Storekeeper</option>
+                                <option value="4">Accountant</option>
                             </Form.Select>
                         </div>
                         <div className='col-2'>
@@ -143,9 +145,20 @@ const ListAccount = () => {
                         </div>
                         <div className='col-4'>
                             <Col md={2}>
-                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
+                                <DropdownButton
+                                    className="DropdownButtonCSS ButtonCSSDropdown"
+                                    title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                    variant="success"
+                                    style={{ zIndex: 999 }}
+                                >
                                     {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
-                                        <Dropdown.Item key={`warehouse ${index}`} eventKey={c.warehouseName} onClick={(e) => handleStorageClick(c, e)}>{c.warehouseName}</Dropdown.Item>
+                                        <Dropdown.Item
+                                            key={`warehouse ${index}`}
+                                            eventKey={c.warehouseName}
+                                            onClick={(e) => handleStorageClick(c, e)}
+                                        >
+                                            {c.warehouseName}
+                                        </Dropdown.Item>
                                     ))}
                                 </DropdownButton>
                             </Col>

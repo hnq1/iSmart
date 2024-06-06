@@ -10,6 +10,7 @@ import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 import { updateUserWarehouseToUser } from '~/services/UserWarehouseServices';
 import { deleteUserWarehouseToUser } from '~/services/UserWarehouseServices';
 import { set } from 'lodash';
+import { fetchAllStorages } from '~/services/StorageServices';
 
 function StorageList() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
@@ -43,11 +44,18 @@ function StorageList() {
 
     const getStorages = async (page, keyword) => {
 
-        let res = await getUserIdWarehouse(userId);
+        let res;
+        if (roleId === 1) {
+            res = await fetchAllStorages(res)
+            // console.log(res);
+            setListStorage(res);
+        }
         if (roleId === 4) {
             // Nhân viên: lấy danh sách kho cụ thể mà họ quản lý
             let res = await getUserIdWarehouse(userId);
+            console.log(res);
             setListStorage(res);
+
         } else {
             // Quản lý và các vai trò khác: lấy danh sách kho với từ khóa tìm kiếm
             res = await fetchStoragesWithKeyword(page, removeWhiteSpace(keyword ? keyword : ""));

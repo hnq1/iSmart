@@ -9,9 +9,9 @@ import { addUser } from "~/services/UserServices";
 const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const [selectedOptionRole, setSelectedOption] = useState('4'); // Giá trị mặc định cho tùy chọn được chọn
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
     const [userCode, setUserCode] = useState();
     const [userName, setUserName] = useState();
@@ -33,12 +33,17 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+    const handleStorageClick = (warehouse) => {
+        // let res = await setSelectedStorage(storage.storageName);
+
+        setSelectedWarehouse(warehouse.warehouseName);
+        // console.log("warehouse.warehouseId: ", warehouse.warehouseId);
+        setSelectedWarehouseId(warehouse.warehouseId);
+        // console.log("setSelectedWarehouse: ", warehouse.warehouseName);
+        // getUsers(1);
     }
 
     const handleChangeUserCode = (event) => {
@@ -72,8 +77,8 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
 
 
     const handleReset = () => {
-        setSelectedStorage(null);
-        setSelectedStorageId(null);
+        selectedWarehouse(null);
+        selectedWarehouseId(null);
 
         setUserCode(null);
         setUserName(null);
@@ -92,16 +97,16 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
         } else if (!userName) {
             toast.warning("Tên đăng nhập không được để trống");
         }
-        // else if (!selectedStorageId) {
-        //     toast.warning("Vui lòng chọn kho");
-        // }
+        else if (!selectedWarehouseId) {
+            toast.warning("Vui lòng chọn kho");
+        }
         else {
             let res = await addUser(email, password,
                 phone, selectedOptionRole,
                 1,
-                userName, selectedStorageId,
+                userName, selectedWarehouseId,
                 userCode, address,
-                image, fullName);
+                "", fullName);
             if (res.isSuccess) {
                 toast.success("Thêm mới tài khoản thành công");
                 updateTable();
@@ -129,11 +134,6 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                         <Col md={5}>
                             <label >Mã nhân viên</label>
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} />
-                            {/* <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleChangeUserCode}>
-                                <option value="3">Administrator	</option>
-                                <option value="2">ProjectManager</option>
-                                <option value="4">Storekeeper </option>
-                            </Form.Select> */}
                         </Col>
 
                     </Row>
@@ -144,20 +144,31 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={5}>
+                        <Col md={7}>
                             <label >Vai trò</label>
                             <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
-                                <option value="3">Thủ kho</option>
-                                <option value="2">Quản trị dự án</option>
-                                <option value="4">Kế toán</option>
+
+                                <option value="2">WarehouseManager</option>
+                                <option value="3">Storekeeper</option>
+                                <option value="4">Accountant</option>
                             </Form.Select>
                         </Col>
 
-                        <Col md={5}>
-                            <label >Kho làm việc</label>
-                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                        <Col md={2}>
+                            <DropdownButton
+                                className="DropdownButtonCSS ButtonCSSDropdown"
+                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                variant="success"
+                                style={{ zIndex: 999 }}
+                            >
+                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                    <Dropdown.Item
+                                        key={`warehouse ${index}`}
+                                        eventKey={c.warehouseName}
+                                        onClick={(e) => handleStorageClick(c, e)}
+                                    >
+                                        {c.warehouseName}
+                                    </Dropdown.Item>
                                 ))}
                             </DropdownButton>
                         </Col>
