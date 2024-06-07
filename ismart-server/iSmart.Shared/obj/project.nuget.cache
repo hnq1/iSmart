@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "IFDAy1SdKc2Zk7lwAZaxyurEsup4T6c3VRj3QE4oF1jWCDrIavpeGjbBeaxWLsCYgaNdQaTn8GjuktJK+u1sNA==",
+  "success": true,
+  "projectFilePath": "F:\\DoAnTotNghiep\\ismart-main\\ismart-server\\iSmart.Shared\\iSmart.Shared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\admin\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0\\microsoft.extensions.configuration.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

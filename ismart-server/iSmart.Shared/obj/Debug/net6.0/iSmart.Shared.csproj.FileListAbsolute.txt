@@ -1,0 +1,12 @@
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\bin\Debug\net6.0\iSmart.Shared.deps.json
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\bin\Debug\net6.0\iSmart.Shared.dll
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\bin\Debug\net6.0\iSmart.Shared.pdb
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\obj\Debug\net6.0\iSmart.Shared.csproj.AssemblyReference.cache
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\obj\Debug\net6.0\iSmart.Shared.GeneratedMSBuildEditorConfig.editorconfig
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\obj\Debug\net6.0\iSmart.Shared.AssemblyInfoInputs.cache
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\obj\Debug\net6.0\iSmart.Shared.AssemblyInfo.cs
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\obj\Debug\net6.0\iSmart.Shared.csproj.CoreCompileInputs.cache
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\obj\Debug\net6.0\iSmart.Shared.dll
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\obj\Debug\net6.0\refint\iSmart.Shared.dll
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\obj\Debug\net6.0\iSmart.Shared.pdb
+F:\DoAnTotNghiep\ismart-main\ismart-server\iSmart.Shared\obj\Debug\net6.0\ref\iSmart.Shared.dll
