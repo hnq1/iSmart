@@ -12,9 +12,9 @@ public class ImagesController : ControllerBase
     }
 
     [HttpPost("upload")]
-    public async Task<IActionResult> UploadImage(IFormFile fileUpload)
+    public async Task<IActionResult> UploadImage(IFormFile file)
     {
-        if (fileUpload == null || fileUpload.Length == 0)
+        if (file == null || file.Length == 0)
         {
             return BadRequest("No file uploaded.");
         }
@@ -30,9 +30,6 @@ public class ImagesController : ControllerBase
             Directory.CreateDirectory(uploads);
         }
 
-<<<<<<< HEAD
-        var filePath = Path.Combine(uploads, fileUpload.FileName);
-=======
         var uniqueFileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
         var filePath = Path.Combine(uploads, uniqueFileName);
 
@@ -41,17 +38,12 @@ public class ImagesController : ControllerBase
             return Conflict("A file with the same name already exists.");
         }
 
->>>>>>> origin/anhddhe170353
         using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
-            await fileUpload.CopyToAsync(fileStream);
+            await file.CopyToAsync(fileStream);
         }
 
-<<<<<<< HEAD
-        var imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileUpload.FileName}";
-=======
         var imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/{uniqueFileName}";
->>>>>>> origin/anhddhe170353
         return Ok(new { url = imageUrl });
     }
 }
