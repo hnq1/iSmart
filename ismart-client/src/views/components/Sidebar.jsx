@@ -167,71 +167,71 @@ const Sidebar = () => {
 
                     {
                         // (roleId == 1 || roleId == 2 || roleId == 4) ?
-                            <Nav.Item className="mb-2">
-                                <Nav.Link as={Link} to="/nha-cung-cap"
-                                    className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
-                                    style={{ width: 180 }}
-                                >
-                                    <div className="d-flex">
-                                        <div style={{ width: 30 }}>
-                                            <i class="fa-duotone fa-boxes-packing"></i>
-                                        </div>
-                                        <div>
-                                            <span className="ms-1 d-none d-sm-inline">Nhà cung cấp</span>
-                                        </div>
+                        <Nav.Item className="mb-2">
+                            <Nav.Link as={Link} to="/nha-cung-cap"
+                                className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                                style={{ width: 180 }}
+                            >
+                                <div className="d-flex">
+                                    <div style={{ width: 30 }}>
+                                        <i class="fa-duotone fa-boxes-packing"></i>
                                     </div>
                                     <div>
-                                        <i className="fa-solid fa-angle-right"></i>
+                                        <span className="ms-1 d-none d-sm-inline">Nhà cung cấp</span>
                                     </div>
-                                </Nav.Link>
-                            </Nav.Item>
-                            // : ''
-                    }
-
-                    {
-                        (roleId == 1 || roleId == 2) ?
-                            <Nav.Item className="mb-2">
-                                <Nav.Link as={Link} to="/cac-kho-hang"
-                                    className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
-                                    style={{ width: 180 }}
-                                >
-                                    <div className="d-flex">
-                                        <div style={{ width: 30 }}>
-                                            <i className="fa-sharp fa-solid fa-warehouse"></i>
-                                        </div>
-                                        <div>
-                                            <span className="ms-1 d-none d-sm-inline">Kho hàng</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <i className="fa-solid fa-angle-right"></i>
-                                    </div>
-                                </Nav.Link>
-                            </Nav.Item>
-                            : ''
+                                </div>
+                                <div>
+                                    <i className="fa-solid fa-angle-right"></i>
+                                </div>
+                            </Nav.Link>
+                        </Nav.Item>
+                        // : ''
                     }
 
                     {
                         // (roleId == 1 || roleId == 2) ?
-                            <Nav.Item className="mb-2">
-                                <Nav.Link as={Link} to="/ben-van-chuyen"
-                                    className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
-                                    style={{ width: 180 }}
-                                >
-                                    <div className="d-flex">
-                                        <div style={{ width: 30 }}>
-                                            <i class="fa-duotone fa-truck"></i>
-                                        </div>
-                                        <div>
-                                            <span className="ms-1 d-none d-sm-inline">Bên vận chuyển</span>
-                                        </div>
+                        <Nav.Item className="mb-2">
+                            <Nav.Link as={Link} to="/cac-kho-hang"
+                                className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                                style={{ width: 180 }}
+                            >
+                                <div className="d-flex">
+                                    <div style={{ width: 30 }}>
+                                        <i className="fa-sharp fa-solid fa-warehouse"></i>
                                     </div>
                                     <div>
-                                        <i className="fa-solid fa-angle-right"></i>
+                                        <span className="ms-1 d-none d-sm-inline">Kho hàng</span>
                                     </div>
-                                </Nav.Link>
-                            </Nav.Item>
-                            // : ''
+                                </div>
+                                <div>
+                                    <i className="fa-solid fa-angle-right"></i>
+                                </div>
+                            </Nav.Link>
+                        </Nav.Item>
+                        // : ''
+                    }
+
+                    {
+                        // (roleId == 1 || roleId == 2) ?
+                        <Nav.Item className="mb-2">
+                            <Nav.Link as={Link} to="/ben-van-chuyen"
+                                className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                                style={{ width: 180 }}
+                            >
+                                <div className="d-flex">
+                                    <div style={{ width: 30 }}>
+                                        <i class="fa-duotone fa-truck"></i>
+                                    </div>
+                                    <div>
+                                        <span className="ms-1 d-none d-sm-inline">Bên vận chuyển</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <i className="fa-solid fa-angle-right"></i>
+                                </div>
+                            </Nav.Link>
+                        </Nav.Item>
+                        // : ''
                     }
 
                     {

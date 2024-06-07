@@ -118,7 +118,7 @@ function StorageList() {
                                 </div>
                             </div>
                             {
-                                roleId !== 4 && (
+                                (roleId === 1 || roleId === 2) ?
                                     // roleId === 4 ? '' :
                                     <div className="col-auto ButtonCSSDropdown">
                                         <button
@@ -131,7 +131,8 @@ function StorageList() {
 
                                         </button>
                                     </div>
-                                )}
+                                    : ''
+                            }
 
                         </div>
                         <div className=" table-responsive">
@@ -157,7 +158,7 @@ function StorageList() {
                                                 <td className="align-middle">{s.warehouseAddress}</td>
                                                 <td className="align-middle">{s.warehousePhone}</td>
                                                 {
-                                                    roleId !== 4 && (
+                                                    roleId === 1 || roleId === 2 ?
                                                         // roleId === 4 ? '' :
                                                         <td className="align-middle " style={{ padding: '10px' }}>
 
@@ -168,7 +169,7 @@ function StorageList() {
 
 
                                                         </td>
-                                                    )
+                                                        : ''
                                                 }
 
                                             </tr>
