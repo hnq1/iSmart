@@ -12,7 +12,7 @@ using System.Net.Mail;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-
+//API
 namespace iSmart.API.Controllers
 {
     [Route("api/auth")]
