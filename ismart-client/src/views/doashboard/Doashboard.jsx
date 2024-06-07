@@ -10,10 +10,19 @@ import { fetchAllSuppliers } from "~/services/SupplierServices";
 import { formatDateImport, formattedAmount, formatDate } from '~/validate';
 import ChartComponent from '../components/others/Chart';
 import { fetchHistoryGood } from '~/services/GoodServices';
-
+import { useNavigate } from 'react-router-dom';
 
 
 const Doashboard = () => {
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);;
+    const userId = parseInt(localStorage.getItem('userId'), 10);
+
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (![1, 2, 4].includes(roleId)) {
+            navigate('/404'); // Chuyển hướng người dùng không phù hợp
+        }
+    }, [roleId, navigate]);
 
     const [totalStorages, setTotalStorages] = useState([]);
     const [selectedStorage, setSelectedStorage] = useState(null);

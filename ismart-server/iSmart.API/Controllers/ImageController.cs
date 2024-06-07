@@ -12,9 +12,9 @@ public class ImagesController : ControllerBase
     }
 
     [HttpPost("upload")]
-    public async Task<IActionResult> UploadImage(IFormFile file)
+    public async Task<IActionResult> UploadImage(IFormFile fileUpload)
     {
-        if (file == null || file.Length == 0)
+        if (fileUpload == null || fileUpload.Length == 0)
         {
             return BadRequest("No file uploaded.");
         }
@@ -30,13 +30,13 @@ public class ImagesController : ControllerBase
             Directory.CreateDirectory(uploads);
         }
 
-        var filePath = Path.Combine(uploads, file.FileName);
+        var filePath = Path.Combine(uploads, fileUpload.FileName);
         using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
-            await file.CopyToAsync(fileStream);
+            await fileUpload.CopyToAsync(fileStream);
         }
 
-        var imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/{file.FileName}";
+        var imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileUpload.FileName}";
         return Ok(new { url = imageUrl });
     }
 }

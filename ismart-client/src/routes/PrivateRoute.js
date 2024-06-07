@@ -10,7 +10,9 @@ const PrivateRoute = (props) => {
     const [show, setShow] = useState(true);
     if (user && !user.auth) {
         return <>
-            <div className="access-denied">
+            <div 
+            className="access-denied "
+            >
                 <Alert show={show} variant="success">
                     <Alert.Heading>My Alert (còn cái Nịt)</Alert.Heading>
                     <p>

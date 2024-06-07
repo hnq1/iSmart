@@ -5,25 +5,37 @@ const fetchUserByUserId = (id) => {
     return axios.get(`api/user/get-user-by-id?id=${id}`)
 }
 
-const fetchUserWithFilter = (pageNum, role, statusId, storageId, keyword) => {
+const fetchUserWithFilter = (pageNum, role, warehouseId, statusId, keyword) => {
     return axios.get(`api/user/get-users?pageNum=${pageNum}
     ${role ? `&role=${role}` : ``}
+    ${warehouseId ? `&warehouseId=${warehouseId}` : ``}
     ${statusId ? `&statusId=${statusId}` : ``}
-    ${storageId ? `&storageId=${storageId}` : ``}
     ${keyword ? `&keyword=${keyword}` : ``}`)
 }
 
-const updateUser = (userId,
-    email, password, phone,
-    roleId, statusId, userName,
-    storageId, userCode,
-    address, image, fullName) => {
+const updateUser = (
+    userId,
+    email,
+    phone,
+    roleId,
+    statusId,
+    userName,
+    userCode,
+    address,
+    image,
+    fullName) => {
     return axios.put(`api/user/update-user`,
         {
-            userId, email, password,
-            phone, roleId, statusId,
-            userName, storageId, userCode,
-            address, image, fullName
+            userId,
+            email,
+            phone,
+            roleId,
+            statusId,
+            userName,
+            userCode,
+            address,
+            image,
+            fullName
         })
 }
 
@@ -33,7 +45,6 @@ const addUser = (email,
     roleId,
     statusId,
     userName,
-    storageId,
     userCode,
     address,
     image,
@@ -45,7 +56,6 @@ const addUser = (email,
         roleId,
         statusId,
         userName,
-        storageId,
         userCode,
         address,
         image,

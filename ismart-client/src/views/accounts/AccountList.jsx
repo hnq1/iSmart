@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Modal, Button, Row, Col, Form, DropdownButton, Dropdown } from "react-bootstrap"
-
+import { useNavigate } from 'react-router-dom';
 
 import SwitchButton from '../components/others/SwitchButton';
 import SwitchButtonUser from '../components/others/SwitchButton/SwitchButtonUser';
@@ -16,9 +16,17 @@ import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 
 
 const ListAccount = () => {
-
+    // const navigate = useNavigate();
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
 
+    // Check for role ID and redirect if not authorized
+    // useEffect(() => {
+    //     if (roleId !== 1) {
+    //         navigate('/');
+    //         // Chuyển hướng về trang chủ hoặc trang khác
+    //         //  nếu người dùng không được ủy quyền
+    //     }
+    // }, [roleId, navigate]);
 
     const [isShowModelAdd, setIsShowModelAdd] = useState(false);
 
@@ -52,12 +60,12 @@ const ListAccount = () => {
 
     useEffect(() => {
         getUsers(1);
-    }, [optionRole, optionStatus, selectedWarehouseId, keywordSearch])
+    }, [optionRole, selectedWarehouseId, optionStatus, keywordSearch])
 
 
     const getUsers = async (page) => {
         setcurrentPage(page - 1);
-        let res = await fetchUserWithFilter(page, optionRole, optionStatus, selectedWarehouseId, keywordSearch);
+        let res = await fetchUserWithFilter(page, optionRole, selectedWarehouseId, optionStatus, keywordSearch);
         console.log("res: ", res);
         setTotalUser(res.data);
         setTotalPage(res.totalPages);
@@ -85,9 +93,9 @@ const ListAccount = () => {
         // let res = await setSelectedStorage(storage.storageName);
 
         setSelectedWarehouse(warehouse.warehouseName);
-        console.log("warehouse.warehouseId: ", warehouse.warehouseId);
+        //console.log("warehouse.warehouseId: ", warehouse.warehouseId);
         setSelectedWarehouseId(warehouse.warehouseId);
-        console.log("setSelectedWarehouse: ", warehouse.warehouseName);
+        //console.log("setSelectedWarehouse: ", warehouse.warehouseName);
         getUsers(1);
     }
 
@@ -122,6 +130,8 @@ const ListAccount = () => {
         }
     }
     return (<>
+
+
         <div className="container">
             <div className="row justify-content-center">
                 <div className="col-sm-12">
@@ -130,8 +140,8 @@ const ListAccount = () => {
                         <div className="col-2">
                             <Form.Select className='FormSelectCSS' onChange={handleSelectRole}>
                                 <option value="">Vai trò</option>
-                                <option value="2">Warehouse Manager</option>
-                                <option value="3">Storekeeper</option>
+                                <option value="2">WarehouseManager</option>
+                                <option value="3">WarehouseStaff</option>
                                 <option value="4">Accountant</option>
                             </Form.Select>
                         </div>

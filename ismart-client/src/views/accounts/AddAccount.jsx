@@ -13,7 +13,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
-    const [userCode, setUserCode] = useState();
+    const [userCode, setUserCode] = useState("");
     const [userName, setUserName] = useState();
     const [password, setPassword] = useState();
     const [email, setEmail] = useState();
@@ -67,8 +67,12 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const handleChangeAddress = (event) => {
         setAddress(event.target.value);
     }
-    const handleChangeImage = (event) => {
-        setImage(event.target.value);
+    const handleChangeImage = async (event) => {
+        const file = event.target.files[0];
+        // console.log("file: ", file);
+        let res = await uploadImage(file);
+        const urlImage = res.url;
+        setImage(urlImage);
     }
     const handleChangeFullName = (event) => {
         setFullName(event.target.value);
@@ -77,8 +81,8 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
 
 
     const handleReset = () => {
-        selectedWarehouse(null);
-        selectedWarehouseId(null);
+        setSelectedWarehouse(null);
+        setSelectedWarehouseId(null);
 
         setUserCode(null);
         setUserName(null);
@@ -97,16 +101,20 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
         } else if (!userName) {
             toast.warning("Tên đăng nhập không được để trống");
         }
-        else if (!selectedWarehouseId) {
-            toast.warning("Vui lòng chọn kho");
-        }
+        // else if (!selectedWarehouseId) {
+        //     toast.warning("Vui lòng chọn kho");
+        // }
         else {
-            let res = await addUser(email, password,
+            let res = await addUser(
+                email, password,
                 phone, selectedOptionRole,
                 1,
-                userName, selectedWarehouseId,
-                userCode, address,
-                "", fullName);
+                userName,
+                userCode,
+                address,
+                image,
+                fullName);
+            // console.log("res: ", image);
             if (res.isSuccess) {
                 toast.success("Thêm mới tài khoản thành công");
                 updateTable();
@@ -147,9 +155,9 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                         <Col md={7}>
                             <label >Vai trò</label>
                             <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
-
+                                <option value="">Vai trò</option>
                                 <option value="2">WarehouseManager</option>
-                                <option value="3">Storekeeper</option>
+                                <option value="3">WarehouseStaff</option>
                                 <option value="4">Accountant</option>
                             </Form.Select>
                         </Col>

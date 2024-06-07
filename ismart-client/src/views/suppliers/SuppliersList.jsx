@@ -148,17 +148,21 @@ function SupplierList() {
                                     </div>
                                 </div>
                             </div>
-                            {roleId !== 4 ? <div className="col-auto ButtonCSSDropdown">
-                                <button
-                                    className="btn btn-success border-left-0 rounded"
-                                    type="button"
-                                    onClick={() => setIsShowModelAddNew(true)}
-                                ><i className="fa-solid fa-plus"></i>
-                                    &nbsp;
-                                    Thêm nhà cung cấp
+                            {
+                                (roleId == 1 || roleId == 2) ?
+                                    <div className="col-auto ButtonCSSDropdown">
+                                        <button
+                                            className="btn btn-success border-left-0 rounded"
+                                            type="button"
+                                            onClick={() => setIsShowModelAddNew(true)}
+                                        ><i className="fa-solid fa-plus"></i>
+                                            &nbsp;
+                                            Thêm nhà cung cấp
 
-                                </button>
-                            </div> : ''}
+                                        </button>
+                                    </div>
+                                    : ''
+                            }
 
                         </div>
                         <div className=" table-responsive">
@@ -170,7 +174,11 @@ function SupplierList() {
 
                                         <th className="align-middle  text-nowrap">Email</th>
                                         <th className="align-middle  text-nowrap">SỐ ĐIỆN THOẠI</th>
-                                        {roleId === 4 ? '' : <th className="align-middle  text-nowrap">Tình trạng</th>}
+                                        {
+                                            (roleId == 1 || roleId == 2) ?
+                                                <th className="align-middle  text-nowrap">Tình trạng</th>
+                                                : ''
+                                        }
 
 
 
@@ -186,15 +194,23 @@ function SupplierList() {
                                                 <td className="align-middle">{s.supplierName}</td>
                                                 <td className="align-middle">{s.supplierEmail}</td>
                                                 <td className="align-middle">{s.supplierPhone}</td>
-                                                {roleId === 4 ? '' : <td className="align-middle">
-                                                    <SwitchButton status={s.status} handleChangeStatus={() => handleChangeStatus(s)} />
-                                                </td>}
+                                                {
+                                                    (roleId == 1 || roleId == 2) ?
+                                                        <td className="align-middle">
+                                                            <SwitchButton status={s.status} handleChangeStatus={() => handleChangeStatus(s)} />
+                                                        </td>
+                                                        : ''
+                                                }
 
 
-                                                {roleId !== 4 ? <td className="align-middle " style={{ padding: '10px' }}>
+                                                {
+                                                    (roleId == 1 || roleId == 2) ?
+                                                        <td className="align-middle " style={{ padding: '10px' }}>
 
-                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditSupplier(s)}></i>
-                                                </td> : ''}
+                                                            <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditSupplier(s)}></i>
+                                                        </td>
+                                                        : ''
+                                                }
 
                                             </tr>
                                         ))

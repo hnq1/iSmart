@@ -30,7 +30,7 @@ const Login = () => {
     useEffect(() => {
         let token = localStorage.getItem('token');
         if (token) {
-            navigate('/danh-sach-mat-hang');
+            navigate('/cac-lo-hang-nhap');
         }
     });
     const handleLogin = async () => {
@@ -64,7 +64,7 @@ const Login = () => {
 
                 loginContext(username, res.token.accessToken, res.userId, res.roleId);
                 // toast.error('Bạn không có quyền truy cập vao day');
-                navigate("/quan-ly-tai-khoan");
+                navigate("/cac-lo-hang-nhap");
 
                 // Xử lý đăng nhập thành công
                 // if (res.roleId === 1) {

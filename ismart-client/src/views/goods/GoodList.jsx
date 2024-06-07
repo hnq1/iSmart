@@ -12,13 +12,21 @@ import ModalGoodHistory from './GoodHistory';
 import ModalEditGood from './EditProduct';
 import ModalAddGood from './AddProduct';
 import { fetchUserByUserId } from '~/services/UserServices';
-
+import { useNavigate } from 'react-router-dom';
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 
 
 function MyTable() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);;
     const userId = parseInt(localStorage.getItem('userId'), 10);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (![1, 2, 4].includes(roleId)) {
+            navigate('/404'); // Chuyển hướng người dùng không phù hợp
+        }
+    }, [roleId, navigate]);
 
     const [listGoods, setListGoods] = useState({});
     const [totalCategories, setTotalCategories] = useState([]);
@@ -52,6 +60,7 @@ function MyTable() {
     const [dataGoodEdit, setDataGoodEdit] = useState([]);
 
     const [isShowModelAddGood, setIsShowModelAddGood] = useState(false);
+
 
     useEffect(() => {
         let res = getGoods(1, selectedStorageId, selectedCategoryId, selectedSupplierId);
@@ -218,17 +227,21 @@ function MyTable() {
                                 </div>
                             </div>
                         </div>
-                        {roleId !== 4 ? <div className="col-auto">
+                        {
+                            (roleId == 1 || roleId == 2) ?
+                                <div className="col-auto">
 
-                            <button
-                                className="btn btn-success border-left-0 rounded ButtonCSS"
-                                type="button"
-                                onClick={() => setIsShowModelAddGood(true)}
-                            ><i className="fa-solid fa-plus"></i>
-                                &nbsp;Thêm hàng hóa
-                            </button>
+                                    <button
+                                        className="btn btn-success border-left-0 rounded ButtonCSS"
+                                        type="button"
+                                        onClick={() => setIsShowModelAddGood(true)}
+                                    ><i className="fa-solid fa-plus"></i>
+                                        &nbsp;Thêm hàng hóa
+                                    </button>
 
-                        </div> : ''}
+                                </div>
+                                : ''
+                        }
                     </div>
 
                     <div className=" table-responsive" style={{ overflowY: 'auto', overflowX: 'auto', zIndex: 3 }}>
@@ -311,9 +324,13 @@ function MyTable() {
                                             <td className="align-middle">{g.warrantyTime + " Tháng "}</td>
                                             <td className="align-middle">{g.barcode}</td>
                                             <td className="align-middle"><i className="fa-solid fa-clock-rotate-left actionButtonCSS" onClick={() => handleShowGoodHistory(g)}></i></td>
-                                            {roleId !== 4 ? <td className="align-middle " style={{ padding: '10px' }}>
-                                                <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => showModelEditGood(g)}></i>
-                                            </td> : ''}
+                                            {
+                                                (roleId == 1 || roleId == 2) ?
+                                                    <td className="align-middle " style={{ padding: '10px' }}>
+                                                        <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => showModelEditGood(g)}></i>
+                                                    </td>
+                                                    : ''
+                                            }
                                         </tr>
                                     ))
 

@@ -52,23 +52,32 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
         setAddress(event.target.value);
     }
 
+
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
-        console.log("file: ", file);
+        // console.log("file: ", file);
         let res = await uploadImage(file);
-        setImage(res);
-        console.log("upload image: ", res);
+        const urlImage = res.url;
+        setImage(urlImage);
+
+        // console.log("upload image: ", res);
+
     }
 
 
     const handleSave = async () => {
-        let res = await updateUser(dataUserEdit.userId,
-            email, null, phone,
+        let res = await updateUser(
+            dataUserEdit.userId,
+            email,
+            phone,
             dataUserEdit.roleId,
-            1, userName,
-            1, userCode,
-            address, image, fullName);
-        console.log("check res: ", res)
+            1,
+            userName,
+            userCode,
+            address,
+            image,
+            fullName);
+        // console.log("check res image: ", image);
         if (res) { // Check if the update was successful
             toast.success("Cập nhật thông tin người dùng thành công");
             updateTable(); // Update the user list
@@ -131,12 +140,11 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
                         <label >Hình ảnh </label>
-
                         <Col md={2}>
                             <div>
                                 <input
                                     type="file"
-                                    accept="image/" // Chỉ chấp nhận các loại file ảnh
+                                    accept="image/*" // Chỉ chấp nhận các loại file ảnh
                                     onChange={handleChooseFile} // Hàm xử lý sự kiện khi người dùng chọn file
                                 />
                             </div>
