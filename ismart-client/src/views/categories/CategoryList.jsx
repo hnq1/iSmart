@@ -118,8 +118,8 @@ function CategoryList() {
                                 <thead>
                                     <tr>
                                         <th className="align-middle   text-nowrap">STT</th>
-                                        <th className="align-middle  text-nowrap">Danh mục</th>
-                                        <th className="align-middle  text-nowrap">Chi tiết</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>Danh mục</th>
+                                        {/* <th className="align-middle  text-nowrap">Chi tiết</th> */}
 
 
                                     </tr>
@@ -131,7 +131,7 @@ function CategoryList() {
                                             <tr key={`storage${index}`}>
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
                                                 <td className="align-middle text-truncate" >{s.categoryName}</td>
-                                                <td className="align-middle " style={{ textAlign: 'left' }} >{s.description}</td>
+                                                {/* <td className="align-middle " style={{ textAlign: 'left' }} >{s.description}</td> */}
                                                 {
                                                     (roleId == 1 || roleId == 2) ?
                                                         <td className="align-middle " style={{ padding: '10px' }}>

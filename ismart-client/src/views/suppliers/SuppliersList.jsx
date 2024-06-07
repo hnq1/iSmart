@@ -170,9 +170,9 @@ function SupplierList() {
                                 <thead>
                                     <tr>
                                         <th className="align-middle   text-nowrap">STT</th>
-                                        <th className="align-middle  text-nowrap">NHÀ CUNG CẤP</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>NHÀ CUNG CẤP</th>
 
-                                        <th className="align-middle  text-nowrap">Email</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>EMAIL</th>
                                         <th className="align-middle  text-nowrap">SỐ ĐIỆN THOẠI</th>
                                         {
                                             (roleId == 1 || roleId == 2) ?
@@ -189,10 +189,10 @@ function SupplierList() {
 
                                     {listSuppliers && listSuppliers.length > 0 &&
                                         listSuppliers.map((s, index) => (
-                                            <tr key={`supplier${index}`}>
+                                            <tr key={`supplier${index}`} >
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
-                                                <td className="align-middle">{s.supplierName}</td>
-                                                <td className="align-middle">{s.supplierEmail}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left' }}>{s.supplierName}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left' }}>{s.supplierEmail}</td>
                                                 <td className="align-middle">{s.supplierPhone}</td>
                                                 {
                                                     (roleId == 1 || roleId == 2) ?

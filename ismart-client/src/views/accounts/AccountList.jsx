@@ -14,19 +14,19 @@ import { fetchAllStorages } from "~/services/StorageServices";
 import { set } from 'lodash';
 import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 
-
 const ListAccount = () => {
-    // const navigate = useNavigate();
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
-
-    // Check for role ID and redirect if not authorized
-    // useEffect(() => {
-    //     if (roleId !== 1) {
-    //         navigate('/');
-    //         // Chuyển hướng về trang chủ hoặc trang khác
-    //         //  nếu người dùng không được ủy quyền
-    //     }
-    // }, [roleId, navigate]);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
+    const navigate = useNavigate();
+    //Check for role ID and redirect if not authorized
+    useEffect(() => {
+        if (roleId !== 1) {
+            navigate('/404');
+            // Không có quyền truy cập vào trang này
+            // Chuyển hướng về trang chủ hoặc trang khác
+            //  nếu người dùng không được ủy quyền
+        }
+    }, [roleId, navigate]);
 
     const [isShowModelAdd, setIsShowModelAdd] = useState(false);
 
