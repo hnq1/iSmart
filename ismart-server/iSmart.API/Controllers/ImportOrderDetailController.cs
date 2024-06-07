@@ -44,44 +44,42 @@ namespace iSmart.API.Controllers
             return Ok(result);
         }
 
+        // DELETE api/<ImportOrderDetailController>/5
+        [HttpDelete("delete-import-order-detail/{id}")]
+        public IActionResult DeleteOrderDetail(int id)
+        {
+            var result = _orderDetailService.DeleteImportOrderDetail(id);
+            if (result == false)
+            {
+                return StatusCode(500);
+            }
+            return Ok("Delete order detail complete");
+        }
+
+        // GET api/<ImportOrderDetailController>/5
+        [HttpGet("get-import-order-details")]
+        public IActionResult GetOrderDetailsByOrderID(int oid)
+        {
+            var order = _orderDetailService.GetOrderDetailsByOrderID(oid);
+            if (order == null)
+            {
+                return NotFound("Don't have order detail");
+            }
+            return Ok(order);
+        }
 
 
-        //// GET api/<ImportOrderDetailController>/5
-        //[HttpGet("get-import-order-details")]
-        //public IActionResult GetOrderDetailsByOrderID(int oid)
-        //{
-        //    var order = _orderDetailService.GetOrderDetailsByOrderID(oid);
-        //    if (order == null)
-        //    {
-        //        return NotFound("Don't have order detail");
-        //    }
-        //    return Ok(order);
-        //}
-        //// POST api/<ImportOrderDetailController>
+        // PUT api/<ImportOrderDetailController>/5
+        [HttpPut("update-import-order-detail")]
+        public IActionResult UpdateOrderDetail(UpdateImportOrderDetailRequest detail)
+        {
+            var result = _orderDetailService.UpdateOrderDetail(detail);
+            if (result == null)
+            {
+                return StatusCode(500);
+            }
+            return Ok(result);
+        }
 
-
-
-        //// PUT api/<ImportOrderDetailController>/5
-        //[HttpPut("update-import-order-detail")]
-        //public IActionResult UpdateOrderDetail(UpdateImportOrderDetailRequest detail)
-        //{
-        //    var result = _orderDetailService.UpdateOrderDetail(detail);
-        //    if (result == null)
-        //    {
-        //        return StatusCode(500);
-        //    }
-        //    return Ok(result);
-        //}
-        //// DELETE api/<ImportOrderDetailController>/5
-        //[HttpDelete("delete-import-order-detail/{id}")]
-        //public IActionResult DeleteOrderDetail(int id)
-        //{
-        //    var result = _orderDetailService.DeleteImportOrderDetail(id);
-        //    if (result == false)
-        //    {
-        //        return StatusCode(500);
-        //    }
-        //    return Ok("Delete order detail complete");
-        //}
     }
 }

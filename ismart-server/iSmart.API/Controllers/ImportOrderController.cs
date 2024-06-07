@@ -111,7 +111,7 @@ namespace iSmart.API.Controllers
 
                         // Cập nhật các thông tin khác cho bản ghi lịch sử
                         history.OrderCode = result.ImportCode;
-                        history.UserId = (int)result.StatusId ;
+                        history.UserId = (int)result.UserId ;
                         history.Quantity = Goods.InStock;
                         history.Date = DateTime.Now;
                         _context.Add(history);

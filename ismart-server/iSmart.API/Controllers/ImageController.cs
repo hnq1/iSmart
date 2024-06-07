@@ -30,13 +30,28 @@ public class ImagesController : ControllerBase
             Directory.CreateDirectory(uploads);
         }
 
+<<<<<<< HEAD
         var filePath = Path.Combine(uploads, fileUpload.FileName);
+=======
+        var uniqueFileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+        var filePath = Path.Combine(uploads, uniqueFileName);
+
+        if (System.IO.File.Exists(filePath))
+        {
+            return Conflict("A file with the same name already exists.");
+        }
+
+>>>>>>> origin/anhddhe170353
         using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
             await fileUpload.CopyToAsync(fileStream);
         }
 
+<<<<<<< HEAD
         var imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileUpload.FileName}";
+=======
+        var imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/{uniqueFileName}";
+>>>>>>> origin/anhddhe170353
         return Ok(new { url = imageUrl });
     }
 }
