@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using iSmart.Entity.DTOs.DeliveryDTO;
 using iSmart.Entity.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace iSmart.Service
 {
@@ -16,6 +17,8 @@ namespace iSmart.Service
         CreateDeliveryResponse AddDelivery(CreateDeliveryRequest delivery);
         UpdateDeliveryResponse UpdateDelivery(UpdateDeliveryRequest delivery);
 
+        bool UpdateDeleteStatusDelivery(int id);
+
     }
     public class DeliveryService : IDeliveryService
     {
@@ -24,6 +27,30 @@ namespace iSmart.Service
         public DeliveryService(iSmartContext context)
         {
             _context = context;
+        }
+
+
+        public bool UpdateDeleteStatusDelivery(int id)
+        {
+            try
+            {
+                var delivery = GetDeliveryById(id);
+                if (delivery == null)
+                {
+                    return false;
+                }
+
+                delivery.StatusId = delivery.StatusId == 1 ? 2 : 1;
+
+                _context.Deliveries.Update(delivery);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public CreateDeliveryResponse AddDelivery(CreateDeliveryRequest delivery)
@@ -109,5 +136,7 @@ namespace iSmart.Service
                 return new UpdateDeliveryResponse { IsSuccess = false, Message = $"Thay doi delivery that bai" };
             }
         }
+
+       
     }
 }

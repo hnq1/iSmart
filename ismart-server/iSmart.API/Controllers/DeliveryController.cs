@@ -56,5 +56,12 @@ namespace iSmart.API.Controllers
             var result = _deliveryService.UpdateDelivery(delivery);
             return Ok(result);
         }
+
+        [HttpPut("update-delivery-status")]
+        public async Task<IActionResult> UpdateStatus(int id)
+        {
+            var result = _deliveryService.UpdateDeleteStatusDelivery(id);
+            return Ok(result);
+        }
     }
 }

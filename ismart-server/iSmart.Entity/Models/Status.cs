@@ -14,11 +14,13 @@ namespace iSmart.Entity.Models
             ReturnsOrders = new HashSet<ReturnsOrder>();
             Suppliers = new HashSet<Supplier>();
             Users = new HashSet<User>();
+            Deliveries = new HashSet<Delivery>();
         }
 
         public int StatusId { get; set; }
         public string StatusType { get; set; }
 
+        public virtual ICollection<Delivery> Deliveries { get; set; }
         public virtual ICollection<Bill> Bills { get; set; }
         public virtual ICollection<ExportOrder> ExportOrders { get; set; }
         public virtual ICollection<Good> Goods { get; set; }
