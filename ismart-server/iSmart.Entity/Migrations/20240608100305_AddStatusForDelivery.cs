@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace iSmart.Entity.Migrations
 {
-    public partial class initialDb : Migration
+    public partial class AddStatusForDelivery : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -34,19 +34,6 @@ namespace iSmart.Entity.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Category", x => x.CategoryId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Delivery",
-                columns: table => new
-                {
-                    DeliveyId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DeliveryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Delivery", x => x.DeliveyId);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,6 +125,25 @@ namespace iSmart.Entity.Migrations
                         column: x => x.roleId,
                         principalTable: "Role",
                         principalColumn: "RoleId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Delivery",
+                columns: table => new
+                {
+                    DeliveyId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DeliveryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    StatusId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Delivery", x => x.DeliveyId);
+                    table.ForeignKey(
+                        name: "FK_Delivery_Status",
+                        column: x => x.StatusId,
+                        principalTable: "Status",
+                        principalColumn: "StatusId");
                 });
 
             migrationBuilder.CreateTable(
@@ -592,8 +598,7 @@ namespace iSmart.Entity.Migrations
                         name: "FK_AvailableForReturns_ExportOrder_ExportId",
                         column: x => x.ExportId,
                         principalTable: "ExportOrder",
-                        principalColumn: "ExportId",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "ExportId");
                     table.ForeignKey(
                         name: "FK_AvailableForReturns_Goods_GoodsId",
                         column: x => x.GoodsId,
@@ -603,8 +608,7 @@ namespace iSmart.Entity.Migrations
                         name: "FK_AvailableForReturns_ImportOrder_ImportId",
                         column: x => x.ImportId,
                         principalTable: "ImportOrder",
-                        principalColumn: "ImportId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ImportId");
                 });
 
             migrationBuilder.CreateTable(
@@ -664,14 +668,12 @@ namespace iSmart.Entity.Migrations
                         name: "FK_ReturnsOrder_ExportOrder_ExportId",
                         column: x => x.ExportId,
                         principalTable: "ExportOrder",
-                        principalColumn: "ExportId",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "ExportId");
                     table.ForeignKey(
                         name: "FK_ReturnsOrder_ImportOrder_ImportId",
                         column: x => x.ImportId,
                         principalTable: "ImportOrder",
-                        principalColumn: "ImportId",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "ImportId");
                     table.ForeignKey(
                         name: "FK_ReturnsOrder_Status",
                         column: x => x.StatusId,
@@ -682,19 +684,18 @@ namespace iSmart.Entity.Migrations
                         column: x => x.WarehouseId,
                         principalTable: "Warehouse",
                         principalColumn: "WarehouseId",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ReturnsOrder_Supplier_SupplierId",
                         column: x => x.SupplierId,
                         principalTable: "Supplier",
                         principalColumn: "SupplierId",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ReturnsOrder_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -716,13 +717,12 @@ namespace iSmart.Entity.Migrations
                         column: x => x.GoodsId,
                         principalTable: "Goods",
                         principalColumn: "GoodsId",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ReturnsOrderDetail_ReturnsOrder_ReturnsId",
                         column: x => x.ReturnsId,
                         principalTable: "ReturnsOrder",
-                        principalColumn: "ReturnsId",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "ReturnsId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -769,6 +769,11 @@ namespace iSmart.Entity.Migrations
                 name: "IX_BillDetail_GoodsId",
                 table: "BillDetail",
                 column: "GoodsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Delivery_StatusId",
+                table: "Delivery",
+                column: "StatusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmailToken_UserId",
