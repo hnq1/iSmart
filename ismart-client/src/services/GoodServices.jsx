@@ -15,7 +15,7 @@ const fetchAllGoods = () => {
 }
 
 const fetchGoodsWithStorageAndSupplier = (storageId, supplierId) => {
-    return axios.get(`api/goods/get-goods-with-storage-supplier?storageId=${storageId}&supplierId=${supplierId}`)
+    return axios.get(`api/goods/get-goods-with-warehouse-supplier?storageId=${storageId}&supplierId=${supplierId}`)
 }
 
 const addGood = (goodsName, goodsCode, categoryId, description, supplierId, measuredUnit, image, statusId, warrantyTime, barcode, storageId) => {

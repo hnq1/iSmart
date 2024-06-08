@@ -1,28 +1,33 @@
+import { get } from "lodash";
 import axios from "./axios";
 
-const addNewImportOrder = (userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, storageId, deliveryId, image, stokekeeperId) => {
-    return axios.post(`api/ImportOrder/add-import-order`, { userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, storageId, deliveryId, image, stokekeeperId })
+const addNewImportOrder = (userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, warehouseId, deliveryId, image, stokekeeperId) => {
+    return axios.post(`api/import-order/add-import-order`, { userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, warehouseId, deliveryId, image, stokekeeperId })
 }
 
 const updateImportOrder = (importId, userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, storageId, deliveryId, image, stokekeeperId) => {
-    return axios.put(`api/ImportOrder/update-import-order`, { importId, userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, storageId, deliveryId, image, stokekeeperId })
+    return axios.put(`api/import-order/update-import-order`, { importId, userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, storageId, deliveryId, image, stokekeeperId })
+}
+
+const fetchAllImportOrders = () => {
+    return axios.get(`api/import-order/get-all-import-orders`);
 }
 
 const fetchImportOrderNewest = () => {
-    return axios.get(`api/ImportOrder/get-newest-import-order`);
+    return axios.get(`api/import-order/get-newest-import-order`);
 }
 
-const fetchImportOrdersWithfilter = (page, storage, status, sortDate, keyword) => {
-    return axios.get(`api/ImportOrder/get-import-orders?page=${page}
-    ${storage ? `&storage=${storage}` : ''}${status ? `&status=${status}` : ''}${sortDate ? `&sortDate=${sortDate}` : ''}${keyword ? `&keyword=${keyword}` : ''}`);
+const fetchImportOrdersWithfilter = (page, warehouseId, status, sortDate, keyword) => {
+    return axios.get(`api/import-order/get-import-orders?page=${page}
+    ${warehouseId ? `&storage=${warehouseId}` : ''}${status ? `&status=${status}` : ''}${sortDate ? `&sortDate=${sortDate}` : ''}${keyword ? `&keyword=${keyword}` : ''}`);
 }
 
 const addSuccessFullImportOrder = (importId) => {
-    return axios.post(`api/ImportOrder/Import?importid=${importId}`)
+    return axios.post(`api/import-order/Import?importid=${importId}`)
 }
 
 const cancelImport = (importId) => {
-    return axios.post(`api/ImportOrder/cancel-import?importId=${importId}`)
+    return axios.post(`api/import-order/cancel-import?importId=${importId}`)
 }
 
-export { addNewImportOrder, updateImportOrder, fetchImportOrderNewest, fetchImportOrdersWithfilter, addSuccessFullImportOrder, cancelImport }
+export { addNewImportOrder, updateImportOrder, fetchImportOrderNewest, fetchAllImportOrders, fetchImportOrdersWithfilter, addSuccessFullImportOrder, cancelImport }

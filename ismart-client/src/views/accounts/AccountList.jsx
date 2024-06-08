@@ -96,7 +96,7 @@ const ListAccount = () => {
         //console.log("warehouse.warehouseId: ", warehouse.warehouseId);
         setSelectedWarehouseId(warehouse.warehouseId);
         //console.log("setSelectedWarehouse: ", warehouse.warehouseName);
-        getUsers(1);
+        // getUsers(1);
     }
 
     const handleSearch = () => {

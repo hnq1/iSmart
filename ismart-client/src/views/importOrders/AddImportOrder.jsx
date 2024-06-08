@@ -24,9 +24,12 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const [importCode, setImportCode] = useState('');
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    const [selectUserId, setSelectUserId] = useState(0);
+
+
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
 
 
@@ -40,7 +43,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const [rowsData, setRowsData] = useState([]);
 
-    const [totalPrice, setTotalPrice] = useState(0);
+    const [totalCost, setTotalCost] = useState(0);
 
     const [selectedDate, setSelectedDate] = useState('');
 
@@ -59,11 +62,11 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     useEffect(() => {
         setRowsData([]);
-    }, [selectedStorageId, selectedSupplierId])
+    }, [selectedWarehouseId, selectedSupplierId])
 
 
     useEffect(() => {
-        setTotalPrice(0);
+        setTotalCost(0);
     }, [])
 
     useEffect(() => {
@@ -73,14 +76,21 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     }, [])
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+
+    const handleStorageClick = (warehouse) => {
+        // let res = await setSelectedStorage(storage.storageName);
+
+        setSelectedWarehouse(warehouse.warehouseName);
+        //console.log("warehouse.warehouseId: ", warehouse.warehouseId);
+        setSelectedWarehouseId(warehouse.warehouseId);
+        //console.log("setSelectedWarehouse: ", warehouse.warehouseName);
+        // getUsers(1);
     }
+
 
 
     const getAllSuppliers = async () => {
@@ -115,14 +125,14 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const handleReset = () => {
         setRowsData([]);
-        setSelectedStorage(null);
-        setSelectedStorageId(null);
+        setSelectedWarehouse(null);
+        setSelectedWarehouseId(null);
         setSelectedSupplier(null);
         setSelectedSupplierId(null);
         setSelectedDelivery(null);
         setSelectedDeliveryId(null);
         setSelectedDate('');
-        setTotalPrice(0);
+        setTotalCost(0);
         setImportCode(null);
     }
 
@@ -137,14 +147,14 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         // updateDataImport[rowsData.length - 1] = importData;
         setRowsData(updateDataImport);
 
-        setTotalPrice(x => x + importData.totalOneGoodPrice);
+        setTotalCost(x => x + importData.totalOneGoodPrice);
 
     }
 
 
     // mở addRowDataImport
     const handleAddRowDataImport = () => {
-        if (selectedStorageId && selectedSupplierId) {
+        if (selectedWarehouseId && selectedSupplierId) {
             setIsShowRowDataImport(true);
             // setRowsData([...rowsData, {}])
         } else {
@@ -167,7 +177,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         const updateDataImport = rowsData.filter((item, index) => index !== rowdel);
         const deletePrice = rowsData[rowdel].totalOneGoodPrice;
         setRowsData(updateDataImport);
-        setTotalPrice(x => x - deletePrice ? x - deletePrice : 0);
+        setTotalCost(x => x - deletePrice ? x - deletePrice : 0);
     }
 
     // update 1 row data từ RowDataImport
@@ -175,15 +185,15 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         console.log(updateData);
         const updateDataImport = [...rowsData];
         updateDataImport[rowUpdate] = updateData;
-        setTotalPrice(x => x - rowsData[rowUpdate].totalOneGoodPrice + updateData.totalOneGoodPrice);
+        setTotalCost(x => x - rowsData[rowUpdate].totalOneGoodPrice + updateData.totalOneGoodPrice);
         setRowsData(updateDataImport);
     }
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
         let res = await uploadImage(file);
-        setImageImportOrder(res);
-        console.log(res);
+        const urlImage = res.url;
+        setImageImportOrder(urlImage);
     }
 
     // Thêm 1 lô hàng 
@@ -193,11 +203,21 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         }
         else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
-        } else if (totalPrice === 0) {
+        } else if (totalCost === 0) {
             toast.warning("Vui lòng nhập mặt hàng nhập");
         } else {
-            let res = await addNewImportOrder(userId, selectedSupplierId, totalPrice, "", "2024-03-24T08:47:56.243Z", formatDateImport(selectedDate), 3, importCode, selectedStorageId, selectedDeliveryId, imageImportOrder, null);
-            console.log(res);
+            let res = await addNewImportOrder(userId,
+                selectedSupplierId,
+                totalCost,
+                "",
+                "2024-03-24T08:47:56.243Z",
+                formatDateImport(selectedDate),
+                3, importCode,
+                selectedWarehouseId,
+                selectedDeliveryId,
+                imageImportOrder,
+                null);
+            console.log("res them  1 lo hang moi: ", res);
             if (res.isSuccess == true) {
                 let resImportId = await fetchImportOrderNewest();
                 console.log(resImportId);
@@ -237,9 +257,20 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
                         </Col>
                         <Col md={2}>
-                            <DropdownButton className="ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Chọn kho"} variant="success" >
-                                {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                            <DropdownButton
+                                className="DropdownButtonCSS ButtonCSSDropdown"
+                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                variant="success"
+                                style={{ zIndex: 999 }}
+                            >
+                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                    <Dropdown.Item
+                                        key={`warehouse ${index}`}
+                                        eventKey={c.warehouseName}
+                                        onClick={(e) => handleStorageClick(c, e)}
+                                    >
+                                        {c.warehouseName}
+                                    </Dropdown.Item>
                                 ))}
                             </DropdownButton>
                         </Col>
@@ -335,7 +366,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                             type="button"
 
                         >
-                            Tổng giá tiền: {formattedAmount(totalPrice)}
+                            Tổng giá tiền: {formattedAmount(totalCost)}
                         </button>
 
                     </div>
@@ -349,7 +380,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             </Modal.Footer>
         </Modal >
 
-        <AddRowDataImportOrder isShow={isShowRowDataImport} selectedSupplierId={selectedSupplierId} selectedStorageId={selectedStorageId}
+        <AddRowDataImportOrder isShow={isShowRowDataImport} selectedSupplierId={selectedSupplierId} selectedStorageId={selectedWarehouseId}
             onChange={(importData) => takeRowDataImportOrder(importData)}
             handleClose={() => setIsShowRowDataImport(false)} />
     </>)
