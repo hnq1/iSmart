@@ -161,22 +161,46 @@ namespace iSmart.Service
                 var query = _context.Users
                     .Include(u => u.Status)
                     .Include(u => u.Role)
-                    .Include(u => u.UserWarehouses) 
-                    .ThenInclude(uw => uw.Warehouse) 
-                    .Where(u =>
-                        (string.IsNullOrEmpty(keyword) || u.UserCode.ToLower().Contains(keyword.ToLower())
-                                                      || u.UserName.ToLower().Contains(keyword.ToLower())
-                                                      || u.Email.ToLower().Contains(keyword.ToLower())
-                                                      || u.UserWarehouses.Any(uw => uw.Warehouse.WarehouseName.ToLower().Contains(keyword.ToLower())))
-                        && (!role.HasValue || u.RoleId == role)
-                        && (!statusId.HasValue || u.StatusId == statusId)
-                        && (!warehouseId.HasValue || u.UserWarehouses.Any(uw => uw.WarehouseId == warehouseId))
-                    )
-                    .OrderBy(u => u.UserId);
+                    .Include(u => u.UserWarehouses)
+                        .ThenInclude(uw => uw.Warehouse)
+                    .OrderBy(u => u.UserId)
+                    .AsQueryable(); // Đảm bảo tạo query có thể mở rộng
 
-                var count = query.Count();
-                var users = query.Skip((pageNum - 1) * pageSize).Take(pageSize)
-                    .Select(u => new UserDTO
+                // Lấy dữ liệu từ cơ sở dữ liệu vào bộ nhớ
+                var users = query.ToList();
+
+                // Thực hiện tìm kiếm từ khóa trên danh sách trong bộ nhớ
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    var keywords = keyword.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    users = users.Where(u =>
+                        keywords.Any(k =>
+                            u.UserCode.ToLower().Contains(k) ||
+                            u.UserName.ToLower().Contains(k) ||
+                            u.Email.ToLower().Contains(k) ||
+                            u.UserWarehouses.Any(uw => uw.Warehouse.WarehouseName.ToLower().Contains(k))
+                        )
+                    ).ToList();
+                }
+
+                // Lọc theo role, statusId và warehouseId
+                if (role.HasValue)
+                    users = users.Where(u => u.RoleId == role).ToList();
+                if (statusId.HasValue)
+                    users = users.Where(u => u.StatusId == statusId).ToList();
+                if (warehouseId.HasValue)
+                    users = users.Where(u => u.UserWarehouses.Any(uw => uw.WarehouseId == warehouseId)).ToList();
+
+                // Thực hiện phân trang và trả về kết quả
+                var count = users.Count();
+                var totalPages = (int)Math.Ceiling((double)count / pageSize);
+                users = users.Skip((pageNum - 1) * pageSize).Take(pageSize).ToList();
+
+                return new UserFilterPagingResponse
+                {
+                    PageSize = pageSize,
+                    TotalPages = totalPages,
+                    Data = users.Select(u => new UserDTO
                     {
                         UserId = u.UserId,
                         UserCode = u.UserCode,
@@ -189,17 +213,8 @@ namespace iSmart.Service
                         RoleName = u.Role.RoleName,
                         StatusId = u.StatusId,
                         StatusName = u.Status.StatusType,
-                        Image = u.Image,
-                    })
-                    .ToList();
-
-                var totalPages = (int)Math.Ceiling((double)count / pageSize);
-
-                return new UserFilterPagingResponse
-                {
-                    PageSize = pageSize,
-                    TotalPages = totalPages,
-                    Data = users
+                        Image = u.Image
+                    }).ToList()
                 };
             }
             catch (Exception e)
@@ -207,6 +222,7 @@ namespace iSmart.Service
                 throw new Exception(e.Message);
             }
         }
+
 
 
 

@@ -103,19 +103,39 @@ namespace iSmart.Service
             {
                 var pageSize = 6;
 
-                var deliveries = _context.Deliveries.Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))                                                      
-                                                .OrderBy(d => d.DeliveyId).ToList();
-                var count = deliveries.Count();
-                var res = deliveries.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                var totalPages = Math.Ceiling((double)count / pageSize);
-                return new DeliveryFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
+                // Xác định giá trị page không âm
+                if (page < 1)
+                {
+                    page = 1;
+                }
 
+                var deliveries = _context.Deliveries.AsQueryable();
+
+                // Áp dụng điều kiện tìm kiếm theo từ khóa
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    var keywords = keyword.ToLower().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    deliveries = deliveries.Where(d => keywords.Any(k => d.DeliveryName.ToLower().Contains(k)));
+                }
+
+                var count = deliveries.Count();
+                var res = deliveries.OrderBy(d => d.DeliveyId)
+                                    .Skip((page - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToList();
+
+                var totalPages = (int)Math.Ceiling((double)count / pageSize);
+
+                return new DeliveryFilterPaging { TotalPages = totalPages, PageSize = pageSize, Data = res };
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
+
+
+
 
         public UpdateDeliveryResponse UpdateDelivery(UpdateDeliveryRequest delivery)
         {
