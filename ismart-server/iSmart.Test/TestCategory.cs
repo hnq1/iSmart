@@ -7,7 +7,7 @@ using iSmart.Entity.DTOs.CategoryDTO;
 using iSmart.Entity.Models;
 using iSmart.Service;
 
-namespace WM.Test
+namespace iSmart.Test
 {
     public class TestCategory
     {
@@ -36,7 +36,7 @@ namespace WM.Test
         public void GetCategoryWithFilter_Test()
         {
             var result = false;
-            var categories = _categoryService.GetCategoryByKeyword(1);
+            var categories = _categoryService.GetCategoryByKeyword(1,"t");
             if(categories.Data.Count > 0) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
@@ -56,11 +56,11 @@ namespace WM.Test
             var result = false;
             var categoryEntry = new CreateCategoryRequest
             {
-                CategoryName = "Test",
-                Description = "Test",
+                CategoryName = "Test1",
+                Description = "Test1",
             };
             var categoryResponse = _categoryService.AddCategory(categoryEntry);
-            if(categoryResponse.IsSuccess is true) result = true;
+            if(categoryResponse.IsSuccess == true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
         //update category
