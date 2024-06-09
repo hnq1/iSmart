@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using iSmart.Entity.DTOs.ImportOrderDTO;
 using iSmart.Entity.DTOs.UserDTO;
 using iSmart.Entity.Models;
-using WM.Service;
+using iSmart.Service;
 
-namespace WM.API.Controllers
+namespace iSmart.API.Controllers
 {
     [Route("api/import-order")]
     [ApiController]
@@ -111,7 +111,7 @@ namespace WM.API.Controllers
 
                         // Cập nhật các thông tin khác cho bản ghi lịch sử
                         history.OrderCode = result.ImportCode;
-                        history.UserId = (int)result.StatusId ;
+                        history.UserId = (int)result.UserId ;
                         history.Quantity = Goods.InStock;
                         history.Date = DateTime.Now;
                         _context.Add(history);

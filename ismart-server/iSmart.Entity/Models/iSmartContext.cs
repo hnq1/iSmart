@@ -93,7 +93,8 @@ namespace iSmart.Entity.Models
             {
                 entity.HasOne(d => d.Export)
                     .WithMany(p => p.AvailableForReturns)
-                    .HasForeignKey(d => d.ExportId);
+                    .HasForeignKey(d => d.ExportId)
+                    .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(d => d.Goods)
                     .WithMany(p => p.AvailableForReturns)
@@ -102,7 +103,8 @@ namespace iSmart.Entity.Models
 
                 entity.HasOne(d => d.Import)
                     .WithMany(p => p.AvailableForReturns)
-                    .HasForeignKey(d => d.ImportId);
+                    .HasForeignKey(d => d.ImportId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<Bill>(entity =>
@@ -171,6 +173,11 @@ namespace iSmart.Entity.Models
 
             modelBuilder.Entity<Delivery>(entity =>
             {
+                entity.HasOne(d => d.Status)
+                    .WithMany(d => d.Deliveries)
+                    .HasForeignKey(d => d.StatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Delivery_Status");
                 entity.HasKey(e => e.DeliveyId);
 
                 entity.ToTable("Delivery");
@@ -394,7 +401,7 @@ namespace iSmart.Entity.Models
                     .HasMaxLength(100);
             });
 
-           
+
 
             modelBuilder.Entity<RefreshToken>(entity =>
             {
@@ -437,11 +444,13 @@ namespace iSmart.Entity.Models
 
                 entity.HasOne(d => d.Export)
                     .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.ExportId);
+                    .HasForeignKey(d => d.ExportId)
+                     .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(d => d.Import)
                     .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.ImportId);
+                    .HasForeignKey(d => d.ImportId)
+                    .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.ReturnsOrders)
@@ -455,7 +464,8 @@ namespace iSmart.Entity.Models
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.UserId);
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(d => d.Warehouse)
                     .WithMany(p => p.ReturnsOrders)
@@ -475,7 +485,8 @@ namespace iSmart.Entity.Models
 
                 entity.HasOne(d => d.Returns)
                     .WithMany(p => p.ReturnsOrderDetails)
-                    .HasForeignKey(d => d.ReturnsId);
+                    .HasForeignKey(d => d.ReturnsId)
+                     .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<Role>(entity =>

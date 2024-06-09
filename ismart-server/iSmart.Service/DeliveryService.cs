@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using iSmart.Entity.DTOs.DeliveryDTO;
 using iSmart.Entity.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace iSmart.Service
 {
@@ -16,6 +17,8 @@ namespace iSmart.Service
         CreateDeliveryResponse AddDelivery(CreateDeliveryRequest delivery);
         UpdateDeliveryResponse UpdateDelivery(UpdateDeliveryRequest delivery);
 
+        bool UpdateDeleteStatusDelivery(int id);
+
     }
     public class DeliveryService : IDeliveryService
     {
@@ -24,6 +27,30 @@ namespace iSmart.Service
         public DeliveryService(iSmartContext context)
         {
             _context = context;
+        }
+
+
+        public bool UpdateDeleteStatusDelivery(int id)
+        {
+            try
+            {
+                var delivery = GetDeliveryById(id);
+                if (delivery == null)
+                {
+                    return false;
+                }
+
+                delivery.StatusId = delivery.StatusId == 1 ? 2 : 1;
+
+                _context.Deliveries.Update(delivery);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public CreateDeliveryResponse AddDelivery(CreateDeliveryRequest delivery)
@@ -76,19 +103,39 @@ namespace iSmart.Service
             {
                 var pageSize = 6;
 
-                var deliveries = _context.Deliveries.Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))                                                      
-                                                .OrderBy(d => d.DeliveyId).ToList();
-                var count = deliveries.Count();
-                var res = deliveries.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                var totalPages = Math.Ceiling((double)count / pageSize);
-                return new DeliveryFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
+                // Xác định giá trị page không âm
+                if (page < 1)
+                {
+                    page = 1;
+                }
 
+                var deliveries = _context.Deliveries.AsQueryable();
+
+                // Áp dụng điều kiện tìm kiếm theo từ khóa
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    var keywords = keyword.ToLower().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    deliveries = deliveries.Where(d => keywords.Any(k => d.DeliveryName.ToLower().Contains(k)));
+                }
+
+                var count = deliveries.Count();
+                var res = deliveries.OrderBy(d => d.DeliveyId)
+                                    .Skip((page - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToList();
+
+                var totalPages = (int)Math.Ceiling((double)count / pageSize);
+
+                return new DeliveryFilterPaging { TotalPages = totalPages, PageSize = pageSize, Data = res };
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
+
+
+
 
         public UpdateDeliveryResponse UpdateDelivery(UpdateDeliveryRequest delivery)
         {
@@ -109,5 +156,7 @@ namespace iSmart.Service
                 return new UpdateDeliveryResponse { IsSuccess = false, Message = $"Thay doi delivery that bai" };
             }
         }
+
+       
     }
 }

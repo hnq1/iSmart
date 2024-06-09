@@ -10,7 +10,7 @@ using iSmart.Entity.DTOs.ImportOrderDTO;
 using iSmart.Entity.DTOs.UserDTO;
 using iSmart.Entity.Models;
 
-namespace WM.Service
+namespace iSmart.Service
 {
     public interface IImportOrderService
     {
@@ -93,65 +93,76 @@ namespace WM.Service
         }
 
         public ImportOrderFilterPaging ImportOrderFilterPaging(int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
-
         {
             try
             {
                 var pageSize = 6;
                 if (page <= 0) page = 1;
-                var importOrders = _context.ImportOrders
-                    .Where(s => s.ImportCode.ToLower().Contains(keyword.ToLower())
 
-                                                      && (s.StatusId == status || status == null)
-                                                      && (warehouseId == null || s.WarehouseId == warehouseId));
+                var importOrders = _context.ImportOrders
+                    .Include(i => i.User)
+                    .Include(i => i.Supplier)
+                    .Include(i => i.Status)
+                    .Include(i => i.Warehouse)
+                    .Include(i => i.Delivery)
+                    .Where(i =>
+                        (string.IsNullOrEmpty(keyword) || i.ImportCode.ToLower().Contains(keyword.ToLower()))
+                        && (!status.HasValue || i.StatusId == status)
+                        && (!warehouseId.HasValue || i.WarehouseId == warehouseId)
+                    );
+
                 if (sortDate != null)
                 {
                     importOrders = importOrders.OrderBy(s => s.ImportedDate);
                 }
-                var count = importOrders.Count();
-                var importOrder = importOrders.Select(i => new ImportOrderDTO
-                {
-                    ImportId = i.ImportId,
-                    ImportCode = i.ImportCode,
-                    UserId = i.UserId,
-                    UserName = i.User.UserName,
-                    SupplierId = i.SupplierId,
-                    SupplierName = i.Supplier.SupplierName,
-                    TotalCost = i.TotalCost,
-                    Note = i.Note,
-                    CreatedDate = i.CreatedDate,
-                    ImportedDate = i.ImportedDate,
-                    StatusId = i.StatusId,
-                    StatusType = i.Status.StatusType,
-                    StorageId = i.WarehouseId,
-                    StorageName = i.Warehouse.WarehouseName,
-                    DeliveryId = i.DeliveryId,
-                    DeliveryName = i.Delivery.DeliveryName,
-                    Image = i.Image,
-                    StorekeeperId = i.StaffId,
-                    StorekeeperName = _context.Users.FirstOrDefault(u => u.UserId == i.StaffId).UserName,
-                    ImportOrderDetails = (List<ImportDetailDTO>)i.ImportOrderDetails
-                        .Select(
-                                i => new ImportDetailDTO
-                                {
-                                    ImportId = i.ImportId,
-                                    CostPrice = i.CostPrice,
-                                    GoodsId = i.GoodsId,
-                                    GoodsCode = i.Goods.GoodsCode ?? null,
-                                    Quantity = i.Quantity,
-                                    BatchCode = i.BatchCode,
-                                    ManufactureDate = i.ManufactureDate,
-                                    ExpiryDate = i.ExpiryDate,
-                                })
 
-                });
+                var count = importOrders.Count();
+
+                var importOrder = importOrders
+                    .Select(i => new ImportOrderDTO
+                    {
+                        ImportId = i.ImportId,
+                        ImportCode = i.ImportCode,
+                        UserId = i.UserId,
+                        UserName = i.User.UserName,
+                        SupplierId = i.SupplierId,
+                        SupplierName = i.Supplier.SupplierName,
+                        TotalCost = i.TotalCost,
+                        Note = i.Note,
+                        CreatedDate = i.CreatedDate,
+                        ImportedDate = i.ImportedDate,
+                        StatusId = i.StatusId,
+                        StatusType = i.Status.StatusType,
+                        StorageId = i.WarehouseId,
+                        StorageName = i.Warehouse.WarehouseName,
+                        DeliveryId = i.DeliveryId,
+                        DeliveryName = i.Delivery.DeliveryName,
+                        Image = i.Image,
+                        StorekeeperId = i.StaffId,
+                        StorekeeperName = _context.Users.FirstOrDefault(u => u.UserId == i.StaffId).UserName,
+                        ImportOrderDetails = i.ImportOrderDetails
+                            .Select(id => new ImportDetailDTO
+                            {
+                                ImportId = id.ImportId,
+                                CostPrice = id.CostPrice,
+                                GoodsId = id.GoodsId,
+                                GoodsCode = id.Goods.GoodsCode,
+                                Quantity = id.Quantity,
+                                BatchCode = id.BatchCode,
+                                ManufactureDate = id.ManufactureDate,
+                                ExpiryDate = id.ExpiryDate
+                            }).ToList()
+                    }).ToList();
+
+                var totalPages = (int)Math.Ceiling((double)count / pageSize);
+
                 var res = importOrder.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                var totalPages = Math.Ceiling((double)count / pageSize);
+
                 return new ImportOrderFilterPaging
                 {
                     Data = res,
                     PageSize = pageSize,
-                    TotalPages = (int)totalPages
+                    TotalPages = totalPages
                 };
             }
             catch (Exception e)
@@ -159,6 +170,8 @@ namespace WM.Service
                 throw new Exception(e.Message);
             }
         }
+
+
 
         public CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i)
         {
@@ -169,7 +182,7 @@ namespace WM.Service
                     ImportCode = "IO" + i.ImportCode,
                     UserId = i.UserId,
                     SupplierId = i.SupplierId,
-                    TotalCost = i.TotalCost,
+                    TotalCost = 0,
                     Note = i.Note,
                     CreatedDate = DateTime.Now,
                     ImportedDate = i.ImportedDate,

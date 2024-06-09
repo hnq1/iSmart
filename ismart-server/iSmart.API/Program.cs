@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using iSmart.Entity.Models;
-using WM.Service;
+using iSmart.Service;
 
 internal class Program
 {
@@ -94,6 +94,7 @@ internal class Program
         builder.Services.AddScoped<IWarehouseService, WarehouseService>();
         builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
         builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
+        builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
 
 
         // Đăng ký các dịch vụ
@@ -101,7 +102,6 @@ internal class Program
         // builder.Services.AddScoped<ISupplierService, SupplierService>();
         // builder.Services.AddScoped<IUserService, UserService>();
         // builder.Services.AddScoped<IStatusService, StatusService>();
-        // builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
         // builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
         // builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
         // builder.Services.AddScoped<IProjectService, ProjectService>();
@@ -125,6 +125,7 @@ internal class Program
         app.UseAuthorization();
 
         app.MapControllers();
+        app.UseStaticFiles();
 
         app.UseCors("AllowAll");
 

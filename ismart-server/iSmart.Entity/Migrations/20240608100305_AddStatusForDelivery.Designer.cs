@@ -12,8 +12,8 @@ using iSmart.Entity.Models;
 namespace iSmart.Entity.Migrations
 {
     [DbContext(typeof(iSmartContext))]
-    [Migration("20240528223622_initialDb")]
-    partial class initialDb
+    [Migration("20240608100305_AddStatusForDelivery")]
+    partial class AddStatusForDelivery
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -198,7 +198,12 @@ namespace iSmart.Entity.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
                     b.HasKey("DeliveyId");
+
+                    b.HasIndex("StatusId");
 
                     b.ToTable("Delivery", (string)null);
                 });
@@ -971,7 +976,7 @@ namespace iSmart.Entity.Migrations
                     b.HasOne("iSmart.Entity.Models.ExportOrder", "Export")
                         .WithMany("AvailableForReturns")
                         .HasForeignKey("ExportId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("iSmart.Entity.Models.Good", "Goods")
@@ -982,7 +987,7 @@ namespace iSmart.Entity.Migrations
                     b.HasOne("iSmart.Entity.Models.ImportOrder", "Import")
                         .WithMany("AvailableForReturns")
                         .HasForeignKey("ImportId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Export");
@@ -1046,6 +1051,17 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("Bill");
 
                     b.Navigation("Goods");
+                });
+
+            modelBuilder.Entity("iSmart.Entity.Models.Delivery", b =>
+                {
+                    b.HasOne("iSmart.Entity.Models.Status", "Status")
+                        .WithMany("Deliveries")
+                        .HasForeignKey("StatusId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Delivery_Status");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.EmailToken", b =>
@@ -1266,13 +1282,13 @@ namespace iSmart.Entity.Migrations
                     b.HasOne("iSmart.Entity.Models.ExportOrder", "Export")
                         .WithMany("ReturnsOrders")
                         .HasForeignKey("ExportId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("iSmart.Entity.Models.ImportOrder", "Import")
                         .WithMany("ReturnsOrders")
                         .HasForeignKey("ImportId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("iSmart.Entity.Models.Status", "Status")
@@ -1290,7 +1306,7 @@ namespace iSmart.Entity.Migrations
                     b.HasOne("iSmart.Entity.Models.User", "User")
                         .WithMany("ReturnsOrders")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("iSmart.Entity.Models.Warehouse", "Warehouse")
@@ -1324,7 +1340,7 @@ namespace iSmart.Entity.Migrations
                     b.HasOne("iSmart.Entity.Models.ReturnsOrder", "Returns")
                         .WithMany("ReturnsOrderDetails")
                         .HasForeignKey("ReturnsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Goods");
@@ -1466,6 +1482,8 @@ namespace iSmart.Entity.Migrations
             modelBuilder.Entity("iSmart.Entity.Models.Status", b =>
                 {
                     b.Navigation("Bills");
+
+                    b.Navigation("Deliveries");
 
                     b.Navigation("ExportOrders");
 

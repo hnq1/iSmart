@@ -48,21 +48,31 @@ namespace iSmart.Service
             try
             {
                 var pageSize = 6;
+                var storagesQuery = _context.Warehouses.AsQueryable();
 
-                var storages = _context.Warehouses.Where(s => s.WarehouseName.ToLower().Contains(keyword.ToLower())
-                                                        || s.WarehouseAddress.ToLower().Contains(keyword.ToLower()))
-                                                .OrderBy(s => s.WarehouseId).ToList();
+                // Lấy dữ liệu từ cơ sở dữ liệu vào bộ nhớ
+                var storages = storagesQuery.ToList();
+
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    var keywords = keyword.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    storages = storages.Where(s =>
+                        keywords.Any(k => s.WarehouseName.ToLower().Contains(k) ||
+                                          s.WarehouseAddress.ToLower().Contains(k))
+                    ).ToList();
+                }
+
                 var count = storages.Count();
                 var res = storages.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var totalPages = Math.Ceiling((double)count / pageSize);
                 return new WarehouseFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
-
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
+
 
         public CreateWarehouseResponse AddStorage(CreateWarehouseRequest storage)
         {

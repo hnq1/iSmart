@@ -201,40 +201,27 @@ namespace iSmart.API.Controllers
         {
             try
             {
-                // Xác thực người dùng
-                var userIdClaim = User.Claims.SingleOrDefault(x => x.Type == "UserId");
-                if (userIdClaim == null)
-                {
-                    return Unauthorized(); // Chưa xác thực người dùng
-                }
-
-                var userId = Int32.Parse(userIdClaim.Value);
-
-                // Lấy thông tin người dùng từ cơ sở dữ liệu
-                var user = await _context.Users.FindAsync(userId);
-
-                if (user == null)
-                {
-                    return NotFound(); // Người dùng không tồn tại
-                }
-
-                // Kiểm tra mật khẩu cũ
-                if (p.OldPassword != HashHelper.Decrypt(user.Password, _configuration))
+                var result = await _context.Users.SingleOrDefaultAsync(x => x.UserId == p.UserId);
+                if (p.OldPassword != HashHelper.Decrypt(result.Password, _configuration))
                 {
                     return BadRequest("Mật khẩu cũ không đúng");
                 }
 
-                // Kiểm tra trạng thái và dữ liệu trước khi thay đổi mật khẩu
-                if (user.StatusId != 1 || !RegexConstant.validateGuidRegex.IsMatch(user.Password))
+                //}
+                else
                 {
-                    return BadRequest("Không có dữ liệu hợp lệ");
+                    if (result != null && result.StatusId == 1 && RegexConstant.validateGuidRegex.IsMatch(result.Password))
+                    {
+                        result.Password = HashHelper.Encrypt(p.Password, _configuration);
+                        await _context.SaveChangesAsync();
+                        return Ok("Thành công");
+                    }
+                    else
+                    {
+                        return BadRequest("Không có dữ liệu");
+                    }
                 }
 
-                // Thay đổi mật khẩu và lưu vào cơ sở dữ liệu
-                user.Password = HashHelper.Encrypt(p.Password, _configuration);
-                await _context.SaveChangesAsync();
-
-                return Ok("Thay đổi mật khẩu thành công");
             }
             catch (Exception ex)
             {

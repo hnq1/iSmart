@@ -124,24 +124,39 @@ namespace iSmart.Service
 
                 var pageSize = 6;
 
-                var goodsQuery = _context.Goods.Include(g => g.Status).Include(g => g.Category).Include(g => g.Supplier)
-                    .Where(g => (g.GoodsName.ToLower().Contains(keyword.ToLower()) || g.GoodsCode.ToLower().Contains(keyword.ToLower()))
-                    && (categoryId == null || g.Category.CategoryId == categoryId)
-                    && (supplierId == null || g.Supplier.SupplierId == supplierId)
-                    );
+                var goodsQuery = _context.Goods
+                .Include(g => g.Status)
+                .Include(g => g.Category)
+                .Include(g => g.Supplier)
+                .Where(g => (!categoryId.HasValue || g.CategoryId == categoryId)
+                    && (!supplierId.HasValue || g.SupplierId == supplierId));
 
-                // Kiểm tra nếu muốn sắp xếp theo costPrice từ bé đến lớn
+                // Kiểm tra và áp dụng điều kiện về keyword
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    var keywords = keyword.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    goodsQuery = goodsQuery.AsEnumerable().Where(g =>
+                        keywords.Any(k => g.GoodsName.ToLower().Contains(k) ||
+                                          g.GoodsCode.ToLower().Contains(k))
+                    ).AsQueryable();
+                }
+
+
+                // Kiểm tra nếu muốn sắp xếp theo stockPrice từ bé đến lớn
                 if (sortPrice == 1)
                 {
                     goodsQuery = goodsQuery.OrderBy(g => g.StockPrice);
                 }
-                // Kiểm tra nếu muốn sắp xếp theo costPrice từ lớn đến bé
+                // Kiểm tra nếu muốn sắp xếp theo stockPrice từ lớn đến bé
                 else if (sortPrice == 2)
                 {
                     goodsQuery = goodsQuery.OrderByDescending(g => g.StockPrice);
                 }
 
+                var count = goodsQuery.Count();
                 var goods = goodsQuery
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
                     .Select(g => new GoodsDTO
                     {
                         GoodsId = g.GoodsId,
@@ -163,13 +178,11 @@ namespace iSmart.Service
                         SupplierName = g.Supplier.SupplierName,
                         StatusId = g.StatusId,
                         Status = g.Status.StatusType
-                    });
+                    }).ToList();
 
-                var count = goods.Count();
-                var res = goods.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                var totalPages = (int)Math.Ceiling((double)count / pageSize);
 
-                var totalPages = Math.Ceiling((double)count / pageSize);
-                return new GoodsFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
+                return new GoodsFilterPaging { TotalPages = totalPages, PageSize = pageSize, Data = goods };
             }
             catch (Exception ex)
             {
@@ -177,6 +190,8 @@ namespace iSmart.Service
                 throw new Exception("An error occurred while fetching goods by keyword", ex);
             }
         }
+
+
 
 
         public UpdateGoodsResponse UpdateGoods(UpdateGoodsRequest goods)

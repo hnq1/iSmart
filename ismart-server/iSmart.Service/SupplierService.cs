@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using iSmart.Entity.DTOs.SupplierDTO;
 using iSmart.Entity.Models;
@@ -116,15 +117,28 @@ namespace iSmart.Service
             try
             {
                 var pageSize = 6;
+                var suppliersQuery = _context.Suppliers.Include(s => s.Status).AsQueryable();
 
-                var supplier = _context.Suppliers.Include(s => s.Status).Where(s =>
-                (s.SupplierName.ToLower().Contains(keyword.ToLower()) ||
-                s.SupplierPhone.ToLower().Contains(keyword.ToLower()) ||
-                s.SupplierEmail.ToLower().Contains(keyword.ToLower())) &&
-                (statusId == null || s.Status.StatusId == statusId)
-                )
-                .OrderBy(s => s.SupplierId)
-                .Select(s => new SupplierDTO
+                if (statusId.HasValue)
+                {
+                    suppliersQuery = suppliersQuery.Where(s => s.Status.StatusId == statusId.Value);
+                }
+
+                // Lấy dữ liệu từ cơ sở dữ liệu vào bộ nhớ
+                var suppliers = suppliersQuery.ToList();
+
+                if (!string.IsNullOrEmpty(keyword))
+                {
+                    var keywords = keyword.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    suppliers = suppliers.Where(s =>
+                        keywords.Any(k => s.SupplierName.ToLower().Contains(k) ||
+                                          s.SupplierPhone.ToLower().Contains(k) ||
+                                          s.SupplierEmail.ToLower().Contains(k))
+                    ).ToList();
+                }
+
+                var count = suppliers.Count();
+                var res = suppliers.Skip((page - 1) * pageSize).Take(pageSize).Select(s => new SupplierDTO
                 {
                     SupplierId = s.SupplierId,
                     SupplierName = s.SupplierName,
@@ -133,20 +147,20 @@ namespace iSmart.Service
                     StatusId = s.StatusId,
                     Status = s.Status.StatusType,
                     Note = s.Note
-                })
-                .ToList();
+                }).ToList();
 
-                var count = supplier.Count();
-                var res = supplier.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var totalPages = Math.Ceiling((double)count / pageSize);
                 return new SupplierFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
-
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
+
+
+
+
 
         public bool UpdateDeleteStatusSupplier(int id)
         {
