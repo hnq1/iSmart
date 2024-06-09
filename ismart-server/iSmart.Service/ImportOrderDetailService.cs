@@ -59,6 +59,16 @@ namespace iSmart.Service
                 };
                 _context.ImportOrderDetails.Add(requestOrder);
                 _context.SaveChanges();
+
+                // Calculate total cost and update ImportOrder's TotalCost
+                var importOrder = _context.ImportOrders.FirstOrDefault(io => io.ImportId == detail.ImportId);
+                if (importOrder != null)
+                {
+                    decimal totalCost = (decimal)importOrder.ImportOrderDetails.Sum(iod => iod.Quantity * iod.CostPrice);
+                    importOrder.TotalCost = (float)totalCost;
+                    _context.SaveChanges();
+                }
+
                 return new CreateImportOrderDetailResponse { IsSuccess = true, Message = "Add order detail complete" };
             }
             catch (Exception e)

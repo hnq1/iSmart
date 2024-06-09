@@ -124,13 +124,14 @@ namespace iSmart.Service
                     suppliersQuery = suppliersQuery.Where(s => s.Status.StatusId == statusId.Value);
                 }
 
+                // Lấy dữ liệu từ cơ sở dữ liệu vào bộ nhớ
                 var suppliers = suppliersQuery.ToList();
 
                 if (!string.IsNullOrEmpty(keyword))
                 {
                     var keywords = keyword.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
                     suppliers = suppliers.Where(s =>
-                        keywords.All(k => s.SupplierName.ToLower().Contains(k) ||
+                        keywords.Any(k => s.SupplierName.ToLower().Contains(k) ||
                                           s.SupplierPhone.ToLower().Contains(k) ||
                                           s.SupplierEmail.ToLower().Contains(k))
                     ).ToList();
@@ -156,6 +157,8 @@ namespace iSmart.Service
                 throw new Exception(e.Message);
             }
         }
+
+
 
 
 

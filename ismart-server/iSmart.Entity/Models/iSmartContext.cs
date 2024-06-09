@@ -368,7 +368,7 @@ namespace iSmart.Entity.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ImportOrder_Storage_StorageId");
             });
-            
+
             modelBuilder.Entity<ImportOrderDetail>(entity =>
             {
                 entity.HasKey(e => e.DetailId);
@@ -401,7 +401,7 @@ namespace iSmart.Entity.Models
                     .HasMaxLength(100);
             });
 
-           
+
 
             modelBuilder.Entity<RefreshToken>(entity =>
             {

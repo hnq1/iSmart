@@ -7,6 +7,5 @@ namespace iSmart.Entity.Models
     {
         public int MeasuredUnitId { get; set; }
         public string MeasuredUnitName { get; set; }
-        public int MeasuredUnitValue { get; set; }
     }
 }
