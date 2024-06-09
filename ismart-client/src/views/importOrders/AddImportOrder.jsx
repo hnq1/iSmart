@@ -79,8 +79,11 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         setTotalWarehouse(res);
     }
 
-
-
+    const handleStorageClickTotal = () => {
+        setSelectedWarehouseId("");
+        setSelectedWarehouse("Tất cả kho");
+    }
+    
     const handleStorageClick = (warehouse) => {
         // let res = await setSelectedStorage(storage.storageName);
 
@@ -220,7 +223,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             console.log("res them  1 lo hang moi: ", res);
             if (res.isSuccess == true) {
                 let resImportId = await fetchImportOrderNewest();
-                console.log(resImportId);
+                console.log("ResImportID :", resImportId);
 
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
@@ -263,6 +266,9 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                                 variant="success"
                                 style={{ zIndex: 999 }}
                             >
+                                <Dropdown.Item eventKey=""
+                                    onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
                                 {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                     <Dropdown.Item
                                         key={`warehouse ${index}`}

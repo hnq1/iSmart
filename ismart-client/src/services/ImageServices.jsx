@@ -2,7 +2,7 @@ import axios from "./axios"
 
 const uploadImage = (fileUpload) => {
     const formData = new FormData();
-    formData.append('fileUpload', fileUpload);
+    formData.append('file', fileUpload);
 
     return axios.post('https://localhost:7033/api/images/upload', formData, {
         fileUpload,

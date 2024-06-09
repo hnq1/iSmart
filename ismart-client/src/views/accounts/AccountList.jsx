@@ -88,7 +88,10 @@ const ListAccount = () => {
     const handleSelectStatus = (event) => {
         setOptionStatus(event.target.value);
     }
-
+    const handleStorageClickTotal = () => {
+        setSelectedWarehouse("Tất cả kho");
+        setSelectedWarehouseId("");
+    }
     const handleStorageClick = (warehouse) => {
         // let res = await setSelectedStorage(storage.storageName);
 
@@ -141,7 +144,7 @@ const ListAccount = () => {
                             <Form.Select className='FormSelectCSS' onChange={handleSelectRole}>
                                 <option value="">Vai trò</option>
                                 <option value="2">WarehouseManager</option>
-                                <option value="3">WarehouseStaff</option>
+                                <option value="3">Staff</option>
                                 <option value="4">Accountant</option>
                             </Form.Select>
                         </div>
@@ -161,6 +164,8 @@ const ListAccount = () => {
                                     variant="success"
                                     style={{ zIndex: 999 }}
                                 >
+                                    <Dropdown.Item eventKey=""
+                                        onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
                                     {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                         <Dropdown.Item
                                             key={`warehouse ${index}`}

@@ -16,11 +16,14 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedWarehouseId, isShow
 
     useEffect(() => {
         getAllGoods();
-    }, [selectedWarehouseId, selectedSupplierId])
+    }, [selectedSupplierId, selectedWarehouseId])
 
     const getAllGoods = async () => {
         if (selectedWarehouseId && selectedSupplierId) {
-            let res = await fetchGoodsWithStorageAndSupplier(storageId, selectedSupplierId);
+            let res = await fetchGoodsWithStorageAndSupplier(
+                selectedWarehouseId,
+                selectedSupplierId
+            );
             console.log("resss: ", res);
             setTotalGoods(res);
         }
@@ -45,7 +48,6 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedWarehouseId, isShow
     const handleGoodClick = (good, event) => {
         setSelectedGoodCode(good.goodsCode);
         setSelectedGoodId(good.goodsId);
-
         console.log("selectedGoodCode: ", selectedGoodCode);
     }
 

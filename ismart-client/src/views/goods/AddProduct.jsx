@@ -8,6 +8,7 @@ import { fetchAllStorages } from '~/services/StorageServices';
 import uploadImage from '~/services/ImageServices';
 import { addGood } from '~/services/GoodServices';
 import { toast } from 'react-toastify';
+import { select } from '@material-tailwind/react';
 
 
 function ModalAddGood({ isShow, handleClose, updateTable }) {
@@ -20,9 +21,14 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    // const [totalStorages, setTotalStorages] = useState([]);
+    // const [selectedStorage, setSelectedStorage] = useState(null);
+    // const [selectedStorageId, setSelectedStorageId] = useState(null);
+
+
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
     const [goodName, setGoodName] = useState(null);
     const [goodCode, setGoodCode] = useState(null);
@@ -42,13 +48,13 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     }, [])
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
-    }
+    // const handleStorageClick = (storage) => {
+    //     setSelectedStorage(storage.storageName);
+    //     setSelectedStorageId(storage.storageId);
+    // }
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
         setTotalCategories(res);
@@ -71,9 +77,23 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
-        let res = await uploadImage(file);
-        setImageGood(res);
-        console.log(res);
+        // let res = await uploadImage(file);
+        const urlImage = URL.createObjectURL(file);
+        setImageGood(urlImage);
+    }
+
+    const handleStorageTotalClick = () => {
+        setSelectedWarehouse("Tất cả Kho");
+        setSelectedWarehouseId("");
+    }
+    const handleStorageClick = (warehouse) => {
+        // let res = await setSelectedStorage(storage.storageName);
+
+        setSelectedWarehouse(warehouse.warehouseName);
+        // console.log("warehouse.warehouseId: ", warehouse.warehouseId);
+        setSelectedWarehouseId(warehouse.warehouseId);
+        // console.log("setSelectedWarehouse: ", warehouse.warehouseName);
+        // getUsers(1);
     }
 
     const handleGoodName = (event) => {
@@ -105,8 +125,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setSelectedCategoryId(null);
         setSelectedCategory(null);
 
-        setSelectedStorage(null);
-        setSelectedStorageId(null);
+        setSelectedWarehouse(null);
+        setSelectedWarehouseId(null);
 
         setSelectedSupplier(null);
         setSelectedSupplierId(null);
@@ -131,12 +151,23 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             toast.warning("Vui lòng chọn nhà phân phối");
         } else if (warranty <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
-        } else if (!selectedStorageId) {
+        } else if (!selectedWarehouseId) {
             toast.warning("Vui lòng chọn kho");
         } else {
-            let res = await addGood(goodName, goodCode, selectedCategoryId, description, selectedSupplierId, "Chiếc", imageGood, 1, warranty, barCode, selectedStorageId);
+            let res = await addGood(goodName, goodCode,
+                selectedCategoryId,
+                description,
+                selectedSupplierId,
+                "Chiếc",
+                imageGood,
+                1,
+                warranty,
+                barCode,
+                selectedWarehouseId);
             toast.success("Thêm mặt hàng mới thành công");
             handleCloseModal();
+            updateTable();
+            console.log("resAddProduct: ", res);
         }
 
     }
@@ -150,14 +181,24 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                 <div className="body-add-new">
                     <Row>
                         <label >Kho</label>
+                        <DropdownButton
+                            className="DropdownButtonCSS ButtonCSSDropdown"
+                            title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                            variant="success"
+                            style={{ zIndex: 999 }}
+                        >
+                            <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
 
-                        <Col md={5}>
-                            <DropdownButton className=" ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
+                            {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                <Dropdown.Item
+                                    key={`warehouse ${index}`}
+                                    eventKey={c.warehouseName}
+                                    onClick={(e) => handleStorageClick(c, e)}
+                                >
+                                    {c.warehouseName}
+                                </Dropdown.Item>
+                            ))}
+                        </DropdownButton>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>

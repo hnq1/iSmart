@@ -10,25 +10,10 @@ const PrivateRoute = (props) => {
     const [show, setShow] = useState(true);
     if (user && !user.auth) {
         return <>
-            <div 
-            className="access-denied "
+            <div
+                className="access-denied "
             >
-                <Alert show={show} variant="success">
-                    <Alert.Heading>My Alert (còn cái Nịt)</Alert.Heading>
-                    <p>
-                        Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget
-                        lacinia odio sem nec elit. Cras mattis consectetur purus sit amet
-                        fermentum.
-                    </p>
-                    <hr />
-                    <div className="d-flex justify-content-end">
-                        <Button onClick={() => setShow(false)} variant="outline-success">
-                            Close me
-                        </Button>
-                    </div>
-                </Alert>
-
-                {!show && <Button onClick={() => setShow(true)}>Show Alert</Button>}
+                <h1>Bạn không có quyền truy cập vào đây</h1>
             </div>
         </>
     }

@@ -9,12 +9,15 @@ const createNewImportOrderDetail = (importId, costPrice, batchCode, manufactureD
     return axios.post(`api/import-order-detail/add-order-detail`, { importId, costPrice, batchCode, manufactureDate, expiryDate, goodsId, quantity })
 }
 
-const updateImportOrderDetail = (importId, costPrice, detailId, goodsId, quantity) => {
-    return axios.put(`api/ImportOrderDetail/update-import-order-detail`, { importId, costPrice, detailId, goodsId, quantity })
+const updateImportOrderDetail = (importId, costPrice, detailId, goodsId, quantity, manufactureDate, expiryDate, batchCode) => {
+    return axios.put(`api/ImportOrderDetail/update-import-order-detail`, { importId, costPrice, detailId, goodsId, quantity, manufactureDate, expiryDate, batchCode })
 }
 
-const getImportOrderDetailByImportId = (importId) => {
-    return axios.get(`api/ImportOrderDetail/get-import-order-details?oid=${importId}`)
+const deleteImportOrderDetail = (id) => {
+    return axios.delete(`api/ImportOrderDetail/delete-import-order-detail?detailId=${id}`)
+}
+const getImportOrderDetailByImportId = (oid) => {
+    return axios.get(`api/ImportOrderDetail/get-import-order-details?oid=${oid}`)
 }
 
-export {getAllImportOrderDetails, createNewImportOrderDetail, updateImportOrderDetail, getImportOrderDetailByImportId }
+export { getAllImportOrderDetails, createNewImportOrderDetail, updateImportOrderDetail, deleteImportOrderDetail, getImportOrderDetailByImportId }

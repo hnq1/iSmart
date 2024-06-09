@@ -37,9 +37,15 @@ function MyTable() {
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    // const [totalStorages, setTotalStorages] = useState([]);
+    // const [selectedStorage, setSelectedStorage] = useState(null);
+    // const [selectedStorageId, setSelectedStorageId] = useState(null);
+
+
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
+
 
     const [totalPages, setTotalPages] = useState(5);
     const [currentPage, setcurrentPage] = useState(0);
@@ -63,7 +69,7 @@ function MyTable() {
 
 
     useEffect(() => {
-        let res = getGoods(1, selectedStorageId, selectedCategoryId, selectedSupplierId);
+        let res = getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
         getAllCategories();
         getAllSuppliers();
         getAllStorages();
@@ -77,19 +83,25 @@ function MyTable() {
     }, [])
 
     useEffect(() => {
-        getGoods(1, selectedStorageId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
         setcurrentPage(0);
-    }, [selectedStorage, selectedCategory, selectedSupplier, sortedByPriceId])
+    }, [selectedWarehouse, selectedCategory, selectedSupplier, sortedByPriceId])
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
-        setSelectedStorageId(res.storageId);
-        setSelectedStorage(res.storageName);
+        setSelectedWarehouseId(res.warehouseId);
+        setSelectedWarehouse(res.warehouseName);
     }
 
-    const getGoods = async (page, storageId, categoryId, supplierId, sortPrice, wordSearch) => {
-        let res = await fetchGoodsWithFilter(page, storageId, categoryId, supplierId, sortPrice, wordSearch);
-        console.log(res);
+    const getGoods = async (
+        page, storageId,
+        categoryId, supplierId,
+        sortPrice, wordSearch) => {
+        let res = await fetchGoodsWithFilter(
+            page, storageId,
+            categoryId, supplierId,
+            sortPrice, wordSearch);
+        // console.log(res);
         setListGoods(res.data);
         setTotalPages(res.totalPages);
         setcurrentPage(page - 1);
@@ -108,7 +120,7 @@ function MyTable() {
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
     const handleCategoryClick = (category, event) => {
@@ -131,29 +143,35 @@ function MyTable() {
         setSelectedCategoryId("");
     }
 
-    // const handleStorageClickTotal = () => {
-    //     setSelectedStorage("Tất cả kho");
-    //     setSelectedStorageId("");
-    // }
+    const handleStorageClickTotal = () => {
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+        setSelectedWarehouseId("");
+        setSelectedWarehouse("Tất cả kho");
+    }
+
+    const handleStorageClick = (warehouse) => {
+        // let res = await setSelectedStorage(storage.storageName);
+
+        setSelectedWarehouse(warehouse.warehouseName);
+        //console.log("warehouse.warehouseId: ", warehouse.warehouseId);
+        setSelectedWarehouseId(warehouse.warehouseId);
+        //console.log("setSelectedWarehouse: ", warehouse.warehouseName);
+        // getUsers(1);
     }
 
     const handlePageClick = (event) => {
         setcurrentPage(+event.selected);
-        getGoods(+event.selected + 1, selectedStorageId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        getGoods(+event.selected + 1, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
 
     const handleSearch = () => {
-        getGoods(1, selectedStorageId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
 
     const handleSortPirceClick = (sort) => {
         setSortedByPriceId(sort.idSort);
         setSortedByPriceName(sort.nameSort);
-        getGoods(1, selectedStorageId, selectedCategoryId, selectedSupplierId, sort.idSort, keywordSearch);
+        getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sort.idSort, keywordSearch);
     }
 
     const handleShowGoodHistory = (good) => {
@@ -181,18 +199,39 @@ function MyTable() {
                 <div className="col-sm-12">
                     <h5 style={{ color: '#a5a2ad' }}>Quản lý hàng hóa</h5>
                     <div className="row no-gutters my-3 ">
-                        {/* {roleId == 2 || roleId == 4 || roleId == 1 ? <div className="col-2">
+                        {roleId == 2 || roleId == 4 || roleId == 1 ? <div className="col-2">
 
 
-                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-                                {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+
+
+                            <DropdownButton
+                                className="DropdownButtonCSS ButtonCSSDropdown"
+                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                variant="success"
+                                style={{ zIndex: 999 }}
+                            >
+
+                                <Dropdown.Item eventKey=""
+                                    onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
+                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                    <Dropdown.Item
+                                        key={`warehouse ${index}`}
+                                        eventKey={c.warehouseName}
+                                        onClick={(e) => handleStorageClick(c, e)}
+                                    >
+                                        {c.warehouseName}
+                                    </Dropdown.Item>
                                 ))}
                             </DropdownButton>
+
+
+
                         </div> : <Col md={2}>
                             <input type="text" className="form-control inputCSS"
-                                aria-describedby="emailHelp" value={selectedStorage} disabled /></Col>} */}
+                                aria-describedby="emailHelp" value={selectedWarehouse} disabled /></Col>
+
+                        }
 
                         <div className="col-2">
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByPriceName ? sortedByPriceName : "Giá"} variant="success" style={{ zIndex: 999 }}>
