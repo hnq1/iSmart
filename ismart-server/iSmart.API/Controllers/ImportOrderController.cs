@@ -81,41 +81,55 @@ namespace iSmart.API.Controllers
                     foreach (var detail in result.ImportOrderDetails)
                     {
                         // Tìm hàng hóa tương ứng với GoodsId trong chi tiết đơn hàng
-                        var Goods = await _context.Goods.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+                        var goods = await _context.Goods.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+                        if (goods == null)
+                        {
+                            return BadRequest($"Goods with ID {detail.GoodsId} not found");
+                        }
+
+                        // Tìm thông tin hàng hóa trong kho
+                        var goodsWarehouse = await _context.GoodsWarehouses.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+                        if (goodsWarehouse == null)
+                        {
+                            // Nếu chưa có thông tin trong kho, tạo mới
+                            goodsWarehouse = new GoodsWarehouse
+                            {
+                                GoodsId = goods.GoodsId,
+                                Quantity = 0
+                            };
+                            _context.GoodsWarehouses.Add(goodsWarehouse);
+                        }
 
                         // Tạo bản ghi lịch sử cho hàng hóa
                         var history = new GoodsHistory
                         {
-                            GoodsId = Goods.GoodsId,
-                            ActionId = 1 // Hành động nhập hàng
+                            GoodsId = goods.GoodsId,
+                            ActionId = 1, // Hành động nhập hàng
+                            OrderCode = result.ImportCode,
+                            UserId = (int)result.UserId,
+                            Date = DateTime.Now,
+                            Quantity = goodsWarehouse.Quantity
                         };
 
                         // Cập nhật số lượng hàng trong kho
                         int total = (int)detail.Quantity;
-                        history.Quantity = Goods.InStock;
-                        Goods.InStock += total;
+                        goodsWarehouse.Quantity += total;
                         history.QuantityDifferential = $"{total}";
 
                         // Cập nhật giá nhập hàng
-                        history.CostPrice = Goods.StockPrice;
-                        Goods.StockPrice = detail.CostPrice;
+                        history.CostPrice = goods.StockPrice;
+                        goods.StockPrice = detail.CostPrice;
 
                         // Tính toán sự chênh lệch giá nhập
-                        var costdifferential = Goods.StockPrice - history.CostPrice;
-                        if (costdifferential > 0)
-                            history.CostPriceDifferential = $"{costdifferential}";
-                        else if (costdifferential < 0)
-                            history.CostPriceDifferential = $"{costdifferential}";
-                        else
-                            history.CostPriceDifferential = null;
+                        var costdifferential = goods.StockPrice - history.CostPrice;
+                        history.CostPriceDifferential = costdifferential != 0 ? $"{costdifferential}" : null;
 
                         // Cập nhật các thông tin khác cho bản ghi lịch sử
-                        history.OrderCode = result.ImportCode;
-                        history.UserId = (int)result.UserId ;
-                        history.Quantity = Goods.InStock;
-                        history.Date = DateTime.Now;
-                        _context.Add(history);
-                        _context.Goods.Update(Goods);
+                        history.Quantity = goodsWarehouse.Quantity;
+
+                        _context.GoodsHistories.Add(history);
+                        _context.Goods.Update(goods);
+                        _context.GoodsWarehouses.Update(goodsWarehouse);
                     }
                     await _context.SaveChangesAsync();
                     return Ok("Thành công");
@@ -125,11 +139,13 @@ namespace iSmart.API.Controllers
                     return BadRequest("Không có dữ liệu");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return StatusCode(500);
+                // Log the exception (ex) for debugging purposes
+                return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+
 
         [HttpPost("cancel-import")]
         public async Task<IActionResult> CancelImport(int importId)
