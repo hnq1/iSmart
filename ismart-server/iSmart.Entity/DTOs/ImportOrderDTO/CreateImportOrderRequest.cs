@@ -32,7 +32,7 @@ namespace iSmart.Entity.DTOs.ImportOrderDTO
         public string? Image { get; set; }
 
         public int? StokekeeperId { get; set; }
-        public List<ImportDetailDTO>? ImportOrderDetails { get; set; }
+        //public List<ImportDetailDTO>? ImportOrderDetails { get; set; }
 
     }
 }
