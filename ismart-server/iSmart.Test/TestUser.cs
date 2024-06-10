@@ -52,16 +52,16 @@ namespace WM.Test
             var result = false;
             var userEntry = new CreateUserRequest
             {
-                UserName = "Test4",
-                UserCode = "Test4",
-                FullName = "Test4",
-                Email = "thanhdo4@gmail.com",
-                Address = "Test4",
-                Phone = "0123",
+                UserName = "Test5",
+                UserCode = "Test5",
+                FullName = "Test5",
+                Email = "thanhdo5@gmail.com",
+                Address = "Test5",
+                Phone = "0795743786",
                 RoleId = 1,
-                Password = "Test4",
+                Password = "Test5",
                 StatusId = 1,
-                Image = "Test4"
+                Image = "Test5"
             };
             var userResponse = _userService.AddUser(userEntry);
             if (userResponse.IsSuccess is true) result = true;
