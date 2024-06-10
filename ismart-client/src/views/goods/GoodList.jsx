@@ -199,37 +199,37 @@ function MyTable() {
                 <div className="col-sm-12">
                     <h5 style={{ color: '#a5a2ad' }}>Quản lý hàng hóa</h5>
                     <div className="row no-gutters my-3 ">
-                        {roleId == 2 || roleId == 4 || roleId == 1 ? <div className="col-2">
+                        {(roleId == 2 || roleId == 4 || roleId == 1) ?
+                            <div className="col-2">
+
+                                <DropdownButton
+                                    className="DropdownButtonCSS ButtonCSSDropdown"
+                                    title={selectedWarehouse ? selectedWarehouse : "Tất cả Kho"}
+                                    variant="success"
+                                    style={{ zIndex: 999 }}
+                                >
+
+                                    <Dropdown.Item eventKey=""
+                                        onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
+                                    {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                        <Dropdown.Item
+                                            key={`warehouse ${index}`}
+                                            eventKey={c.warehouseName}
+                                            onClick={(e) => handleStorageClick(c, e)}
+                                        >
+                                            {c.warehouseName}
+                                        </Dropdown.Item>
+                                    ))}
+                                </DropdownButton>
 
 
 
-
-                            <DropdownButton
-                                className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
-                                variant="success"
-                                style={{ zIndex: 999 }}
-                            >
-
-                                <Dropdown.Item eventKey=""
-                                    onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-
-                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
-                                    <Dropdown.Item
-                                        key={`warehouse ${index}`}
-                                        eventKey={c.warehouseName}
-                                        onClick={(e) => handleStorageClick(c, e)}
-                                    >
-                                        {c.warehouseName}
-                                    </Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-
-
-
-                        </div> : <Col md={2}>
-                            <input type="text" className="form-control inputCSS"
-                                aria-describedby="emailHelp" value={selectedWarehouse} disabled /></Col>
+                            </div>
+                            :
+                            <Col md={2}>
+                                <input type="text" className="form-control inputCSS"
+                                    aria-describedby="emailHelp" value={selectedWarehouse} disabled /></Col>
 
                         }
 
