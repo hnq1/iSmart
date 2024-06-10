@@ -37,11 +37,9 @@ namespace iSmart.Service
 
         public UserService(iSmartContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
-        List<UserDTO> userDTOs = new List<UserDTO>();
-        private iSmartContext context;
 
         public CreateUserResponse AddUser(CreateUserRequest user)
         {
