@@ -40,7 +40,7 @@ namespace WM.Test
         public void GetUserById_Test()
         {
             var result = false;
-            var users = _userService.GetUserById(1);
+            var users = _userService.GetUserById(11);
             if (users != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
@@ -52,16 +52,16 @@ namespace WM.Test
             var result = false;
             var userEntry = new CreateUserRequest
             {
-                UserName = "Test",
-                UserCode = "Test",
-                FullName = "Test",
-                Email = "Test",
-                Address = "Test",
-                Phone = "0795743785",
+                UserName = "Test4",
+                UserCode = "Test4",
+                FullName = "Test4",
+                Email = "thanhdo4@gmail.com",
+                Address = "Test4",
+                Phone = "0123",
                 RoleId = 1,
-                Password = "Test",
+                Password = "Test4",
                 StatusId = 1,
-                Image = "Test"
+                Image = "Test4"
             };
             var userResponse = _userService.AddUser(userEntry);
             if (userResponse.IsSuccess is true) result = true;
@@ -85,16 +85,16 @@ namespace WM.Test
             var result = false;
             var userEntry = new UpdateUserDTO
             {
-                UserId = 11,
+                UserId = 12,
                 UserName = "Test",
                 UserCode = "Test",
                 FullName = "Test",
-                Email = "Test",
-                Address = "Test",
-                Phone = "Test",
+                Email = "thanh@gmail.com",
+                Address = "Test3",
+                Phone = "Test3",
                 RoleId = 1,
                 StatusId = 1,
-                Image = "Test"
+                Image = "Test3"
             };
             var userResponse = _userService.UpdateUser(userEntry);
             if (userResponse.IsSuccess is true) result = true;
