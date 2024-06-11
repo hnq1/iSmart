@@ -14,6 +14,7 @@ import { create } from 'lodash';
 
 function ModalAddGood({ isShow, handleClose, updateTable }) {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10); // Lấy userId từ local storage
 
 
     const [totalCategories, setTotalCategories] = useState([]);
@@ -45,7 +46,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const [maxStock, setMaxStock] = useState(0);
     const [minStock, setMinStock] = useState(0);
     const [createdDate, setCreatedDate] = useState(null);
-    const [warehouseId, setWarehouseId] = useState(null);
+
 
     const [barCode, setBarCode] = useState(null);
 
@@ -55,6 +56,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         getAllSuppliers();
 
     }, [])
+
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
@@ -181,7 +183,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
         } else {
 
-            let res = await addGood(
+            let res = await addGood(userId,
                 goodName, goodCode, selectedCategoryId,
                 description,
                 selectedSupplierId,
@@ -194,8 +196,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                 barCode,
                 maxStock,
                 minStock,
-                selectedWarehouseId
-            );
+            ); 
+
             toast.success("Thêm mặt hàng mới thành công");
             handleCloseModal();
             updateTable();

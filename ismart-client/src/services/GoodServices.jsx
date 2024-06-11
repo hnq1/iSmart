@@ -18,12 +18,13 @@ const fetchGoodsWithStorageAndSupplier = (storageId, supplierId) => {
     return axios.get(`api/goods/get-goods-with-warehouse-supplier?storageId=${storageId}&supplierId=${supplierId}`)
 }
 
-const addGood = (goodsName, goodsCode, categoryId,
+const addGood = (userId,
+    goodsName, goodsCode, categoryId,
     description, supplierId, measuredUnit,
     image, statusId, stockPrice,
     createdDate, warrantyTime, barcode,
     maxStock, minStock, warehouseId) => {
-    return axios.post(`api/goods/add-goods`, {
+    return axios.post(`api/goods/add-goods?userId=${userId}`, {
         goodsName, goodsCode, categoryId,
         description, supplierId, measuredUnit,
         image, statusId, stockPrice,
