@@ -63,73 +63,24 @@ namespace iSmart.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("import")]
+        [HttpPost("import/{importid}")]
         public async Task<IActionResult> Import(int importid)
         {
-            try
+            var result = await _importService.Import(importid);
+            if (result == "Thành công")
             {
-                var result = await _context.ImportOrders.Include(a => a.ImportOrderDetails).SingleOrDefaultAsync(x => x.ImportId == importid);
-
-                // Kiểm tra nếu đơn hàng tồn tại và trạng thái của đơn hàng là 3
-                if (result != null && result.StatusId == 3)
-                {
-                    // Cập nhật trạng thái đơn hàng và thời gian nhập hàng
-                    result.StatusId = 4;
-                    result.ImportedDate = DateTime.Now;
-
-                    // Duyệt qua từng chi tiết đơn hàng nhập
-                    foreach (var detail in result.ImportOrderDetails)
-                    {
-                        // Tìm hàng hóa tương ứng với GoodsId trong chi tiết đơn hàng
-                        var Goods = await _context.Goods.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
-
-                        // Tạo bản ghi lịch sử cho hàng hóa
-                        var history = new GoodsHistory
-                        {
-                            GoodsId = Goods.GoodsId,
-                            ActionId = 1 // Hành động nhập hàng
-                        };
-
-                        // Cập nhật số lượng hàng trong kho
-                        int total = (int)detail.Quantity;
-                        history.Quantity = Goods.InStock;
-                        Goods.InStock += total;
-                        history.QuantityDifferential = $"{total}";
-
-                        // Cập nhật giá nhập hàng
-                        history.CostPrice = Goods.StockPrice;
-                        Goods.StockPrice = detail.CostPrice;
-
-                        // Tính toán sự chênh lệch giá nhập
-                        var costdifferential = Goods.StockPrice - history.CostPrice;
-                        if (costdifferential > 0)
-                            history.CostPriceDifferential = $"{costdifferential}";
-                        else if (costdifferential < 0)
-                            history.CostPriceDifferential = $"{costdifferential}";
-                        else
-                            history.CostPriceDifferential = null;
-
-                        // Cập nhật các thông tin khác cho bản ghi lịch sử
-                        history.OrderCode = result.ImportCode;
-                        history.UserId = (int)result.UserId ;
-                        history.Quantity = Goods.InStock;
-                        history.Date = DateTime.Now;
-                        _context.Add(history);
-                        _context.Goods.Update(Goods);
-                    }
-                    await _context.SaveChangesAsync();
-                    return Ok("Thành công");
-                }
-                else
-                {
-                    return BadRequest("Không có dữ liệu");
-                }
+                return Ok(result);
             }
-            catch
+            else if (result == "Không có dữ liệu")
+            { 
+                return BadRequest(result);
+            }
+            else
             {
-                return StatusCode(500);
+                return StatusCode(500, result);
             }
         }
+
 
         [HttpPost("cancel-import")]
         public async Task<IActionResult> CancelImport(int importId)

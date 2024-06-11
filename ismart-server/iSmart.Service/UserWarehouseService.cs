@@ -17,6 +17,7 @@ namespace iSmart.Service
         Task<List<User>> GetWarehouseUsersAsync(int warehouseId);
         Task AddUserToWarehouseAsync(int userId, int warehouseId);
         Task<bool> RemoveUserFromWarehouseAsync(int userId, int warehouseId);
+        Task<int?> GetWarehouseIdByIdAsync(int userId);
     }
 
     public class UserWarehouseService : IUserWarehouseService
@@ -28,7 +29,19 @@ namespace iSmart.Service
         {
             _context = context;
         }
-
+        public async Task<int?> GetWarehouseIdByIdAsync(int userId)
+        {
+            try
+            {
+                var userWarehouse = await _context.UserWarehouses
+                                                  .FirstOrDefaultAsync(uw => uw.UserId == userId);
+                return userWarehouse?.WarehouseId;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
         public async Task AddUserToWarehouseAsync(int userId, int warehouseId)
         {
             try

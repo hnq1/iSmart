@@ -29,9 +29,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpPost("add-goods")]
-        public async Task<IActionResult> AddGoods(CreateGoodsRequest goods)
+        public async Task<IActionResult> AddGoods(CreateGoodsRequest goods, int userId)
         {
-            var result = _goodsService.AddGoods(goods);
+            var result = _goodsService.AddGoods(goods, userId);
             return Ok(result);
         }
 
@@ -51,9 +51,9 @@ namespace iSmart.API.Controllers
 
 
         [HttpGet("get-goods-with-warehouse-supplier")]
-        public async Task<IActionResult> GetAllGoodsWithStorageAndSupplier(int storageId, int supplierId)
+        public async Task<IActionResult> GetAllGoodsWithStorageAndSupplier(int warehouseId, int supplierId)
         {
-            var result = await _goodsService.GetAllGoodsWithStorageAndSupplier(storageId, supplierId);
+            var result = await _goodsService.GetAllGoodsWithStorageAndSupplier(warehouseId, supplierId);
 
             return Ok(result);
         }
@@ -71,6 +71,13 @@ namespace iSmart.API.Controllers
         {
             var user = _goodsService.UpdateStatusGoods(id, status);
             return Ok(user);
+        }
+
+        [HttpGet("get-goods-in-warehouse")]
+        public async Task<IActionResult> GetGoodsInWarehouse(int warehouseId)
+        {
+            var result = await _goodsService.GetGoodsInWarehouse(warehouseId);
+            return Ok(result);
         }
     }
 }
