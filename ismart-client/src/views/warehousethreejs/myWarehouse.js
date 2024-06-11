@@ -154,45 +154,6 @@ $(document).ready(function () {
 
                                                 break;
 
-                                            case "language":
-
-                                                fnSetLanguageIndex(aTargets[1]);
-                                                break;
-
-                                            case "Help":
-
-                                                switch (aTargets[1]) {
-                                                    case "quickKeys":
-
-                                                        var helpText = translate("HelpText1") + translate("HelpText2") + translate("HelpText3") + translate("HelpText4");
-                                                        fnPopUp(document.body, translate("Help"), helpText, 3, 2.5);
-                                                        break;
-
-                                                    case "about":
-
-                                                        fnPopUp(document.body, translate("AppTitle") + " (" + appVersion + ")", translate("AboutText"), 3, 5);
-                                                        break;
-
-                                                    case "documentation":
-                                                    case "webgl":
-                                                    case "gltf":
-                                                    case "threejs":
-                                                    case "d3js":
-                                                    case "w2ui":
-                                                        var links = {
-                                                            "documentation": "https://github.com/MarioDelgadoSr/MyWarehouseVisualizerDoc#my-warehouse-visualizer-documentation",
-                                                            "webgl": "https://en.wikipedia.org/wiki/WebGL",
-                                                            "gltf": "https://www.khronos.org/gltf/",
-                                                            "threejs": "https://threejs.org/",
-                                                            "d3js": "https://d3js.org/",
-                                                            "w2ui": "http://w2ui.com/"
-                                                        };
-                                                        window.open(links[aTargets[1]], "_blank");
-                                                        break;
-
-                                                } //switch
-                                                break;
-
                                         } //switch
 
                                         //Display pop-up Window
