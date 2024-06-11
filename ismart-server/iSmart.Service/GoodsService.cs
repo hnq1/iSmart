@@ -22,7 +22,9 @@ namespace iSmart.Service
         CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId);
         UpdateGoodsResponse UpdateGoods(UpdateGoodsRequest goods);
         bool UpdateStatusGoods(int id, int StatusId);
-        
+        Task<List<Good>?> GetGoodsInWarehouse(int warehouseId);
+
+
 
     }
     public class GoodsService : IGoodsService
@@ -223,8 +225,7 @@ namespace iSmart.Service
             }
         }
 
-
-
+        
 
         public UpdateGoodsResponse UpdateGoods(UpdateGoodsRequest goods)
         {
@@ -279,5 +280,14 @@ namespace iSmart.Service
                 return false;
             }
         }
+
+        public async Task<List<Good>?> GetGoodsInWarehouse(int warehouseId)
+        {
+            return await _context.GoodsWarehouses
+                .Where(gw => gw.WarehouseId == warehouseId)
+                .Select(gw => gw.Good)
+                .ToListAsync();
+        }
+
     }
 }

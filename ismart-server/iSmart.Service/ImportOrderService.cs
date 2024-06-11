@@ -22,6 +22,7 @@ namespace iSmart.Service
 
         CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i);
         ImportOrderFilterPaging ImportOrderFilterPaging(int page, int? storage, int? status, int? sortDate,  string? keyword = "");
+        Task<string> Import(int importid);
     }
 
     public class ImportOrderService : IImportOrderService
@@ -179,7 +180,7 @@ namespace iSmart.Service
             {
                 var importOrder = new ImportOrder
                 {
-                    ImportCode = "IO" + i.ImportCode,
+                    ImportCode = "IMP" + i.ImportCode,
                     UserId = i.UserId,
                     SupplierId = i.SupplierId,
                     TotalCost = 0,
@@ -257,6 +258,88 @@ namespace iSmart.Service
                 return new UpdateImportOrderResponse { IsSuccess = false, Message = $"Cap nhap don hang that bai +{e.Message}" };
             }
 
+        }
+
+        public async Task<string> Import(int importid)
+        {
+            try
+            {
+                var result = await _context.ImportOrders.Include(a => a.ImportOrderDetails).SingleOrDefaultAsync(x => x.ImportId == importid);
+
+                // Kiểm tra nếu đơn hàng tồn tại và trạng thái của đơn hàng là 3
+                if (result != null && result.StatusId == 3)
+                {
+                    // Cập nhật trạng thái đơn hàng và thời gian nhập hàng
+                    result.StatusId = 4;
+                    result.ImportedDate = DateTime.Now;
+
+                    // Duyệt qua từng chi tiết đơn hàng nhập
+                    foreach (var detail in result.ImportOrderDetails)
+                    {
+                        // Tìm hàng hóa tương ứng với GoodsId trong chi tiết đơn hàng
+                        var goods = await _context.Goods.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+                        if (goods == null)
+                        {
+                            return $"Goods with ID {detail.GoodsId} not found";
+                        }
+
+                        // Tìm thông tin hàng hóa trong kho
+                        var goodsWarehouse = await _context.GoodsWarehouses.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+                        if (goodsWarehouse == null)
+                        {
+                            // Nếu chưa có thông tin trong kho, tạo mới
+                            goodsWarehouse = new GoodsWarehouse
+                            {
+                                GoodsId = goods.GoodsId,
+                                Quantity = 0
+                            };
+                            _context.GoodsWarehouses.Add(goodsWarehouse);
+                        }
+
+                        // Tạo bản ghi lịch sử cho hàng hóa
+                        var history = new GoodsHistory
+                        {
+                            GoodsId = goods.GoodsId,
+                            ActionId = 1, // Hành động nhập hàng
+                            OrderCode = result.ImportCode,
+                            UserId = (int)result.UserId,
+                            Date = DateTime.Now,
+                            Quantity = goodsWarehouse.Quantity
+                        };
+
+                        // Cập nhật số lượng hàng trong kho
+                        int total = (int)detail.Quantity;
+                        goodsWarehouse.Quantity += total;
+                        history.QuantityDifferential = $"{total}";
+
+                        // Cập nhật giá nhập hàng
+                        history.CostPrice = goods.StockPrice;
+                        goods.StockPrice = detail.CostPrice;
+
+                        // Tính toán sự chênh lệch giá nhập
+                        var costdifferential = goods.StockPrice - history.CostPrice;
+                        history.CostPriceDifferential = costdifferential != 0 ? $"{costdifferential}" : null;
+
+                        // Cập nhật các thông tin khác cho bản ghi lịch sử
+                        history.Quantity = goodsWarehouse.Quantity;
+
+                        _context.GoodsHistories.Add(history);
+                        _context.Goods.Update(goods);
+                        _context.GoodsWarehouses.Update(goodsWarehouse);
+                    }
+                    await _context.SaveChangesAsync();
+                    return "Thành công";
+                }
+                else
+                {
+                    return "Không có dữ liệu";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (ex) for debugging purposes
+                return "Internal server error: " + ex.Message;
+            }
         }
     }
 }

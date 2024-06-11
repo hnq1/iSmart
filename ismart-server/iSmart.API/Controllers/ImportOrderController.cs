@@ -63,86 +63,21 @@ namespace iSmart.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("import")]
+        [HttpPost("import/{importid}")]
         public async Task<IActionResult> Import(int importid)
         {
-            try
+            var result = await _importService.Import(importid);
+            if (result == "Thành công")
             {
-                var result = await _context.ImportOrders.Include(a => a.ImportOrderDetails).SingleOrDefaultAsync(x => x.ImportId == importid);
-
-                // Kiểm tra nếu đơn hàng tồn tại và trạng thái của đơn hàng là 3
-                if (result != null && result.StatusId == 3)
-                {
-                    // Cập nhật trạng thái đơn hàng và thời gian nhập hàng
-                    result.StatusId = 4;
-                    result.ImportedDate = DateTime.Now;
-
-                    // Duyệt qua từng chi tiết đơn hàng nhập
-                    foreach (var detail in result.ImportOrderDetails)
-                    {
-                        // Tìm hàng hóa tương ứng với GoodsId trong chi tiết đơn hàng
-                        var goods = await _context.Goods.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
-                        if (goods == null)
-                        {
-                            return BadRequest($"Goods with ID {detail.GoodsId} not found");
-                        }
-
-                        // Tìm thông tin hàng hóa trong kho
-                        var goodsWarehouse = await _context.GoodsWarehouses.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
-                        if (goodsWarehouse == null)
-                        {
-                            // Nếu chưa có thông tin trong kho, tạo mới
-                            goodsWarehouse = new GoodsWarehouse
-                            {
-                                GoodsId = goods.GoodsId,
-                                Quantity = 0
-                            };
-                            _context.GoodsWarehouses.Add(goodsWarehouse);
-                        }
-
-                        // Tạo bản ghi lịch sử cho hàng hóa
-                        var history = new GoodsHistory
-                        {
-                            GoodsId = goods.GoodsId,
-                            ActionId = 1, // Hành động nhập hàng
-                            OrderCode = result.ImportCode,
-                            UserId = (int)result.UserId,
-                            Date = DateTime.Now,
-                            Quantity = goodsWarehouse.Quantity
-                        };
-
-                        // Cập nhật số lượng hàng trong kho
-                        int total = (int)detail.Quantity;
-                        goodsWarehouse.Quantity += total;
-                        history.QuantityDifferential = $"{total}";
-
-                        // Cập nhật giá nhập hàng
-                        history.CostPrice = goods.StockPrice;
-                        goods.StockPrice = detail.CostPrice;
-
-                        // Tính toán sự chênh lệch giá nhập
-                        var costdifferential = goods.StockPrice - history.CostPrice;
-                        history.CostPriceDifferential = costdifferential != 0 ? $"{costdifferential}" : null;
-
-                        // Cập nhật các thông tin khác cho bản ghi lịch sử
-                        history.Quantity = goodsWarehouse.Quantity;
-
-                        _context.GoodsHistories.Add(history);
-                        _context.Goods.Update(goods);
-                        _context.GoodsWarehouses.Update(goodsWarehouse);
-                    }
-                    await _context.SaveChangesAsync();
-                    return Ok("Thành công");
-                }
-                else
-                {
-                    return BadRequest("Không có dữ liệu");
-                }
+                return Ok(result);
             }
-            catch (Exception ex)
+            else if (result == "Không có dữ liệu")
+            { 
+                return BadRequest(result);
+            }
+            else
             {
-                // Log the exception (ex) for debugging purposes
-                return StatusCode(500, "Internal server error: " + ex.Message);
+                return StatusCode(500, result);
             }
         }
 
