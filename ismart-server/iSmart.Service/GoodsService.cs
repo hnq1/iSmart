@@ -19,23 +19,35 @@ namespace iSmart.Service
 
         Task<List<Good>?> GetAllGoodsWithStorageAndSupplier(int storageId, int supplierId);
         Good GetGoodsById(int id);
-        CreateGoodsResponse AddGoods(CreateGoodsRequest goods);
+        CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId);
         UpdateGoodsResponse UpdateGoods(UpdateGoodsRequest goods);
         bool UpdateStatusGoods(int id, int StatusId);
+        
 
     }
     public class GoodsService : IGoodsService
     {
         private readonly iSmartContext _context;
-        public GoodsService(iSmartContext context)
+        private readonly IUserWarehouseService _userWarehouseService;
+
+        public GoodsService(iSmartContext context, IUserWarehouseService userWarehouseService)
         {
             _context = context;
+            _userWarehouseService = userWarehouseService;
         }
 
-        public CreateGoodsResponse AddGoods(CreateGoodsRequest goods)
+        
+
+        public CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId)
         {
             try
             {
+                var warehouseId = _userWarehouseService.GetWarehouseIdByIdAsync(userId).Result;
+
+                if (warehouseId == null)
+                {
+                    return new CreateGoodsResponse { IsSuccess = false, Message = "WarehouseId không tìm thấy" };
+                }
                 // Tạo hàng hóa mới
                 var newGood = new Good
                 {
@@ -69,7 +81,7 @@ namespace iSmart.Service
                     var goodsWarehouse = new GoodsWarehouse
                     {
                         GoodsId = newGood.GoodsId,
-                        WarehouseId = goods.WarehouseId,
+                        WarehouseId = (int)warehouseId,
                         Quantity = 0
                     };
 
