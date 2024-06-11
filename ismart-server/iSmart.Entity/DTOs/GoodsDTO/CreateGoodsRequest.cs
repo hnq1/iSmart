@@ -39,7 +39,7 @@ namespace iSmart.Entity.DTOs.GoodsDTO
         public int? MaxStock { get; set; }
 
         public int? MinStock { get; set; }
-        public int WarehouseId { get; set; }
+        //public int WarehouseId { get; set; }
         //public int Quantity { get; set; }
     }
 }

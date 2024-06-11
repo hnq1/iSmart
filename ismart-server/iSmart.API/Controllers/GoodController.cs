@@ -29,9 +29,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpPost("add-goods")]
-        public async Task<IActionResult> AddGoods(CreateGoodsRequest goods)
+        public async Task<IActionResult> AddGoods(CreateGoodsRequest goods, int userId)
         {
-            var result = _goodsService.AddGoods(goods);
+            var result = _goodsService.AddGoods(goods, userId);
             return Ok(result);
         }
 
