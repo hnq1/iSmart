@@ -197,7 +197,7 @@ function SupplierList() {
                                                 {
                                                     (roleId == 1 || roleId == 2) ?
                                                         <td className="align-middle">
-                                                            <SwitchButton status={s.status} handleChangeStatus={() => handleChangeStatus(s)} />
+                                                            <SwitchButton status={s.statusId} handleChangeStatus={() => handleChangeStatus(s)} />
                                                         </td>
                                                         : ''
                                                 }
@@ -252,9 +252,12 @@ function SupplierList() {
             <ModelAddSupplier isShow={isShowModelAddNew} handleClose={() => setIsShowModelAddNew(false)} updateTableSupplier={updateTableSupplier} />
             <ModelEditSupplier isShow={isShowModelEdit} handleClose={() => setIsShowModelEdit(false)} dataUpdateSupplier={dataUpdateSupplier}
                 updateTableSupplier={updateTableSupplier} />
-            <ModalConfirm title="nhà cung cấp" statusText1={<span style={{ color: '#24cbc7' }}>Đang hợp tác</span>} statusText2={<span style={{ color: '#ff0000' }}>Ngừng hợp tác</span>} isShow={isShowModalConfirm}
+            <ModalConfirm title="nhà cung cấp"
+                statusText1={<span style={{ color: '#24cbc7' }}>Đang hợp tác</span>}
+                statusText2={<span style={{ color: '#ff0000' }}>Ngừng hợp tác</span>} isShow={isShowModalConfirm}
                 handleClose={() => setIsShowModalConfirm(false)}
-                confirmChangeStatus={confirmChangeStatus} name={<span style={{ color: 'black' }}>{dataUpdateStatus.supplierName}</span>} status={dataUpdateStatus.status}
+                confirmChangeStatus={confirmChangeStatus}
+                name={<span style={{ color: 'black' }}>{dataUpdateStatus.supplierName}</span>} status={dataUpdateStatus.status}
 
             />
         </>

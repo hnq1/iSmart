@@ -21,7 +21,7 @@ const ListAccount = () => {
     //Check for role ID and redirect if not authorized
     useEffect(() => {
         if (roleId !== 1) {
-            navigate('/404');
+            navigate('/ban-khong-co-quyen-truy-cap');
             // Không có quyền truy cập vào trang này
             // Chuyển hướng về trang chủ hoặc trang khác
             //  nếu người dùng không được ủy quyền
@@ -232,15 +232,15 @@ const ListAccount = () => {
                         <Table className="table text-center table-border table-hover  border-primary table-sm">
                             <thead>
                                 <tr>
-                                    <th className="align-middle   text-nowrap">STT</th>
-                                    <th className="align-middle  text-nowrap">Mã nhân viên</th>
-                                    <th className="align-middle  text-nowrap">Vai trò</th>
-                                    <th className="align-middle  text-nowrap">Tên đầy đủ</th>
-                                    <th className="align-middle  text-nowrap">Email</th>
-                                    <th className="align-middle  text-nowrap">Số điện thoại</th>
-                                    <th className="align-middle  text-nowrap">Địa chỉ</th>
-                                    <th className="align-middle  text-nowrap">Hình ảnh</th>
-                                    <th className="align-middle  text-nowrap">Tình trạng</th>
+                                    <th className="align-middle  text-nowrap">STT</th>
+                                    <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>Mã nhân viên</th>
+                                    <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>Vai trò</th>
+                                    <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>Tên đầy đủ</th>
+                                    <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>Email</th>
+                                    <th className="align-middle  text-nowrap" >Số điện thoại</th>
+                                    <th className="align-middle  text-nowrap" style={{ textAlign: 'left', width: '50%' }}>Địa chỉ</th>
+                                    <th className="align-middle  text-nowrap" >Hình ảnh</th>
+                                    <th className="align-middle  text-nowrap" >Tình trạng</th>
                                     <th className="align-middle  text-nowrap"></th>
 
                                 </tr>
@@ -250,15 +250,15 @@ const ListAccount = () => {
                                     && totalUser.map((i, index) => (
                                         <tr key={`userAccount${index}`}>
                                             <td className="align-middle text-color-primary">{index + 1}</td>
-                                            <td className="align-middle">{i.userCode}</td>
-                                            <td className="align-middle">{i.roleName}</td>
-                                            <td className="align-middle">{i.fullName}</td>
-                                            <td className="align-middle">{i.email}</td>
-                                            <td className="align-middle">{i.phone}</td>
-                                            <td className="align-middle">{i.address}</td>
-                                            <td className="align-middle"><img src={i.image} alt="alt" style={{ width: '50px', height: '50px' }} /></td>
+                                            <td className="align-middle" style={{ textAlign: 'left' }}>{i.userCode}</td>
+                                            <td className="align-middle" style={{ textAlign: 'left' }}>{i.roleName}</td>
+                                            <td className="align-middle" style={{ textAlign: 'left' }}>{i.fullName}</td>
+                                            <td className="align-middle" style={{ textAlign: 'left' }}>{i.email}</td>
+                                            <td className="align-middle" >{i.phone}</td>
+                                            <td className="align-middle" style={{ textAlign: 'left', width: 'auto' }}>{i.address}</td>
+                                            <td className="align-middle" ><img src={i.image} alt="alt" style={{ width: '110px', height: 'auto' }} /></td>
 
-                                            <td className="align-middle">
+                                            <td className="align-middle" style={{ padding: '20px' }} >
                                                 <SwitchButtonUser status={i.statusId} handleChangeStatus={() => handleChangeStatus(i)} />
                                             </td>
 

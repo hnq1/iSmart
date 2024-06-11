@@ -24,7 +24,7 @@ function MyTable() {
 
     useEffect(() => {
         if (![1, 2, 4].includes(roleId)) {
-            navigate('/404'); // Chuyển hướng người dùng không phù hợp
+            navigate('/ban-khong-co-quyen-truy-cap'); // Chuyển hướng người dùng không phù hợp
         }
     }, [roleId, navigate]);
 
@@ -77,8 +77,12 @@ function MyTable() {
         { idSort: 1, nameSort: "Giá Từ bé đến lớn" },
         { idSort: 2, nameSort: "Giá Từ lớn đến bé" }]);
 
-        if (roleId !== 2 || roleId !== 4) {
+        if (roleId === 1) {
             getStorageIdByUser();
+        }
+        else if (roleId === 2) {
+            setSelectedWarehouseId(localStorage.getItem('warehouseId'));
+            setSelectedWarehouse(localStorage.getItem('warehouseName'));
         }
     }, [])
 
@@ -199,9 +203,8 @@ function MyTable() {
                 <div className="col-sm-12">
                     <h5 style={{ color: '#a5a2ad' }}>Quản lý hàng hóa</h5>
                     <div className="row no-gutters my-3 ">
-                        {(roleId == 2 || roleId == 4 || roleId == 1) ?
+                        {(roleId == 1) ?
                             <div className="col-2">
-
                                 <DropdownButton
                                     className="DropdownButtonCSS ButtonCSSDropdown"
                                     title={selectedWarehouse ? selectedWarehouse : "Tất cả Kho"}
@@ -229,7 +232,9 @@ function MyTable() {
                             :
                             <Col md={2}>
                                 <input type="text" className="form-control inputCSS"
-                                    aria-describedby="emailHelp" value={selectedWarehouse} disabled /></Col>
+                                    aria-describedby="emailHelp"
+                                    value={selectedWarehouse} disabled />
+                            </Col>
 
                         }
 

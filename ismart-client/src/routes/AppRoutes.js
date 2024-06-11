@@ -18,6 +18,7 @@ import ListAccount from '~/views/accounts/AccountList';
 import ProjectList from '~/views/project/ProjectList';
 import { Container, Row, Col } from 'react-bootstrap';
 import Doashboard from '~/views/doashboard/Doashboard';
+import Error from '~/views/error/error';
 import PrivateRoute from './PrivateRoute';
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
@@ -269,6 +270,15 @@ const AppRoutes = () => {
                         </PrivateRoute>
                     }
                 />
+
+                <Route path='/ban-khong-co-quyen-truy-cap'
+                    element={
+                        <PrivateRoute>
+                            <Error />
+                        </PrivateRoute>
+                    }
+                />
+
             </Routes >
 
         </>

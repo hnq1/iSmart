@@ -20,15 +20,15 @@ const fetchGoodsWithStorageAndSupplier = (storageId, supplierId) => {
 
 const addGood = (goodsName, goodsCode, categoryId,
     description, supplierId, measuredUnit,
-    inStock, image, statusId, stockPrice,
+    image, statusId, stockPrice,
     createdDate, warrantyTime, barcode,
-    maxStock, minStock) => {
+    maxStock, minStock, warehouseId) => {
     return axios.post(`api/goods/add-goods`, {
         goodsName, goodsCode, categoryId,
         description, supplierId, measuredUnit,
-        inStock, image, statusId, stockPrice,
+        image, statusId, stockPrice,
         createdDate, warrantyTime, barcode,
-        maxStock, minStock
+        maxStock, minStock, warehouseId
     });
 }
 
