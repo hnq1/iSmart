@@ -49,7 +49,7 @@ namespace iSmart.Test
                 CreatedDate = DateTime.Now,
                 WarrantyTime = 12,                             
             };
-            var goodsResponse = _goodsService.AddGoods(goodsEntry,1);
+            var goodsResponse = _goodsService.AddGoods(goodsEntry,11);
             if(goodsResponse.IsSuccess is true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
@@ -61,16 +61,16 @@ namespace iSmart.Test
             var goodsEntry = new UpdateGoodsRequest
             {
                 GoodsCode = "Test",
-                GoodsName = "Test",
+                GoodsName = "Test1",
                 CategoryId = 3,
-                Description = "Test",
+                Description = "Test1",
                 SupplierId = 3,
-                MeasuredUnit = "Test",
-                InStock = 100,
-                Image = "Test",
+                MeasuredUnit = "Test1",
+                //InStock = 100,
+                Image = "Test1",
                 StatusId = 1,
                 StockPrice = 100,
-                Barcode = "Test",
+                Barcode = "Test1",
                 MaxStock = 1000,
                 MinStock = 1,
                 WarrantyTime = 12,
