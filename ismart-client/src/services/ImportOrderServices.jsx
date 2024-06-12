@@ -1,12 +1,28 @@
 import { get } from "lodash";
 import axios from "./axios";
 
-const addNewImportOrder = (userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, warehouseId, deliveryId, image, stokekeeperId) => {
-    return axios.post(`api/import-order/add-import-order`, { userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, warehouseId, deliveryId, image, stokekeeperId })
+const addNewImportOrder = (userId, supplierId, totalCost,
+    note, createdDate, importedDate,
+    statusId, importCode, warehouseId,
+    deliveryId, image, stokekeeperId) => {
+    return axios.post(`api/import-order/add-import-order`, {
+        userId, supplierId, totalCost,
+        note, createdDate, importedDate,
+        statusId, importCode, warehouseId,
+        deliveryId, image, stokekeeperId
+    })
 }
 
-const updateImportOrder = (importId, userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, storageId, deliveryId, image, stokekeeperId) => {
-    return axios.put(`api/import-order/update-import-order`, { importId, userId, supplierId, totalCost, note, createdDate, importedDate, statusId, importCode, storageId, deliveryId, image, stokekeeperId })
+const updateImportOrder = (importId, userId, supplierId,
+    totalCost, note, createdDate,
+    importedDate, statusId, importCode,
+    storageId, deliveryId, image, stokekeeperId) => {
+    return axios.put(`api/import-order/update-import-order`, {
+        importId, userId, supplierId,
+        totalCost, note, createdDate,
+        importedDate, statusId, importCode,
+        storageId, deliveryId, image, stokekeeperId
+    })
 }
 
 const fetchAllImportOrders = () => {
@@ -19,7 +35,10 @@ const fetchImportOrderNewest = () => {
 
 const fetchImportOrdersWithfilter = (page, warehouseId, status, sortDate, keyword) => {
     return axios.get(`api/import-order/get-import-orders?page=${page}
-    ${warehouseId ? `&storage=${warehouseId}` : ''}${status ? `&status=${status}` : ''}${sortDate ? `&sortDate=${sortDate}` : ''}${keyword ? `&keyword=${keyword}` : ''}`);
+    ${warehouseId ? `&storage=${warehouseId}` : ''}
+    ${status ? `&status=${status}` : ''}
+    ${sortDate ? `&sortDate=${sortDate}` : ''}
+    ${keyword ? `&keyword=${keyword}` : ''}`);
 }
 
 const addSuccessFullImportOrder = (importId) => {

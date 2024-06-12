@@ -202,16 +202,17 @@ function ImportOrderList() {
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <Row>
-                                {roleId == 2 || roleId == 4 ? <Col md={2}>
-                                    <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                        <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-                                        {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                            <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
-                                        ))}
-                                    </DropdownButton>
-                                </Col> : <Col md={2}>
-                                    <input type="text" className="form-control inputCSS"
-                                        aria-describedby="emailHelp" value={selectedStorage} disabled /></Col>}
+                                {roleId == 2 || roleId == 4 ?
+                                    <Col md={2}>
+                                        <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
+                                            <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+                                            {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
+                                                <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                            ))}
+                                        </DropdownButton>
+                                    </Col> : <Col md={2}>
+                                        <input type="text" className="form-control inputCSS"
+                                            aria-describedby="emailHelp" value={selectedStorage} disabled /></Col>}
 
                                 <Col md={2}>
                                     <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByStatusName ? sortedByStatusName : "Tình trạng"} variant="success" style={{ zIndex: 999 }}>
@@ -220,7 +221,7 @@ function ImportOrderList() {
                                         ))}
                                     </DropdownButton>
                                 </Col>
-                                <Col md={5}>
+                                <Col md={2}>
                                     <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByDateName ? sortedByDateName : "Sắp xếp theo ngày"} variant="success" style={{ zIndex: 999 }}>
                                         {sortDateOptions.map((s, index) => (
                                             <Dropdown.Item key={`sortDate ${index}`} eventKey={s.nameSort} onClick={(e) => handleSortDateClick(s, e)}>{s.nameSort}</Dropdown.Item>
@@ -228,7 +229,7 @@ function ImportOrderList() {
                                     </DropdownButton>
                                 </Col>
 
-                                <Col md={3}>
+                                <Col md={4}>
                                     <div className="input-group">
                                         <input
                                             className="form-control border-secondary inputCSS"
@@ -249,8 +250,9 @@ function ImportOrderList() {
                                             </button>
                                         </div>
                                     </div>
+
                                 </Col>
-                                {roleId === 3 || roleId === 1 ?
+                                {(roleId === 3 || roleId === 1) ?
 
                                     <Col md={2}>
                                         <div className="col-auto ButtonCSSDropdown">
@@ -263,8 +265,10 @@ function ImportOrderList() {
                                                 Thêm lô hàng nhập
 
                                             </button>
-                                        </div>  </Col> : ''
+                                        </div>
 
+                                    </Col>
+                                    : ''
                                 }
                             </Row>
 
