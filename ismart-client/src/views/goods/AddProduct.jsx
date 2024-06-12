@@ -196,7 +196,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                 barCode,
                 maxStock,
                 minStock,
-            ); 
+            );
 
             toast.success("Thêm mặt hàng mới thành công");
             handleCloseModal();
