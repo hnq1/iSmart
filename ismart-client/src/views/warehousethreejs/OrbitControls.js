@@ -47,5 +47,39 @@ THREE.OrbitControls = function (object, domElement) {
     // If damping is enabled, you must call controls.update() in your animation loop
     this.enableDamping = false;
     this.dampingFactor = 0.25;
-    
+    // This option actually enables dollying in and out; left as "zoom" for backwards compatibility.
+    // Set to false to disable zooming
+    this.enableZoom = true;
+    this.zoomSpeed = 1.0;
+
+    // Set to false to disable rotating
+    this.enableRotate = true;
+    this.rotateSpeed = 1.0;
+
+    // Set to false to disable panning
+    this.enablePan = true;
+    this.panSpeed = 1.0;
+    this.screenSpacePanning = false; // if true, pan in screen-space
+    this.keyPanSpeed = 7.0;	// pixels moved per arrow key push
+
+    // Set to true to automatically rotate around the target
+    // If auto-rotate is enabled, you must call controls.update() in your animation loop
+    this.autoRotate = false;
+    this.autoRotateSpeed = 2.0; // 30 seconds per round when fps is 60
+
+    // Set to false to disable use of the keys
+    this.enableKeys = true;
+
+    // The four arrow keys
+    this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40 };
+
+    // Mouse buttons
+    this.mouseButtons = { ORBIT: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.RIGHT };
+
+    // for reset
+    this.target0 = this.target.clone();
+    this.position0 = this.object.position.clone();
+    this.zoom0 = this.object.zoom;
+
+
 };

@@ -58,29 +58,6 @@ $(document).ready(function () {
                                     { type: 'break' },
                                     { type: "button", id: "toggleVisualGrid", tooltip: "Show/hide Warehouse Layout Grid", text: "Toggle Warehouse Layout Grid" },
                                     { type: 'break' },
-                                    {
-                                        type: "menu-radio", id: "language", tooltip: "Select Language",
-                                        items: languages.map(function (language, index) { return { id: index, text: language.text, tooltip: language.tooltip } }),
-                                        //Find index programmatically with: w2ui.parentLayout.get("main").toolbar.items.find(function(item){return item.id == "warehouse"}).selected
-                                        selected: languageIndex,
-                                        text: function (item) {
-                                            return "Language: " + item.items[item.selected].text;
-                                        }
-                                    },
-                                    { type: 'break' },
-                                    {
-                                        type: "menu", id: "Help", text: fnGetTranslatedText, tooltip: "Help",
-                                        items: [
-                                            { id: "documentation", text: "Documentation" },
-                                            { id: "quickKeys", text: "Quick Keys" },
-                                            { id: "webgl", text: "WebGL" },
-                                            { id: "gltf", text: "glTF" },
-                                            { id: "threejs", text: "three.js" },
-                                            { id: "d3js", text: "d3.js" },
-                                            { id: "w2ui", text: "w2ui" },
-                                            { id: "about", text: translate("About") }
-                                        ]
-                                    }
                                 ],
                                 onClick: function (event) {
                                     event.done(function () {
