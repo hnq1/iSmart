@@ -47,7 +47,7 @@ namespace iSmart.Service
         {
             try
             {
-                var pageSize = 6;
+                var pageSize = 12;
                 var storagesQuery = _context.Warehouses.AsQueryable();
 
                 // Lấy dữ liệu từ cơ sở dữ liệu vào bộ nhớ

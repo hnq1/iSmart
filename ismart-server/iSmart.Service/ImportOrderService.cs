@@ -20,7 +20,7 @@ namespace iSmart.Service
         List<ImportOrderDTO> GetAllImportOrder();
         ImportOrder? GetImportOrderByOrderCode(string code);
 
-        CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i);
+        CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i, int staffId);
         ImportOrderFilterPaging ImportOrderFilterPaging(int page, int? storage, int? status, int? sortDate,  string? keyword = "");
         Task<string> Import(int importid);
     }
@@ -28,10 +28,11 @@ namespace iSmart.Service
     public class ImportOrderService : IImportOrderService
     {
         private readonly iSmartContext _context;
-
-        public ImportOrderService(iSmartContext context)
+        private readonly IUserWarehouseService _userWarehouseService;
+        public ImportOrderService(iSmartContext context, IUserWarehouseService userWarehouseService)
         {
             _context = context;
+            _userWarehouseService = userWarehouseService;
         }
 
         public List<ImportOrderDTO> GetAllImportOrder()
@@ -97,7 +98,7 @@ namespace iSmart.Service
         {
             try
             {
-                var pageSize = 6;
+                var pageSize = 12;
                 if (page <= 0) page = 1;
 
                 var importOrders = _context.ImportOrders
@@ -174,14 +175,14 @@ namespace iSmart.Service
 
 
 
-        public CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i)
+        public CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i, int staffId)
         {
             try
             {
                 var importOrder = new ImportOrder
                 {
                     ImportCode = "IMP" + i.ImportCode,
-                    UserId = i.UserId,
+                    UserId = staffId,
                     SupplierId = i.SupplierId,
                     TotalCost = 0,
                     Note = i.Note,
@@ -191,7 +192,9 @@ namespace iSmart.Service
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
-                    StaffId = i.StokekeeperId,
+                    //StaffId = _userWarehouseService.GetWarehouseManagerIdByStaffId(staffId),
+                    StaffId = 1
+
                 };
                 if (_context.ImportOrders.SingleOrDefault(z => importOrder.ImportCode.ToLower() == z.ImportCode.ToLower()) == null)
                 {
