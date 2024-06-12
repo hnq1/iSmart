@@ -40,7 +40,7 @@ namespace WM.Test
                 Description = "Test",
                 SupplierId = 3,
                 MeasuredUnit = "Test",
-                InStock = 100,
+               
                 Image = "Test",
                 StatusId = 1,
                 StockPrice = 100,
