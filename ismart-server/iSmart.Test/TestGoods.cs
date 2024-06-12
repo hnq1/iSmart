@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using iSmart.Entity.DTOs.GoodsDTO;
 using iSmart.Entity.Models;
 using iSmart.Service;
-namespace WM.Test
+namespace iSmart.Test
 {
     public class TestGoods
     {

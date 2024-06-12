@@ -23,8 +23,8 @@ namespace iSmart.Test
         public void GetAllDelivery_Test() 
         {
             var result = false;
-            var delivverys = _deliveryService.GetAllDelivery();
-            if (delivverys != null) result = true;
+            var deliveries = _deliveryService.GetAllDelivery();
+            if (deliveries != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
     }
