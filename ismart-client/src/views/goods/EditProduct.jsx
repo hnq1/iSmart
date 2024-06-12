@@ -9,9 +9,11 @@ import uploadImage from '~/services/ImageServices';
 import { toast } from 'react-toastify';
 
 import { updateGood } from '~/services/GoodServices';
+import { set } from 'lodash';
 
 
 function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
 
     const [totalCategories, setTotalCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -27,10 +29,12 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
     const [goodName, setGoodName] = useState(null);
     const [goodCode, setGoodCode] = useState(null);
-
-    const [warranty, setWarranty] = useState(0);
+    const [measuredUnit, setMeasuredUnit] = useState(null);
+    const [warrantyTime, setwarrantyTime] = useState(0);
     const [description, setDescription] = useState(null);
-
+    const [stockPrice, setStockPrice] = useState(0);
+    const [maxStock, setMaxStock] = useState(0);
+    const [minStock, setMinStock] = useState(0);
     const [imageGood, setImageGood] = useState(null);
 
     const [barCode, setBarCode] = useState(null);
@@ -48,10 +52,14 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setSelectedStorage(dataGoodEdit.storageName);
         setSelectedStorageId(dataGoodEdit.storageId);
 
+        setStockPrice(dataGoodEdit.stockPrice);
+        setMaxStock(dataGoodEdit.maxStock);
+        setMinStock(dataGoodEdit.minStock);
+        setMeasuredUnit(dataGoodEdit.measuredUnit);
         setGoodName(dataGoodEdit.goodsName);
         setGoodCode(dataGoodEdit.goodsCode);
 
-        setWarranty(dataGoodEdit.warrantyTime);
+        setwarrantyTime(dataGoodEdit.warrantyTime);
         setDescription(dataGoodEdit.description);
 
         setImageGood(dataGoodEdit.image);
@@ -96,9 +104,8 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
-        // let res = await uploadImage(file)
-        // const urlImage = res.url;
-        const urlImage = URL.createObjectURL(file);
+        let res = await uploadImage(file)
+        const urlImage = res.url;
         setImageGood(urlImage);
 
     }
@@ -112,9 +119,11 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     }
 
     const handleChangeWarranty = (event) => {
-        setWarranty(event.target.value);
+        setwarrantyTime(event.target.value);
     }
-
+    const handleUnitClick = (unit, event) => {
+        setMeasuredUnit(unit);
+    }
     const handleChangeDescription = (event) => {
         setDescription(event.target.value);
     }
@@ -130,12 +139,22 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const handleSave = async () => {
 
         let res = await updateGood(dataGoodEdit.goodsId,
-            goodName, goodCode,
+            goodName,
+            goodCode,
             selectedCategoryId,
-            description, selectedSupplierId,
-            "Chiếc", imageGood, 1, warranty,
-            barCode, selectedStorageId);
-        console.log(res);
+            description,
+            selectedSupplierId,
+            measuredUnit,
+            0,
+            imageGood,
+            1,
+            stockPrice,
+            warrantyTime,
+            barCode,
+            selectedStorageId,
+            maxStock,
+            minStock);
+        // console.log("RES UPDATE", res);
         updateTable();
         toast.success("Sửa mặt hàng thành công");
         handleCloseModal();
@@ -151,17 +170,34 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    <Row>
-                        <label >Kho</label>
+                    {roleId == 1 ?
+                        <Row>
+                            <label >Kho</label>
 
-                        <Col md={5}>
-                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
-                    </Row>
+                            <Col md={5}>
+                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
+                                    {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
+                                        <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                    ))}
+                                </DropdownButton>
+                            </Col>
+                        </Row>
+                        : ''
+                    }
+                    <Col md={2}>
+                        <label >Đơn vị </label>
+                        <DropdownButton
+                            className="DropdownButtonCSS ButtonCSSDropdown"
+                            title={measuredUnit !== null ? measuredUnit : "Chọn đơn vị"}
+                            variant="success"
+                            style={{ zIndex: 999 }}
+                        >
+
+
+                            <Dropdown.Item eventKey="Kilogram" onClick={(e) => handleUnitClick("Kg", e)}>Kilogram</Dropdown.Item>
+                            <Dropdown.Item eventKey="Thùng" onClick={(e) => handleUnitClick("Thùng", e)}>Thùng</Dropdown.Item>
+                        </DropdownButton>
+                    </Col>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >Tên hàng </label>
@@ -220,7 +256,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
                         <Col md={5}>
                             <label >Hạn bảo hành </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warranty} onChange={handleChangeWarranty} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} />
                         </Col>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
@@ -232,6 +268,22 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
                     </Row>
 
+                    <row style={{ marginTop: '15px' }}>
+                        <Col md={5}>
+                            <label >Giá nhập </label>
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
+                        </Col>
+                    </row>
+                    <Row style={{ marginTop: '15px' }}>
+                        <Col md={5}>
+                            <label >MaxStock </label>
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
+                        </Col>
+                        <Col md={5}>
+                            <label >MinStock </label>
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
+                        </Col>
+                    </Row>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={2}>
                             <div>
@@ -260,7 +312,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                     Lưu thay đổi
                 </Button>
             </Modal.Footer>
-        </Modal>
+        </Modal >
     );
 }
 
