@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Modal, Button, Row, Col, Form, DropdownButton, Dropdown } from "react-bootstrap"
+import { Modal, Button, Row, Col, Form, DropdownButton, Dropdown, DropdownItem } from "react-bootstrap"
 import { toast } from 'react-toastify';
 import { validateEmail, validatePhone, validateText, validateTextRequired, isStrongPassword } from "~/validate";
 import { fetchAllStorages } from "~/services/StorageServices";
@@ -35,7 +35,10 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
     }
-
+    const handleStorageTotalClick = () => {
+        setSelectedWarehouse("Tất cả Kho");
+        setSelectedWarehouseId("");
+    }
     const handleStorageClick = (warehouse) => {
         // let res = await setSelectedStorage(storage.storageName);
 
@@ -169,6 +172,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                                 variant="success"
                                 style={{ zIndex: 999 }}
                             >
+                                <DropdownItem eventKey="1" onClick={handleStorageTotalClick}>Tất cả Kho</DropdownItem>
                                 {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                     <Dropdown.Item
                                         key={`warehouse ${index}`}

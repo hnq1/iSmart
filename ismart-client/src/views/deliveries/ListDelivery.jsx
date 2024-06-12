@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'react-bootstrap';
-import { fetchDeliveriesWithKeyword } from '~/services/DeliveryServices';
+import { Table, Form } from 'react-bootstrap';
+import { fetchDeliveriesWithKeyword, updateStatusDelivery } from '~/services/DeliveryServices';
 import { removeWhiteSpace } from '~/validate';
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify';
 import ModelAddDelivery from './AddDelivery';
 import ModelEditDelivery from './EditDelivery';
-
+import ModalConfirm from '../components/others/Modal/ModalConfirm';
+import SwitchButton from '../components/others/SwitchButton';
 
 function DeliveryList() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);;
@@ -19,9 +20,12 @@ function DeliveryList() {
     const [currentPage, setcurrentPage] = useState(0);
 
     const [keywordSearch, setKeywordSearch] = useState("");
+    const [selectOption, setSelectOption] = useState();
+
 
     const [dataUpdateSupplier, setDataUpdateSupplier] = useState({});
 
+    const [dataUpdateStatus, setDataUpdateStatus] = useState({});
 
     useEffect(() => {
         getDeliveries(1);
@@ -32,8 +36,10 @@ function DeliveryList() {
 
 
     const getDeliveries = async (page, keyword) => {
+
         let res = await fetchDeliveriesWithKeyword(page, removeWhiteSpace(keyword ? keyword : ""));
         if (res) {
+            console.log("res.data: ", res.data);
             setListDeliveries(res.data);
             setTotalPages(res.totalPages);
         }
@@ -55,16 +61,36 @@ function DeliveryList() {
         await getDeliveries(currentPage + 1, keywordSearch);
     }
 
-    const ShowModelEditSupplier = (supplier) => {
+    const ShowModelEditSupplier = (delivery) => {
         setIsShowModelEdit(true);
-        setDataUpdateSupplier(supplier);
+        setDataUpdateSupplier(delivery);
     }
+
+    // const handleFilterStatus = (event) => {
+    //     const selectOption = event.target.value;
+    //     setSelectOption(selectOption);
+    // }
+
+    const handleChangeStatus = async (delivery) => {
+        setDataUpdateStatus(delivery);
+        setIsShowModalConfirm(true);
+    }
+
+    const confirmChangeStatus = async (confirm) => {
+        if (confirm) {
+            await updateStatusDelivery(dataUpdateStatus.deliveyId);
+            getDeliveries(currentPage + 1, keywordSearch);
+
+
+        }
+    }
+
 
     const handleSearch = () => {
         setcurrentPage(0);
         const fetchData = async () => {
             let res = await getDeliveries(1, keywordSearch);
-            console.log(res);
+            console.log("res: ", res);
 
             if (res.data.length == 0) {
                 toast.warning("Vui lòng nhập từ khóa tìm kiếm khác");
@@ -110,7 +136,7 @@ function DeliveryList() {
                                 </div>
                             </div>
                             {
-                                (roleId == 1 || roleId == 2)? 
+                                (roleId == 1 || roleId == 2) ?
                                     <div className="col-auto ButtonCSSDropdown">
                                         <button
                                             className="btn btn-success border-left-0 rounded"
@@ -122,7 +148,7 @@ function DeliveryList() {
 
                                         </button>
                                     </div>
-                                : ''
+                                    : ''
                             }
 
                         </div>
@@ -132,7 +158,12 @@ function DeliveryList() {
                                     <tr>
                                         <th className="align-middle   text-nowrap">STT</th>
                                         <th className="align-middle  text-nowrap">Bên vận chuyển</th>
-
+                                        {
+                                            (roleId == 1 || roleId == 2) ?
+                                                <th className="align-middle  text-nowrap">Tình trạng</th>
+                                                : ''
+                                        }
+                                        <th className="align-middle  text-nowrap"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -142,14 +173,21 @@ function DeliveryList() {
                                             <tr key={`supplier${index}`}>
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
                                                 <td className="align-middle">{s.deliveryName}</td>
-
                                                 {
-                                                (roleId == 1 || roleId == 2) ?
-                                                <td className="align-middle " style={{ padding: '10px' }}>
+                                                    (roleId == 1 || roleId == 2) ?
+                                                        <td className="align-middle">
+                                                            <SwitchButton status={s.statusId} handleChangeStatus={() => handleChangeStatus(s)} />
 
-                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditSupplier(s)}></i>
-                                                </td>
-                                                :''
+                                                        </td>
+                                                        : ''
+                                                }
+                                                {
+                                                    (roleId == 1 || roleId == 2) ?
+                                                        <td className="align-middle " style={{ padding: '10px' }}>
+
+                                                            <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditSupplier(s)}></i>
+                                                        </td>
+                                                        : ''
                                                 }
 
                                             </tr>
@@ -189,6 +227,15 @@ function DeliveryList() {
                 dataUpdateSupplier={dataUpdateSupplier}
                 updateTableSupplier={updateTableSupplier} />
 
+            <ModalConfirm title="bên vận chuyển"
+                statusText1={<span style={{ color: '#24cbc7' }}>Đang hợp tác</span>}
+                statusText2={<span style={{ color: '#ff0000' }}>Ngừng hợp tác</span>} isShow={isShowModalConfirm}
+                handleClose={() => setIsShowModalConfirm(false)}
+                confirmChangeStatus={confirmChangeStatus}
+                name={<span style={{ color: 'black' }}>{dataUpdateStatus.deliveryName}</span>}
+                status={dataUpdateStatus.status}
+
+            />
         </>
 
     );

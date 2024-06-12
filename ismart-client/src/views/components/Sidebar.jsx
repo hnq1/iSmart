@@ -11,7 +11,7 @@ const Sidebar = () => {
         <Col sm={3} md={3} xl={2} className="px-sm-2  px-0  
         " style={{
                 width: '240px',
-                background: 'linear-gradient(to right, #2c9d69, #31b176, #37c484, #49cc90, #5dd29c, #71d7a8, #85ddb4)'
+                background: 'linear-gradient(to right, #5dd29c, #71d7a8, #85ddb4)'
             }}>
 
             {/* Thêm nút bấm thụt ra thụt vào của full menu */}
@@ -50,6 +50,29 @@ const Sidebar = () => {
                                     </div>
                                     <div>
                                         <i className=" fa-solid fa-angle-right"></i>
+                                    </div>
+                                </Nav.Link>
+                            </Nav.Item>
+                            : ''
+                    }
+
+{
+                        (roleId == 1 || roleId == 2 || roleId == 4) ?
+                            <Nav.Item className="mb-2">
+                                <Nav.Link as={Link} to="/kho-3d"
+                                    className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                                    style={{ width: 180 }}
+                                >
+                                    <div className="d-flex">
+                                        <div style={{ width: 30 }}>
+                                            <i className="fa-duotone fa-clipboard fa-xl"></i>
+                                        </div>
+                                        <div>
+                                            <span className="ms-1 d-none d-sm-inline">Kho3D</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <i className="fa-solid fa-angle-right"></i>
                                     </div>
                                 </Nav.Link>
                             </Nav.Item>

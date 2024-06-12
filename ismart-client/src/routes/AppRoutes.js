@@ -5,6 +5,7 @@ import ForgotPassword from '../views/pages/authentication/ForgotPassword';
 import ChangePassword from '../views/pages/authentication/ChangePassword';
 import NavbarCom from '../views/components/NavbarCom';
 import GoodList from '../views/goods/GoodList';
+import WarehouseThree from '../views/warehousethreejs/warehousethree';
 import SupplierList from '../views/suppliers/SuppliersList';
 import StorageList from '../views/storages/StorageList';
 import CategoryList from '../views/categories/CategoryList';
@@ -17,6 +18,7 @@ import ListAccount from '~/views/accounts/AccountList';
 import ProjectList from '~/views/project/ProjectList';
 import { Container, Row, Col } from 'react-bootstrap';
 import Doashboard from '~/views/doashboard/Doashboard';
+import Error from '~/views/error/error';
 import PrivateRoute from './PrivateRoute';
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
@@ -221,6 +223,7 @@ const AppRoutes = () => {
                     }
                 >
                 </Route >
+
                 <Route path='/danh-sach-mat-hang'
                     element={
                         <PrivateRoute>
@@ -235,8 +238,23 @@ const AppRoutes = () => {
                             </Container>
                         </PrivateRoute>
                     }
-
                 />
+                <Route path='/kho-3d'
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <WarehouseThree />
+                                    </Col>
+                                </Row>
+                            </Container>
+                        </PrivateRoute>
+                    }
+                />
+
                 <Route path='/quan-ly-tai-khoan'
                     element={
                         <PrivateRoute>
@@ -252,6 +270,15 @@ const AppRoutes = () => {
                         </PrivateRoute>
                     }
                 />
+
+                <Route path='/ban-khong-co-quyen-truy-cap'
+                    element={
+                        <PrivateRoute>
+                            <Error />
+                        </PrivateRoute>
+                    }
+                />
+
             </Routes >
 
         </>

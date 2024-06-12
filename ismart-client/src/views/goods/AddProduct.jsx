@@ -8,9 +8,14 @@ import { fetchAllStorages } from '~/services/StorageServices';
 import uploadImage from '~/services/ImageServices';
 import { addGood } from '~/services/GoodServices';
 import { toast } from 'react-toastify';
+import { select } from '@material-tailwind/react';
+import { create } from 'lodash';
 
 
 function ModalAddGood({ isShow, handleClose, updateTable }) {
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10); // Lấy userId từ local storage
+
 
     const [totalCategories, setTotalCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -20,17 +25,28 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    // const [totalStorages, setTotalStorages] = useState([]);
+    // const [selectedStorage, setSelectedStorage] = useState(null);
+    // const [selectedStorageId, setSelectedStorageId] = useState(null);
+
+
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
+
 
     const [goodName, setGoodName] = useState(null);
     const [goodCode, setGoodCode] = useState(null);
 
-    const [warranty, setWarranty] = useState(0);
+    const [warrantyTime, setWarrantyTime] = useState(0);
     const [description, setDescription] = useState(null);
-
+    const [measuredUnit, setMeasuredUnit] = useState(null);
     const [imageGood, setImageGood] = useState(null);
+    const [stockPrice, setStockPrice] = useState(0);
+    const [maxStock, setMaxStock] = useState(0);
+    const [minStock, setMinStock] = useState(0);
+    const [createdDate, setCreatedDate] = useState(null);
+
 
     const [barCode, setBarCode] = useState(null);
 
@@ -40,15 +56,16 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         getAllSuppliers();
 
     }, [])
+
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
-    }
+    // const handleStorageClick = (storage) => {
+    //     setSelectedStorage(storage.storageName);
+    //     setSelectedStorageId(storage.storageId);
+    // }
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
         setTotalCategories(res);
@@ -71,9 +88,25 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
-        let res = await uploadImage(file);
-        setImageGood(res);
-        console.log(res);
+        // let res = await uploadImage(file);
+        const urlImage = URL.createObjectURL(file);
+        setImageGood(urlImage);
+    }
+
+    const handleStorageTotalClick = () => {
+        setSelectedWarehouse("Tất cả Kho");
+        setSelectedWarehouseId("");
+    }
+
+
+    const handleStorageClick = (warehouse) => {
+        // let res = await setSelectedStorage(storage.storageName);
+
+        setSelectedWarehouse(warehouse.warehouseName);
+        // console.log("warehouse.warehouseId: ", warehouse.warehouseId);
+        setSelectedWarehouseId(warehouse.warehouseId);
+        // console.log("setSelectedWarehouse: ", warehouse.warehouseName);
+        // getUsers(1);
     }
 
     const handleGoodName = (event) => {
@@ -85,7 +118,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     }
 
     const handleChangeWarranty = (event) => {
-        setWarranty(event.target.value);
+        setWarrantyTime(event.target.value);
     }
 
     const handleChangeDescription = (event) => {
@@ -96,6 +129,15 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setBarCode(event.target.value);
     }
 
+    const handleUnitClick = (unit) => {
+        setMeasuredUnit(unit);
+    }
+
+    const handleChangeCreatedDate = (event) => {
+        setCreatedDate(event.target.value);
+    }
+
+
     const handleCloseModal = () => {
         handleReset();
         handleClose();
@@ -105,17 +147,18 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setSelectedCategoryId(null);
         setSelectedCategory(null);
 
-        setSelectedStorage(null);
-        setSelectedStorageId(null);
+        setSelectedWarehouse(null);
+        setSelectedWarehouseId(null);
 
         setSelectedSupplier(null);
         setSelectedSupplierId(null);
 
+        setBarCode(null);
         setGoodCode(null);
         setGoodName(null);
 
         setDescription(null);
-        setWarranty(0);
+        setWarrantyTime(0);
 
         setImageGood(null);
     }
@@ -129,14 +172,36 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             toast.warning("Vui lòng chọn danh mục");
         } else if (!selectedSupplierId) {
             toast.warning("Vui lòng chọn nhà phân phối");
-        } else if (warranty <= 0) {
+        } else if (!measuredUnit) {
+            toast.warning("Vui lòng chọn đơn vị");
+        }
+        else if (!imageGood) {
+            toast.warning("Vui lòng chọn hình ảnh");
+        }
+        else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
-        } else if (!selectedStorageId) {
-            toast.warning("Vui lòng chọn kho");
+
         } else {
-            let res = await addGood(goodName, goodCode, selectedCategoryId, description, selectedSupplierId, "Chiếc", imageGood, 1, warranty, barCode, selectedStorageId);
+
+            let res = await addGood(userId,
+                goodName, goodCode, selectedCategoryId,
+                description,
+                selectedSupplierId,
+                measuredUnit,
+                imageGood,
+                1,
+                stockPrice,
+                createdDate,
+                warrantyTime,
+                barCode,
+                maxStock,
+                minStock,
+            ); 
+
             toast.success("Thêm mặt hàng mới thành công");
             handleCloseModal();
+            updateTable();
+            console.log("resAddProduct: ", res);
         }
 
     }
@@ -148,17 +213,46 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    <Row>
-                        <label >Kho</label>
+                    {
+                        roleId === 1 &&
+                        <Row>
+                            <label >Kho</label>
+                            <DropdownButton
+                                className="DropdownButtonCSS ButtonCSSDropdown"
+                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                variant="success"
+                                style={{ zIndex: 999 }}
+                            >
+                                <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
 
-                        <Col md={5}>
-                            <DropdownButton className=" ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                    <Dropdown.Item
+                                        key={`warehouse ${index}`}
+                                        eventKey={c.warehouseName}
+                                        onClick={(e) => handleStorageClick(c, e)}
+                                    >
+                                        {c.warehouseName}
+                                    </Dropdown.Item>
                                 ))}
                             </DropdownButton>
-                        </Col>
-                    </Row>
+                        </Row>
+                    }
+
+                    <Col md={2}>
+                        <label >Đơn vị </label>
+                        <DropdownButton
+                            className="DropdownButtonCSS ButtonCSSDropdown"
+                            title={measuredUnit !== null ? measuredUnit : "Chọn đơn vị"}
+                            variant="success"
+                            style={{ zIndex: 999 }}
+                        >
+
+
+                            <Dropdown.Item eventKey="Kilogram" onClick={(e) => handleUnitClick("Kg", e)}>Kilogram</Dropdown.Item>
+                            <Dropdown.Item eventKey="Thùng" onClick={(e) => handleUnitClick("Thùng", e)}>Thùng</Dropdown.Item>
+                        </DropdownButton>
+                    </Col>
+
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >Tên hàng </label>
@@ -217,7 +311,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
                         <Col md={5}>
                             <label >Hạn bảo hành </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warranty} onChange={handleChangeWarranty} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} />
                         </Col>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
@@ -229,6 +323,27 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
                     </Row>
 
+                    <Row style={{ marginTop: '15px' }}>
+                        <Col md={5}>
+                            <label >Ngày tạo </label>
+                            <input type="date" className="form-control inputCSS" aria-describedby="emailHelp" value={createdDate} onChange={handleChangeCreatedDate} />
+                        </Col>
+                        <Col md={5}>
+                            <label >Giá nhập </label>
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
+                        </Col>
+                    </Row>
+
+                    <Row style={{ marginTop: '15px' }}>
+                        <Col md={5}>
+                            <label >MaxStock </label>
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
+                        </Col>
+                        <Col md={5}>
+                            <label >MinStock </label>
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
+                        </Col>
+                    </Row>
                     <Row style={{ marginTop: '15px' }}>
                         <label >Hình ảnh </label>
 

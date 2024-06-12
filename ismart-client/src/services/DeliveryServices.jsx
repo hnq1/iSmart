@@ -15,4 +15,8 @@ const updateDelivery = (deliveyId, deliveryName) => {
     return axios.put(`api/delivery/update-delivery`, { deliveyId, deliveryName })
 }
 
-export { fetchAllDelivery, fetchDeliveriesWithKeyword, createNewDelivery, updateDelivery }
+const updateStatusDelivery = (deliveyId) => {
+    return axios.put(`api/delivery/update-delivery-status?id=${deliveyId}`);
+}
+
+export { fetchAllDelivery, fetchDeliveriesWithKeyword, createNewDelivery, updateDelivery, updateStatusDelivery }

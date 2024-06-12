@@ -96,9 +96,11 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
-        let res = await uploadImage(file);
-        setImageGood(res);
-        console.log(res);
+        // let res = await uploadImage(file)
+        // const urlImage = res.url;
+        const urlImage = URL.createObjectURL(file);
+        setImageGood(urlImage);
+
     }
 
     const handleGoodName = (event) => {

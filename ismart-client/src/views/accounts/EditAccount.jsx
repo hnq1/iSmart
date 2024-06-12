@@ -60,7 +60,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
         const urlImage = res.url;
         setImage(urlImage);
 
-        // console.log("upload image: ", res);
+        console.log("upload image: ", res);
 
     }
 
