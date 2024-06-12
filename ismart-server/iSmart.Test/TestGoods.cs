@@ -40,7 +40,6 @@ namespace WM.Test
                 Description = "Test",
                 SupplierId = 3,
                 MeasuredUnit = "Test",
-                InStock = 100,
                 Image = "Test",
                 StatusId = 1,
                 StockPrice = 100,
@@ -48,9 +47,9 @@ namespace WM.Test
                 MaxStock = 1000,
                 MinStock = 1,
                 CreatedDate = DateTime.Now,
-                WarrantyTime = 12,                             
+                WarrantyTime = 12,
             };
-            var goodsResponse = _goodsService.AddGoods(goodsEntry);
+            var goodsResponse = _goodsService.AddGoods(goodsEntry, 2);
             if(goodsResponse.IsSuccess is true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
