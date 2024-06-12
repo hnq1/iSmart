@@ -29,7 +29,6 @@ namespace iSmart.Test
             var suppliers = supplierService.GetAllSupplier();
             if (suppliers != null) result = true;
             Assert.That(result, Is.EqualTo(true));
-
         }
         [Test]
         public void AddSupplier_Test()

@@ -1,4 +1,5 @@
-﻿using iSmart.Entity.Models;
+﻿using iSmart.Entity.DTOs.DeliveryDTO;
+using iSmart.Entity.Models;
 using iSmart.Service;
 using System;
 using System.Collections.Generic;
@@ -19,12 +20,26 @@ namespace iSmart.Test
             _context = context;
             _deliveryService = new DeliveryService(context);
         }
+
         [Test]
-        public void GetAllDelivery_Test() 
+        public void UpdateDeleteStatusDelivery_Test()
         {
             var result = false;
-            var delivverys = _deliveryService.GetAllDelivery();
-            if (delivverys != null) result = true;
+            var deliverys = _deliveryService.UpdateDeleteStatusDelivery(1);
+            if (deliverys != null) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void AddDelivery_Test()
+        {
+            var result = false;
+            var deliveryEntry = new CreateDeliveryRequest
+            {
+                DeliveryName = "test"
+            };
+            var deliveryRespone = _deliveryService.AddDelivery(deliveryEntry);
+            if (deliveryRespone != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
     }
