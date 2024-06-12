@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSmart.Service", "iSmart.Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSmart.Entity", "iSmart.Entity\iSmart.Entity.csproj", "{7C0E2874-D77F-40AB-BEA6-A5BD7549C5C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSmart.Shared", "iSmart.Shared\iSmart.Shared.csproj", "{975EA775-E2A2-4F7D-B11D-79727424052B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSmart.Shared", "iSmart.Shared\iSmart.Shared.csproj", "{975EA775-E2A2-4F7D-B11D-79727424052B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSmart.Test", "iSmart.Test\iSmart.Test.csproj", "{F2A2553E-2D56-41CE-8FB1-034053212B68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{975EA775-E2A2-4F7D-B11D-79727424052B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{975EA775-E2A2-4F7D-B11D-79727424052B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{975EA775-E2A2-4F7D-B11D-79727424052B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2A2553E-2D56-41CE-8FB1-034053212B68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2A2553E-2D56-41CE-8FB1-034053212B68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2A2553E-2D56-41CE-8FB1-034053212B68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2A2553E-2D56-41CE-8FB1-034053212B68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
