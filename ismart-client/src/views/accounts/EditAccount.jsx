@@ -52,21 +52,32 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
         setAddress(event.target.value);
     }
 
-    // const handleChooseFile = async (event) => {
-    //     const file = event.target.files[0];
-    //     let res = await uploadImage(file);
-    //     setImage(res);
-    //     console.log(res);
-    // }
-    
+
+    const handleChooseFile = async (event) => {
+        const file = event.target.files[0];
+        // console.log("file: ", file);
+        let res = await uploadImage(file);
+        const urlImage = res.url;
+        setImage(urlImage);
+
+        // console.log("upload image: ", res);
+
+    }
+
+
     const handleSave = async () => {
-        let res = await updateUser(dataUserEdit.userId,
-            email, null, phone,
+        let res = await updateUser(
+            dataUserEdit.userId,
+            email,
+            phone,
             dataUserEdit.roleId,
-            1, userName,
-            1, userCode,
-            address, null, fullName);
-        console.log("check res: ", res)
+            1,
+            userName,
+            userCode,
+            address,
+            image,
+            fullName);
+        // console.log("check res image: ", image);
         if (res) { // Check if the update was successful
             toast.success("Cập nhật thông tin người dùng thành công");
             updateTable(); // Update the user list
@@ -92,39 +103,51 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
                 </Modal.Header>
                 <Modal.Body>
                     <Row>
-                        <Col md={5}>
+                        <Col md={7}>
                             <label >UseCode</label>
                             <input type="text" className="form-control inputCSS" value={userCode} onChange={handleUserCode} />
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={5}>
+                        <Col md={7}>
                             <label >FullName</label>
                             <input type="text" className="form-control inputCSS" value={fullName} onChange={handleFullName} />
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={5}>
+                        <Col md={7}>
                             <label >Tên Đăng Nhập</label>
                             <input type="text" className="form-control inputCSS" value={userName} onChange={handleUserName} />
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={5}>
+                        <Col md={7}>
                             <label >Số điện thoại</label>
                             <input type="number" className="form-control inputCSS" value={phone} onChange={handlePhone} />
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={5}>
+                        <Col md={7}>
                             <label >Email</label>
                             <input type="text" className="form-control inputCSS" value={email} onChange={handleEmail} />
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={5}>
+                        <Col md={7}>
                             <label >Adress</label>
                             <input type="text" className="form-control inputCSS" value={address} onChange={handleAddress} />
+                        </Col>
+                    </Row>
+                    <Row style={{ marginTop: '15px' }}>
+                        <label >Hình ảnh </label>
+                        <Col md={2}>
+                            <div>
+                                <input
+                                    type="file"
+                                    accept="image/*" // Chỉ chấp nhận các loại file ảnh
+                                    onChange={handleChooseFile} // Hàm xử lý sự kiện khi người dùng chọn file
+                                />
+                            </div>
                         </Col>
                     </Row>
 

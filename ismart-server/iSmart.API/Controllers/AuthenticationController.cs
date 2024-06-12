@@ -12,11 +12,13 @@ using System.Net.Mail;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-
+//thu
 namespace iSmart.API.Controllers
 {
     [Route("api/auth")]
     [ApiController]
+    
+
     public class AuthenticationController : ControllerBase
     {
         public IConfiguration _configuration;
@@ -201,6 +203,9 @@ namespace iSmart.API.Controllers
         {
             try
             {
+
+                // Xác thực người dùng
+
                 var result = await _context.Users.SingleOrDefaultAsync(x => x.UserId == p.UserId);
                 if (p.OldPassword != HashHelper.Decrypt(result.Password, _configuration))
                 {
@@ -210,6 +215,9 @@ namespace iSmart.API.Controllers
                 //}
                 else
                 {
+                    /// result = await _context.Users.SingleOrDefaultAsync(x => x.UserId == p.UserId);
+                    // }
+
                     if (result != null && result.StatusId == 1 && RegexConstant.validateGuidRegex.IsMatch(result.Password))
                     {
                         result.Password = HashHelper.Encrypt(p.Password, _configuration);

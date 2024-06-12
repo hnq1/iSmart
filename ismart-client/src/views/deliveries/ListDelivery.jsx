@@ -110,7 +110,7 @@ function DeliveryList() {
                                 </div>
                             </div>
                             {
-                                roleId === 4 ? '' :
+                                (roleId == 1 || roleId == 2)? 
                                     <div className="col-auto ButtonCSSDropdown">
                                         <button
                                             className="btn btn-success border-left-0 rounded"
@@ -122,6 +122,7 @@ function DeliveryList() {
 
                                         </button>
                                     </div>
+                                : ''
                             }
 
                         </div>
@@ -142,19 +143,18 @@ function DeliveryList() {
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
                                                 <td className="align-middle">{s.deliveryName}</td>
 
-                                                {roleId === 4 ? '' : <td className="align-middle " style={{ padding: '10px' }}>
+                                                {
+                                                (roleId == 1 || roleId == 2) ?
+                                                <td className="align-middle " style={{ padding: '10px' }}>
 
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditSupplier(s)}></i>
-                                                </td>}
+                                                </td>
+                                                :''
+                                                }
 
                                             </tr>
                                         ))
-
-
                                     }
-
-
-
                                 </tbody>
                             </Table>
                         </div>

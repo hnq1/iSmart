@@ -14,7 +14,6 @@ import { fetchAllStorages } from '~/services/StorageServices';
 import ModelEditImportOrder from './EditImportOrder'
 import ModalShowBarCode from './ShowBarCode';
 import ModalCancel from './ModalCancel';
-
 import { toast } from 'react-toastify';
 
 import { cancelImport } from '~/services/ImportOrderServices';
@@ -73,7 +72,7 @@ function ImportOrderList() {
     useEffect(() => {
         getImportOrders(1);
         getAllStorages();
-        if (roleId !== 2 || roleId !== 4) {
+        if (roleId !== 4) {
             getStorageIdByUser();
         }
         setSortStatusOptions([{ idSort: null, nameSort: "Tình trạng" },
@@ -251,7 +250,7 @@ function ImportOrderList() {
                                         </div>
                                     </div>
                                 </Col>
-                                {roleId === 2 || roleId === 1 ?
+                                {roleId === 3 || roleId === 1 ?
 
                                     <Col md={2}>
                                         <div className="col-auto ButtonCSSDropdown">

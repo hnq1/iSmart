@@ -148,17 +148,21 @@ function SupplierList() {
                                     </div>
                                 </div>
                             </div>
-                            {roleId !== 4 ? <div className="col-auto ButtonCSSDropdown">
-                                <button
-                                    className="btn btn-success border-left-0 rounded"
-                                    type="button"
-                                    onClick={() => setIsShowModelAddNew(true)}
-                                ><i className="fa-solid fa-plus"></i>
-                                    &nbsp;
-                                    Thêm nhà cung cấp
+                            {
+                                (roleId == 1 || roleId == 2) ?
+                                    <div className="col-auto ButtonCSSDropdown">
+                                        <button
+                                            className="btn btn-success border-left-0 rounded"
+                                            type="button"
+                                            onClick={() => setIsShowModelAddNew(true)}
+                                        ><i className="fa-solid fa-plus"></i>
+                                            &nbsp;
+                                            Thêm nhà cung cấp
 
-                                </button>
-                            </div> : ''}
+                                        </button>
+                                    </div>
+                                    : ''
+                            }
 
                         </div>
                         <div className=" table-responsive">
@@ -166,11 +170,15 @@ function SupplierList() {
                                 <thead>
                                     <tr>
                                         <th className="align-middle   text-nowrap">STT</th>
-                                        <th className="align-middle  text-nowrap">NHÀ CUNG CẤP</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>NHÀ CUNG CẤP</th>
 
-                                        <th className="align-middle  text-nowrap">Email</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>EMAIL</th>
                                         <th className="align-middle  text-nowrap">SỐ ĐIỆN THOẠI</th>
-                                        {roleId === 4 ? '' : <th className="align-middle  text-nowrap">Tình trạng</th>}
+                                        {
+                                            (roleId == 1 || roleId == 2) ?
+                                                <th className="align-middle  text-nowrap">Tình trạng</th>
+                                                : ''
+                                        }
 
 
 
@@ -181,20 +189,28 @@ function SupplierList() {
 
                                     {listSuppliers && listSuppliers.length > 0 &&
                                         listSuppliers.map((s, index) => (
-                                            <tr key={`supplier${index}`}>
+                                            <tr key={`supplier${index}`} >
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
-                                                <td className="align-middle">{s.supplierName}</td>
-                                                <td className="align-middle">{s.supplierEmail}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left' }}>{s.supplierName}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left' }}>{s.supplierEmail}</td>
                                                 <td className="align-middle">{s.supplierPhone}</td>
-                                                {roleId === 4 ? '' : <td className="align-middle">
-                                                    <SwitchButton status={s.status} handleChangeStatus={() => handleChangeStatus(s)} />
-                                                </td>}
+                                                {
+                                                    (roleId == 1 || roleId == 2) ?
+                                                        <td className="align-middle">
+                                                            <SwitchButton status={s.status} handleChangeStatus={() => handleChangeStatus(s)} />
+                                                        </td>
+                                                        : ''
+                                                }
 
 
-                                                {roleId !== 4 ? <td className="align-middle " style={{ padding: '10px' }}>
+                                                {
+                                                    (roleId == 1 || roleId == 2) ?
+                                                        <td className="align-middle " style={{ padding: '10px' }}>
 
-                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditSupplier(s)}></i>
-                                                </td> : ''}
+                                                            <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditSupplier(s)}></i>
+                                                        </td>
+                                                        : ''
+                                                }
 
                                             </tr>
                                         ))

@@ -12,13 +12,21 @@ import ModalGoodHistory from './GoodHistory';
 import ModalEditGood from './EditProduct';
 import ModalAddGood from './AddProduct';
 import { fetchUserByUserId } from '~/services/UserServices';
-
+import { useNavigate } from 'react-router-dom';
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 
 
 function MyTable() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);;
     const userId = parseInt(localStorage.getItem('userId'), 10);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (![1, 2, 4].includes(roleId)) {
+            navigate('/404'); // Chuyển hướng người dùng không phù hợp
+        }
+    }, [roleId, navigate]);
 
     const [listGoods, setListGoods] = useState({});
     const [totalCategories, setTotalCategories] = useState([]);
@@ -53,6 +61,7 @@ function MyTable() {
 
     const [isShowModelAddGood, setIsShowModelAddGood] = useState(false);
 
+
     useEffect(() => {
         let res = getGoods(1, selectedStorageId, selectedCategoryId, selectedSupplierId);
         getAllCategories();
@@ -80,6 +89,7 @@ function MyTable() {
 
     const getGoods = async (page, storageId, categoryId, supplierId, sortPrice, wordSearch) => {
         let res = await fetchGoodsWithFilter(page, storageId, categoryId, supplierId, sortPrice, wordSearch);
+        console.log(res);
         setListGoods(res.data);
         setTotalPages(res.totalPages);
         setcurrentPage(page - 1);
@@ -121,10 +131,10 @@ function MyTable() {
         setSelectedCategoryId("");
     }
 
-    const handleStorageClickTotal = () => {
-        setSelectedStorage("Tất cả kho");
-        setSelectedStorageId("");
-    }
+    // const handleStorageClickTotal = () => {
+    //     setSelectedStorage("Tất cả kho");
+    //     setSelectedStorageId("");
+    // }
 
     const handleStorageClick = (storage) => {
         setSelectedStorage(storage.storageName);
@@ -171,7 +181,9 @@ function MyTable() {
                 <div className="col-sm-12">
                     <h5 style={{ color: '#a5a2ad' }}>Quản lý hàng hóa</h5>
                     <div className="row no-gutters my-3 ">
-                        {roleId == 2 || roleId == 4 || roleId == 1 ? <div className="col-2">
+                        {/* {roleId == 2 || roleId == 4 || roleId == 1 ? <div className="col-2">
+
+
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
                                 <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
                                 {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
@@ -180,7 +192,7 @@ function MyTable() {
                             </DropdownButton>
                         </div> : <Col md={2}>
                             <input type="text" className="form-control inputCSS"
-                                aria-describedby="emailHelp" value={selectedStorage} disabled /></Col>}
+                                aria-describedby="emailHelp" value={selectedStorage} disabled /></Col>} */}
 
                         <div className="col-2">
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByPriceName ? sortedByPriceName : "Giá"} variant="success" style={{ zIndex: 999 }}>
@@ -215,17 +227,21 @@ function MyTable() {
                                 </div>
                             </div>
                         </div>
-                        {roleId !== 4 ? <div className="col-auto">
+                        {
+                            (roleId == 1 || roleId == 2) ?
+                                <div className="col-auto">
 
-                            <button
-                                className="btn btn-success border-left-0 rounded ButtonCSS"
-                                type="button"
-                                onClick={() => setIsShowModelAddGood(true)}
-                            ><i className="fa-solid fa-plus"></i>
-                                &nbsp;Thêm hàng hóa
-                            </button>
+                                    <button
+                                        className="btn btn-success border-left-0 rounded ButtonCSS"
+                                        type="button"
+                                        onClick={() => setIsShowModelAddGood(true)}
+                                    ><i className="fa-solid fa-plus"></i>
+                                        &nbsp;Thêm hàng hóa
+                                    </button>
 
-                        </div> : ''}
+                                </div>
+                                : ''
+                        }
                     </div>
 
                     <div className=" table-responsive" style={{ overflowY: 'auto', overflowX: 'auto', zIndex: 3 }}>
@@ -308,9 +324,13 @@ function MyTable() {
                                             <td className="align-middle">{g.warrantyTime + " Tháng "}</td>
                                             <td className="align-middle">{g.barcode}</td>
                                             <td className="align-middle"><i className="fa-solid fa-clock-rotate-left actionButtonCSS" onClick={() => handleShowGoodHistory(g)}></i></td>
-                                            {roleId !== 4 ? <td className="align-middle " style={{ padding: '10px' }}>
-                                                <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => showModelEditGood(g)}></i>
-                                            </td> : ''}
+                                            {
+                                                (roleId == 1 || roleId == 2) ?
+                                                    <td className="align-middle " style={{ padding: '10px' }}>
+                                                        <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => showModelEditGood(g)}></i>
+                                                    </td>
+                                                    : ''
+                                            }
                                         </tr>
                                     ))
 

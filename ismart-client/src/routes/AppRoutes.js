@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+// import NotFoundPage from './NotFoundPage';
 import Login from '../views/pages/authentication/Login';
 import ForgotPassword from '../views/pages/authentication/ForgotPassword';
 import ChangePassword from '../views/pages/authentication/ChangePassword';
@@ -17,10 +18,11 @@ import ProjectList from '~/views/project/ProjectList';
 import { Container, Row, Col } from 'react-bootstrap';
 import Doashboard from '~/views/doashboard/Doashboard';
 import PrivateRoute from './PrivateRoute';
+import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 const AppRoutes = () => {
     const roleId = parseInt(localStorage.getItem('RoleId'), 10);
-    ;
+
     return (
         <>
             <Routes>
@@ -150,6 +152,7 @@ const AppRoutes = () => {
                 />
                 <Route path='/thong-ke'
                     element={
+                        // roleId === 1 || roleId === 2 || roleId === 4 ? (
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
@@ -160,7 +163,11 @@ const AppRoutes = () => {
                                         <Doashboard className="overflow-auto" />
                                     </Col>
                                 </Row>
-                            </Container></PrivateRoute>
+                            </Container>
+                        </PrivateRoute>
+                        // ) : (
+                        //     <Navigate to="/NotFoundPage" replace />
+                        // )
                     }
 
                 >
@@ -244,7 +251,6 @@ const AppRoutes = () => {
                             </Container>
                         </PrivateRoute>
                     }
-
                 />
             </Routes >
 
