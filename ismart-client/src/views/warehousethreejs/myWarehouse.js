@@ -1,4 +1,4 @@
-//My Warehouse Visualizer	
+//My Warehouse 
 const appVersion = "1.1";
 var timeOutVar = null;																												//Used by Color Scale Slider and mdvScales		
 

@@ -1,0 +1,51 @@
+/**
+* @author qiao / https://github.com/qiao
+* @author mrdoob / http://mrdoob.com
+* @author alteredq / http://alteredqualia.com/
+* @author WestLangley / http://github.com/WestLangley
+* @author erich666 / http://erichaines.com
+*/
+
+// This set of controls performs orbiting, dollying (zooming), and panning.
+// Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
+//
+//    Orbit - left mouse / touch: one-finger move
+//    Zoom - middle mouse, or mousewheel / touch: two-finger spread or squish
+//    Pan - right mouse, or arrow keys / touch: two-finger move
+
+THREE.OrbitControls = function (object, domElement) {
+
+    this.object = object;
+
+    this.domElement = (domElement !== undefined) ? domElement : document;
+
+    // Set to false to disable this control
+    this.enabled = true;
+
+    // "target" sets the location of focus, where the object orbits around
+    this.target = new THREE.Vector3();
+
+    // How far you can dolly in and out ( PerspectiveCamera only )
+    this.minDistance = 0;
+    this.maxDistance = Infinity;
+
+    // How far you can zoom in and out ( OrthographicCamera only )
+    this.minZoom = 0;
+    this.maxZoom = Infinity;
+
+    // How far you can orbit vertically, upper and lower limits.
+    // Range is 0 to Math.PI radians.
+    this.minPolarAngle = 0; // radians
+    this.maxPolarAngle = Math.PI; // radians
+
+    // How far you can orbit horizontally, upper and lower limits.
+    // If set, must be a sub-interval of the interval [ - Math.PI, Math.PI ].
+    this.minAzimuthAngle = - Infinity; // radians
+    this.maxAzimuthAngle = Infinity; // radians
+
+    // Set to true to enable damping (inertia)
+    // If damping is enabled, you must call controls.update() in your animation loop
+    this.enableDamping = false;
+    this.dampingFactor = 0.25;
+    
+};
