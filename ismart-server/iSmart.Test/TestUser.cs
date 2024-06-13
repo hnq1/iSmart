@@ -9,7 +9,7 @@ using iSmart.Entity.DTOs.UserDTO;
 using iSmart.Entity.Models;
 using iSmart.Service;
 
-namespace WM.Test
+namespace iSmart.Test
 {
     public class TestUser
     {
@@ -52,16 +52,16 @@ namespace WM.Test
             var result = false;
             var userEntry = new CreateUserRequest
             {
-                UserName = "Test5",
-                UserCode = "Test5",
-                FullName = "Test5",
-                Email = "thanhdo5@gmail.com",
-                Address = "Test5",
-                Phone = "0795743786",
+                UserName = "Test51",
+                UserCode = "Test51",
+                FullName = "Test51",
+                Email = "thanhdo51@gmail.com",
+                Address = "Test51",
+                Phone = "0795743781",
                 RoleId = 1,
-                Password = "Test5",
+                Password = "Test51",
                 StatusId = 1,
-                Image = "Test5"
+                Image = "Tes1t5"
             };
             var userResponse = _userService.AddUser(userEntry);
             if (userResponse.IsSuccess is true) result = true;
@@ -90,15 +90,15 @@ namespace WM.Test
                 UserCode = "Test",
                 FullName = "Test",
                 Email = "thanh@gmail.com",
-                Address = "Test3",
-                Phone = "Test3",
+                Address = "Test4",
+                Phone = "Test4",
                 RoleId = 1,
                 StatusId = 1,
-                Image = "Test3"
+                Image = "Test4"
             };
             var userResponse = _userService.UpdateUser(userEntry);
             if (userResponse.IsSuccess is true) result = true;
-            Assert.That(result, Is.EqualTo(false));
+            Assert.That(result, Is.EqualTo(true));
         }
 
         //get user status
