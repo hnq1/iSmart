@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace iSmart.Test
 {
-    internal class TestWarehouseService
+    internal class TestWarehouse
     {
         private WarehouseService warehouseService { get; set; } = null;
         private iSmartContext _context;
