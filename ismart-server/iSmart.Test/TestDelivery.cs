@@ -13,7 +13,7 @@ namespace iSmart.Test
         private DeliveryService _deliveryService { get; set; } = null;
         private iSmartContext _context;
 
-    //    [SetUp]
+        [SetUp]
         public void Setup()
         {
             var context = new iSmartContext();

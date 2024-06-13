@@ -41,7 +41,7 @@ namespace iSmart.Service
 
         public GoodsService(iSmartContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
         public CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId)
