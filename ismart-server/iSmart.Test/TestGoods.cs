@@ -34,14 +34,14 @@ namespace iSmart.Test
             var result = false;
             var goodsEntry = new CreateGoodsRequest
             {
-                GoodsCode = "Test",
-                GoodsName = "Test",
-                CategoryId = 3,
-                Description = "Test",
-                SupplierId = 3,
-                MeasuredUnit = "Test",
-                Image = "Test",
-                StatusId = 1,
+                GoodsCode = "Test3",
+                GoodsName = "Test3",
+                CategoryId = 4,
+                Description = "Test3",
+                SupplierId = 4,
+                MeasuredUnit = "Test3",
+                Image = "Test3",
+                StatusId = 4,
                 StockPrice = 100,
                 Barcode = "Test",
                 MaxStock = 1000,

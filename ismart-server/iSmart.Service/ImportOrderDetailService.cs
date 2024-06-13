@@ -23,12 +23,19 @@ namespace iSmart.Service
     {
         private readonly iSmartContext _context;
         private readonly IImportOrderService _orderService;
+        private iSmartContext context;
 
         public ImportOrderDetailService(iSmartContext context, IImportOrderService orderService)
         {
             _context = context;
             _orderService = orderService;
         }
+
+        public ImportOrderDetailService(iSmartContext context)
+        {
+            _context = context;
+        }
+
         public List<ImportOrderDetail> GetAllOrderDetails()
         {
             try
