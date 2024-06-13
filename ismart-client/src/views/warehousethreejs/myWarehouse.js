@@ -8,7 +8,7 @@ var languageIndex = 0;																												//Initially set to English(0)
 
 var parentLayout, appLayout; 																										//Global Reference to Application Layout child to parentLayout
 
-var appWarehouses = [{ warehouseName: "Upload..." }, { warehouseName: "CSV URLs..." }];													//Array of objects for demo and uploaded visuals
+var appWarehouses = [{ warehouseName: "Upload" }, { warehouseName: "CSV URLs" }];													//Array of objects for demo and uploaded visuals
 
 var initalBackgroundColor = "#d9dccb";
 var edgeMaterial;
@@ -165,5 +165,4 @@ $(document).ready(function () {
 
     parentLayout.get("main").toolbar.tooltip = "top|right";																				// http://w2ui.com/web/docs/1.5/w2toolbar.tooltip
     parentLayout.render();   																											//onRender event continues with fnShowMyWarehouseVisualizerDemo()
-
 }); //document ready
