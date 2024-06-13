@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace iSmart.Test
 {
-    internal class TestDelivery
+    public class TestDelivery
     {
         private DeliveryService _deliveryService { get; set; } = null;
         private iSmartContext _context;
 
+    //    [SetUp]
         public void Setup()
         {
             var context = new iSmartContext();
@@ -23,7 +24,7 @@ namespace iSmart.Test
         public void GetAllDelivery_Test() 
         {
             var result = false;
-            var deliveries = _deliveryService.GetAllDelivery();
+            List<Delivery> deliveries = _deliveryService.GetAllDelivery();
             if (deliveries != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
