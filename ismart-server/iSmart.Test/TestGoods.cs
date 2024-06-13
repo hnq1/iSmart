@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using iSmart.Entity.DTOs.GoodsDTO;
 using iSmart.Entity.Models;
 using iSmart.Service;
-namespace WM.Test
+namespace iSmart.Test
 {
     public class TestGoods
     {
@@ -47,9 +47,9 @@ namespace WM.Test
                 MaxStock = 1000,
                 MinStock = 1,
                 CreatedDate = DateTime.Now,
-                WarrantyTime = 12,
+                WarrantyTime = 12,                             
             };
-            var goodsResponse = _goodsService.AddGoods(goodsEntry, 2);
+            var goodsResponse = _goodsService.AddGoods(goodsEntry,11);
             if(goodsResponse.IsSuccess is true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
@@ -61,16 +61,16 @@ namespace WM.Test
             var goodsEntry = new UpdateGoodsRequest
             {
                 GoodsCode = "Test",
-                GoodsName = "Test",
+                GoodsName = "Test1",
                 CategoryId = 3,
-                Description = "Test",
+                Description = "Test1",
                 SupplierId = 3,
-                MeasuredUnit = "Test",
-                InStock = 100,
-                Image = "Test",
+                MeasuredUnit = "Test1",
+                //InStock = 100,
+                Image = "Test1",
                 StatusId = 1,
                 StockPrice = 100,
-                Barcode = "Test",
+                Barcode = "Test1",
                 MaxStock = 1000,
                 MinStock = 1,
                 WarrantyTime = 12,
