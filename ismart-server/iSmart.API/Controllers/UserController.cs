@@ -5,6 +5,7 @@ using System.Net;
 using iSmart.Entity.DTOs;
 using iSmart.Service;
 using iSmart.Entity.DTOs.UserDTO;
+using iSmart.Shared.Helpers;
 
 
 namespace iSmart.API.Controllers
@@ -62,7 +63,9 @@ namespace iSmart.API.Controllers
         public IActionResult AddUser(CreateUserRequest user, int warehouseId)
         {
             var username = user.UserName;
+            user.Password = TokenHelper.GenerateNumericToken(8);
             var password = user.Password;
+            var result = _userService.AddUser(user, warehouseId);
             MailMessage mm = new MailMessage("wmsystemsp24@gmail.com", user.Email);
             mm.Subject = "Chào mừng đến với hệ thống WMS";
             mm.Body = "Tài khoản đằng nhập của bạn" + "<br>" +
@@ -80,8 +83,7 @@ namespace iSmart.API.Controllers
             smtp.Credentials = NetworkCred;
             smtp.EnableSsl = true;
             smtp.Port = 587;
-            smtp.Send(mm);
-            var result = _userService.AddUser(user, warehouseId);
+            smtp.Send(mm);          
             return Ok(result);
         }
 
