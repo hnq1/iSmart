@@ -31,6 +31,7 @@ namespace iSmart.Service
     {
         private readonly iSmartContext _context;
         private readonly IUserWarehouseService _userWarehouseService;
+        private iSmartContext context;
 
         public GoodsService(iSmartContext context, IUserWarehouseService userWarehouseService)
         {
@@ -38,7 +39,14 @@ namespace iSmart.Service
             _userWarehouseService = userWarehouseService;
         }
 
+<<<<<<< HEAD
 
+=======
+        public GoodsService(iSmartContext context)
+        {
+            _context = context;
+        }
+>>>>>>> bf5eebc1d47c130caa078783cf3afabde1fb9ca6
 
         public CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId)
         {
