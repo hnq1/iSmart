@@ -6,7 +6,7 @@ import { fetchAllSuppliers } from '~/services/SupplierServices';
 import { fetchAllCategories } from '~/services/CategoryServices';
 import { fetchAllStorages } from '~/services/StorageServices';
 import uploadImage from '~/services/ImageServices';
-import { addGood } from '~/services/GoodServices';
+import { addGood, addGoodinAdmin } from '~/services/GoodServices';
 import { toast } from 'react-toastify';
 import { select } from '@material-tailwind/react';
 import { create } from 'lodash';
@@ -177,21 +177,38 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
 
         } else {
-            let res = await addGood(userId,
-                goodName, goodCode, selectedCategoryId,
-                description,
-                selectedSupplierId,
-                measuredUnit,
-                imageGood,
-                1,
-                stockPrice,
-                createdDate,
-                warrantyTime,
-                barCode,
-                maxStock,
-                minStock,
-                // selectedWarehouseId
-            );
+            let res;
+            if (roleId === 1) {
+                res = await addGoodinAdmin(selectedWarehouseId,
+                    goodName, goodCode, selectedCategoryId,
+                    description,
+                    selectedSupplierId,
+                    measuredUnit,
+                    imageGood,
+                    1,
+                    stockPrice,
+                    createdDate,
+                    warrantyTime,
+                    barCode,
+                    maxStock,
+                    minStock
+                );
+            } else {
+                res = await addGood(userId,
+                    goodName, goodCode, selectedCategoryId,
+                    description,
+                    selectedSupplierId,
+                    measuredUnit,
+                    imageGood,
+                    1,
+                    stockPrice,
+                    createdDate,
+                    warrantyTime,
+                    barCode,
+                    maxStock,
+                    minStock
+                );
+            }
 
             toast.success("Thêm mặt hàng mới thành công");
             handleCloseModal();

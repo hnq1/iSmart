@@ -40,16 +40,14 @@ namespace iSmart.Service
             _userWarehouseService = userWarehouseService;
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
+
+
         public GoodsService(iSmartContext context)
         {
             _context = context;
         }
->>>>>>> bf5eebc1d47c130caa078783cf3afabde1fb9ca6
-=======
+
         public CreateGoodsResponse AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId)
         {
             try
@@ -106,7 +104,7 @@ namespace iSmart.Service
                 return new CreateGoodsResponse { IsSuccess = false, Message = $"Thêm hàng hóa thất bại, {ex.Message}" };
             }
         }
->>>>>>> origin/anhddhe170353
+
 
         public CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId)
         {

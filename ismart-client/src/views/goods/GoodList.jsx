@@ -107,14 +107,14 @@ function MyTable() {
     }
 
     const getGoods = async (
-        page, storageId,
+        page, warehouseId,
         categoryId, supplierId,
         sortPrice, wordSearch) => {
 
         if (roleId === 1) {
 
             let res = await fetchGoodsWithFilter(
-                page, storageId,
+                page, warehouseId,
                 categoryId, supplierId,
                 sortPrice, wordSearch);
             console.log("resaaâ:", res);
@@ -172,9 +172,9 @@ function MyTable() {
     }
 
     const handleStorageClickTotal = () => {
-
-        setSelectedWarehouseId("");
         setSelectedWarehouse("Tất cả kho");
+        setSelectedWarehouseId("");
+
     }
 
     const handleStorageClick = async (warehouse) => {
@@ -333,7 +333,8 @@ function MyTable() {
                                                     Nhà cung cấp
                                                 </Dropdown.Item>
                                                 {totalSuppliers && totalSuppliers.length > 0 && totalSuppliers.map((s, index) => (
-                                                    <Dropdown.Item key={`supplier ${index}`} eventKey={s.supplierName} onClick={(e) => handleSupplierClick(s, e)}>
+                                                    <Dropdown.Item key={`supplier ${index}`}
+                                                        eventKey={s.supplierName} onClick={(e) => handleSupplierClick(s, e)}>
                                                         {s.supplierName}
                                                     </Dropdown.Item>
                                                 ))}
