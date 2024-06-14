@@ -49,9 +49,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpPost("add-import-order")]
-        public IActionResult AddImportOrder(CreateImportOrderRequest i)
+        public IActionResult AddImportOrder(CreateImportOrderRequest i, int staffId)
         {
-            var result = _importService.CreateImportOrder(i);
+            var result = _importService.CreateImportOrder(i, staffId);
             return Ok(result);
         }
 

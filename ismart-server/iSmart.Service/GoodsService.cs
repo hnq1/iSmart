@@ -20,6 +20,7 @@ namespace iSmart.Service
         Task<List<Good>?> GetAllGoodsWithStorageAndSupplier(int storageId, int supplierId);
         Good GetGoodsById(int id);
         CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId);
+        CreateGoodsResponse AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId);
         UpdateGoodsResponse UpdateGoods(UpdateGoodsRequest goods);
         bool UpdateStatusGoods(int id, int StatusId);
         Task<List<GoodsDTO>?> GetGoodsInWarehouse(int warehouseId);
@@ -40,6 +41,7 @@ namespace iSmart.Service
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
         public GoodsService(iSmartContext context)
@@ -47,6 +49,64 @@ namespace iSmart.Service
             _context = context;
         }
 >>>>>>> bf5eebc1d47c130caa078783cf3afabde1fb9ca6
+=======
+        public CreateGoodsResponse AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId)
+        {
+            try
+            {
+                // Tạo hàng hóa mới
+                var newGood = new Good
+                {
+                    GoodsName = goods.GoodsName,
+                    GoodsCode = goods.GoodsCode,
+                    CategoryId = goods.CategoryId,
+                    Description = goods.Description,
+                    SupplierId = goods.SupplierId,
+                    MeasuredUnit = goods.MeasuredUnit,
+                    Image = goods.Image,
+                    StatusId = goods.StatusId,
+                    StockPrice = goods.StockPrice,
+                    CreatedDate = DateTime.Now,
+                    WarrantyTime = goods.WarrantyTime,
+                    Barcode = goods.Barcode,
+                    MaxStock = goods.MaxStock,
+                    MinStock = goods.MinStock
+                };
+
+                // Kiểm tra xem hàng hóa đã tồn tại trong cùng kho hàng chưa
+                var existingGood = _context.Goods
+                    .SingleOrDefault(i => i.GoodsCode == goods.GoodsCode);
+
+                if (existingGood == null)
+                {
+                    // Thêm hàng hóa mới vào bảng Goods
+                    _context.Goods.Add(newGood);
+                    _context.SaveChanges();
+
+                    // Tạo bản ghi trong bảng GoodsWarehouse để thiết lập mối quan hệ
+                    var goodsWarehouse = new GoodsWarehouse
+                    {
+                        GoodsId = newGood.GoodsId,
+                        WarehouseId = warehouseId,
+                        Quantity = 0
+                    };
+
+                    _context.GoodsWarehouses.Add(goodsWarehouse);
+                    _context.SaveChanges();
+
+                    return new CreateGoodsResponse { IsSuccess = true, Message = "Thêm hàng hóa thành công" };
+                }
+                else
+                {
+                    return new CreateGoodsResponse { IsSuccess = false, Message = "Hàng đã tồn tại" };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new CreateGoodsResponse { IsSuccess = false, Message = $"Thêm hàng hóa thất bại, {ex.Message}" };
+            }
+        }
+>>>>>>> origin/anhddhe170353
 
         public CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId)
         {

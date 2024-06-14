@@ -16,6 +16,21 @@ namespace iSmart.API.Controllers
             _userWarehouseService = userWarehouseService;
         }
 
+        [HttpGet("GetWarehouseManagerId")]
+        public async Task<IActionResult> GetWarehouseManagerId(int userId)
+        {
+            var managerId = await _userWarehouseService.GetWarehouseManagerIdByStaffId(userId);
+
+            if (managerId.HasValue)
+            {
+                return Ok(managerId);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpGet]
         public async Task<ActionResult<List<Warehouse>>> GetUserWarehouses(int userId)
         {

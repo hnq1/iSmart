@@ -161,7 +161,7 @@ namespace iSmart.Service
         {
             try
             {
-                var pageSize = 6;
+                var pageSize = 12;
                 if (pageNum <= 0) pageNum = 1;
 
                 var query = _context.Users

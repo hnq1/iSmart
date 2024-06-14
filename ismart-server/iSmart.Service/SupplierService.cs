@@ -116,7 +116,7 @@ namespace iSmart.Service
         {
             try
             {
-                var pageSize = 6;
+                var pageSize = 12;
                 var suppliersQuery = _context.Suppliers.Include(s => s.Status).AsQueryable();
 
                 if (statusId.HasValue)

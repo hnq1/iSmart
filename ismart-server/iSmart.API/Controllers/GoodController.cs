@@ -35,6 +35,13 @@ namespace iSmart.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("add-goods-by-admin")]
+        public async Task<IActionResult> AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId)
+        {
+            var result = _goodsService.AddGoodsByAdmin(goods, warehouseId);
+            return Ok(result);
+        }
+
         [HttpGet("get-goods")]
         public IActionResult GetGoodsByKeyword(int page, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
         {
