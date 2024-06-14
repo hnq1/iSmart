@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using iSmart.Entity.DTOs.GoodsDTO;
 using iSmart.Service;
+using iSmart.Entity.Models;
 
 namespace iSmart.API.Controllers
 {
@@ -43,9 +44,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-goods")]
-        public IActionResult GetGoodsByKeyword(int page, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
+        public IActionResult GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
         {
-            var result = _goodsService.GetGoodsByKeyword(page, categoryId, supplierId, sortPrice, keyword);
+            var result = _goodsService.GetGoodsByKeyword(page, warehouseId, categoryId, supplierId, sortPrice, keyword);
             return Ok(result);
         }
 
