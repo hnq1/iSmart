@@ -17,7 +17,7 @@ namespace iSmart.Service
         UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? warehouseId, int? statusId,string? keyword = "");
         List<UserDTO>? GetAllUser();
         UserDTO? GetUserById(int id);
-        CreateUserResponse AddUser(CreateUserRequest user);
+        CreateUserResponse AddUser(CreateUserRequest user, int warehouseId);
         UpdateUserResponse UpdateUser(UpdateUserDTO user);
         bool UpdateDeleteStatusUser(int id);
 
