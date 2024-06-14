@@ -14,7 +14,7 @@ namespace iSmart.Service
 {
     public interface IGoodsService
     {
-        GoodsFilterPaging GetGoodsByKeyword(int page, int? categoryId, int? supplierId, int? sortPriece, string? keyword = "");
+        GoodsFilterPaging GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPriece, string? keyword = "");
         Task<List<Good>?> GetAllGoods();
 
         Task<List<Good>?> GetAllGoodsWithStorageAndSupplier(int storageId, int supplierId);
@@ -202,7 +202,7 @@ namespace iSmart.Service
             }
         }
 
-        public GoodsFilterPaging? GetGoodsByKeyword(int page, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
+        public GoodsFilterPaging? GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
         {
             try
             {
@@ -218,8 +218,9 @@ namespace iSmart.Service
                 .Include(g => g.Status)
                 .Include(g => g.Category)
                 .Include(g => g.Supplier)
+                .Include(g =>g.GoodsWarehouses)
                 .Where(g => (!categoryId.HasValue || g.CategoryId == categoryId)
-                    && (!supplierId.HasValue || g.SupplierId == supplierId));
+                    && (!supplierId.HasValue || g.SupplierId == supplierId) && (!warehouseId.HasValue || g.GoodsWarehouses.Any(gw => gw.WarehouseId == warehouseId)));
 
                 // Kiểm tra và áp dụng điều kiện về keyword
                 if (!string.IsNullOrEmpty(keyword))
