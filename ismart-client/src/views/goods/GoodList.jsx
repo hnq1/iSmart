@@ -99,6 +99,7 @@ function MyTable() {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
         setSelectedWarehouse(res.warehouseName);
+        // console.log("getStorageIdByUser:", res);
     }
 
     const getWarehouseById = async (userId) => {
@@ -117,7 +118,7 @@ function MyTable() {
                 page, warehouseId,
                 categoryId, supplierId,
                 sortPrice, wordSearch);
-            console.log("resaaâ:", res);
+            // console.log("supplierId:", "supplierId");
             setListGoods(res.data);
             // console.log("goodList1:", res.data);
             setTotalPages(res.totalPages);
@@ -147,18 +148,22 @@ function MyTable() {
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
-        console.log("totalWarehouse", res);
+        // console.log("totalWarehouse", res);
     }
 
-    const handleCategoryClick = (category, event) => {
+    const handleCategoryClick = (category) => {
         setSelectedCategory(category.categoryName);
         setSelectedCategoryId(category.categoryId)
+        const res = getGoods(1, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        setListGoods(res);
 
     }
 
-    const handleSupplierClick = (supplier, event) => {
+    const handleSupplierClick = (supplier) => {
         setSelectedSupplier(supplier.supplierName);
-        setSelectedSupplierId(supplier.supplierId)
+        setSelectedSupplierId(supplier.supplierId);
+        const res = getGoods(1, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch);
+        setListGoods(res);
     }
 
     const handleSupplierClickTotal = () => {
@@ -173,8 +178,7 @@ function MyTable() {
 
     const handleStorageClickTotal = () => {
         setSelectedWarehouse("Tất cả kho");
-        setSelectedWarehouseId("");
-
+        setSelectedWarehouseId(null);
     }
 
     const handleStorageClick = async (warehouse) => {
@@ -183,8 +187,6 @@ function MyTable() {
         setSelectedWarehouseId(warehouse.warehouseId);
         const res = await getGoods(warehouse.warehouseId);
         setListGoods(res);
-        console.log("getGoodinwarehouse", res);
-
     }
 
     const handlePageClick = (event) => {

@@ -91,21 +91,23 @@ function ImportOrderList() {
     }, [])
 
     useEffect(() => {
-        getImportOrders(1);
+        if (selectedWarehouseId) {
+            getImportOrders(1);
+        }
     }, [selectedWarehouseId, sortedByStatusId, sortedByDateId])
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
         setSelectedWarehouse(res.warehouseName);
-        console.log("getStorageIdByUser:", res.storageId);
+        console.log("getStorageIdByUser:", res);
     }
     const getImportOrders = async (page) => {
         setcurrentPage(page - 1);
         let res = await fetchImportOrdersWithfilter(page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
-        console.log("getImportOrders:", res);
+        console.log("setTotalImportOrder:", res);
     }
 
     const getAllStorages = async () => {
@@ -118,9 +120,13 @@ function ImportOrderList() {
         setSelectedWarehouseId("");
     }
 
-    const handleStorageClick = (storage) => {
-        setSelectedWarehouse(storage.storageName);
-        setSelectedWarehouseId(storage.storageId);
+    const handleStorageClick = async (warehouse) => {
+
+        setSelectedWarehouse(warehouse.warehouseName);
+        setSelectedWarehouseId(warehouse.warehouseId);
+        const res = await getImportOrders(warehouse.warehouseId);
+        getImportOrders(res);
+        console.log("getImportOrderssssssss:", res);
     }
 
     const handleSortStatusClick = (sort) => {
