@@ -59,7 +59,7 @@ namespace iSmart.API.Controllers
 
         // POST api/<UserController>
         [HttpPost("add-user")]
-        public IActionResult AddUser(CreateUserRequest user, int warehouseId)
+        public IActionResult AddUser(CreateUserRequest user )
         {
             var username = user.UserName;
             var password = user.Password;
@@ -81,7 +81,7 @@ namespace iSmart.API.Controllers
             smtp.EnableSsl = true;
             smtp.Port = 587;
             smtp.Send(mm);
-            var result = _userService.AddUser(user, warehouseId);
+            var result = _userService.AddUser(user);
             return Ok(result);
         }
 
