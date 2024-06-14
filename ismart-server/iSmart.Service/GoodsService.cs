@@ -352,7 +352,7 @@ namespace iSmart.Service
                     Description = gw.Good.Description,
                     StockPrice = gw.Good.StockPrice,
                     MeasuredUnit = gw.Good.MeasuredUnit,
-                    //InStock = g.InStock,
+                    InStock = gw.Quantity,
                     Image = gw.Good.Image,
                     CreatedDate = gw.Good.CreatedDate,
                     WarrantyTime = gw.Good.WarrantyTime,
