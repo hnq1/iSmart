@@ -108,7 +108,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
         //     toast.warning("Vui lòng chọn kho");
         // }
         else {
-            let res = await addUser(
+            let res = await addUser(selectedWarehouseId,
                 email, password,
                 phone, selectedOptionRole,
                 1,

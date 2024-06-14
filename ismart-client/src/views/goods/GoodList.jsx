@@ -166,27 +166,31 @@ function MyTable() {
         setListGoods(res);
     }
 
-    const handleSupplierClickTotal = () => {
+    const handleSupplierClickTotal = async () => {
         setSelectedSupplier("Nhà cung cấp");
-        setSelectedSupplierId("");
+        setSelectedSupplierId(null);
+        getGoods(1, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch);
     }
 
-    const handleCategoryClickTotal = () => {
+    const handleCategoryClickTotal = async () => {
         setSelectedCategory("Các danh mục");
-        setSelectedCategoryId("");
+        setSelectedCategoryId(null);
+        getGoods(1, selectedWarehouseId, null, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
 
-    const handleStorageClickTotal = () => {
+    const handleStorageClickTotal = async () => {
         setSelectedWarehouse("Tất cả kho");
         setSelectedWarehouseId(null);
+        await getGoods(1, null, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
 
     const handleStorageClick = async (warehouse) => {
 
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
-        const res = await getGoods(warehouse.warehouseId);
-        setListGoods(res);
+        await getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        // const res = await getGoods(warehouse.warehouseId);
+        // setListGoods(res);
     }
 
     const handlePageClick = (event) => {
@@ -265,9 +269,11 @@ function MyTable() {
                         }
 
                         <div className="col-2">
-                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByPriceName ? sortedByPriceName : "Giá"} variant="success" style={{ zIndex: 999 }}>
+                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown"
+                                title={sortedByPriceName ? sortedByPriceName : "Giá"} variant="success" style={{ zIndex: 999 }}>
                                 {sortOptions.map((s, index) => (
-                                    <Dropdown.Item key={`sort ${index}`} eventKey={s.nameSort} onClick={(e) => handleSortPirceClick(s, e)}>{s.nameSort}</Dropdown.Item>
+                                    <Dropdown.Item key={`sort ${index}`} eventKey={s.nameSort} onClick={(e) => handleSortPirceClick(s, e)}>
+                                        {s.nameSort}</Dropdown.Item>
                                 ))}
                             </DropdownButton>
                         </div>
