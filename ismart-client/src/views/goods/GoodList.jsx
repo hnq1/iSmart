@@ -88,6 +88,13 @@ function MyTable() {
         }
     }, [])
 
+    useEffect(() => {
+        if (selectedWarehouseId) {
+            getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
+        }
+    }, [selectedWarehouseId])
+
+
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
@@ -105,28 +112,28 @@ function MyTable() {
         sortPrice, wordSearch) => {
 
         if (roleId === 1) {
+
             let res = await fetchGoodsWithFilter(
                 page, storageId,
                 categoryId, supplierId,
                 sortPrice, wordSearch);
-            // console.log(res);
+            console.log("resaaâ:", res);
             setListGoods(res.data);
+            // console.log("goodList1:", res.data);
             setTotalPages(res.totalPages);
             setcurrentPage(page - 1);
         } else if (roleId === 2) {
             let warehouse = await getWarehouseById(userId);
             let goods = await fetchAllGoodsInWarehouse(warehouse.warehouseId);
-let res 
-
             setListGoods(goods);
             setTotalPages(goods.totalPages);
             setcurrentPage(page - 1);
 
-            // console.log("nh ddss: ", goods);
+            // console.log("goodList2:  ", goods);
         }
     }
 
-    
+
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
         setTotalCategories(res);
@@ -140,11 +147,13 @@ let res
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
+        console.log("totalWarehouse", res);
     }
 
     const handleCategoryClick = (category, event) => {
         setSelectedCategory(category.categoryName);
         setSelectedCategoryId(category.categoryId)
+
     }
 
     const handleSupplierClick = (supplier, event) => {
@@ -168,14 +177,14 @@ let res
         setSelectedWarehouse("Tất cả kho");
     }
 
-    const handleStorageClick = (warehouse) => {
-        // let res = await setSelectedStorage(storage.storageName);
+    const handleStorageClick = async (warehouse) => {
 
         setSelectedWarehouse(warehouse.warehouseName);
-        //console.log("warehouse.warehouseId: ", warehouse.warehouseId);
         setSelectedWarehouseId(warehouse.warehouseId);
-        //console.log("setSelectedWarehouse: ", warehouse.warehouseName);
-        // getUsers(1);
+        const res = await getGoods(warehouse.warehouseId);
+        setListGoods(res);
+        console.log("getGoodinwarehouse", res);
+
     }
 
     const handlePageClick = (event) => {
@@ -196,7 +205,7 @@ let res
     const handleShowGoodHistory = (good) => {
         setIsShowGoodHistory(true);
         setDataGood(good);
-        console.log(good);
+        // console.log(good);
     }
 
     const handleZoomImage = (image) => {

@@ -44,9 +44,13 @@ function ImportOrderList() {
     const [detailOrder, setDetailOrder] = useState([]);
     const [detailOrderEdit, setDetailOrderEdit] = useState([]);
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    // const [totalStorages, setTotalStorages] = useState([]);
+    // const [selectedStorage, setSelectedStorage] = useState(null);
+    // const [selectedStorageId, setSelectedStorageId] = useState(null);
+
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
 
     const [sortedByStatusId, setSortedByStatusId] = useState();
@@ -88,35 +92,35 @@ function ImportOrderList() {
 
     useEffect(() => {
         getImportOrders(1);
-    }, [selectedStorageId, sortedByStatusId, sortedByDateId])
+    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId])
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
-        setSelectedStorageId(res.storageId);
-        setSelectedStorage(res.storageName);
+        setSelectedWarehouseId(res.warehouseId);
+        setSelectedWarehouse(res.warehouseName);
+        console.log("getStorageIdByUser:", res.storageId);
     }
     const getImportOrders = async (page) => {
         setcurrentPage(page - 1);
-        let res = await fetchImportOrdersWithfilter(page, selectedStorageId, sortedByStatusId, sortedByDateId, keywordSearch);
-        console.log(selectedStorageId);
+        let res = await fetchImportOrdersWithfilter(page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
-        console.log(res);
+        console.log("getImportOrders:", res);
     }
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
     const handleStorageClickTotal = () => {
-        setSelectedStorage("Tất cả kho");
-        setSelectedStorageId("");
+        setSelectedWarehouse("Tất cả kho");
+        setSelectedWarehouseId("");
     }
 
     const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+        setSelectedWarehouse(storage.storageName);
+        setSelectedWarehouseId(storage.storageId);
     }
 
     const handleSortStatusClick = (sort) => {
@@ -202,17 +206,34 @@ function ImportOrderList() {
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <Row>
-                                {roleId == 2 || roleId == 4 ?
+                                {roleId == 1 ?
                                     <Col md={2}>
-                                        <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                            <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-                                            {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                                <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                        <DropdownButton
+                                            className="DropdownButtonCSS ButtonCSSDropdown"
+                                            title={selectedWarehouse ? selectedWarehouse : "Tất cả Kho"}
+                                            variant="success"
+                                            style={{ zIndex: 999 }}
+                                        >
+
+                                            <Dropdown.Item eventKey=""
+                                                onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
+                                            {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                                <Dropdown.Item
+                                                    key={`warehouse ${index}`}
+                                                    eventKey={c.warehouseName}
+                                                    onClick={(e) => handleStorageClick(c, e)}
+                                                >
+                                                    {c.warehouseName}
+                                                </Dropdown.Item>
                                             ))}
                                         </DropdownButton>
-                                    </Col> : <Col md={2}>
+                                    </Col> :
+                                    <Col md={2}>
                                         <input type="text" className="form-control inputCSS"
-                                            aria-describedby="emailHelp" value={selectedStorage} disabled /></Col>}
+                                            aria-describedby="emailHelp" value={selectedWarehouse} disabled />
+                                    </Col>
+                                }
 
                                 <Col md={2}>
                                     <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByStatusName ? sortedByStatusName : "Tình trạng"} variant="success" style={{ zIndex: 999 }}>

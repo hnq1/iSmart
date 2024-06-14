@@ -9,7 +9,7 @@ const addNewImportOrder = (userId, supplierId, totalCost,
         userId, supplierId, totalCost,
         note, createdDate, importedDate,
         statusId, importCode, warehouseId,
-        deliveryId, image, stokekeeperId
+        deliveryId, image, stokekeeperId    
     })
 }
 

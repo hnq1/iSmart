@@ -23,13 +23,13 @@ const addGood = (userId,
     description, supplierId, measuredUnit,
     image, statusId, stockPrice,
     createdDate, warrantyTime, barcode,
-    maxStock, minStock, warehouseId) => {
+    maxStock, minStock ) => {
     return axios.post(`api/goods/add-goods?userId=${userId}`, {
         goodsName, goodsCode, categoryId,
         description, supplierId, measuredUnit,
         image, statusId, stockPrice,
         createdDate, warrantyTime, barcode,
-        maxStock, minStock, warehouseId
+        maxStock, minStock
     });
 }
 

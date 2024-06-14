@@ -19,7 +19,7 @@ import uploadImage from "~/services/ImageServices";
 
 
 const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
-
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const [importCode, setImportCode] = useState('');
@@ -62,6 +62,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     useEffect(() => {
         setRowsData([]);
+        console.log("selectedWarehouseIdsetRowsData: ", selectedWarehouseId, selectedSupplierId);
     }, [selectedWarehouseId, selectedSupplierId])
 
 
@@ -83,7 +84,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedWarehouseId("");
         setSelectedWarehouse("Tất cả kho");
     }
-    
+
     const handleStorageClick = (warehouse) => {
         // let res = await setSelectedStorage(storage.storageName);
 
@@ -92,6 +93,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedWarehouseId(warehouse.warehouseId);
         //console.log("setSelectedWarehouse: ", warehouse.warehouseName);
         // getUsers(1);
+        // console.log("warehouse: ", warehouse.warehouseId);
     }
 
 
@@ -259,27 +261,31 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" placeholder="Mã đơn hàng" value={importCode} onChange={(event) => setImportCode(event.target.value)} />
 
                         </Col>
-                        <Col md={2}>
-                            <DropdownButton
-                                className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
-                                variant="success"
-                                style={{ zIndex: 999 }}
-                            >
-                                <Dropdown.Item eventKey=""
-                                    onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-
-                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
-                                    <Dropdown.Item
-                                        key={`warehouse ${index}`}
-                                        eventKey={c.warehouseName}
-                                        onClick={(e) => handleStorageClick(c, e)}
+                        {
+                            (roleId === 1) ?
+                                <Col md={2}>
+                                    <DropdownButton
+                                        className="DropdownButtonCSS ButtonCSSDropdown"
+                                        title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                        variant="success"
+                                        style={{ zIndex: 999 }}
                                     >
-                                        {c.warehouseName}
-                                    </Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
+                                        <Dropdown.Item eventKey=""
+                                            onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
+                                        {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                            <Dropdown.Item
+                                                key={`warehouse ${index}`}
+                                                eventKey={c.warehouseName}
+                                                onClick={(e) => handleStorageClick(c, e)}
+                                            >
+                                                {c.warehouseName}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+                                : ''
+                        }
 
                         <Col md={3}>
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
@@ -386,7 +392,8 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             </Modal.Footer>
         </Modal >
 
-        <AddRowDataImportOrder isShow={isShowRowDataImport} selectedSupplierId={selectedSupplierId} selectedStorageId={selectedWarehouseId}
+        <AddRowDataImportOrder isShow={isShowRowDataImport}
+            selectedSupplierId={selectedSupplierId} selectedStorageId={selectedWarehouseId}
             onChange={(importData) => takeRowDataImportOrder(importData)}
             handleClose={() => setIsShowRowDataImport(false)} />
     </>)

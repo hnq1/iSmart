@@ -4,7 +4,7 @@ import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
 
-const AddRowDataImportOrder = ({ selectedSupplierId, selectedWarehouseId, isShow, handleClose, onChange }) => {
+const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
@@ -16,16 +16,18 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedWarehouseId, isShow
 
     useEffect(() => {
         getAllGoods();
-    }, [selectedSupplierId, selectedWarehouseId])
+        console.log("selectedWarehouseId: ", selectedStorageId, selectedSupplierId);
+    }, [selectedStorageId, selectedSupplierId])
 
     const getAllGoods = async () => {
-        if (selectedWarehouseId && selectedSupplierId) {
+        if (selectedStorageId && selectedSupplierId) {
             let res = await fetchGoodsWithStorageAndSupplier(
-                selectedWarehouseId,
+                selectedStorageId,
                 selectedSupplierId
             );
-            console.log("resss: ", res);
+
             setTotalGoods(res);
+            console.log("resAllgood: ", res);
         }
 
     }
@@ -48,7 +50,7 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedWarehouseId, isShow
     const handleGoodClick = (good, event) => {
         setSelectedGoodCode(good.goodsCode);
         setSelectedGoodId(good.goodsId);
-        console.log("selectedGoodCode: ", selectedGoodCode);
+        console.log("selectedGoodCode: ", good.goodsId);
     }
 
     const handleChangeQuantity = (event) => {

@@ -93,13 +93,9 @@ const ListAccount = () => {
         setSelectedWarehouseId("");
     }
     const handleStorageClick = (warehouse) => {
-        // let res = await setSelectedStorage(storage.storageName);
-
         setSelectedWarehouse(warehouse.warehouseName);
-        //console.log("warehouse.warehouseId: ", warehouse.warehouseId);
         setSelectedWarehouseId(warehouse.warehouseId);
-        //console.log("setSelectedWarehouse: ", warehouse.warehouseName);
-        // getUsers(1);
+
     }
 
     const handleSearch = () => {
