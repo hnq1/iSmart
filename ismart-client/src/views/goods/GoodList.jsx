@@ -92,7 +92,7 @@ function MyTable() {
         if (selectedWarehouseId) {
             getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
         }
-    }, [selectedWarehouseId])
+    }, [selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch])
 
 
     const getStorageIdByUser = async () => {
@@ -189,10 +189,10 @@ function MyTable() {
 
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
-        await getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
-        // const res = await getGoods(warehouse.warehouseId);
-        // setListGoods(res);
-        console.log("selectedWarehouseId:", getGoods(1, null, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch));
+        //const res = await getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        const res = await getGoods(warehouse.warehouseId);
+        setListGoods(res);
+        // console.log("selectedWarehouseId:", res);
     }
 
     const handlePageClick = (event) => {

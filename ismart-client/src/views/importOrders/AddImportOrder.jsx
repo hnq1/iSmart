@@ -60,10 +60,10 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         getAllDelivery();
     }, [])
 
-    useEffect(() => {
-        setRowsData([]);
-        console.log("selectedWarehouseIdsetRowsData: ", selectedWarehouseId, selectedSupplierId);
-    }, [selectedWarehouseId, selectedSupplierId])
+    // useEffect(() => {
+    //     setRowsData([]);
+    //     console.log("selectedWarehouseIdsetRowsData: ", selectedWarehouseId, selectedSupplierId);
+    // }, [selectedWarehouseId, selectedSupplierId])
 
 
     useEffect(() => {

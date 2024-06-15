@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import { cancelImport } from '~/services/ImportOrderServices';
 
 import { fetchUserByUserId } from '~/services/UserServices';
+import { get } from 'lodash';
 
 function ImportOrderList() {
 
@@ -91,7 +92,7 @@ function ImportOrderList() {
     }, [])
 
     useEffect(() => {
-        if (selectedWarehouseId) {
+        if (selectedWarehouseId !== undefined) {
             getImportOrders(1);
         }
     }, [selectedWarehouseId, sortedByStatusId, sortedByDateId])
@@ -107,7 +108,7 @@ function ImportOrderList() {
         let res = await fetchImportOrdersWithfilter(page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
-        console.log("setTotalImportOrder:", res);
+        // console.log("setTotalImportOrder:", res);
     }
 
     const getAllStorages = async () => {
@@ -118,16 +119,13 @@ function ImportOrderList() {
     const handleStorageClickTotal = () => {
         setSelectedWarehouse("Tất cả kho");
         setSelectedWarehouseId(null);
-        getImportOrders(1, null, sortedByStatusId, sortedByDateId, keywordSearch);
     }
 
     const handleStorageClick = async (warehouse) => {
 
         setSelectedWarehouse(warehouse.warehouseName);
-        setSelectedWarehouseId(warehouse.importId);
-        const res = await getImportOrders(warehouse.warehouseId);
-        getImportOrders(res);
-        console.log("getImportOrderssssssss:", res);
+        setSelectedWarehouseId(warehouse.warehouseId);
+        getImportOrders(1);
     }
 
     const handleSortStatusClick = (sort) => {

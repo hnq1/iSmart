@@ -117,8 +117,8 @@ function CategoryList() {
                             <Table className="table text-center table-border table-hover  border-primary table-sm">
                                 <thead>
                                     <tr>
-                                        <th className="align-middle   text-nowrap">STT</th>
-                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left' }}>Danh mục</th>
+                                        <th className="align-middle   text-nowrap" style={{ width: '100px' }}>STT</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>Danh mục</th>
                                         {/* <th className="align-middle  text-nowrap">Chi tiết</th> */}
 
 
@@ -129,12 +129,12 @@ function CategoryList() {
                                     {listCategory && listCategory.length > 0 &&
                                         listCategory.map((s, index) => (
                                             <tr key={`storage${index}`}>
-                                                <td className="align-middle text-color-primary">{index + 1}</td>
-                                                <td className="align-middle text-truncate" >{s.categoryName}</td>
+                                                <td className="align-middle text-color-primary" style={{ width: '100px' }}>{index + 1}</td>
+                                                <td className="align-middle text-truncate" style={{ paddingLeft: '10px', textAlign: 'left' }}>{s.categoryName}</td>
                                                 {/* <td className="align-middle " style={{ textAlign: 'left' }} >{s.description}</td> */}
                                                 {
                                                     (roleId == 1 || roleId == 2) ?
-                                                        <td className="align-middle " style={{ padding: '10px' }}>
+                                                        <td className="align-middle " style={{ padding: '10px', width: '100px' }}>
 
                                                             <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => showModelEditCategory(s)}></i>
 
