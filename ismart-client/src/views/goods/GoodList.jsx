@@ -182,6 +182,7 @@ function MyTable() {
         setSelectedWarehouse("Tất cả kho");
         setSelectedWarehouseId(null);
         await getGoods(1, null, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+
     }
 
     const handleStorageClick = async (warehouse) => {
@@ -191,6 +192,7 @@ function MyTable() {
         await getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
         // const res = await getGoods(warehouse.warehouseId);
         // setListGoods(res);
+        console.log("selectedWarehouseId:", getGoods(1, null, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch));
     }
 
     const handlePageClick = (event) => {

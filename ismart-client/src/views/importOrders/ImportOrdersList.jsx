@@ -100,7 +100,7 @@ function ImportOrderList() {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
         setSelectedWarehouse(res.warehouseName);
-        console.log("getStorageIdByUser:", res);
+        // console.log("getStorageIdByUser:", res);
     }
     const getImportOrders = async (page) => {
         setcurrentPage(page - 1);
@@ -117,13 +117,14 @@ function ImportOrderList() {
 
     const handleStorageClickTotal = () => {
         setSelectedWarehouse("Tất cả kho");
-        setSelectedWarehouseId("");
+        setSelectedWarehouseId(null);
+        getImportOrders(1, null, sortedByStatusId, sortedByDateId, keywordSearch);
     }
 
     const handleStorageClick = async (warehouse) => {
 
         setSelectedWarehouse(warehouse.warehouseName);
-        setSelectedWarehouseId(warehouse.warehouseId);
+        setSelectedWarehouseId(warehouse.importId);
         const res = await getImportOrders(warehouse.warehouseId);
         getImportOrders(res);
         console.log("getImportOrderssssssss:", res);
