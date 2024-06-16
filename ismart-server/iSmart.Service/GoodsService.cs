@@ -268,7 +268,7 @@ namespace iSmart.Service
                         Description = g.Description,
                         StockPrice = g.StockPrice,
                         MeasuredUnit = g.MeasuredUnit,
-                        //InStock = g.InStock,
+                        InStock = warehouseId.HasValue ? g.GoodsWarehouses.FirstOrDefault(gw => gw.WarehouseId == warehouseId && gw.GoodsId == g.GoodsId).Quantity : 0,
                         Image = g.Image,
                         CreatedDate = g.CreatedDate,
                         WarrantyTime = g.WarrantyTime,
