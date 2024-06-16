@@ -68,6 +68,7 @@ function MyTable() {
 
     const [isShowModelAddGood, setIsShowModelAddGood] = useState(false);
 
+    const [showInStock, setShowInStock] = useState(true);
 
     useEffect(() => {
         let res = getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
@@ -85,6 +86,7 @@ function MyTable() {
         else if (roleId === 2) {
             setSelectedWarehouseId(localStorage.getItem('warehouseId'));
             setSelectedWarehouse(localStorage.getItem('warehouseName'));
+            setShowInStock(true);// Show inStock for role 2
         }
     }, [])
 
@@ -99,6 +101,7 @@ function MyTable() {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
         setSelectedWarehouse(res.warehouseName);
+        setShowInStock(false);// Hide inStock initially for role 1
         // console.log("getStorageIdByUser:", res);
     }
 
@@ -181,6 +184,7 @@ function MyTable() {
     const handleStorageClickTotal = async () => {
         setSelectedWarehouse("Tất cả kho");
         setSelectedWarehouseId(null);
+        setShowInStock(false);
         await getGoods(1, null, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
 
     }
@@ -189,6 +193,7 @@ function MyTable() {
 
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
+        setShowInStock(true);
         //const res = await getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
         const res = await getGoods(warehouse.warehouseId);
         setListGoods(res);
@@ -372,7 +377,7 @@ function MyTable() {
                                     </th>
 
 
-                                    <th className="align-middle text-nowrap">TỒN KHO</th>
+                                    {showInStock && <th className="align-middle text-nowrap">TỒN KHO</th>}
                                     <th className="align-middle text-nowrap">ĐƠN VỊ</th>
                                     <th className="align-middle text-nowrap">NGÀY NHẬP</th>
                                     <th className='align-middle text-nowrap'>GIÁ NHẬP</th>
@@ -396,7 +401,7 @@ function MyTable() {
                                             </td>
                                             <td className="align-middle">{g.supplierName}</td>
                                             <td className="align-middle">{g.categoryName}</td>
-                                            <td className="align-middle">{g.inStock}</td>
+                                            {showInStock && <td className="align-middle">{g.inStock}</td>}
                                             <td className="align-middle">{g.measuredUnit}</td>
                                             <td className="align-middle">{formatDate(g.createdDate ? g.createdDate : "2024-03-18T04:10:59.041Z")}</td>
                                             <td className='align-middle'>{formattedAmount(g.stockPrice)}</td>
