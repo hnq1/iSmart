@@ -19,6 +19,12 @@ public class ImagesController : ControllerBase
             return BadRequest("No file uploaded.");
         }
 
+        var allowedMimeTypes = new[] { "image/jpeg", "image/png", "image/gif" };
+        if (!allowedMimeTypes.Contains(file.ContentType))
+        {
+            return BadRequest("Only image files (JPEG, PNG, GIF) are allowed.");
+        }
+
         if (string.IsNullOrEmpty(_env.WebRootPath))
         {
             return StatusCode(500, "WebRootPath is not configured.");
