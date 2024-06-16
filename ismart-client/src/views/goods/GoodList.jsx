@@ -120,7 +120,7 @@ function MyTable() {
                 sortPrice, wordSearch);
             // console.log("supplierId:", "supplierId");
             setListGoods(res.data);
-            // console.log("goodList1:", res.data);
+            console.log("goodList1:", res.data);
             setTotalPages(res.totalPages);
             setcurrentPage(page - 1);
         } else if (roleId === 2) {
@@ -130,7 +130,7 @@ function MyTable() {
             setTotalPages(goods.totalPages);
             setcurrentPage(page - 1);
 
-            // console.log("goodList2:  ", goods);
+            console.log("goodList2:  ", goods);
         }
     }
 
