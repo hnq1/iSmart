@@ -13,7 +13,7 @@ import ImportOrderList from '../views/importOrders/ImportOrdersList';
 import ExportOrderList from '../views/exportOrders/ExportOrderList';
 import StockTakeList from '~/views/stocktake/StockTakeList';
 import DeliveryList from '~/views/deliveries/ListDelivery';
-import CustomSidebar from '../views/components/CustomSidebar';
+import Sidebar from '../views/components/Sidebar';
 import ListAccount from '~/views/accounts/AccountList';
 import ProjectList from '~/views/project/ProjectList';
 import { Container, Row, Col } from 'react-bootstrap';
@@ -32,7 +32,7 @@ const AppRoutes = () => {
                     path="/"
                     element={
                         <Container fluid>
-                            {/* <NavbarCom /> */}
+                            <NavbarCom />
                             <Login />
                         </Container>
                     }
@@ -75,7 +75,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
 
                                     <Col className="py-3 background-primary">
                                         <NavbarCom />
@@ -92,7 +92,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
 
                                     <Col className="py-3 background-primary">
                                         <NavbarCom />
@@ -109,7 +109,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
 
                                     <Col className="py-3 background-primary">
                                         <NavbarCom />
@@ -125,7 +125,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
 
                                     <Col className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
@@ -142,7 +142,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
 
                                     <Col className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
@@ -158,7 +158,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
 
                                     <Col className="py-3 background-primary">
                                         <NavbarCom />
@@ -180,7 +180,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
 
                                     <Col className="py-3 background-primary">
                                         <NavbarCom />
@@ -196,7 +196,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
 
                                     <Col className="py-3 background-primary">
                                         <NavbarCom />
@@ -212,7 +212,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
 
                                     <Col className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
@@ -229,7 +229,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
                                     <Col className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <GoodList />
@@ -244,7 +244,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
                                     <Col className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <WarehouseThree />
@@ -260,7 +260,7 @@ const AppRoutes = () => {
                         <PrivateRoute>
                             <Container fluid>
                                 <Row className="flex-nowrap">
-                                    <CustomSidebar />
+                                    <Sidebar />
                                     <Col className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <ListAccount />

@@ -3,7 +3,7 @@ import { Container, Row, Col, Nav, Navbar, NavDropdown, Image } from 'react-boot
 import logo from '../../assets/images/logo.png';
 import { Link } from 'react-router-dom';
 
-const CustomSidebar = () => {
+const Sidebar = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
 
     return (
@@ -56,7 +56,7 @@ const CustomSidebar = () => {
                             : ''
                     }
 
-                    {
+{
                         (roleId == 1 || roleId == 2 || roleId == 4) ?
                             <Nav.Item className="mb-2">
                                 <Nav.Link as={Link} to="/kho-3d"
@@ -309,4 +309,4 @@ const CustomSidebar = () => {
     );
 };
 
-export default CustomSidebar;
+export default Sidebar;
