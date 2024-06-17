@@ -1,5 +1,6 @@
 ﻿using iSmart.Entity.DTOs.CategoryDTO;
 using iSmart.Entity.Models;
+using iSmart.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace iSmart.Service
         Task<List<Category>?> GetAllCategory();
         Category? GetCategoryById(int id);
         CreateCategoryResponse AddCategory(CreateCategoryRequest category);
-        UpdateCategoryResponse UpdateCaregory(UpdateCategoryRequest category);
+        UpdateCategoryResponse UpdateCategory(UpdateCategoryRequest category);
 
     }
 
@@ -71,6 +72,10 @@ namespace iSmart.Service
         {
             try
             {
+                //if (!ValidationHelper.ValidateGreaterThanZero(id, out string errorMessage))
+                //{
+                //    throw new ArgumentException(errorMessage);
+                //}
                 var category = _context.Categories.FirstOrDefault(c => c.CategoryId == id);
                 return category ?? null;
             }
@@ -105,6 +110,14 @@ namespace iSmart.Service
         {
             try
             {
+                if (!ValidationHelper.ValidateGreaterThanZero(page, out string errorMessage))
+                {
+                    throw new ArgumentException(errorMessage);
+                }
+                if (!ValidationHelper.ValidateNotEmpty(keyword, out string error1Message))
+                {
+                    throw new ArgumentException(error1Message);
+                }
                 var pageSize = 6;
 
                 var category = _context.Categories.Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower())
@@ -125,10 +138,14 @@ namespace iSmart.Service
 
 
 
-        public UpdateCategoryResponse UpdateCaregory(UpdateCategoryRequest category)
+        public UpdateCategoryResponse UpdateCategory(UpdateCategoryRequest category)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(category.CategoryName))
+                {
+                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Tên loại hàng không được để trống!" };
+                }
                 var requestCategory = new Category
                 {
                     CategoryId = category.CategoryId,
