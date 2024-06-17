@@ -31,6 +31,10 @@ namespace iSmart.Service
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(category.CategoryName))
+                {
+                    return new CreateCategoryResponse { IsSuccess = false, Message = "Tên loại hàng không được để trống!" };
+                }
                 var requestCategorry = new Category
                 {
                     CategoryName = category.CategoryName,
