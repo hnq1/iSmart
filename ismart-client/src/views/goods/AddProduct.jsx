@@ -162,6 +162,12 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
         setImageGood(null);
     }
+    // const isImageFile = (file) => {
+    //     // Kiểm tra file có phải là hình ảnh không
+    //     const acceptedImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/bmp'];
+    //     return file && acceptedImageTypes.includes(file.type);
+    // }
+
 
     const handleSave = async () => {
         if (!goodName) {
@@ -178,10 +184,21 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         else if (!imageGood) {
             toast.warning("Vui lòng chọn hình ảnh");
         }
+        // else if (!isImageFile(imageGood)) {
+        //     toast.warning("File tải lên không phải là file ảnh, vui lòng nhập lại");
+        // }
         else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
-
-        } else {
+        }
+        else if (stockPrice <= 0) {
+            toast.warning("Vui lòng nhập giá lớn hơn 0");
+        }
+        else if (maxStock <= 0) {
+            toast.warning("Vui lòng nhập maxstock lớn hơn 0");
+        } else if (minStock <= 0) {
+            toast.warning("Vui lòng nhập minstock lớn hơn 0");
+        }
+        else {
 
             let res = await addGood(userId,
                 goodName, goodCode, selectedCategoryId,
@@ -311,7 +328,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
                         <Col md={5}>
                             <label >Hạn bảo hành </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} min={0} />
                         </Col>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
@@ -330,18 +347,18 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                         </Col>
                         <Col md={5}>
                             <label >Giá nhập </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} min={0} />
                         </Col>
                     </Row>
 
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >MaxStock </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} min={0} />
                         </Col>
                         <Col md={5}>
                             <label >MinStock </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} min={0} />
                         </Col>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
