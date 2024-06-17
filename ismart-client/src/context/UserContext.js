@@ -5,36 +5,36 @@ import { logoutApi } from '../services/LoginServices';
 
 const UserContext = React.createContext({
     userName: '', auth: false, userId: '',
-    roleId: ''
+    roleId: '', warehouseId: ''
 });
 
 
 const UserProvider = ({ children }) => {
     const [user, setUser] = React.useState({
         userName: '', auth: false, userId: '',
-        roleId: ''
+        roleId: '', warehouseId: ''
     });
     const loginContext = (userName, token, userId,
-        roleId
+        roleId, warehouseId
     ) => {
         setUser((user) => ({
             userName: userName,
             auth: true,
             userId: userId,
-            roleId: roleId
+            roleId: roleId,
+            warehouseId: warehouseId
         }));
 
 
         localStorage.setItem('token', token);
         localStorage.setItem('userName', userName);
+        localStorage.setItem('warehouseId', warehouseId);
         if (localStorage.getItem('userId') === null && localStorage.getItem('roleId') === null) {
             localStorage.setItem('userId', userId);
             // Store userId
             localStorage.setItem('roleId', roleId);
             // Store roleId
         }
-
-
     };
 
     const logout = () => {

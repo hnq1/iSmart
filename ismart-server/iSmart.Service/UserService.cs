@@ -34,7 +34,13 @@ namespace iSmart.Service
             _context = context;
             _configuration = configuration;
         }
-        List<UserDTO> userDTOs = new List<UserDTO>();
+
+        public UserService(iSmartContext context)
+        {
+            _context = context;
+        }
+
+
         public CreateUserResponse AddUser(CreateUserRequest user)
         {
             try
@@ -286,5 +292,6 @@ namespace iSmart.Service
             var roles = _context.Roles.ToList();
             return roles;
         }
+       
     }
 }

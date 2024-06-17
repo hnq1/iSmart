@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, DropdownButton, Col } from 'react-bootstrap';
-import { fetchGoodsWithFilter } from '~/services/GoodServices';
+import { fetchGoodsWithFilter, fetchAllGoodsInWarehouse } from '~/services/GoodServices';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { fetchAllCategories } from '~/services/CategoryServices';
 import { fetchAllSuppliers } from '~/services/SupplierServices';
@@ -14,12 +14,13 @@ import ModalAddGood from './AddProduct';
 import { fetchUserByUserId } from '~/services/UserServices';
 import { useNavigate } from 'react-router-dom';
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 
 
 function MyTable() {
-    const roleId = parseInt(localStorage.getItem('roleId'), 10);;
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-
+    const warehouseId = parseInt(localStorage.getItem('warehouseId'), 10);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -79,6 +80,7 @@ function MyTable() {
 
         if (roleId === 1) {
             getStorageIdByUser();
+
         }
         else if (roleId === 2) {
             setSelectedWarehouseId(localStorage.getItem('warehouseId'));
@@ -86,32 +88,45 @@ function MyTable() {
         }
     }, [])
 
-    useEffect(() => {
-        getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
-        setcurrentPage(0);
-    }, [selectedWarehouse, selectedCategory, selectedSupplier, sortedByPriceId])
-
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
         setSelectedWarehouse(res.warehouseName);
     }
 
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
+
     const getGoods = async (
         page, storageId,
         categoryId, supplierId,
         sortPrice, wordSearch) => {
-        let res = await fetchGoodsWithFilter(
-            page, storageId,
-            categoryId, supplierId,
-            sortPrice, wordSearch);
-        // console.log(res);
-        setListGoods(res.data);
-        setTotalPages(res.totalPages);
-        setcurrentPage(page - 1);
-        return res;
+
+        if (roleId === 1) {
+            let res = await fetchGoodsWithFilter(
+                page, storageId,
+                categoryId, supplierId,
+                sortPrice, wordSearch);
+            // console.log(res);
+            setListGoods(res.data);
+            setTotalPages(res.totalPages);
+            setcurrentPage(page - 1);
+        } else if (roleId === 2) {
+            let warehouse = await getWarehouseById(userId);
+            let goods = await fetchAllGoodsInWarehouse(warehouse.warehouseId);
+let res 
+
+            setListGoods(goods);
+            setTotalPages(goods.totalPages);
+            setcurrentPage(page - 1);
+
+            // console.log("nh ddss: ", goods);
+        }
     }
 
+    
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
         setTotalCategories(res);
