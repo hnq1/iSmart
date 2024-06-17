@@ -15,6 +15,8 @@ import { fetchUserByUserId } from '~/services/UserServices';
 import { useNavigate } from 'react-router-dom';
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
+import InportGoodsListModal from './inputExport/InPut';
+import ExportGoodsListModal from './inputExport/Export';
 
 
 function MyTable() {
@@ -69,6 +71,10 @@ function MyTable() {
     const [isShowModelAddGood, setIsShowModelAddGood] = useState(false);
 
     const [showInStock, setShowInStock] = useState(true);
+
+    const [isShowModalInputExcel, setIsShowModalInputExcel] = useState(false);
+    const [isShowModalExportExcel, setIsShowModalExportExcel] = useState(false);
+
 
     useEffect(() => {
         let res = getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
@@ -234,6 +240,15 @@ function MyTable() {
     const updateTable = () => {
         getGoods(currentPage + 1);
     }
+
+    const handleImportClick = () => {
+        setIsShowModalInputExcel(true);
+
+    }
+    const handleExportClick = () => {
+        setIsShowModalExportExcel(true);
+    }
+
     return (
         <div className="container" style={{ maxWidth: "1600px" }}>
             <div className="row justify-content-center">
@@ -286,6 +301,12 @@ function MyTable() {
                         </div>
 
                         <div className="col">
+
+                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập/Xuất"
+                                variant="primary" style={{ zIndex: 999 }}>
+                                <Dropdown.Item onClick={() => handleImportClick()}>Nhập</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleExportClick()}>Xuất</Dropdown.Item>
+                            </DropdownButton>
 
                         </div>
                         <div className="col">
@@ -455,6 +476,8 @@ function MyTable() {
                 handleClose={() => setIsShowModelEditGood(false)}
                 dataGoodEdit={dataGoodEdit} updateTable={updateTable} />
             <ModalAddGood isShow={isShowModelAddGood} handleClose={() => setIsShowModelAddGood(false)} updateTable={updateTable} />
+            <InportGoodsListModal isShow={isShowModalInputExcel} handleClose={() => setIsShowModalInputExcel(false)} />
+            <ExportGoodsListModal isShow={isShowModalExportExcel} handleClose={() => setIsShowModalExportExcel(false)} />
         </div >
     );
 }
