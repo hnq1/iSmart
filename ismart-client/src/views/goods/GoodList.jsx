@@ -15,7 +15,7 @@ import { fetchUserByUserId } from '~/services/UserServices';
 import { useNavigate } from 'react-router-dom';
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
-import InportGoodsListModal from './inputExport/InPut';
+import InportGoodsListModal from './inputExport/InPort';
 import ExportGoodsListModal from './inputExport/Export';
 
 

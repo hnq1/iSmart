@@ -48,26 +48,21 @@ function InportGoodsListModal({ isShow, handleClose }) {
                         <Form.Label>Tải file mẫu nhập danh sách sản phẩm <a href="#">tại đây</a></Form.Label>
                         <Form.Control type="file" onChange={handleFileChange} />
                     </Form.Group>
+
                     <Form.Group controlId="formOverwriteProductInfo">
-                        <Form.Check
-                            type="checkbox"
-                            label="Ghi đè thông tin các sản phẩm đã có"
-                            checked={overwriteProductInfo}
-                            onChange={handleOverwriteProductInfoChange}
-                        />
+                        <a>Ghi đè thông tin các sản phẩm đã có</a>
+
                     </Form.Group>
                     <Form.Group controlId="formOverwriteQuantity">
-                        <Form.Check
-                            type="checkbox"
-                            label="Ghi đè số lượng sản phẩm vào các kho hàng đã có"
-                            checked={overwriteQuantity}
-                            onChange={handleOverwriteQuantityChange}
-                        />
+                        <a>Ghi đè số lượng sản phẩm vào các kho hàng đã có</a>
                     </Form.Group>
-                    <div style={{ fontSize: '12px', color: '#888' }}>
-                        <p>- Việc ghi đè sẽ xóa hết các thông tin cũ của sản phẩm bị ghi đè để lưu thông tin mới.</p>
-                        <p>- Tính năng này không dùng để cập nhật hàng loạt sản phẩm.</p>
-                    </div>
+                    <Form>
+                        <div style={{ fontSize: '12px', color: '#888' }}>
+                            <p>- Việc ghi đè sẽ xóa hết các thông tin cũ của sản phẩm bị ghi đè để lưu thông tin mới.</p>
+                            <p>- Tính năng này không dùng để cập nhật hàng loạt sản phẩm.</p>
+                        </div>
+                    </Form>
+
                 </Form>
             </Modal.Body>
             <Modal.Footer>
