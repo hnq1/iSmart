@@ -43,5 +43,18 @@ namespace iSmart.Test
             if (deliveryResponse.IsSuccess == true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
+        [Test]
+        public void EditDelivery_Test()
+        {
+            var result = false;
+            var deliveryEntry = new UpdateDeliveryRequest
+            {
+                DeliveyId = 1,
+                DeliveryName = "TestUpdateDelivery",
+            };
+            var deliveryResponse = _deliveryService.UpdateDelivery(deliveryEntry);
+            if (deliveryResponse.IsSuccess is true) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
     }
 }
