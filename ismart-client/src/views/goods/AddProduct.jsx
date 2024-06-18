@@ -16,7 +16,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10); // Lấy userId từ local storage
 
-
+    const [error, setError] = useState(null);
     const [totalCategories, setTotalCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
@@ -88,10 +88,31 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
-        // let res = await uploadImage(file);
-        const urlImage = URL.createObjectURL(file);
+
+        // Check if file is selected
+        if (!file) {
+            setImageGood(null);
+            return;
+        }
+
+        // Check if file type is image
+        if (!file.type.startsWith('image')) {
+            toast.warning("Vui lòng chọn một file ảnh.");
+            setImageGood(null);
+            return;
+        }
+
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            toast.warning("File ảnh quá lớn, vui lòng chọn file dưới 5MB.");
+            setImageGood(null);
+            return;
+        }
+
+        let res = await uploadImage(file);
+        const urlImage = res.url;
         setImageGood(urlImage);
-    }
+    };
 
     const handleStorageTotalClick = () => {
         setSelectedWarehouse("Tất cả Kho");
@@ -162,11 +183,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
         setImageGood(null);
     }
-    // const isImageFile = (file) => {
-    //     // Kiểm tra file có phải là hình ảnh không
-    //     const acceptedImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/bmp'];
-    //     return file && acceptedImageTypes.includes(file.type);
-    // }
 
 
     const handleSave = async () => {
@@ -182,11 +198,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             toast.warning("Vui lòng chọn đơn vị");
         }
         else if (!imageGood) {
-            toast.warning("Vui lòng chọn hình ảnh");
+            toast.warning("Vui lòng chọn file ảnh");
         }
-        // else if (!isImageFile(imageGood)) {
-        //     toast.warning("File tải lên không phải là file ảnh, vui lòng nhập lại");
-        // }
         else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }
@@ -369,7 +382,11 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                                 <input
                                     type="file"
                                     accept="image/*" // Chỉ chấp nhận các loại file ảnh
-                                    onChange={handleChooseFile} // Hàm xử lý sự kiện khi người dùng chọn file
+                                    onChange={handleChooseFile}
+                                // Hàm xử lý sự kiện khi người dùng chọn file
+                                // onchange={(event) => {
+                                //     validateimage(event.target.files[0]);
+                                // }}
                                 />
                             </div>
                         </Col>
@@ -382,7 +399,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                 <Button variant="secondary" onClick={handleCloseModal}>
                     Đóng
                 </Button>
-                <Button variant="primary" className="ButtonCSS" onClick={handleSave}>
+                <Button variant="primary" className="ButtonCSS" onClick={handleSave} >
                     Thêm hàng hóa mới
                 </Button>
             </Modal.Footer>
