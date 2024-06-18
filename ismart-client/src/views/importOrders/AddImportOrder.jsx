@@ -24,8 +24,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const [importCode, setImportCode] = useState('');
 
-    const [selectUserId, setSelectUserId] = useState(0);
-
 
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
@@ -35,7 +33,12 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const [totalSuppliers, setTotalSuppliers] = useState([]);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
+
+    const [suppliersData, setSuppliersData] = useState([]);
+
+
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
+
 
     const [totalDelivery, setTotalDelivery] = useState([]);
     const [selectedDelivery, setSelectedDelivery] = useState(null);
@@ -60,21 +63,13 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         getAllDelivery();
     }, [])
 
-    // useEffect(() => {
-    //     setRowsData([]);
-    //     console.log("selectedWarehouseIdsetRowsData: ", selectedWarehouseId, selectedSupplierId);
-    // }, [selectedWarehouseId, selectedSupplierId])
-
-
-    useEffect(() => {
-        setTotalCost(0);
-    }, [])
-
     useEffect(() => {
         const currentDate = new Date();
         const formattedDate = format(currentDate, 'yyyy-MM-dd');
         setMinDate(formattedDate);
     }, [])
+
+
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
@@ -95,11 +90,12 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     const getAllSuppliers = async () => {
         let res = await fetchAllSupplierActive();
         setTotalSuppliers(res);
+        // console.log("resAllSuppliers: ", res);
     }
 
     const handleSupplierClick = (supplier, event) => {
         setSelectedSupplier(supplier.supplierName);
-        setSelectedSupplierId(supplier.supplierId)
+        setSelectedSupplierId(supplier.supplierId);
     }
 
     const getAllDelivery = async () => {
@@ -141,14 +137,28 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     }
 
     // nhận dữ liệu từ addRowDataImport
+
     const takeRowDataImportOrder = (importData) => {
-        const updateDataImport = [...rowsData, importData];
-        // updateDataImport[rowsData.length - 1] = importData;
-        setRowsData(updateDataImport);
+        importData.supplierId = selectedSupplierId;
+        importData.supplierName = selectedSupplier;
+
+        setSuppliersData((prevSuppliersData) => {
+            const existingSupplierIndex = prevSuppliersData.findIndex(supplier => supplier.supplierId === selectedSupplierId);
+
+            if (existingSupplierIndex > -1) {
+                // Nhà cung cấp đã tồn tại, thêm sản phẩm vào danh sách sản phẩm của nhà cung cấp này
+                const updatedSuppliersData = [...prevSuppliersData];
+                updatedSuppliersData[existingSupplierIndex].products.push(importData);
+                return updatedSuppliersData;
+            } else {
+                // Nhà cung cấp chưa tồn tại, tạo mới một nhà cung cấp và thêm sản phẩm vào
+                return [...prevSuppliersData, { supplierId: selectedSupplierId, supplierName: selectedSupplier, products: [importData] }];
+            }
+        });
 
         setTotalCost(x => x + importData.totalOneGoodPrice);
+    };
 
-    }
 
 
     // mở addRowDataImport
@@ -162,31 +172,53 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     }
 
     // render rowsData
+
+
     const renderImportData = () => {
-        return rowsData.map((data, index) => (
-            <RowDataImportOrder key={index} data={rowsData[index]} index={index}
-                deleteRowData={deleteRowData} updateRowData={updateRowData} />
-        ))
+        return suppliersData.map((supplier, supplierIndex) => (
+            <div key={`supplier-${supplierIndex}`} style={{ marginBottom: "20px" }}>
+                <h5>Nhà cung cấp: {supplier.supplierName}</h5>
+                {supplier.products.map((product, productIndex) => (
+                    <RowDataImportOrder
+                        key={productIndex}
+                        data={product}
+                        index={productIndex}
+                        deleteRowData={() => deleteRowData(supplierIndex, productIndex)}
+                        updateRowData={(updateData) => updateRowData(supplierIndex, productIndex, updateData)} />
+                ))}
+            </div>
+        ));
+    };
 
 
-    }
+    // Xóa 1 row của rowsData ở RowDataImport
 
-    // xóa 1 row của rowsData ở RowDataImport
-    const deleteRowData = (rowdel) => {
-        const updateDataImport = rowsData.filter((item, index) => index !== rowdel);
-        const deletePrice = rowsData[rowdel].totalOneGoodPrice;
-        setRowsData(updateDataImport);
-        setTotalCost(x => x - deletePrice ? x - deletePrice : 0);
-    }
+    const deleteRowData = (supplierIndex, productIndex) => {
+        setSuppliersData((prevSuppliersData) => {
+            const updatedSuppliersData = [...prevSuppliersData];
+            const deletePrice = updatedSuppliersData[supplierIndex].products[productIndex].totalOneGoodPrice;
+            updatedSuppliersData[supplierIndex].products.splice(productIndex, 1);
 
-    // update 1 row data từ RowDataImport
-    const updateRowData = (rowUpdate, updateData) => {
-        console.log(updateData);
-        const updateDataImport = [...rowsData];
-        updateDataImport[rowUpdate] = updateData;
-        setTotalCost(x => x - rowsData[rowUpdate].totalOneGoodPrice + updateData.totalOneGoodPrice);
-        setRowsData(updateDataImport);
-    }
+            if (updatedSuppliersData[supplierIndex].products.length === 0) {
+                updatedSuppliersData.splice(supplierIndex, 1);
+            }
+
+            setTotalCost(x => x - deletePrice);
+            return updatedSuppliersData;
+        });
+    };
+
+    // cập nhật 1 row của rowsData ở RowDataImport
+    const updateRowData = (supplierIndex, productIndex, updateData) => {
+        setSuppliersData((prevSuppliersData) => {
+            const updatedSuppliersData = [...prevSuppliersData];
+            const oldPrice = updatedSuppliersData[supplierIndex].products[productIndex].totalOneGoodPrice;
+            updatedSuppliersData[supplierIndex].products[productIndex] = updateData;
+
+            setTotalCost(x => x - oldPrice + updateData.totalOneGoodPrice);
+            return updatedSuppliersData;
+        });
+    };
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
@@ -364,7 +396,9 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                     <hr />
                     <Row style={{ maxHeight: '400px', overflowY: 'auto' }}>
                         {renderImportData()}
-
+                        {/* <label>
+                            <p>Nhà cung cấp: {getSelectedSupplierName()}</p>
+                        </label> */}
                     </Row>
                     <div className="">
                         <button

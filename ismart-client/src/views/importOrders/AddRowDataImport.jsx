@@ -50,7 +50,7 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
     const handleGoodClick = (good, event) => {
         setSelectedGoodCode(good.goodsCode);
         setSelectedGoodId(good.goodsId);
-        console.log("selectedGoodCode: ", good.goodsId);
+        // console.log("selectedGoodCode: ", good.goodsId);
     }
 
     const handleChangeQuantity = (event) => {
@@ -78,64 +78,66 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
             <Modal.Header closeButton>
                 <Modal.Title>Chọn sản phẩm</Modal.Title>
             </Modal.Header>
-            <Modal.Body><Row>
+            <Modal.Body>
+                <Row>
 
-                <Col md={3}>
-                    <label>Mã sản phẩm</label>
-                    <div>
-                        <Dropdown style={{ position: 'relative' }}>
-                            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Mã Sản phẩm"}</span>
-                            </Dropdown.Toggle>
+                    <Col md={3}>
+                        <label>Mã sản phẩm</label>
+                        <div>
+                            <Dropdown style={{ position: 'relative' }}>
+                                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                                    <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Mã Sản phẩm"}</span>
+                                </Dropdown.Toggle>
 
-                            <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
-                                {totalGoods && totalGoods.length > 0 && totalGoods.map((g, index) => (
-                                    <Dropdown.Item key={`good ${index}`} eventKey={g.goodsCode} onClick={(e) => handleGoodClick(g, e)}>
-                                        {g.goodsCode}
-                                    </Dropdown.Item>
-                                ))}
+                                <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
+                                    {totalGoods && totalGoods.length > 0 && totalGoods.map((g, index) => (
+                                        <Dropdown.Item key={`good ${index}`} eventKey={g.goodsCode} onClick={(e) => handleGoodClick(g, e)}>
+                                            {g.goodsCode}
+                                        </Dropdown.Item>
+                                    ))}
 
-                                {totalGoods.length === 0 && (
-                                    <Dropdown.Item key="empty" disabled>
-                                        Không có mặt hàng
-                                    </Dropdown.Item>
-                                )}
-                            </Dropdown.Menu>
-                        </Dropdown>
+                                    {totalGoods.length === 0 && (
+                                        <Dropdown.Item key="empty" disabled>
+                                            Không có mặt hàng
+                                        </Dropdown.Item>
+                                    )}
+                                </Dropdown.Menu>
+                            </Dropdown>
 
-                    </div>
-                </Col>
+                        </div>
+                    </Col>
 
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Số lượng</label>
-                        <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
-                    </div>
-                </Col>
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Giá tiền</label>
-                        <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
-                    </div>
-                </Col>
+                    <Col md={2}>
+                        <div className="form-group mb-3">
+                            <label >Số lượng</label>
+                            <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
+                        </div>
+                    </Col>
+                    <Col md={2}>
+                        <div className="form-group mb-3">
+                            <label >Giá tiền</label>
+                            <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
+                        </div>
+                    </Col>
 
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Tổng giá tiền</label>
-                        <input type="number" className="form-control inputCSS" value={costPrice * quantity} disabled />
-                    </div>
-                </Col>
+                    <Col md={2}>
+                        <div className="form-group mb-3">
+                            <label >Tổng giá tiền</label>
+                            <input type="number" className="form-control inputCSS" value={costPrice * quantity} disabled />
+                        </div>
+                    </Col>
 
 
 
-            </Row>
+                </Row>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="primary" className="ButtonCSS" onClick={handleConfirmRowData}>
                     Xác nhận nhập kho
                 </Button>
             </Modal.Footer>
-        </Modal >)
+        </Modal >
+    )
 }
 
 
