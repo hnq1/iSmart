@@ -11,7 +11,7 @@ namespace iSmart.Entity.Models
             ImportOrders = new HashSet<ImportOrder>();
         }
 
-        public int DeliveyId { get; set; }
+        public int DeliveryId { get; set; }
         public string? DeliveryName { get; set; }
         public int StatusId { get; set; }
         public virtual Status Status { get; set; }

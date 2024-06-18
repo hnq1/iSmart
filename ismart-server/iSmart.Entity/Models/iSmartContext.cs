@@ -178,7 +178,7 @@ namespace iSmart.Entity.Models
                     .HasForeignKey(d => d.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Delivery_Status");
-                entity.HasKey(e => e.DeliveyId);
+                entity.HasKey(e => e.DeliveryId);
 
                 entity.ToTable("Delivery");
 
