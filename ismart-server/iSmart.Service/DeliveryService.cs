@@ -160,22 +160,42 @@ namespace iSmart.Service
         {
             try
             {
-                var requestDelivery = new Delivery
+                // Kiểm tra nếu DeliveryName là null hoặc là một chuỗi khoảng trắng
+                if (string.IsNullOrWhiteSpace(delivery.DeliveryName))
                 {
-                    DeliveryId = delivery.DeliveyId,
-                    DeliveryName = delivery.DeliveryName
-                };
-                _context.Deliveries.Update(requestDelivery);
-                _context.SaveChanges();
-                return new UpdateDeliveryResponse { IsSuccess = true, Message = $"Thay doi delivery thành công" };
+                    return new UpdateDeliveryResponse { IsSuccess = false, Message = "Tên delivery không được để trống hoặc là khoảng trắng!" };
+                }
 
+                var existingDelivery = _context.Deliveries.SingleOrDefault(d => d.DeliveryId == delivery.DeliveryId);
+
+                if (existingDelivery == null)
+                {
+                    return new UpdateDeliveryResponse { IsSuccess = false, Message = "Delivery không tồn tại!" };
+                }
+
+                // Kiểm tra nếu DeliveryName đã tồn tại (trừ delivery hiện tại)
+                var duplicateDelivery = _context.Deliveries
+                    .SingleOrDefault(d => d.DeliveryName.ToLower() == delivery.DeliveryName.ToLower() && d.DeliveryId != delivery.DeliveryId);
+
+                if (duplicateDelivery != null)
+                {
+                    return new UpdateDeliveryResponse { IsSuccess = false, Message = "Tên delivery đã tồn tại!" };
+                }
+
+                existingDelivery.DeliveryName = delivery.DeliveryName;
+
+                _context.Deliveries.Update(existingDelivery);
+                _context.SaveChanges();
+
+                return new UpdateDeliveryResponse { IsSuccess = true, Message = "Cập nhật delivery thành công" };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return new UpdateDeliveryResponse { IsSuccess = false, Message = $"Thay doi delivery that bai" };
+                return new UpdateDeliveryResponse { IsSuccess = false, Message = "Cập nhật delivery thất bại" };
             }
         }
 
-       
+
+
     }
 }

@@ -110,8 +110,7 @@ namespace iSmart.Service
                 {
                     // Nếu keyword không phải là null hoặc chuỗi khoảng trắng, thực hiện lọc theo keyword
                     category = _context.Categories
-                                       .Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower())
-                                                || c.Description.ToLower().Contains(keyword.ToLower()))
+                                       .Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower()))
                                        .OrderBy(c => c.CategoryId)
                                        .ToList();
                 }
