@@ -11,13 +11,16 @@ namespace iSmart.Test
     public class TestGoods
     {
         private GoodsService _goodsService { get; set; } = null;
+        private UserWarehouseService _userWarehouseService;
         private iSmartContext _context;
         [SetUp]
         public void Setup()
         {
             var context = new iSmartContext();
             _context = context;
-            _goodsService = new GoodsService(context);
+            var userWarehouseService = new UserWarehouseService(context);
+            _userWarehouseService = userWarehouseService;
+            _goodsService = new GoodsService(context,_userWarehouseService);
         }
         //Get all goods
         [Test]
@@ -34,10 +37,10 @@ namespace iSmart.Test
             var result = false;
             var goodsEntry = new CreateGoodsRequest
             {
-                GoodsCode = "Test",
-                GoodsName = "Test",
+                GoodsCode = "Test6",
+                GoodsName = "",
                 CategoryId = 3,
-                Description = "Test",
+                Description = "Test1",
                 SupplierId = 3,
                 MeasuredUnit = "Test",
                 Image = "Test",
@@ -60,7 +63,8 @@ namespace iSmart.Test
             var result = false;
             var goodsEntry = new UpdateGoodsRequest
             {
-                GoodsCode = "Test",
+                GoodsId = 24,
+                GoodsCode = "Testxx",
                 GoodsName = "Test1",
                 CategoryId = 3,
                 Description = "Test1",
@@ -80,6 +84,8 @@ namespace iSmart.Test
             if (goodsResponse.IsSuccess is true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
+
+       
 
         //get goods by id
         [Test]

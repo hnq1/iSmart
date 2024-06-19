@@ -31,17 +31,11 @@ namespace iSmart.Service
     {
         private readonly iSmartContext _context;
         private readonly IUserWarehouseService _userWarehouseService;
-        private iSmartContext context;
 
         public GoodsService(iSmartContext context, IUserWarehouseService userWarehouseService)
         {
             _context = context;
             _userWarehouseService = userWarehouseService;
-        }
-
-        public GoodsService(iSmartContext context)
-        {
-            _context = context;
         }
 
         public CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId)
@@ -229,41 +223,61 @@ namespace iSmart.Service
             }
         }
 
-        
+
 
         public UpdateGoodsResponse UpdateGoods(UpdateGoodsRequest goods)
         {
             try
             {
-                var requestGoods = new Good
-
+                // Kiểm tra nếu GoodsCode là null hoặc là một chuỗi khoảng trắng
+                if (string.IsNullOrWhiteSpace(goods.GoodsCode))
                 {
-                    GoodsId = goods.GoodsId,
-                    GoodsName = goods.GoodsName,
-                    GoodsCode = goods.GoodsCode,
-                    CategoryId = goods.CategoryId,
-                    Description = goods.Description,
-                    SupplierId = goods.SupplierId,
-                    StockPrice = goods.StockPrice,
-                    MeasuredUnit = goods.MeasuredUnit,
-                    //InStock = goods.InStock,
-                    Image = goods.Image,
-                    StatusId = goods.StatusId,
-                    WarrantyTime = goods.WarrantyTime,
-                    Barcode = goods.Barcode,
-                    MaxStock = goods.MaxStock,
-                    MinStock = goods.MinStock
-                };
-                _context.Goods.Update(requestGoods);
-                _context.SaveChanges();
-                return new UpdateGoodsResponse { IsSuccess = true, Message = $"Cập nhật hàng hóa thành công" };
+                    return new UpdateGoodsResponse { IsSuccess = false, Message = "Mã hàng hóa không được để trống hoặc là khoảng trắng!" };
+                }
 
+                var existingGoods = _context.Goods.SingleOrDefault(g => g.GoodsId == goods.GoodsId);
+
+                if (existingGoods == null)
+                {
+                    return new UpdateGoodsResponse { IsSuccess = false, Message = "Hàng hóa không tồn tại!" };
+                }
+
+                // Kiểm tra nếu GoodsCode đã tồn tại (trừ hàng hóa hiện tại)
+                var duplicateGoods = _context.Goods
+                    .SingleOrDefault(g => g.GoodsCode.ToLower() == goods.GoodsCode.ToLower() && g.GoodsId != goods.GoodsId);
+
+                if (duplicateGoods != null)
+                {
+                    return new UpdateGoodsResponse { IsSuccess = false, Message = "Mã hàng hóa đã tồn tại!" };
+                }
+
+                existingGoods.GoodsCode = goods.GoodsCode;
+                existingGoods.GoodsName = goods.GoodsName;
+                existingGoods.CategoryId = goods.CategoryId;
+                existingGoods.Description = goods.Description;
+                existingGoods.SupplierId = goods.SupplierId;
+                existingGoods.MeasuredUnit = goods.MeasuredUnit;
+                existingGoods.Image = goods.Image;
+                existingGoods.StatusId = goods.StatusId;
+                existingGoods.StockPrice = goods.StockPrice;
+                existingGoods.Barcode = goods.Barcode;
+                existingGoods.MaxStock = goods.MaxStock;
+                existingGoods.MinStock = goods.MinStock;
+                existingGoods.WarrantyTime = goods.WarrantyTime;
+
+                _context.Goods.Update(existingGoods);
+                _context.SaveChanges();
+
+                return new UpdateGoodsResponse { IsSuccess = true, Message = "Cập nhật hàng hóa thành công" };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return new UpdateGoodsResponse { IsSuccess = false, Message = $"Cập nhật hàng hóa thất bại" };
+                // Log exception for debugging
+                Console.WriteLine($"Exception: {e.Message}");
+                return new UpdateGoodsResponse { IsSuccess = false, Message = "Cập nhật hàng hóa thất bại" };
             }
         }
+
 
         public bool UpdateStatusGoods(int id, int StatusId)
         {
