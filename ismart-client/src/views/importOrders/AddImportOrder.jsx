@@ -16,6 +16,7 @@ import RowDataImportOrder from "./RowDataImport";
 import { toast } from "react-toastify";
 
 import uploadImage from "~/services/ImageServices";
+import { data } from "autoprefixer";
 
 
 const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
@@ -69,6 +70,13 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         setMinDate(formattedDate);
     }, [])
 
+    // useEffect(() => {
+    //     // Tính lại tổng chi phí mỗi khi suppliersData thay đổi
+    //     const newTotalCost = suppliersData.reduce((acc, supplier) => {
+    //         return acc + supplier.products.reduce((acc, product) => acc + product.totalOneGoodPrice, 0);
+    //     }, 0);
+    //     setTotalCost(newTotalCost);
+    // }, [suppliersData]);
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
@@ -90,7 +98,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     const getAllSuppliers = async () => {
         let res = await fetchAllSupplierActive();
         setTotalSuppliers(res);
-        // console.log("resAllSuppliers: ", res);
     }
 
     const handleSupplierClick = (supplier, event) => {
@@ -106,7 +113,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     const handleDeliveryClick = (delivery, event) => {
         setSelectedDelivery(delivery.deliveryName);
         setSelectedDeliveryId(delivery.deliveyId);
-        console.log(delivery);
     }
 
 
@@ -138,87 +144,97 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     // nhận dữ liệu từ addRowDataImport
 
+    //3
+    // const takeRowDataImportOrder = (importData) => {
+    //     importData.supplierId = selectedSupplierId;
+    //     importData.supplierName = selectedSupplier;
+
+    //     // Kiểm tra sản phẩm đã tồn tại trong danh sách chưa
+    //     const existingSupplier = suppliersData.find(supplier => supplier.supplierId === selectedSupplierId);
+    //     if (existingSupplier) {
+    //         const existingProduct = existingSupplier.products.find(product => product.goodsId === importData.goodsId);
+    //         if (existingProduct) {
+    //             // Nếu sản phẩm đã tồn tại, hiển thị thông báo và không thêm vào danh sách
+    //             toast.warning("Sản phẩm đã tồn tại trong đơn hàng ");
+    //         } else {
+    //             // Nếu sản phẩm chưa tồn tại, thêm vào danh sách và cập nhật tổng chi phí
+    //             existingSupplier.products.push(importData);
+    //             setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice);
+    //             setSuppliersData([...suppliersData]); // Cập nhật state để kích hoạt render lại
+    //         }
+    //     } else {
+    //         // Nếu nhà cung cấp chưa tồn tại, tạo mới và thêm sản phẩm vào
+    //         setSuppliersData(prevSuppliersData => [
+    //             ...prevSuppliersData,
+    //             { supplierId: importData.supplierId, supplierName: importData.supplierName, products: [importData] }
+    //             // { supplierId: selectedSupplierId, supplierName: selectedSupplier, products: [importData] }
+    //         ]);
+    //         setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice);
+    //     }
+    // };
     const takeRowDataImportOrder = (importData) => {
         importData.supplierId = selectedSupplierId;
         importData.supplierName = selectedSupplier;
 
-        setSuppliersData((prevSuppliersData) => {
-            const existingSupplierIndex = prevSuppliersData.findIndex(supplier => supplier.supplierId === selectedSupplierId);
+        // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
+        const res = rowsData.find(row => row.goodsId === importData.goodsId);
 
-            if (existingSupplierIndex > -1) {
-                // Nhà cung cấp đã tồn tại, thêm sản phẩm vào danh sách sản phẩm của nhà cung cấp này
-                const updatedSuppliersData = [...prevSuppliersData];
-                updatedSuppliersData[existingSupplierIndex].products.push(importData);
-                return updatedSuppliersData;
-            } else {
-                // Nhà cung cấp chưa tồn tại, tạo mới một nhà cung cấp và thêm sản phẩm vào
-                return [...prevSuppliersData, { supplierId: selectedSupplierId, supplierName: selectedSupplier, products: [importData] }];
-            }
-        });
-
-        setTotalCost(x => x + importData.totalOneGoodPrice);
-    };
-
-
-
-    // mở addRowDataImport
-    const handleAddRowDataImport = () => {
-        if (selectedWarehouseId && selectedSupplierId) {
-            setIsShowRowDataImport(true);
-            // setRowsData([...rowsData, {}])
+        if (res) {
+            // Nếu sản phẩm đã tồn tại, hiển thị thông báo và không thêm vào danh sách
+            toast.warning("Sản phẩm đã tồn tại trong danh sách yêu cầu nhập lại");
         } else {
-            toast.info("Vui lòng điền kho hoặc nhà cung cấp")
+            // Nếu sản phẩm chưa tồn tại, thêm vào danh sách và cập nhật tổng chi phí
+            const updateDataImport = [...rowsData, importData];
+            setRowsData(updateDataImport);
+            setTotalCost(x => x + importData.totalOneGoodPrice);
         }
     }
 
-    // render rowsData
+    // mở addRowDataImport
+    const handleAddRowDataImport = () => {
+        if (roleId === 3 || (selectedWarehouseId && selectedSupplierId)) {
+            setIsShowRowDataImport(true);
+            // setRowsData([
+            //     ...rowsData,
+            //     { id: rowsData.length + 1, warehouseSelectable: roleId === 1 }, // Row 1 with warehouse selectable if roleId is 1
+            //     { id: rowsData.length + 2 }, // Row 2
+            //     { id: rowsData.length + 3 }  // Row 3
+            // ]);
+        } else {
+            toast.info("Vui lòng điền kho hoặc nhà cung cấp");
+        }
+    }
 
+
+    //render rowsData
 
     const renderImportData = () => {
-        return suppliersData.map((supplier, supplierIndex) => (
-            <div key={`supplier-${supplierIndex}`} style={{ marginBottom: "20px" }}>
-                <h5>Nhà cung cấp: {supplier.supplierName}</h5>
-                {supplier.products.map((product, productIndex) => (
-                    <RowDataImportOrder
-                        key={productIndex}
-                        data={product}
-                        index={productIndex}
-                        deleteRowData={() => deleteRowData(supplierIndex, productIndex)}
-                        updateRowData={(updateData) => updateRowData(supplierIndex, productIndex, updateData)} />
-                ))}
-            </div>
-        ));
-    };
-
+        return rowsData.map((data, index) => (
+            <RowDataImportOrder key={index} data={rowsData[index]} index={index}
+                deleteRowData={deleteRowData} updateRowData={updateRowData} />
+        ))
+    }
 
     // Xóa 1 row của rowsData ở RowDataImport
+    const deleteRowData = (rowdel) => {
+        const updateDataImport = rowsData.filter((item, index) => index !== rowdel);
+        const deletePrice = rowsData[rowdel].totalOneGoodPrice;
+        setRowsData(updateDataImport);
+        setTotalCost(x => x - deletePrice ? x - deletePrice : 0);
+    }
 
-    const deleteRowData = (supplierIndex, productIndex) => {
-        setSuppliersData((prevSuppliersData) => {
-            const updatedSuppliersData = [...prevSuppliersData];
-            const deletePrice = updatedSuppliersData[supplierIndex].products[productIndex].totalOneGoodPrice;
-            updatedSuppliersData[supplierIndex].products.splice(productIndex, 1);
-
-            if (updatedSuppliersData[supplierIndex].products.length === 0) {
-                updatedSuppliersData.splice(supplierIndex, 1);
-            }
-
-            setTotalCost(x => x - deletePrice);
-            return updatedSuppliersData;
-        });
-    };
 
     // cập nhật 1 row của rowsData ở RowDataImport
-    const updateRowData = (supplierIndex, productIndex, updateData) => {
-        setSuppliersData((prevSuppliersData) => {
-            const updatedSuppliersData = [...prevSuppliersData];
-            const oldPrice = updatedSuppliersData[supplierIndex].products[productIndex].totalOneGoodPrice;
-            updatedSuppliersData[supplierIndex].products[productIndex] = updateData;
 
-            setTotalCost(x => x - oldPrice + updateData.totalOneGoodPrice);
-            return updatedSuppliersData;
-        });
-    };
+    const updateRowData = (rowUpdate, updateData) => {
+
+        // console.log(updateData);
+        const updateDataImport = [...rowsData];
+        updateDataImport[rowUpdate] = updateData;
+        setTotalCost(x => x - rowsData[rowUpdate].totalOneGoodPrice + updateData.totalOneGoodPrice);
+        setRowsData(updateDataImport);
+    }
+
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
@@ -269,7 +285,51 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     }
 
+    // const handleAddImportOrder = async () => {
+    //     if (!importCode || !selectedWarehouseId || !selectedSupplierId || !selectedDeliveryId || !selectedDate || suppliersData.length === 0) {
+    //         toast.error('Vui lòng điền đầy đủ thông tin');
+    //         return;
+    //     }
 
+    //     const data = {
+    //         importOrderCode: importCode,
+    //         importDate: selectedDate,
+    //         totalCost: totalCost,
+    //         statusId: 1,
+    //         deliveryId: selectedDeliveryId,
+    //         warehouseId: selectedWarehouseId,
+    //         userId: userId
+    //     };
+
+    //     const newImportOrder = await addNewImportOrder(data);
+    //     if (newImportOrder) {
+    //         const importOrderId = newImportOrder.importOrderId;
+    //         await Promise.all(
+    //             suppliersData.flatMap(supplier =>
+    //                 supplier.products.map(product =>
+    //                     createNewImportOrderDetail({
+    //                         importOrderId,
+    //                         goodsId: product.goodsId,
+    //                         costPrice: product.costPrice,
+    //                         quantity: product.quantity
+    //                     })
+    //                 )
+    //             )
+    //         );
+    //         if (imageImportOrder) {
+    //             const formData = new FormData();
+    //             formData.append("file", imageImportOrder);
+    //             formData.append("importOrderId", importOrderId);
+    //             await uploadImage(formData);
+    //         }
+    //         toast.success('Thêm đơn nhập hàng thành công');
+    //         handleReset();
+    //         updateTable();
+    //         handleCloseModal();
+    //     } else {
+    //         toast.error('Thêm đơn nhập hàng thất bại');
+    //     }
+    // };
 
 
 
@@ -396,9 +456,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                     <hr />
                     <Row style={{ maxHeight: '400px', overflowY: 'auto' }}>
                         {renderImportData()}
-                        {/* <label>
-                            <p>Nhà cung cấp: {getSelectedSupplierName()}</p>
-                        </label> */}
+
                     </Row>
                     <div className="">
                         <button
