@@ -116,13 +116,34 @@ namespace iSmart.Service
             try
             {
                 var pageSize = 12;
+                List<Delivery> deliveries;
 
-                var deliveries = _context.Deliveries.Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
-                                                .OrderBy(d => d.DeliveryId).ToList();
+                // Kiểm tra nếu keyword là null hoặc là một chuỗi khoảng trắng
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    // Nếu keyword là null hoặc là một chuỗi khoảng trắng, lấy tất cả các delivery
+                    deliveries = _context.Deliveries
+                                         .OrderBy(d => d.DeliveryId)
+                                         .ToList();
+                }
+                else
+                {
+                    // Nếu keyword không phải là null hoặc chuỗi khoảng trắng, thực hiện lọc theo keyword
+                    deliveries = _context.Deliveries
+                                         .Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
+                                         .OrderBy(d => d.DeliveryId)
+                                         .ToList();
+                }
                 var count = deliveries.Count();
                 var res = deliveries.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var totalPages = Math.Ceiling((double)count / pageSize);
-                return new DeliveryFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
+
+                return new DeliveryFilterPaging
+                {
+                    TotalPages = (int)totalPages,
+                    PageSize = pageSize,
+                    Data = res
+                };
             }
             catch (Exception e)
             {
