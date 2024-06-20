@@ -99,16 +99,18 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const handleSave = async () => {
         if (!email && !validateEmail.test(email)) {
             toast.warning("Email không hợp lệ");
-        } else if (!isStrongPassword.test(password)) {
-            toast.warning("Mật khẩu phải có ít nhất 6 chữ số và 1 chữ cái");
-        } else if (!userName) {
+        }
+        //  if (!isStrongPassword.test(password)) {
+        //     toast.warning("Mật khẩu phải có ít nhất 6 chữ số và 1 chữ cái");
+        // } 
+        else if (!userName) {
             toast.warning("Tên đăng nhập không được để trống");
         }
-        // else if (!selectedWarehouseId) {
-        //     toast.warning("Vui lòng chọn kho");
-        // }
+        else if (!selectedWarehouseId) {
+            toast.warning("Vui lòng chọn kho");
+        }
         else {
-            let res = await addUser(
+            let res = await addUser(selectedWarehouseId,
                 email, password,
                 phone, selectedOptionRole,
                 1,
@@ -190,10 +192,10 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             <label >Tên Đăng Nhập</label>
                             <input type="text" className="form-control inputCSS" value={userName} onChange={handleChangeUserName} />
                         </Col>
-                        <Col md={5}>
+                        {/* <Col md={5}>
                             <label >Mật khẩu</label>
                             <input type="password" className="form-control inputCSS" value={password} onChange={handleChangePassword} />
-                        </Col>
+                        </Col> */}
                     </Row>
                     <Row>
                         <Col md={5}>

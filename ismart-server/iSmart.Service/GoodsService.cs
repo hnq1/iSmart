@@ -14,15 +14,16 @@ namespace iSmart.Service
 {
     public interface IGoodsService
     {
-        GoodsFilterPaging GetGoodsByKeyword(int page, int? categoryId, int? supplierId, int? sortPriece, string? keyword = "");
+        GoodsFilterPaging GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPriece, string? keyword = "");
         Task<List<Good>?> GetAllGoods();
 
         Task<List<Good>?> GetAllGoodsWithStorageAndSupplier(int storageId, int supplierId);
         Good GetGoodsById(int id);
         CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId);
+        CreateGoodsResponse AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId);
         UpdateGoodsResponse UpdateGoods(UpdateGoodsRequest goods);
         bool UpdateStatusGoods(int id, int StatusId);
-        Task<List<Good>?> GetGoodsInWarehouse(int warehouseId);
+        Task<List<GoodsDTO>?> GetGoodsInWarehouse(int warehouseId);
 
 
 
@@ -36,6 +37,63 @@ namespace iSmart.Service
         {
             _context = context;
             _userWarehouseService = userWarehouseService;
+        }
+
+        public CreateGoodsResponse AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId)
+        {
+            try
+            {
+                // Tạo hàng hóa mới
+                var newGood = new Good
+                {
+                    GoodsName = goods.GoodsName,
+                    GoodsCode = goods.GoodsCode,
+                    CategoryId = goods.CategoryId,
+                    Description = goods.Description,
+                    SupplierId = goods.SupplierId,
+                    MeasuredUnit = goods.MeasuredUnit,
+                    Image = goods.Image,
+                    StatusId = goods.StatusId,
+                    StockPrice = goods.StockPrice,
+                    CreatedDate = DateTime.Now,
+                    WarrantyTime = goods.WarrantyTime,
+                    Barcode = goods.Barcode,
+                    MaxStock = goods.MaxStock,
+                    MinStock = goods.MinStock
+                };
+
+                // Kiểm tra xem hàng hóa đã tồn tại trong cùng kho hàng chưa
+                var existingGood = _context.Goods
+                    .SingleOrDefault(i => i.GoodsCode == goods.GoodsCode);
+
+                if (existingGood == null)
+                {
+                    // Thêm hàng hóa mới vào bảng Goods
+                    _context.Goods.Add(newGood);
+                    _context.SaveChanges();
+
+                    // Tạo bản ghi trong bảng GoodsWarehouse để thiết lập mối quan hệ
+                    var goodsWarehouse = new GoodsWarehouse
+                    {
+                        GoodsId = newGood.GoodsId,
+                        WarehouseId = warehouseId,
+                        Quantity = 0
+                    };
+
+                    _context.GoodsWarehouses.Add(goodsWarehouse);
+                    _context.SaveChanges();
+
+                    return new CreateGoodsResponse { IsSuccess = true, Message = "Thêm hàng hóa thành công" };
+                }
+                else
+                {
+                    return new CreateGoodsResponse { IsSuccess = false, Message = "Hàng đã tồn tại" };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new CreateGoodsResponse { IsSuccess = false, Message = $"Thêm hàng hóa thất bại, {ex.Message}" };
+            }
         }
 
         public CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId)
@@ -144,7 +202,7 @@ namespace iSmart.Service
             }
         }
 
-        public GoodsFilterPaging? GetGoodsByKeyword(int page, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
+        public GoodsFilterPaging? GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
         {
             try
             {
@@ -154,14 +212,15 @@ namespace iSmart.Service
                     page = 1;
                 }
 
-                var pageSize = 6;
+                var pageSize = 12;
 
                 var goodsQuery = _context.Goods
                 .Include(g => g.Status)
                 .Include(g => g.Category)
                 .Include(g => g.Supplier)
+                .Include(g => g.GoodsWarehouses)
                 .Where(g => (!categoryId.HasValue || g.CategoryId == categoryId)
-                    && (!supplierId.HasValue || g.SupplierId == supplierId));
+                    && (!supplierId.HasValue || g.SupplierId == supplierId) && (!warehouseId.HasValue || g.GoodsWarehouses.Any(gw => gw.WarehouseId == warehouseId)));
 
                 // Kiểm tra và áp dụng điều kiện về keyword
                 if (!string.IsNullOrEmpty(keyword))
@@ -199,7 +258,7 @@ namespace iSmart.Service
                         Description = g.Description,
                         StockPrice = g.StockPrice,
                         MeasuredUnit = g.MeasuredUnit,
-                        //InStock = g.InStock,
+                        InStock = warehouseId.HasValue ? g.GoodsWarehouses.FirstOrDefault(gw => gw.WarehouseId == warehouseId && gw.GoodsId == g.GoodsId).Quantity : 0,
                         Image = g.Image,
                         CreatedDate = g.CreatedDate,
                         WarrantyTime = g.WarrantyTime,
@@ -229,55 +288,35 @@ namespace iSmart.Service
         {
             try
             {
-                // Kiểm tra nếu GoodsCode là null hoặc là một chuỗi khoảng trắng
-                if (string.IsNullOrWhiteSpace(goods.GoodsCode))
+                var requestGoods = new Good
+
                 {
-                    return new UpdateGoodsResponse { IsSuccess = false, Message = "Mã hàng hóa không được để trống hoặc là khoảng trắng!" };
-                }
-
-                var existingGoods = _context.Goods.SingleOrDefault(g => g.GoodsId == goods.GoodsId);
-
-                if (existingGoods == null)
-                {
-                    return new UpdateGoodsResponse { IsSuccess = false, Message = "Hàng hóa không tồn tại!" };
-                }
-
-                // Kiểm tra nếu GoodsCode đã tồn tại (trừ hàng hóa hiện tại)
-                var duplicateGoods = _context.Goods
-                    .SingleOrDefault(g => g.GoodsCode.ToLower() == goods.GoodsCode.ToLower() && g.GoodsId != goods.GoodsId);
-
-                if (duplicateGoods != null)
-                {
-                    return new UpdateGoodsResponse { IsSuccess = false, Message = "Mã hàng hóa đã tồn tại!" };
-                }
-
-                existingGoods.GoodsCode = goods.GoodsCode;
-                existingGoods.GoodsName = goods.GoodsName;
-                existingGoods.CategoryId = goods.CategoryId;
-                existingGoods.Description = goods.Description;
-                existingGoods.SupplierId = goods.SupplierId;
-                existingGoods.MeasuredUnit = goods.MeasuredUnit;
-                existingGoods.Image = goods.Image;
-                existingGoods.StatusId = goods.StatusId;
-                existingGoods.StockPrice = goods.StockPrice;
-                existingGoods.Barcode = goods.Barcode;
-                existingGoods.MaxStock = goods.MaxStock;
-                existingGoods.MinStock = goods.MinStock;
-                existingGoods.WarrantyTime = goods.WarrantyTime;
-
-                _context.Goods.Update(existingGoods);
+                    GoodsId = goods.GoodsId,
+                    GoodsName = goods.GoodsName,
+                    GoodsCode = goods.GoodsCode,
+                    CategoryId = goods.CategoryId,
+                    Description = goods.Description,
+                    SupplierId = goods.SupplierId,
+                    StockPrice = goods.StockPrice,
+                    MeasuredUnit = goods.MeasuredUnit,
+                    //InStock = goods.InStock,
+                    Image = goods.Image,
+                    StatusId = goods.StatusId,
+                    WarrantyTime = goods.WarrantyTime,
+                    Barcode = goods.Barcode,
+                    MaxStock = goods.MaxStock,
+                    MinStock = goods.MinStock
+                };
+                _context.Goods.Update(requestGoods);
                 _context.SaveChanges();
+                return new UpdateGoodsResponse { IsSuccess = true, Message = $"Cập nhật hàng hóa thành công" };
 
-                return new UpdateGoodsResponse { IsSuccess = true, Message = "Cập nhật hàng hóa thành công" };
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                // Log exception for debugging
-                Console.WriteLine($"Exception: {e.Message}");
-                return new UpdateGoodsResponse { IsSuccess = false, Message = "Cập nhật hàng hóa thất bại" };
+                return new UpdateGoodsResponse { IsSuccess = false, Message = $"Cập nhật hàng hóa thất bại" };
             }
         }
-
 
         public bool UpdateStatusGoods(int id, int StatusId)
         {
@@ -299,11 +338,32 @@ namespace iSmart.Service
             }
         }
 
-        public async Task<List<Good>?> GetGoodsInWarehouse(int warehouseId)
+        public async Task<List<GoodsDTO>> GetGoodsInWarehouse(int warehouseId)
         {
             return await _context.GoodsWarehouses
                 .Where(gw => gw.WarehouseId == warehouseId)
-                .Select(gw => gw.Good)
+                .Select(gw => new GoodsDTO
+                {
+                    GoodsId = gw.Good.GoodsId,
+                    GoodsCode = gw.Good.GoodsCode,
+                    GoodsName = gw.Good.GoodsName,
+                    CategoryId = gw.Good.CategoryId,
+                    CategoryName = gw.Good.Category.CategoryName,
+                    Description = gw.Good.Description,
+                    StockPrice = gw.Good.StockPrice,
+                    MeasuredUnit = gw.Good.MeasuredUnit,
+                    InStock = gw.Quantity,
+                    Image = gw.Good.Image,
+                    CreatedDate = gw.Good.CreatedDate,
+                    WarrantyTime = gw.Good.WarrantyTime,
+                    Barcode = gw.Good.Barcode,
+                    MinStock = gw.Good.MinStock,
+                    MaxStock = gw.Good.MaxStock,
+                    SupplierId = gw.Good.SupplierId,
+                    SupplierName = gw.Good.Supplier.SupplierName,
+                    StatusId = gw.Good.StatusId,
+                    Status = gw.Good.Status.StatusType
+                })
                 .ToListAsync();
         }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using iSmart.Entity.DTOs.GoodsDTO;
 using iSmart.Service;
+using iSmart.Entity.Models;
 
 namespace iSmart.API.Controllers
 {
@@ -35,10 +36,17 @@ namespace iSmart.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("get-goods")]
-        public IActionResult GetGoodsByKeyword(int page, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
+        [HttpPost("add-goods-by-admin")]
+        public async Task<IActionResult> AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId)
         {
-            var result = _goodsService.GetGoodsByKeyword(page, categoryId, supplierId, sortPrice, keyword);
+            var result = _goodsService.AddGoodsByAdmin(goods, warehouseId);
+            return Ok(result);
+        }
+
+        [HttpGet("get-goods")]
+        public IActionResult GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
+        {
+            var result = _goodsService.GetGoodsByKeyword(page, warehouseId, categoryId, supplierId, sortPrice, keyword);
             return Ok(result);
         }
 

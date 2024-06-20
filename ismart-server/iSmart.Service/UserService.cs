@@ -14,10 +14,10 @@ namespace iSmart.Service
 {
     public interface IUserService
     {
-        UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? warehouseId, int? statusId,string? keyword = "");
+        UserFilterPagingResponse GetUsersByKeyword(int pageNum, int? role, int? warehouseId, int? statusId, string? keyword = "");
         List<UserDTO>? GetAllUser();
         UserDTO? GetUserById(int id);
-        CreateUserResponse AddUser(CreateUserRequest user);
+        CreateUserResponse AddUser(CreateUserRequest user, int warehouseId);
         UpdateUserResponse UpdateUser(UpdateUserDTO user);
         bool UpdateDeleteStatusUser(int id);
 
@@ -34,52 +34,64 @@ namespace iSmart.Service
             _context = context;
             _configuration = configuration;
         }
-
-        public UserService(iSmartContext context)
+        List<UserDTO> userDTOs = new List<UserDTO>();
+        public CreateUserResponse AddUser(CreateUserRequest user, int warehouseId)
         {
-            _context = context;
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var password = string.Empty;
+                    if (user.Password is not null)
+                    {
+                        password = HashHelper.Encrypt(user.Password, _configuration);
+                    }
+
+                    var requestUser = new User
+                    {
+                        UserName = user.UserName,
+                        UserCode = user.UserCode,
+                        FullName = user.FullName,
+                        Email = user.Email,
+                        Address = user.Address,
+                        Phone = user.Phone,
+                        RoleId = user.RoleId,
+                        Password = password,
+                        StatusId = user.StatusId,
+                        Image = user.Image,
+                        //Status = _context.Statuses.FirstOrDefault(s => s.StatusId == user.StatusId)
+                    };
+
+                    if (_context.Users.Any(u => u.UserName.ToLower() == user.UserName.ToLower()) || _context.Users.Any(u => u.UserCode.ToLower() == user.UserCode.ToLower()))
+                    {
+                        return new CreateUserResponse { IsSuccess = false, Message = "User existed" };
+                    }
+
+                    _context.Users.Add(requestUser);
+                    _context.SaveChanges();
+
+                    var userId = requestUser.UserId; // Lấy UserId của người dùng mới thêm vào
+
+                    // Thêm người dùng vào kho hàng
+                    var userWarehouse = new UserWarehouse
+                    {
+                        UserId = userId,
+                        WarehouseId = warehouseId
+                    };
+                    _context.UserWarehouses.Add(userWarehouse);
+                    _context.SaveChanges();
+
+                    transaction.Commit();
+                    return new CreateUserResponse { IsSuccess = true, Message = "Add user complete" };
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    return new CreateUserResponse { IsSuccess = false, Message = $"Add user failed {e.Message}" };
+                }
+            }
         }
 
-
-        public CreateUserResponse AddUser(CreateUserRequest user)
-        {
-            try
-            {
-                var password = string.Empty;
-                if (user.Password is not null)
-                {
-                    password = HashHelper.Encrypt(user.Password, _configuration);
-                }
-
-                var requestUser = new User
-                {
-                    UserName = user.UserName,
-                    UserCode = user.UserCode,
-                    FullName = user.FullName,
-                    Email = user.Email,
-                    Address = user.Address,
-                    Phone = user.Phone,
-                    RoleId = user.RoleId,
-                    Password = password,
-                    StatusId = user.StatusId,
-                    Image = user.Image,
-                    //Status = _context.Statuses.FirstOrDefault(s => s.StatusId == user.StatusId)
-                };
-
-                if (_context.Users.Any(u => u.UserName.ToLower() == user.UserName.ToLower()) || _context.Users.Any(u => u.UserCode.ToLower() == user.UserCode.ToLower()))
-                {
-                    return new CreateUserResponse { IsSuccess = false, Message = "User existed" };
-                }
-
-                _context.Users.Add(requestUser);
-                _context.SaveChanges();
-                return new CreateUserResponse { IsSuccess = true, Message = "Add user complete" };
-            }
-            catch (Exception e)
-            {
-                return new CreateUserResponse { IsSuccess = false, Message = $"Add user failed {e.Message}" };
-            }
-        }
 
         public List<UserDTO>? GetAllUser()
         {
@@ -88,7 +100,7 @@ namespace iSmart.Service
                 var users = _context.Users
                     .Include(u => u.Role)
                     .Include(u => u.Status)
-                    .Include(u => u.UserWarehouses) 
+                    .Include(u => u.UserWarehouses)
                     .Select(u => new UserDTO
                     {
                         UserId = u.UserId,
@@ -161,7 +173,7 @@ namespace iSmart.Service
         {
             try
             {
-                var pageSize = 6;
+                var pageSize = 12;
                 if (pageNum <= 0) pageNum = 1;
 
                 var query = _context.Users
@@ -292,6 +304,5 @@ namespace iSmart.Service
             var roles = _context.Roles.ToList();
             return roles;
         }
-       
     }
 }

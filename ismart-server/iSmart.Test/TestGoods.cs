@@ -37,6 +37,7 @@ namespace iSmart.Test
             var result = false;
             var goodsEntry = new CreateGoodsRequest
             {
+
                 GoodsCode = "Test6",
                 GoodsName = "",
                 CategoryId = 3,

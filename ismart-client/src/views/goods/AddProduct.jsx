@@ -6,7 +6,7 @@ import { fetchAllSuppliers } from '~/services/SupplierServices';
 import { fetchAllCategories } from '~/services/CategoryServices';
 import { fetchAllStorages } from '~/services/StorageServices';
 import uploadImage from '~/services/ImageServices';
-import { addGood } from '~/services/GoodServices';
+import { addGood, addGoodinAdmin } from '~/services/GoodServices';
 import { toast } from 'react-toastify';
 import { select } from '@material-tailwind/react';
 import { create } from 'lodash';
@@ -88,8 +88,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
-        // let res = await uploadImage(file);
-        const urlImage = URL.createObjectURL(file);
+        let res = await uploadImage(file)
+        const urlImage = res.url;
         setImageGood(urlImage);
     }
 
@@ -100,13 +100,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
 
     const handleStorageClick = (warehouse) => {
-        // let res = await setSelectedStorage(storage.storageName);
-
         setSelectedWarehouse(warehouse.warehouseName);
-        // console.log("warehouse.warehouseId: ", warehouse.warehouseId);
         setSelectedWarehouseId(warehouse.warehouseId);
-        // console.log("setSelectedWarehouse: ", warehouse.warehouseName);
-        // getUsers(1);
     }
 
     const handleGoodName = (event) => {
@@ -182,21 +177,38 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
 
         } else {
-
-            let res = await addGood(userId,
-                goodName, goodCode, selectedCategoryId,
-                description,
-                selectedSupplierId,
-                measuredUnit,
-                imageGood,
-                1,
-                stockPrice,
-                createdDate,
-                warrantyTime,
-                barCode,
-                maxStock,
-                minStock,
-            );
+            let res;
+            if (roleId === 1) {
+                res = await addGoodinAdmin(selectedWarehouseId,
+                    goodName, goodCode, selectedCategoryId,
+                    description,
+                    selectedSupplierId,
+                    measuredUnit,
+                    imageGood,
+                    1,
+                    stockPrice,
+                    createdDate,
+                    warrantyTime,
+                    barCode,
+                    maxStock,
+                    minStock
+                );
+            } else {
+                res = await addGood(userId,
+                    goodName, goodCode, selectedCategoryId,
+                    description,
+                    selectedSupplierId,
+                    measuredUnit,
+                    imageGood,
+                    1,
+                    stockPrice,
+                    createdDate,
+                    warrantyTime,
+                    barCode,
+                    maxStock,
+                    minStock
+                );
+            }
 
             toast.success("Thêm mặt hàng mới thành công");
             handleCloseModal();
@@ -213,46 +225,49 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    {
-                        roleId === 1 &&
-                        <Row>
-                            <label >Kho</label>
+                    <row style={{ marginTop: '15px' }}>
+                        {
+                            roleId === 1 ?
+                                <Row>
+                                    <label >Kho</label>
+                                    <DropdownButton
+                                        className="DropdownButtonCSS ButtonCSSDropdown"
+                                        title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                        variant="success"
+                                        style={{ zIndex: 999 }}
+                                    >
+                                        <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
+
+                                        {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                            <Dropdown.Item
+                                                key={`warehouse ${index}`}
+                                                eventKey={c.warehouseName}
+                                                onClick={(e) => handleStorageClick(c, e)}
+                                            >
+                                                {c.warehouseName}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Row>
+                                : ''
+                        }
+
+                        <Col md={2}>
+                            <label >Đơn vị </label>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                title={measuredUnit !== null ? measuredUnit : "Chọn đơn vị"}
                                 variant="success"
                                 style={{ zIndex: 999 }}
                             >
-                                <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
 
-                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
-                                    <Dropdown.Item
-                                        key={`warehouse ${index}`}
-                                        eventKey={c.warehouseName}
-                                        onClick={(e) => handleStorageClick(c, e)}
-                                    >
-                                        {c.warehouseName}
-                                    </Dropdown.Item>
-                                ))}
+
+                                <Dropdown.Item eventKey="Kilogram" onClick={(e) => handleUnitClick("Kg", e)}>Kilogram</Dropdown.Item>
+                                <Dropdown.Item eventKey="Thùng" onClick={(e) => handleUnitClick("Thùng", e)}>Thùng</Dropdown.Item>
                             </DropdownButton>
-                        </Row>
-                    }
+                        </Col>
 
-                    <Col md={2}>
-                        <label >Đơn vị </label>
-                        <DropdownButton
-                            className="DropdownButtonCSS ButtonCSSDropdown"
-                            title={measuredUnit !== null ? measuredUnit : "Chọn đơn vị"}
-                            variant="success"
-                            style={{ zIndex: 999 }}
-                        >
-
-
-                            <Dropdown.Item eventKey="Kilogram" onClick={(e) => handleUnitClick("Kg", e)}>Kilogram</Dropdown.Item>
-                            <Dropdown.Item eventKey="Thùng" onClick={(e) => handleUnitClick("Thùng", e)}>Thùng</Dropdown.Item>
-                        </DropdownButton>
-                    </Col>
-
+                    </row>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >Tên hàng </label>

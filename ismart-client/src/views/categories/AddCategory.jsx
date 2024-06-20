@@ -45,7 +45,7 @@ const ModelAddCategory = ({ isShow, handleClose, updateTableCategory }) => {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    <div className="form-group mb-3">
+                    <div className="form-group mb-3" >
                         <label >Danh mục</label>
                         <input type="text" className="form-control inputCSS" required aria-describedby="emailHelp" value={categoryName} onChange={(event) => setCategoryName(event.target.value)} />
                     </div>

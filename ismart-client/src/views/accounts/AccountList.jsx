@@ -66,7 +66,7 @@ const ListAccount = () => {
     const getUsers = async (page) => {
         setcurrentPage(page - 1);
         let res = await fetchUserWithFilter(page, optionRole, selectedWarehouseId, optionStatus, keywordSearch);
-        console.log("res: ", res);
+        // console.log("res: ", res);
         setTotalUser(res.data);
         setTotalPage(res.totalPages);
 
@@ -93,13 +93,9 @@ const ListAccount = () => {
         setSelectedWarehouseId("");
     }
     const handleStorageClick = (warehouse) => {
-        // let res = await setSelectedStorage(storage.storageName);
-
         setSelectedWarehouse(warehouse.warehouseName);
-        //console.log("warehouse.warehouseId: ", warehouse.warehouseId);
         setSelectedWarehouseId(warehouse.warehouseId);
-        //console.log("setSelectedWarehouse: ", warehouse.warehouseName);
-        // getUsers(1);
+
     }
 
     const handleSearch = () => {

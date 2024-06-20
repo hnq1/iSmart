@@ -1,5 +1,4 @@
-﻿using iSmart.Entity.DTOs.CategoryDTO;
-using iSmart.Entity.DTOs.DeliveryDTO;
+﻿using iSmart.Entity.DTOs.DeliveryDTO;
 using iSmart.Entity.Models;
 using iSmart.Service;
 using System;
@@ -23,37 +22,65 @@ namespace iSmart.Test
             _deliveryService = new DeliveryService(context);
         }
         [Test]
-        public void GetAllDelivery_Test() 
+        public void GetAllDelivery_Test()
         {
             var result = false;
-            List<Delivery> deliveries = _deliveryService.GetAllDelivery();
+            var deliveries = _deliveryService.GetAllDelivery();
             if (deliveries != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
 
         [Test]
-        public void CreateDelivery_Test()
+        public void UpdateDeleteStatusDelivery_Test()
+        {
+            var result = false;
+            var deliveries = _deliveryService.UpdateDeleteStatusDelivery(2);
+            if (deliveries != null) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void AddDelivery_Test()
         {
             var result = false;
             var deliveryEntry = new CreateDeliveryRequest
             {
-                DeliveryName = "Test",
+                DeliveryName = "test"
             };
-            var deliveryResponse = _deliveryService.AddDelivery(deliveryEntry);
-            if (deliveryResponse.IsSuccess == true) result = true;
+            var deliveries = _deliveryService.AddDelivery(deliveryEntry);
+            if (deliveries != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
+
         [Test]
-        public void EditDelivery_Test()
+        public void GetDeliveryById_Test()
+        {
+            var result = false;
+            var deliveries = _deliveryService.GetDeliveryById(2);
+            if (deliveries != null) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void GetDeliveryByKeyWord_Test()
+        {
+            var result = false;
+            var deliveries = _deliveryService.GetDeliveryByKeyWord(2, "2");
+            if (deliveries != null) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void UpdateDelivery_Test()
         {
             var result = false;
             var deliveryEntry = new UpdateDeliveryRequest
             {
-                DeliveryId = 1,
-                DeliveryName = "TestUpdateDelivery",
+                DeliveryId = 2,
+                DeliveryName = "test",
             };
-            var deliveryResponse = _deliveryService.UpdateDelivery(deliveryEntry);
-            if (deliveryResponse.IsSuccess is true) result = true;
+            var deliveries = _deliveryService.UpdateDelivery(deliveryEntry);
+            if (deliveries != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
     }

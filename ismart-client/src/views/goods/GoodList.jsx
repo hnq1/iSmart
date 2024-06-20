@@ -15,6 +15,8 @@ import { fetchUserByUserId } from '~/services/UserServices';
 import { useNavigate } from 'react-router-dom';
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
+import InportGoodsListModal from './inputExport/InPort';
+import ExportGoodsListModal from './inputExport/Export';
 
 
 function MyTable() {
@@ -68,6 +70,11 @@ function MyTable() {
 
     const [isShowModelAddGood, setIsShowModelAddGood] = useState(false);
 
+    const [showInStock, setShowInStock] = useState(true);
+
+    const [isShowModalInputExcel, setIsShowModalInputExcel] = useState(false);
+    const [isShowModalExportExcel, setIsShowModalExportExcel] = useState(false);
+
 
     useEffect(() => {
         let res = getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
@@ -85,13 +92,23 @@ function MyTable() {
         else if (roleId === 2) {
             setSelectedWarehouseId(localStorage.getItem('warehouseId'));
             setSelectedWarehouse(localStorage.getItem('warehouseName'));
+            setShowInStock(true);// Show inStock for role 2
         }
     }, [])
+
+    useEffect(() => {
+        if (selectedWarehouseId) {
+            getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
+        }
+    }, [selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch])
+
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
         setSelectedWarehouse(res.warehouseName);
+        setShowInStock(false);// Hide inStock initially for role 1
+        // console.log("getStorageIdByUser:", res);
     }
 
     const getWarehouseById = async (userId) => {
@@ -100,33 +117,33 @@ function MyTable() {
     }
 
     const getGoods = async (
-        page, storageId,
+        page, warehouseId,
         categoryId, supplierId,
         sortPrice, wordSearch) => {
 
         if (roleId === 1) {
+
             let res = await fetchGoodsWithFilter(
-                page, storageId,
+                page, warehouseId,
                 categoryId, supplierId,
                 sortPrice, wordSearch);
-            // console.log(res);
+            // console.log("supplierId:", "supplierId");
             setListGoods(res.data);
+            console.log("goodList1:", res.data);
             setTotalPages(res.totalPages);
             setcurrentPage(page - 1);
         } else if (roleId === 2) {
             let warehouse = await getWarehouseById(userId);
             let goods = await fetchAllGoodsInWarehouse(warehouse.warehouseId);
-let res 
-
             setListGoods(goods);
             setTotalPages(goods.totalPages);
             setcurrentPage(page - 1);
 
-            // console.log("nh ddss: ", goods);
+            console.log("goodList2:  ", goods);
         }
     }
 
-    
+
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
         setTotalCategories(res);
@@ -140,42 +157,53 @@ let res
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
+        // console.log("totalWarehouse", res);
     }
 
-    const handleCategoryClick = (category, event) => {
+    const handleCategoryClick = (category) => {
         setSelectedCategory(category.categoryName);
         setSelectedCategoryId(category.categoryId)
+        const res = getGoods(1, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        setListGoods(res);
+
     }
 
-    const handleSupplierClick = (supplier, event) => {
+    const handleSupplierClick = (supplier) => {
         setSelectedSupplier(supplier.supplierName);
-        setSelectedSupplierId(supplier.supplierId)
+        setSelectedSupplierId(supplier.supplierId);
+        const res = getGoods(1, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch);
+        setListGoods(res);
     }
 
-    const handleSupplierClickTotal = () => {
+    const handleSupplierClickTotal = async () => {
         setSelectedSupplier("Nhà cung cấp");
-        setSelectedSupplierId("");
+        setSelectedSupplierId(null);
+        getGoods(1, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch);
     }
 
-    const handleCategoryClickTotal = () => {
+    const handleCategoryClickTotal = async () => {
         setSelectedCategory("Các danh mục");
-        setSelectedCategoryId("");
+        setSelectedCategoryId(null);
+        getGoods(1, selectedWarehouseId, null, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
 
-    const handleStorageClickTotal = () => {
-
-        setSelectedWarehouseId("");
+    const handleStorageClickTotal = async () => {
         setSelectedWarehouse("Tất cả kho");
+        setSelectedWarehouseId(null);
+        setShowInStock(false);
+        await getGoods(1, null, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+
     }
 
-    const handleStorageClick = (warehouse) => {
-        // let res = await setSelectedStorage(storage.storageName);
+    const handleStorageClick = async (warehouse) => {
 
         setSelectedWarehouse(warehouse.warehouseName);
-        //console.log("warehouse.warehouseId: ", warehouse.warehouseId);
         setSelectedWarehouseId(warehouse.warehouseId);
-        //console.log("setSelectedWarehouse: ", warehouse.warehouseName);
-        // getUsers(1);
+        setShowInStock(true);
+        //const res = await getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        const res = await getGoods(warehouse.warehouseId);
+        setListGoods(res);
+        // console.log("selectedWarehouseId:", res);
     }
 
     const handlePageClick = (event) => {
@@ -196,7 +224,7 @@ let res
     const handleShowGoodHistory = (good) => {
         setIsShowGoodHistory(true);
         setDataGood(good);
-        console.log(good);
+        // console.log(good);
     }
 
     const handleZoomImage = (image) => {
@@ -212,6 +240,15 @@ let res
     const updateTable = () => {
         getGoods(currentPage + 1);
     }
+
+    const handleImportClick = () => {
+        setIsShowModalInputExcel(true);
+
+    }
+    const handleExportClick = () => {
+        setIsShowModalExportExcel(true);
+    }
+
     return (
         <div className="container" style={{ maxWidth: "1600px" }}>
             <div className="row justify-content-center">
@@ -254,14 +291,22 @@ let res
                         }
 
                         <div className="col-2">
-                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByPriceName ? sortedByPriceName : "Giá"} variant="success" style={{ zIndex: 999 }}>
+                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown"
+                                title={sortedByPriceName ? sortedByPriceName : "Giá"} variant="success" style={{ zIndex: 999 }}>
                                 {sortOptions.map((s, index) => (
-                                    <Dropdown.Item key={`sort ${index}`} eventKey={s.nameSort} onClick={(e) => handleSortPirceClick(s, e)}>{s.nameSort}</Dropdown.Item>
+                                    <Dropdown.Item key={`sort ${index}`} eventKey={s.nameSort} onClick={(e) => handleSortPirceClick(s, e)}>
+                                        {s.nameSort}</Dropdown.Item>
                                 ))}
                             </DropdownButton>
                         </div>
 
                         <div className="col">
+
+                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập/Xuất"
+                                variant="primary" style={{ zIndex: 999 }}>
+                                <Dropdown.Item onClick={() => handleImportClick()}>Nhập</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleExportClick()}>Xuất</Dropdown.Item>
+                            </DropdownButton>
 
                         </div>
                         <div className="col">
@@ -324,7 +369,8 @@ let res
                                                     Nhà cung cấp
                                                 </Dropdown.Item>
                                                 {totalSuppliers && totalSuppliers.length > 0 && totalSuppliers.map((s, index) => (
-                                                    <Dropdown.Item key={`supplier ${index}`} eventKey={s.supplierName} onClick={(e) => handleSupplierClick(s, e)}>
+                                                    <Dropdown.Item key={`supplier ${index}`}
+                                                        eventKey={s.supplierName} onClick={(e) => handleSupplierClick(s, e)}>
                                                         {s.supplierName}
                                                     </Dropdown.Item>
                                                 ))}
@@ -352,7 +398,7 @@ let res
                                     </th>
 
 
-                                    <th className="align-middle text-nowrap">TỒN KHO</th>
+                                    {showInStock && <th className="align-middle text-nowrap">TỒN KHO</th>}
                                     <th className="align-middle text-nowrap">ĐƠN VỊ</th>
                                     <th className="align-middle text-nowrap">NGÀY NHẬP</th>
                                     <th className='align-middle text-nowrap'>GIÁ NHẬP</th>
@@ -376,7 +422,7 @@ let res
                                             </td>
                                             <td className="align-middle">{g.supplierName}</td>
                                             <td className="align-middle">{g.categoryName}</td>
-                                            <td className="align-middle">{g.inStock}</td>
+                                            {showInStock && <td className="align-middle">{g.inStock}</td>}
                                             <td className="align-middle">{g.measuredUnit}</td>
                                             <td className="align-middle">{formatDate(g.createdDate ? g.createdDate : "2024-03-18T04:10:59.041Z")}</td>
                                             <td className='align-middle'>{formattedAmount(g.stockPrice)}</td>
@@ -430,6 +476,8 @@ let res
                 handleClose={() => setIsShowModelEditGood(false)}
                 dataGoodEdit={dataGoodEdit} updateTable={updateTable} />
             <ModalAddGood isShow={isShowModelAddGood} handleClose={() => setIsShowModelAddGood(false)} updateTable={updateTable} />
+            <InportGoodsListModal isShow={isShowModalInputExcel} handleClose={() => setIsShowModalInputExcel(false)} />
+            <ExportGoodsListModal isShow={isShowModalExportExcel} handleClose={() => setIsShowModalExportExcel(false)} />
         </div >
     );
 }

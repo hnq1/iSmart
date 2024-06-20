@@ -90,41 +90,22 @@ namespace iSmart.Service
             }
         }
 
-       
+
 
         public CategoryFilterPaging GetCategoryByKeyword(int page, string? keyword = "")
         {
             try
             {
-                var pageSize = 6;
-                List<Category> category;
+                var pageSize = 12;
 
-                if (string.IsNullOrWhiteSpace(keyword))
-                {
-                    // Nếu keyword là null hoặc là một chuỗi khoảng trắng, lấy tất cả các danh mục
-                    category = _context.Categories
-                                       .OrderBy(c => c.CategoryId)
-                                       .ToList();
-                }
-                else
-                {
-                    // Nếu keyword không phải là null hoặc chuỗi khoảng trắng, thực hiện lọc theo keyword
-                    category = _context.Categories
-                                       .Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower()))
-                                       .OrderBy(c => c.CategoryId)
-                                       .ToList();
-                }
-
+                var category = _context.Categories.Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower())
+                                                        || c.Description.ToLower().Contains(keyword.ToLower()))
+                                                .OrderBy(c => c.CategoryId).ToList();
                 var count = category.Count();
                 var res = category.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var totalPages = Math.Ceiling((double)count / pageSize);
+                return new CategoryFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
 
-                return new CategoryFilterPaging
-                {
-                    TotalPages = (int)totalPages,
-                    PageSize = pageSize,
-                    Data = res
-                };
             }
             catch (Exception e)
             {
