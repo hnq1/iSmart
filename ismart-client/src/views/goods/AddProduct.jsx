@@ -85,7 +85,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId)
     }
-
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
 
@@ -94,26 +93,22 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             setImageGood(null);
             return;
         }
-
         // Check if file type is image
         if (!file.type.startsWith('image')) {
             toast.warning("Vui lòng chọn một file ảnh.");
             setImageGood(null);
             return;
         }
-
         // Check file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
             toast.warning("File ảnh quá lớn, vui lòng chọn file dưới 5MB.");
             setImageGood(null);
             return;
         }
-
         let res = await uploadImage(file);
         const urlImage = res.url;
         setImageGood(urlImage);
     };
-
     const handleStorageTotalClick = () => {
         setSelectedWarehouse("Tất cả Kho");
         setSelectedWarehouseId("");
@@ -199,6 +194,9 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         }
         else if (!imageGood) {
             toast.warning("Vui lòng chọn file ảnh");
+        }
+        else if (maxStock < minStock) {
+            toast.warning("Vui lòng nhập lại, MaxStock lớn hơn minStock");
         }
         else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
