@@ -156,11 +156,11 @@ function DeliveryList() {
                             <Table className="table text-center table-border table-hover  border-primary table-sm">
                                 <thead>
                                     <tr>
-                                        <th className="align-middle   text-nowrap">STT</th>
-                                        <th className="align-middle  text-nowrap">Bên vận chuyển</th>
+                                        <th className="align-middle   text-nowrap" style={{ width: '100px' }}>STT</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>Bên vận chuyển</th>
                                         {
                                             (roleId == 1 || roleId == 2) ?
-                                                <th className="align-middle  text-nowrap">Tình trạng</th>
+                                                <th className="align-middle  text-nowrap" style={{ width: '250px' }}>Tình trạng</th>
                                                 : ''
                                         }
                                         <th className="align-middle  text-nowrap"></th>
@@ -172,7 +172,7 @@ function DeliveryList() {
                                         listDeliveries.map((s, index) => (
                                             <tr key={`supplier${index}`}>
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
-                                                <td className="align-middle">{s.deliveryName}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{s.deliveryName}</td>
                                                 {
                                                     (roleId == 1 || roleId == 2) ?
                                                         <td className="align-middle">

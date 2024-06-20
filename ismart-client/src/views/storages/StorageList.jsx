@@ -139,11 +139,11 @@ function StorageList() {
                             <Table className="table text-center table-border table-hover  border-primary table-sm">
                                 <thead>
                                     <tr>
-                                        <th className="align-middle   text-nowrap">STT</th>
-                                        <th className="align-middle  text-nowrap">Kho hàng</th>
+                                        <th className="align-middle   text-nowrap" style={{width: '100px'}} >STT</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left', width: '150px' }}>Kho hàng</th>
 
-                                        <th className="align-middle  text-nowrap">ĐỊA CHỈ</th>
-                                        <th className="align-middle  text-nowrap">SỐ ĐIỆN THOẠI</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>ĐỊA CHỈ</th>
+                                        <th className="align-middle  text-nowrap" style={{ width: '150px' }}>SỐ ĐIỆN THOẠI</th>
 
 
                                     </tr>
@@ -154,8 +154,8 @@ function StorageList() {
                                         listStorage.map((s, index) => (
                                             <tr key={`storage${index}`}>
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
-                                                <td className="align-middle">{s.warehouseName}</td>
-                                                <td className="align-middle">{s.warehouseAddress}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left' }}>{s.warehouseName}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left' }}>{s.warehouseAddress}</td>
                                                 <td className="align-middle">{s.warehousePhone}</td>
                                                 {
                                                     roleId === 1 || roleId === 2 ?

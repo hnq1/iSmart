@@ -101,7 +101,7 @@ namespace iSmart.Service
         {
             try
             {
-                var pageSize = 6;
+                var pageSize = 12;
 
                 var deliveries = _context.Deliveries.Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
                                                 .OrderBy(d => d.DeliveyId).ToList();

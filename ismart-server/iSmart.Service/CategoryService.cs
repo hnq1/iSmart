@@ -101,7 +101,7 @@ namespace iSmart.Service
         {
             try
             {
-                var pageSize = 6;
+                var pageSize = 12;
 
                 var category = _context.Categories.Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower())
                                                         || c.Description.ToLower().Contains(keyword.ToLower()))

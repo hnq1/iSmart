@@ -34,5 +34,6 @@ namespace iSmart.Entity.Models
         public virtual ICollection<AvailableForReturn> AvailableForReturns { get; set; }
         public virtual ICollection<ImportOrderDetail> ImportOrderDetails { get; set; }
         public virtual ICollection<ReturnsOrder> ReturnsOrders { get; set; }
+
     }
 }

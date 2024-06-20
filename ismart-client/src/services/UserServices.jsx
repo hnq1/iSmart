@@ -39,7 +39,8 @@ const updateUser = (
         })
 }
 
-const addUser = (email,
+const addUser = (warehouseId,
+    email,
     password,
     phone,
     roleId,
@@ -49,7 +50,7 @@ const addUser = (email,
     address,
     image,
     fullName) => {
-    return axios.post(`api/user/add-user`, {
+    return axios.post(`api/user/add-user?warehouseId=${warehouseId}`, {
         email,
         password,
         phone,
