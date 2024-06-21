@@ -245,9 +245,7 @@ function MyTable() {
         setIsShowModalInputExcel(true);
 
     }
-    const handleExportClick = () => {
-        setIsShowModalExportExcel(true);
-    }
+
 
     return (
         <div className="container" style={{ maxWidth: "1600px" }}>
@@ -302,10 +300,10 @@ function MyTable() {
 
                         <div className="col">
 
-                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập/Xuất"
+                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập"
                                 variant="primary" style={{ zIndex: 999 }}>
                                 <Dropdown.Item onClick={() => handleImportClick()}>Nhập</Dropdown.Item>
-                                {/* <Dropdown.Item onClick={() => handleExportClick()}>Xuất</Dropdown.Item> */}
+                                
                             </DropdownButton>
 
                         </div>

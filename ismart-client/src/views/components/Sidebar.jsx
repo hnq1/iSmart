@@ -11,7 +11,7 @@ const Sidebar = () => {
         <Col sm={3} md={3} xl={2} className="px-sm-2  px-0  
         " style={{
                 width: '240px',
-                background: 'linear-gradient(to right, #5dd29c, #71d7a8, #85ddb4)'
+                // background: 'linear-gradient(to right, #5dd29c, #71d7a8, #85ddb4)'
             }}>
 
             {/* Thêm nút bấm thụt ra thụt vào của full menu */}
@@ -23,9 +23,9 @@ const Sidebar = () => {
                 >
                     {/* Logo */}
                     {/* cần thay đổi logo */}
-                    <Navbar.Brand href="#" className="p-1">
+                    {/* <Navbar.Brand href="#" className="p-1">
                         <img src={logo} className="px-2 ms-2" height="40" alt="MDB Logo" loading="lazy" />
-                    </Navbar.Brand>
+                    </Navbar.Brand> */}
 
                     <span className="fs-5 d-none d-sm-inline fw-bold ">ISM</span>
                 </div>
@@ -56,7 +56,7 @@ const Sidebar = () => {
                             : ''
                     }
 
-{
+                    {
                         (roleId == 1 || roleId == 2 || roleId == 4) ?
                             <Nav.Item className="mb-2">
                                 <Nav.Link as={Link} to="/kho-3d"
@@ -68,7 +68,7 @@ const Sidebar = () => {
                                             <i className="fa-duotone fa-clipboard fa-xl"></i>
                                         </div>
                                         <div>
-                                            <span className="ms-1 d-none d-sm-inline">Kho3D</span>
+                                            <span className="ms-1 d-none d-sm-inline">Tạo Kho 3D</span>
                                         </div>
                                     </div>
                                     <div>
