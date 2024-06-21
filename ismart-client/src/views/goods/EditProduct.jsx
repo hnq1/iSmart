@@ -102,7 +102,11 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setSelectedSupplierId(supplier.supplierId)
     }
 
-    const handleChooseFile = async (event) => {
+
+
+
+
+    const handleChooseFile = async (event) => { //validate file ảnh and size ảnh
         const file = event.target.files[0];
 
         // Check if file is selected
@@ -130,6 +134,10 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setImageGood(urlImage);
     };
 
+
+
+
+
     const handleGoodName = (event) => {
         setGoodName(event.target.value);
     }
@@ -156,23 +164,20 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         handleClose();
     }
     const handleSave = async () => {
-        if (warrantyTime <= 0) {
+        if (warrantyTime <= 0) {/////
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }
-        else if (stockPrice <= 0) {
+        else if (stockPrice <= 0) {///////
             toast.warning("Vui lòng nhập giá lớn hơn 0");
         }
-        else if (!imageGood) {
+        else if (!imageGood) {/////////
             toast.warning("Vui lòng nhập file ảnh");
         }
-        else if (maxStock <= 0) {
+        else if (maxStock <= 0) {///////
             toast.warning("Vui lòng nhập maxstock lớn hơn 0");
-        } else if (minStock <= 0) {
+        } else if (minStock <= 0) {//////////
             toast.warning("Vui lòng nhập minstock lớn hơn 0");
         }
-        // else if (!isImageFile(imageGood)) {
-        //     toast.warning("File tải lên không phải là file ảnh, vui lòng nhập lại");
-        // }
         else {
             let res = await updateGood(dataGoodEdit.goodsId,
                 goodName,

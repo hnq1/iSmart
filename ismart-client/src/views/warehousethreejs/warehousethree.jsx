@@ -6,6 +6,7 @@ const Warehouse3D = () => {
     const mountRef = useRef(null);
     const [inputs, setInputs] = useState({ length: 20, width: 20 });
     const [dimensions, setDimensions] = useState(null);
+    const [shelfCount, setShelfCount] = useState(0); // Add state for shelf count
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,10 +44,13 @@ const Warehouse3D = () => {
         const height = 10; // Fixed height in meters
         const shelfLength = 2; // Shelf length in meters
         const shelfWidth = 1; // Shelf width in meters
-        const shelfHeight = 1; // Shelf height in meters
-        const aisleWidth = 1; // Aisle width in meters
+        const shelfHeight = 2; // Shelf height in meters
+        const aisleWidth = 1.5; // Aisle width in meters
 
         const { numShelvesLength, numShelvesWidth } = calculateShelves(length, width, shelfLength, shelfWidth, aisleWidth);
+
+        // Update shelf count
+        setShelfCount(numShelvesLength * numShelvesWidth); // Only count shelves on the ground level
 
         // Create shelf materials
         const shelfMaterial = new THREE.MeshBasicMaterial({
@@ -62,20 +66,18 @@ const Warehouse3D = () => {
 
         for (let i = 0; i < numShelvesLength; i++) {
             for (let j = 0; j < numShelvesWidth; j++) {
-                for (let k = 0; k < 2; k++) { // Stack two shelves
-                    const shelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
-                    shelf.position.set(
-                        -length / 2 + shelfLength / 2 + aisleWidth + i * (shelfLength + aisleWidth),
-                        shelfHeight / 2 + k * (shelfHeight + 0.1), // Stack shelves vertically
-                        -width / 2 + shelfWidth / 2 + aisleWidth + j * (shelfWidth + aisleWidth)
-                    );
-                    scene.add(shelf);
+                const shelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
+                shelf.position.set(
+                    -length / 2 + shelfLength / 2 + aisleWidth + i * (shelfLength + aisleWidth),
+                    shelfHeight / 2, // Place shelf at ground level
+                    -width / 2 + shelfWidth / 2 + aisleWidth + j * (shelfWidth + aisleWidth)
+                );
+                scene.add(shelf);
 
-                    // Add edges to shelf
-                    const shelfEdges = new THREE.LineSegments(edgesGeometry, shelfEdgeMaterial);
-                    shelfEdges.position.copy(shelf.position);
-                    scene.add(shelfEdges);
-                }
+                // Add edges to shelf
+                const shelfEdges = new THREE.LineSegments(edgesGeometry, shelfEdgeMaterial);
+                shelfEdges.position.copy(shelf.position);
+                scene.add(shelfEdges);
             }
         }
 
@@ -113,6 +115,11 @@ const Warehouse3D = () => {
                 <button onClick={handleSubmit}>Submit</button>
             </div>
             <div ref={mountRef} style={{ width: '1000px', height: '600px' }} />
+            {dimensions && (
+                <div>
+                    <p>Số kệ mà bạn có thể thêm vào kho với diện tích bạn có : {shelfCount}</p> {/* Display shelf count */}
+                </div>
+            )}
         </div>
     );
 };
