@@ -323,7 +323,7 @@ function ImportOrderList() {
                                         {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
 
                                         {roleId === 3 ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''}
-                                        {roleId === 3 ?
+                                        {roleId === 2 ?
                                             <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>
                                             : ''}
 
@@ -348,7 +348,7 @@ function ImportOrderList() {
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
                                                 <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
-                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã hủy"}
+                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Nhập hàng"}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>
@@ -363,12 +363,12 @@ function ImportOrderList() {
                                                 {roleId === 2 ? <td className="align-middle"> <i className="fa-solid fa-ban actionButtonCSS" onClick={() => ShowModalCancelImport(i)}></i></td> : ''}
                                                 {roleId === 3 ? <td className="align-middle"> {i.statusType === "Completed" ? <i className="fa-solid fa-barcode actionButtonCSS" onClick={() => ShowBarCode(i)}></i> : ''}</td> : ''}
 
-                                                {roleId === 3 ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
+                                                {roleId === 2 ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 3}
-                                                >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Đã hủy"}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
+                                                >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
 
 

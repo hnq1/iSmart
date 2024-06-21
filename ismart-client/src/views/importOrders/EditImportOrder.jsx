@@ -111,7 +111,12 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
             console.log(res);
             if (rowsData && rowsData.length > 0) {
                 await Promise.all(rowsData.map(async (data, index) => {
-                    await updateImportOrderDetail(detailOrderEdit.importId, data.costPrice, data.detailId, data.goodsId, data.quantity);
+                    await updateImportOrderDetail(
+                        detailOrderEdit.importId,
+                        data.costPrice,
+                        data.detailId,
+                        data.goodsId,
+                        data.quantity);
                 }));
             }
             toast.success("Thêm lô hàng nhập thành công");

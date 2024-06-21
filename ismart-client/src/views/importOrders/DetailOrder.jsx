@@ -24,7 +24,7 @@ const ModalDetailOrder = ({ isShow, handleClose, detailOrder }) => {
 
     const getTotalOrderDetail = async (importId) => {
         let res = await getImportOrderDetailByImportId(importId);
-        console.log(res);
+        console.log("getTotalOrderDetail: ", res);
         setTotalOrderDetail(res);
     }
     return (<>
@@ -92,6 +92,19 @@ const ModalDetailOrder = ({ isShow, handleClose, detailOrder }) => {
                                     <label >Tổng giá tiền</label>
                                     <input type="number" className="form-control inputCSS" value={o.quantity * o.costPrice} readOnly />
 
+                                </Col>
+
+                                <Col > <label >Mã đơn hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={o.batchCode} readOnly />
+                                </Col>
+
+                                <Col> <label >Ngày sản xuất</label>
+                                    <input type="text" className="form-control inputCSS" value={o.manufactureDate} readOnly />
+                                </Col>
+
+
+                                <Col > <label >Ngày hết hạn </label>
+                                    <input type="text" className="form-control inputCSS" value={o.expiryDate} readOnly />
                                 </Col>
                             </Row>
                         ))

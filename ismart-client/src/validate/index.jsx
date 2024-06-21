@@ -11,6 +11,8 @@ const validateEmail = /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?$/;
 
 const isStrongPassword = /^(?=.*[a-zA-Z])(?=.*\d).{6,}$/;
 
+
+
 const removeWhiteSpace = (x) => { return x.trim().replace(/\s+/g, ' ') };
 
 const formatDate = (date) => {

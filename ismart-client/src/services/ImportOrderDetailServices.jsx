@@ -17,7 +17,7 @@ const deleteImportOrderDetail = (id) => {
     return axios.delete(`api/ImportOrderDetail/delete-import-order-detail?detailId=${id}`)
 }
 const getImportOrderDetailByImportId = (oid) => {
-    return axios.get(`api/ImportOrderDetail/get-import-order-details?oid=${oid}`)
+    return axios.get(`api/import-order-detail/get-import-order-details?oid=${oid}`)
 }
 
 export { getAllImportOrderDetails, createNewImportOrderDetail, updateImportOrderDetail, deleteImportOrderDetail, getImportOrderDetailByImportId }

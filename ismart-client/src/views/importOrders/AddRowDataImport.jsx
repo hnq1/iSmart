@@ -3,8 +3,18 @@ import { Row, Col, Dropdown, Modal, Button } from "react-bootstrap";
 import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
+import { set } from "lodash";
 
 const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, handleClose, onChange }) => {
+
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
+
+    const [selectedImportId, setSelectedImportId] = useState(null);
+    const [selectedBatchCode, setSelectedbatchCode] = useState(null);
+    const [manufactureDate, setManufactureDate] = useState(null);
+    const [expiryDate, setExpiryDate] = useState(null);
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
@@ -16,20 +26,34 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
 
     useEffect(() => {
         getAllGoods();
-        console.log("selectedWarehouseId: ", selectedStorageId, selectedSupplierId);
     }, [selectedStorageId, selectedSupplierId])
 
+    // useEffect(() => {
+    //     console.log("setbatchCode:", setbatchCode);
+    // }, [setbatchCode]);
     const getAllGoods = async () => {
-        if (selectedStorageId && selectedSupplierId) {
-            let res = await fetchGoodsWithStorageAndSupplier(
-                selectedStorageId,
-                selectedSupplierId
-            );
+        if (roleId === 1) {
+            if (selectedStorageId && selectedSupplierId) {
+                let res = await fetchGoodsWithStorageAndSupplier(
+                    selectedStorageId,
+                    selectedSupplierId
+                );
 
-            setTotalGoods(res);
-            console.log("resAllgood: ", res);
+                setTotalGoods(res);
+            }
+        } else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            // Nhân viên: lấy danh sách kho cụ thể mà họ quản lý
+            let rs = await getUserIdWarehouse(userId);
+            // Lấy ra tất cả mã sản phẩm của kho và nhà cung cấp
+            if (selectedSupplierId !== null) {
+                let res = await fetchGoodsWithStorageAndSupplier(
+                    rs[0].warehouseId,
+                    selectedSupplierId
+
+                );
+                setTotalGoods(res);
+            }
         }
-
     }
 
     const handleConfirmRowData = () => {
@@ -40,7 +64,17 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
         } else if (costPrice <= 0 || !costPrice) {
             toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
         } else {
-            onChange({ costPrice: costPrice, quantity: quantity, goodsId: selectedGoodId, goodsCode: selectedGoodCode, totalOneGoodPrice: costPrice * quantity });
+            onChange({
+                batchCode: selectedBatchCode,
+                costPrice: costPrice,
+                expiryDate: expiryDate,
+                goodsCode: selectedGoodCode,
+                goodsId: selectedGoodId,
+                importId: selectedImportId,
+                manufactureDate: manufactureDate,
+                quantity: quantity,
+                totalOneGoodPrice: costPrice * quantity
+            });
             handleCloseModal();
         }
 
@@ -71,7 +105,11 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
         setSelectedGoodCode(null);
         setQuantity(0);
         setCostPrice(0);
+        setSelectedbatchCode(null);
+        setManufactureDate(null);
+        setExpiryDate(null);
     }
+
 
     return (
         <Modal show={isShow} onHide={handleCloseModal} size="lg">
@@ -124,6 +162,27 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
                         <div className="form-group mb-3">
                             <label >Tổng giá tiền</label>
                             <input type="number" className="form-control inputCSS" value={costPrice * quantity} disabled />
+                        </div>
+                    </Col>
+
+                    <Col md={2}>
+                        <div className="form-group mb-3">
+                            <label >Mã lô hàng</label>
+                            <input type="text" className="form-control inputCSS" value={selectedBatchCode} onChange={(e) => setSelectedbatchCode(e.target.value)} />
+                        </div>
+                    </Col>
+
+                    <Col md={3}>
+                        <div className="form-group mb-3">
+                            <label >Ngày sản xuất</label>
+                            <input type="date" className="form-control inputCSS" value={manufactureDate} onChange={(e) => setManufactureDate(e.target.value)} />
+                        </div>
+                    </Col>
+
+                    <Col md={3}>
+                        <div className="form-group mb-3">
+                            <label >Ngày hết hạn</label>
+                            <input type="date" className="form-control inputCSS" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
                         </div>
                     </Col>
 

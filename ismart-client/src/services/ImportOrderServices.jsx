@@ -1,11 +1,11 @@
 import { get } from "lodash";
 import axios from "./axios";
 
-const addNewImportOrder = (userId, supplierId, totalCost,
+const addNewImportOrder = (staffId, userId, supplierId, totalCost,
     note, createdDate, importedDate,
     statusId, importCode, warehouseId,
     deliveryId, image, stokekeeperId) => {
-    return axios.post(`api/import-order/add-import-order`, {
+    return axios.post(`api/import-order/add-import-order?staffId=${staffId}`, {
         userId, supplierId, totalCost,
         note, createdDate, importedDate,
         statusId, importCode, warehouseId,
@@ -42,7 +42,7 @@ const fetchImportOrdersWithfilter = (page, warehouseId, status, sortDate, keywor
 }
 
 const addSuccessFullImportOrder = (importId) => {
-    return axios.post(`api/import-order/Import?importid=${importId}`)
+    return axios.post(`api/import-order/import/${importId}`)
 }
 
 const cancelImport = (importId) => {

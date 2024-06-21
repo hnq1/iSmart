@@ -104,11 +104,31 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
-        let res = await uploadImage(file)
+
+        // Check if file is selected
+        if (!file) {
+            setImageGood(null);
+            return;
+        }
+
+        // Check if file type is image
+        if (!file.type.startsWith('image')) {
+            toast.warning("Vui lòng chọn một file ảnh.");
+            setImageGood(null);
+            return;
+        }
+
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            toast.warning("File ảnh quá lớn, vui lòng chọn file dưới 5MB.");
+            setImageGood(null);
+            return;
+        }
+
+        let res = await uploadImage(file);
         const urlImage = res.url;
         setImageGood(urlImage);
-
-    }
+    };
 
     const handleGoodName = (event) => {
         setGoodName(event.target.value);
@@ -135,29 +155,46 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const handleCloseModal = () => {
         handleClose();
     }
-
     const handleSave = async () => {
-
-        let res = await updateGood(dataGoodEdit.goodsId,
-            goodName,
-            goodCode,
-            selectedCategoryId,
-            description,
-            selectedSupplierId,
-            measuredUnit,
-            0,
-            imageGood,
-            1,
-            stockPrice,
-            warrantyTime,
-            barCode,
-            selectedStorageId,
-            maxStock,
-            minStock);
-        // console.log("RES UPDATE", res);
-        updateTable();
-        toast.success("Sửa mặt hàng thành công");
-        handleCloseModal();
+        if (warrantyTime <= 0) {
+            toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
+        }
+        else if (stockPrice <= 0) {
+            toast.warning("Vui lòng nhập giá lớn hơn 0");
+        }
+        else if (!imageGood) {
+            toast.warning("Vui lòng nhập file ảnh");
+        }
+        else if (maxStock <= 0) {
+            toast.warning("Vui lòng nhập maxstock lớn hơn 0");
+        } else if (minStock <= 0) {
+            toast.warning("Vui lòng nhập minstock lớn hơn 0");
+        }
+        // else if (!isImageFile(imageGood)) {
+        //     toast.warning("File tải lên không phải là file ảnh, vui lòng nhập lại");
+        // }
+        else {
+            let res = await updateGood(dataGoodEdit.goodsId,
+                goodName,
+                goodCode,
+                selectedCategoryId,
+                description,
+                selectedSupplierId,
+                measuredUnit,
+                0,
+                imageGood,
+                1,
+                stockPrice,
+                warrantyTime,
+                barCode,
+                selectedStorageId,
+                maxStock,
+                minStock);
+            // console.log("RES UPDATE", res);
+            updateTable();
+            toast.success("Sửa mặt hàng thành công");
+            handleCloseModal();
+        }
     }
 
     const handleReset = () => {
@@ -256,7 +293,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
                         <Col md={5}>
                             <label >Hạn bảo hành </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} min={0} />
                         </Col>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
@@ -271,17 +308,17 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                     <row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >Giá nhập </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} min={0} />
                         </Col>
                     </row>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >MaxStock </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} min={0} />
                         </Col>
                         <Col md={5}>
                             <label >MinStock </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} min={0} />
                         </Col>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
@@ -298,7 +335,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
 
 
-                    <Button className="ButtonRed" onClick={handleReset} style={{ marginTop: '15px' }}>
+                    <Button className="ButtonRed" onClick={handleReset} style={{ marginTop: '15px' }} >
                         Xóa thông tin thay đổi
                     </Button>
                 </div>
@@ -308,12 +345,13 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 <Button variant="secondary" onClick={handleCloseModal}>
                     Đóng
                 </Button>
-                <Button variant="primary" className="ButtonCSS" onClick={handleSave}>
+                <Button variant="primary" className="ButtonCSS" onClick={handleSave} >
                     Lưu thay đổi
                 </Button>
             </Modal.Footer>
         </Modal >
     );
 }
+
 
 export default ModalEditGood;
