@@ -22,7 +22,7 @@ const ConfirmImportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
 
     const getTotalOrderDetail = async (importId) => {
         let res = await getImportOrderDetailByImportId(importId);
-        console.log(res);
+        // console.log(res);
         setTotalOrderDetail(res);
     }
 

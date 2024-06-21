@@ -305,7 +305,7 @@ function MyTable() {
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập/Xuất"
                                 variant="primary" style={{ zIndex: 999 }}>
                                 <Dropdown.Item onClick={() => handleImportClick()}>Nhập</Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleExportClick()}>Xuất</Dropdown.Item>
+                                {/* <Dropdown.Item onClick={() => handleExportClick()}>Xuất</Dropdown.Item> */}
                             </DropdownButton>
 
                         </div>
