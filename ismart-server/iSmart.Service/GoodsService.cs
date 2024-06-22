@@ -14,7 +14,7 @@ namespace iSmart.Service
 {
     public interface IGoodsService
     {
-        GoodsFilterPaging GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPriece, string? keyword = "");
+        GoodsFilterPaging GetGoodsByKeyword(int pageSize, int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPriece, string? keyword = "");
         Task<List<Good>?> GetAllGoods();
 
         Task<List<Good>?> GetAllGoodsWithStorageAndSupplier(int storageId, int supplierId);
@@ -202,7 +202,7 @@ namespace iSmart.Service
             }
         }
 
-        public GoodsFilterPaging? GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
+        public GoodsFilterPaging? GetGoodsByKeyword(int pageSize, int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
         {
             try
             {
@@ -211,8 +211,6 @@ namespace iSmart.Service
                 {
                     page = 1;
                 }
-
-                var pageSize = 12;
 
                 var goodsQuery = _context.Goods
                 .Include(g => g.Status)

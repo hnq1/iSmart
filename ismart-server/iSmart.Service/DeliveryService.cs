@@ -102,7 +102,7 @@ namespace iSmart.Service
         {
             try
             {
-                var deliveries = _context.Deliveries.FirstOrDefault(d => d.DeliveryId == id);
+                var deliveries = _context.Deliveries.FirstOrDefault(d => d.DeliveyId == id);
                 return deliveries ?? null;
             }
             catch (Exception e)
@@ -123,7 +123,7 @@ namespace iSmart.Service
                 {
                     // Nếu keyword là null hoặc là một chuỗi khoảng trắng, lấy tất cả các delivery
                     deliveries = _context.Deliveries
-                                         .OrderBy(d => d.DeliveryId)
+                                         .OrderBy(d => d.DeliveyId)
                                          .ToList();
                 }
                 else
@@ -131,7 +131,7 @@ namespace iSmart.Service
                     // Nếu keyword không phải là null hoặc chuỗi khoảng trắng, thực hiện lọc theo keyword
                     deliveries = _context.Deliveries
                                          .Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
-                                         .OrderBy(d => d.DeliveryId)
+                                         .OrderBy(d => d.DeliveyId)
                                          .ToList();
                 }
                 var count = deliveries.Count();
@@ -165,7 +165,7 @@ namespace iSmart.Service
                     return new UpdateDeliveryResponse { IsSuccess = false, Message = "Tên delivery không được để trống hoặc là khoảng trắng!" };
                 }
 
-                var existingDelivery = _context.Deliveries.SingleOrDefault(d => d.DeliveryId == delivery.DeliveryId);
+                var existingDelivery = _context.Deliveries.SingleOrDefault(d => d.DeliveyId == delivery.DeliveryId);
 
                 if (existingDelivery == null)
                 {
@@ -174,7 +174,7 @@ namespace iSmart.Service
 
                 // Kiểm tra nếu DeliveryName đã tồn tại (trừ delivery hiện tại)
                 var duplicateDelivery = _context.Deliveries
-                    .SingleOrDefault(d => d.DeliveryName.ToLower() == delivery.DeliveryName.ToLower() && d.DeliveryId != delivery.DeliveryId);
+                    .SingleOrDefault(d => d.DeliveryName.ToLower() == delivery.DeliveryName.ToLower() && d.DeliveyId != delivery.DeliveryId);
 
                 if (duplicateDelivery != null)
                 {
