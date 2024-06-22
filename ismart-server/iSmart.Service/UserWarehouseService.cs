@@ -19,6 +19,7 @@ namespace iSmart.Service
         Task<bool> RemoveUserFromWarehouseAsync(int userId, int warehouseId);
         Task<int?> GetWarehouseIdByIdAsync(int userId);
         Task<int?> GetWarehouseManagerIdByStaffId(int staffId);
+        int? GetManagerIdByStaffId(int staffId);
     }
 
     public class UserWarehouseService : IUserWarehouseService
@@ -43,6 +44,7 @@ namespace iSmart.Service
                 throw new Exception(e.Message);
             }
         }
+
         public async Task AddUserToWarehouseAsync(int userId, int warehouseId)
         {
             try
@@ -73,18 +75,18 @@ namespace iSmart.Service
         }
 
         public async Task<List<Warehouse>> GetUserWarehousesAsync(int userId)
+        {
+            try
             {
-                try
-                {
-                    var warehouseOfUser = await _context.UserWarehouses.Where(uw => uw.UserId == userId).Select(uw => uw.Warehouse).ToListAsync();
-                    return warehouseOfUser;
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(e.Message);
-                }
-
+                var warehouseOfUser = await _context.UserWarehouses.Where(uw => uw.UserId == userId).Select(uw => uw.Warehouse).ToListAsync();
+                return warehouseOfUser;
             }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+        }
 
         public async Task<List<User>> GetWarehouseUsersAsync(int warehouseId)
         {
@@ -141,7 +143,28 @@ namespace iSmart.Service
             return managerId != 0 ? managerId : (int?)null;
         }
 
+        public int? GetManagerIdByStaffId(int staffId)
+        {
+            var warehouseIds = _context.UserWarehouses
+                .Where(uw => uw.UserId == staffId)
+                .Select(uw => uw.WarehouseId)
+                .ToList();
 
+            if (!warehouseIds.Any())
+            {
+                return null;
+            }
+
+            var managerId = _context.UserWarehouses
+                .Where(uw => warehouseIds.Contains(uw.WarehouseId) && uw.User.RoleId == 2)
+                .Select(uw => uw.UserId)
+                .FirstOrDefault();
+
+            return managerId != 0 ? managerId : (int?)null;
+        }
 
     }
 }
+
+
+

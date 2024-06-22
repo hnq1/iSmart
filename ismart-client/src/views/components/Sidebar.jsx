@@ -103,7 +103,7 @@ const Sidebar = () => {
                     }
 
                     <Nav.Item className="mb-2">
-                        <Nav.Link as={Link} to="/cac-lo-hang-nhap"
+                        <Nav.Link as={Link} to="/cac-lo-hang-nhap-ngoai"
                             className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
                             style={{ width: 180 }}
                         >
@@ -112,7 +112,26 @@ const Sidebar = () => {
                                     <i className="fa-duotone fa-file-import fa-xl"></i>
                                 </div>
                                 <div>
-                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng</span>
+                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng Ngoại</span>
+                                </div>
+                            </div>
+                            <div>
+                                <i className="fa-solid fa-angle-right"></i>
+                            </div>
+                        </Nav.Link>
+                    </Nav.Item>
+
+                    <Nav.Item className="mb-2">
+                        <Nav.Link as={Link} to="/cac-lo-hang-nhap-noi"
+                            className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                            style={{ width: 180 }}
+                        >
+                            <div className="d-flex">
+                                <div style={{ width: 30 }}>
+                                    <i className="fa-duotone fa-file-import fa-xl"></i>
+                                </div>
+                                <div>
+                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng Nội</span>
                                 </div>
                             </div>
                             <div>

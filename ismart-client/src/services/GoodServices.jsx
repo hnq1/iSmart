@@ -1,7 +1,8 @@
 import axios from "./axios"
 
-const fetchGoodsWithFilter = (page, warehouseId, categoryId, supplierId, sortPrice, keyword) => {
-    return axios.get(`api/goods/get-goods?page=${page}
+const fetchGoodsWithFilter = (pageSize, page, warehouseId, categoryId, supplierId, sortPrice, keyword) => {
+    return axios.get(`api/goods/get-goods?pageSize=${pageSize}
+        ${page ? `&page=${page}` : ''}
         ${warehouseId ? `&warehouseId=${warehouseId}` : ''}
         ${categoryId ? `&categoryId=${categoryId}` : ''}
     ${supplierId ? `&supplierId=${supplierId}` : ''}

@@ -21,7 +21,7 @@ namespace iSmart.Service
         ImportOrder? GetImportOrderByOrderCode(string code);
 
         CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i, int staffId);
-        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
+        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize, int page, int? storage, int? status, int? sortDate, string? keyword = "");
         Task<string> Import(int importid);
     }
 
@@ -191,13 +191,8 @@ namespace iSmart.Service
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
-<<<<<<< HEAD
-                    //StaffId = _userWarehouseService.GetWarehouseManagerIdByStaffId(staffId),
-                    StaffId = 1
-
-=======
                     StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
->>>>>>> origin/anhddhe170353
+
                 };
                 if (_context.ImportOrders.SingleOrDefault(z => importOrder.ImportCode.ToLower() == z.ImportCode.ToLower()) == null)
                 {
@@ -349,3 +344,5 @@ namespace iSmart.Service
         }
     }
 }
+
+

@@ -26,6 +26,7 @@ function ImportOrderList() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
+    const [pageSize, setPageSize] = useState(15);
 
     const [totalImportOrder, setTotalImportOrder] = useState([]);
     const [totalPages, setTotalPages] = useState(5);
@@ -97,18 +98,27 @@ function ImportOrderList() {
         }
     }, [selectedWarehouseId, sortedByStatusId, sortedByDateId])
 
+    useEffect(() => {
+        getImportOrders(1, pageSize);
+    }, [pageSize]);
+
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
         setSelectedWarehouse(res.warehouseName);
         // console.log("getStorageIdByUser:", res);
     }
-    const getImportOrders = async (page) => {
+    const getImportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
-        let res = await fetchImportOrdersWithfilter(page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
+        let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
+        // console.log("pageSize:", pageSize);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
-        // console.log("setTotalImportOrder:", res);
+
+    }
+
+    const handlePageSizeChange = (event) => {
+        setPageSize(Number(event.target.value));
     }
 
     const getAllStorages = async () => {
@@ -125,33 +135,33 @@ function ImportOrderList() {
 
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
-        getImportOrders(1);
+        getImportOrders(1, pageSize);
     }
 
     const handleSortStatusClick = (sort) => {
         setSortedByStatusId(sort.idSort);
         setSortedByStatusName(sort.nameSort);
-        getImportOrders(1);
+        getImportOrders(1, pageSize);
 
     }
 
     const handleSortDateClick = (sort) => {
         setSortedByDateId(sort.idSort);
         setSortedByDateName(sort.nameSort);
-        getImportOrders(1);
+        getImportOrders(1, pageSize);
     }
 
     const handlePageClick = (event) => {
         setcurrentPage(+event.selected);
-        getImportOrders(+event.selected + 1);
+        getImportOrders(+event.selected + 1, pageSize);
     }
 
     const handleSearch = () => {
-        getImportOrders(1);
+        getImportOrders(1, pageSize);
     }
 
     const updateTable = () => {
-        getImportOrders(currentPage + 1);
+        getImportOrders(currentPage + 1, pageSize);
     }
 
     const ShowModelConfirm = (i) => {
@@ -239,7 +249,17 @@ function ImportOrderList() {
                                             aria-describedby="emailHelp" value={selectedWarehouse} disabled />
                                     </Col>
                                 }
-
+                                <Col md={2}>
+                                    <div className="input-group mb-3">
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            placeholder="Nhập pageSize"
+                                            value={pageSize}
+                                            onChange={handlePageSizeChange}
+                                        />
+                                    </div>
+                                </Col>
                                 <Col md={2}>
                                     <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByStatusName ? sortedByStatusName : "Tình trạng"} variant="success" style={{ zIndex: 999 }}>
                                         {sortStatusOptions.map((s, index) => (

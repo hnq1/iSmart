@@ -22,7 +22,6 @@ import ExportGoodsListModal from './inputExport/Export';
 function MyTable() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-    const warehouseId = parseInt(localStorage.getItem('warehouseId'), 10);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,6 +29,8 @@ function MyTable() {
             navigate('/ban-khong-co-quyen-truy-cap'); // Chuyển hướng người dùng không phù hợp
         }
     }, [roleId, navigate]);
+
+    const [pageSize, setPageSize] = useState(15);
 
     const [listGoods, setListGoods] = useState({});
     const [totalCategories, setTotalCategories] = useState([]);
@@ -77,7 +78,7 @@ function MyTable() {
 
 
     useEffect(() => {
-        let res = getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
+        let res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
         getAllCategories();
         getAllSuppliers();
         getAllStorages();
@@ -101,6 +102,9 @@ function MyTable() {
             getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
         }
     }, [selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch])
+    useEffect(() => {
+        getGoods(1, pageSize);
+    }, [pageSize])
 
 
     const getStorageIdByUser = async () => {
@@ -117,19 +121,19 @@ function MyTable() {
     }
 
     const getGoods = async (
-        page, warehouseId,
+        page = 1, pageSize = 15,
+        warehouseId,
         categoryId, supplierId,
         sortPrice, wordSearch) => {
 
         if (roleId === 1) {
 
-            let res = await fetchGoodsWithFilter(
+            let res = await fetchGoodsWithFilter(pageSize,
                 page, warehouseId,
                 categoryId, supplierId,
                 sortPrice, wordSearch);
             // console.log("supplierId:", "supplierId");
             setListGoods(res.data);
-            console.log("goodList1:", res.data);
             setTotalPages(res.totalPages);
             setcurrentPage(page - 1);
         } else if (roleId === 2) {
@@ -139,10 +143,13 @@ function MyTable() {
             setTotalPages(goods.totalPages);
             setcurrentPage(page - 1);
 
-            console.log("goodList2:  ", goods);
+            // console.log("goodList2:  ", goods);
         }
     }
 
+    const handlePageSizeChange = (event) => {
+        setPageSize(Number(event.target.value));
+    }
 
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
@@ -163,7 +170,7 @@ function MyTable() {
     const handleCategoryClick = (category) => {
         setSelectedCategory(category.categoryName);
         setSelectedCategoryId(category.categoryId)
-        const res = getGoods(1, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        const res = getGoods(1, pageSize, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
         setListGoods(res);
 
     }
@@ -171,27 +178,27 @@ function MyTable() {
     const handleSupplierClick = (supplier) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
-        const res = getGoods(1, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch);
+        const res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch);
         setListGoods(res);
     }
 
     const handleSupplierClickTotal = async () => {
         setSelectedSupplier("Nhà cung cấp");
         setSelectedSupplierId(null);
-        getGoods(1, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch);
+        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch);
     }
 
     const handleCategoryClickTotal = async () => {
         setSelectedCategory("Các danh mục");
         setSelectedCategoryId(null);
-        getGoods(1, selectedWarehouseId, null, selectedSupplierId, sortedByPriceId, keywordSearch);
+        getGoods(1, pageSize, selectedWarehouseId, null, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
 
     const handleStorageClickTotal = async () => {
         setSelectedWarehouse("Tất cả kho");
         setSelectedWarehouseId(null);
         setShowInStock(false);
-        await getGoods(1, null, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        await getGoods(1, pageSize, null, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
 
     }
 
@@ -208,17 +215,17 @@ function MyTable() {
 
     const handlePageClick = (event) => {
         setcurrentPage(+event.selected);
-        getGoods(+event.selected + 1, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        getGoods(+event.selected + 1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
 
     const handleSearch = () => {
-        getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
 
     const handleSortPirceClick = (sort) => {
         setSortedByPriceId(sort.idSort);
         setSortedByPriceName(sort.nameSort);
-        getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sort.idSort, keywordSearch);
+        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sort.idSort, keywordSearch);
     }
 
     const handleShowGoodHistory = (good) => {
@@ -238,7 +245,7 @@ function MyTable() {
     }
 
     const updateTable = () => {
-        getGoods(currentPage + 1);
+        getGoods(currentPage + 1, pageSize);
     }
 
     const handleImportClick = () => {
@@ -287,7 +294,17 @@ function MyTable() {
                             </Col>
 
                         }
-
+                        <Col md={2}>
+                            <div className="input-group mb-3">
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    placeholder="Nhập pageSize"
+                                    value={pageSize}
+                                    onChange={handlePageSizeChange}
+                                />
+                            </div>
+                        </Col>
                         <div className="col-2">
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown"
                                 title={sortedByPriceName ? sortedByPriceName : "Giá"} variant="success" style={{ zIndex: 999 }}>
@@ -303,7 +320,7 @@ function MyTable() {
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập"
                                 variant="primary" style={{ zIndex: 999 }}>
                                 <Dropdown.Item onClick={() => handleImportClick()}>Nhập</Dropdown.Item>
-                                
+
                             </DropdownButton>
 
                         </div>
