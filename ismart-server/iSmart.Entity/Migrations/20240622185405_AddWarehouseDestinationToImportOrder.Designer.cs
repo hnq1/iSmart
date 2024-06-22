@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using iSmart.Entity.Models;
 
@@ -11,9 +12,10 @@ using iSmart.Entity.Models;
 namespace iSmart.Entity.Migrations
 {
     [DbContext(typeof(iSmartContext))]
-    partial class iSmartContextModelSnapshot : ModelSnapshot
+    [Migration("20240622185405_AddWarehouseDestinationToImportOrder")]
+    partial class AddWarehouseDestinationToImportOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -544,8 +546,7 @@ namespace iSmart.Entity.Migrations
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SupplierId")
-                        .IsRequired()
+                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
                     b.Property<float>("TotalCost")

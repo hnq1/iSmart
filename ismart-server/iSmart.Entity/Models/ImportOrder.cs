@@ -14,7 +14,7 @@ namespace iSmart.Entity.Models
 
         public int ImportId { get; set; }
         public int UserId { get; set; }
-        public int SupplierId { get; set; }
+        public int? SupplierId { get; set; }
         public float TotalCost { get; set; }
         public string? Note { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -25,7 +25,7 @@ namespace iSmart.Entity.Models
         public int? DeliveryId { get; set; }
         public string? Image { get; set; }
         public int? StaffId { get; set; }
-
+        public int? WarehouseDestinationId { get; set; }
         public virtual Delivery Delivery { get; set; }
         public virtual Status Status { get; set; }
         public virtual Supplier Supplier { get; set; }
