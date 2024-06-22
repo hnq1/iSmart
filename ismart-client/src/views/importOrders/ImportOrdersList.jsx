@@ -370,9 +370,6 @@ function ImportOrderList() {
                                                     disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
                                                 >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
-
-
-
                                             </tr>
                                         ))}
 

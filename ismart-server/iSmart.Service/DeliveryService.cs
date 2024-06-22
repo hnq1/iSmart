@@ -103,8 +103,27 @@ namespace iSmart.Service
             {
                 var pageSize = 12;
 
+<<<<<<< HEAD
                 var deliveries = _context.Deliveries.Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
                                                 .OrderBy(d => d.DeliveyId).ToList();
+=======
+                // Kiểm tra nếu keyword là null hoặc là một chuỗi khoảng trắng
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    // Nếu keyword là null hoặc là một chuỗi khoảng trắng, lấy tất cả các delivery
+                    deliveries = _context.Deliveries
+                                         .OrderBy(d => d.DeliveyId)
+                                         .ToList();
+                }
+                else
+                {
+                    // Nếu keyword không phải là null hoặc chuỗi khoảng trắng, thực hiện lọc theo keyword
+                    deliveries = _context.Deliveries
+                                         .Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
+                                         .OrderBy(d => d.DeliveyId)
+                                         .ToList();
+                }
+>>>>>>> origin/anhddhe170353
                 var count = deliveries.Count();
                 var res = deliveries.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var totalPages = Math.Ceiling((double)count / pageSize);
@@ -125,10 +144,35 @@ namespace iSmart.Service
             {
                 var requestDelivery = new Delivery
                 {
+<<<<<<< HEAD
                     DeliveyId = delivery.DeliveyId,
                     DeliveryName = delivery.DeliveryName
                 };
                 _context.Deliveries.Update(requestDelivery);
+=======
+                    return new UpdateDeliveryResponse { IsSuccess = false, Message = "Tên delivery không được để trống hoặc là khoảng trắng!" };
+                }
+
+                var existingDelivery = _context.Deliveries.SingleOrDefault(d => d.DeliveyId == delivery.DeliveryId);
+
+                if (existingDelivery == null)
+                {
+                    return new UpdateDeliveryResponse { IsSuccess = false, Message = "Delivery không tồn tại!" };
+                }
+
+                // Kiểm tra nếu DeliveryName đã tồn tại (trừ delivery hiện tại)
+                var duplicateDelivery = _context.Deliveries
+                    .SingleOrDefault(d => d.DeliveryName.ToLower() == delivery.DeliveryName.ToLower() && d.DeliveyId != delivery.DeliveryId);
+
+                if (duplicateDelivery != null)
+                {
+                    return new UpdateDeliveryResponse { IsSuccess = false, Message = "Tên delivery đã tồn tại!" };
+                }
+
+                existingDelivery.DeliveryName = delivery.DeliveryName;
+
+                _context.Deliveries.Update(existingDelivery);
+>>>>>>> origin/anhddhe170353
                 _context.SaveChanges();
                 return new UpdateDeliveryResponse { IsSuccess = true, Message = $"Thay doi delivery thành công" };
 

@@ -42,9 +42,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-import-orders")]
-        public IActionResult ImportOrderFilterPaging(int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
+        public IActionResult ImportOrderFilterPaging(int pageSize, int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
         {
-            var reult = _importService.ImportOrderFilterPaging(page, warehouseId, status, sortDate, keyword);
+            var reult = _importService.ImportOrderFilterPaging(pageSize,page, warehouseId, status, sortDate, keyword);
             return Ok(reult);
         }
 

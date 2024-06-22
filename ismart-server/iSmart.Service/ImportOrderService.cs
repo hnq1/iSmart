@@ -21,7 +21,7 @@ namespace iSmart.Service
         ImportOrder? GetImportOrderByOrderCode(string code);
 
         CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i, int staffId);
-        ImportOrderFilterPaging ImportOrderFilterPaging(int page, int? storage, int? status, int? sortDate,  string? keyword = "");
+        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
         Task<string> Import(int importid);
     }
 
@@ -94,11 +94,10 @@ namespace iSmart.Service
 
         }
 
-        public ImportOrderFilterPaging ImportOrderFilterPaging(int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
+        public ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize, int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
         {
             try
             {
-                var pageSize = 12;
                 if (page <= 0) page = 1;
 
                 var importOrders = _context.ImportOrders
