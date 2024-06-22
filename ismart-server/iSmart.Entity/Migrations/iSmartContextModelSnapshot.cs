@@ -17,7 +17,7 @@ namespace iSmart.Entity.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.31")
+                .HasAnnotation("ProductVersion", "6.0.29")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -186,11 +186,11 @@ namespace iSmart.Entity.Migrations
 
             modelBuilder.Entity("iSmart.Entity.Models.Delivery", b =>
                 {
-                    b.Property<int>("DeliveryId")
+                    b.Property<int>("DeliveyId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DeliveryId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DeliveyId"), 1L, 1);
 
                     b.Property<string>("DeliveryName")
                         .HasMaxLength(50)
@@ -199,7 +199,7 @@ namespace iSmart.Entity.Migrations
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.HasKey("DeliveryId");
+                    b.HasKey("DeliveyId");
 
                     b.HasIndex("StatusId");
 

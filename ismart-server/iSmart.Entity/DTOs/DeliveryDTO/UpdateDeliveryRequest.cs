@@ -8,7 +8,7 @@ namespace iSmart.Entity.DTOs.DeliveryDTO
 {
     public class UpdateDeliveryRequest
     {
-        public int DeliveryId { get; set; }
+        public int DeliveyId { get; set; }
 
         public string? DeliveryName { get; set; }
     }

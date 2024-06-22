@@ -43,7 +43,7 @@ namespace iSmart.API.Controllers
         [HttpPut("update-category")]
         public async Task<IActionResult> UpdateCategory(UpdateCategoryRequest goods)
         {
-            var result = _categoryService.UpdateCategory(goods);
+            var result = _categoryService.UpdateCaregory(goods);
             return Ok(result);
         }
     }

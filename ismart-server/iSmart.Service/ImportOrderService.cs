@@ -192,8 +192,8 @@ namespace iSmart.Service
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
-                    StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
-                    //StaffId = 1
+                    //StaffId = _userWarehouseService.GetWarehouseManagerIdByStaffId(staffId),
+                    StaffId = 1
 
                 };
                 if (_context.ImportOrders.SingleOrDefault(z => importOrder.ImportCode.ToLower() == z.ImportCode.ToLower()) == null)
