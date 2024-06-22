@@ -1,22 +1,18 @@
-import react from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-<<<<<<< HEAD
-function WarehouseThree() {
-=======
 const Warehouse3D = () => {
     const mountRef = useRef(null);
     const [inputs, setInputs] = useState({ length: 20, width: 20 });
     const [dimensions, setDimensions] = useState(null);
     const [shelfCount, setShelfCount] = useState(0); // Add state for shelf count
->>>>>>> origin/tungvthe150237
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setInputs((prev) => ({ ...prev, [name]: parseFloat(value) }));
+    };
 
-<<<<<<< HEAD
-
-    return (
-        <div>
-            <h1>Warehouse Three</h1>
-=======
     const handleSubmit = () => {
         setDimensions(inputs);
     };
@@ -124,9 +120,8 @@ const Warehouse3D = () => {
                     <p>Số kệ mà bạn có thể thêm vào kho với diện tích bạn có : {shelfCount}</p> {/* Display shelf count */}
                 </div>
             )}
->>>>>>> origin/tungvthe150237
         </div>
-    )
-}
+    );
+};
 
-export default WarehouseThree;
+export default Warehouse3D;
