@@ -86,27 +86,15 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setSelectedSupplierId(supplier.supplierId)
     }
 
-<<<<<<< HEAD
-    const handleChooseFile = async (event) => {
-=======
 
 
-    
     const handleChooseFile = async (event) => { //validate file ảnh and size ảnh
->>>>>>> origin/tungvthe150237
         const file = event.target.files[0];
         let res = await uploadImage(file)
         const urlImage = res.url;
         setImageGood(urlImage);
-<<<<<<< HEAD
     }
-=======
-    };
 
-
-
-
->>>>>>> origin/tungvthe150237
 
     const handleStorageTotalClick = () => {
         setSelectedWarehouse("Tất cả Kho");
@@ -185,15 +173,14 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         } else if (!measuredUnit) {
             toast.warning("Vui lòng chọn đơn vị");
         }
-<<<<<<< HEAD
         else if (!imageGood) {
             toast.warning("Vui lòng chọn hình ảnh");
         }
         else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
-=======
+        }
         else if (!imageGood) {/////
-            toast.warning("Vui lòng chọn file ảnh"); 
+            toast.warning("Vui lòng chọn file ảnh");
         }
         else if (maxStock < minStock) {/////
             toast.warning("Vui lòng nhập lại, MaxStock lớn hơn minStock");
@@ -208,10 +195,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             toast.warning("Vui lòng nhập maxstock lớn hơn 0");
         } else if (minStock <= 0) {/////////
             toast.warning("Vui lòng nhập minstock lớn hơn 0");
-        }
-        else {
->>>>>>> origin/tungvthe150237
-
         } else {
             let res;
             if (roleId === 1) {

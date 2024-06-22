@@ -145,7 +145,6 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     }
 
     const handleSave = async () => {
-<<<<<<< HEAD
 
         let res = await updateGood(dataGoodEdit.goodsId,
             goodName,
@@ -167,7 +166,6 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         updateTable();
         toast.success("Sửa mặt hàng thành công");
         handleCloseModal();
-=======
         if (warrantyTime <= 0) {/////
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }
@@ -204,7 +202,6 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             toast.success("Sửa mặt hàng thành công");
             handleCloseModal();
         }
->>>>>>> origin/tungvthe150237
     }
 
     const handleReset = () => {
