@@ -102,13 +102,21 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setSelectedSupplierId(supplier.supplierId)
     }
 
-    const handleChooseFile = async (event) => {
+
+
+
+
+    const handleChooseFile = async (event) => { //validate file ảnh and size ảnh
         const file = event.target.files[0];
         let res = await uploadImage(file)
         const urlImage = res.url;
         setImageGood(urlImage);
 
     }
+
+
+
+
 
     const handleGoodName = (event) => {
         setGoodName(event.target.value);
@@ -137,6 +145,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     }
 
     const handleSave = async () => {
+<<<<<<< HEAD
 
         let res = await updateGood(dataGoodEdit.goodsId,
             goodName,
@@ -158,6 +167,44 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         updateTable();
         toast.success("Sửa mặt hàng thành công");
         handleCloseModal();
+=======
+        if (warrantyTime <= 0) {/////
+            toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
+        }
+        else if (stockPrice <= 0) {///////
+            toast.warning("Vui lòng nhập giá lớn hơn 0");
+        }
+        else if (!imageGood) {/////////
+            toast.warning("Vui lòng nhập file ảnh");
+        }
+        else if (maxStock <= 0) {///////
+            toast.warning("Vui lòng nhập maxstock lớn hơn 0");
+        } else if (minStock <= 0) {//////////
+            toast.warning("Vui lòng nhập minstock lớn hơn 0");
+        }
+        else {
+            let res = await updateGood(dataGoodEdit.goodsId,
+                goodName,
+                goodCode,
+                selectedCategoryId,
+                description,
+                selectedSupplierId,
+                measuredUnit,
+                0,
+                imageGood,
+                1,
+                stockPrice,
+                warrantyTime,
+                barCode,
+                selectedStorageId,
+                maxStock,
+                minStock);
+            // console.log("RES UPDATE", res);
+            updateTable();
+            toast.success("Sửa mặt hàng thành công");
+            handleCloseModal();
+        }
+>>>>>>> origin/tungvthe150237
     }
 
     const handleReset = () => {
