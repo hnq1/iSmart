@@ -22,7 +22,7 @@ namespace iSmart.Test
             _deliveryService = new DeliveryService(context);
         }
         [Test]
-        public void GetAllDelivery_Test() 
+        public void GetAllDelivery_Test()
         {
             var result = false;
             var deliveries = _deliveryService.GetAllDelivery();
@@ -74,8 +74,9 @@ namespace iSmart.Test
         public void UpdateDelivery_Test()
         {
             var result = false;
-            var deliveryEntry =new UpdateDeliveryRequest{
-                DeliveyId = 2,
+            var deliveryEntry = new UpdateDeliveryRequest
+            {
+                DeliveryId = 2,
                 DeliveryName = "test",
             };
             var deliveries = _deliveryService.UpdateDelivery(deliveryEntry);

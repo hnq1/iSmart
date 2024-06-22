@@ -57,19 +57,33 @@ namespace iSmart.Service
         {
             try
             {
+                // Kiểm tra nếu DeliveryName là null hoặc là một chuỗi khoảng trắng
+                if (string.IsNullOrWhiteSpace(delivery.DeliveryName))
+                {
+                    return new CreateDeliveryResponse { IsSuccess = false, Message = "Tên delivery không được để trống hoặc là khoảng trắng!" };
+                }
+
                 var requestDelivery = new Delivery
                 {
                     DeliveryName = delivery.DeliveryName
                 };
+
+                // Kiểm tra nếu DeliveryName đã tồn tại trong cơ sở dữ liệu
+                if (_context.Deliveries.Any(d => d.DeliveryName.ToLower() == requestDelivery.DeliveryName.ToLower()))
+                {
+                    return new CreateDeliveryResponse { IsSuccess = false, Message = "Tên delivery đã tồn tại!" };
+                }
+
                 _context.Deliveries.Add(requestDelivery);
                 _context.SaveChanges();
-                return new CreateDeliveryResponse { IsSuccess = true, Message = $"Thêm delivery thành công" };
-
-            }catch (Exception ex)
+                return new CreateDeliveryResponse { IsSuccess = true, Message = "Thêm delivery thành công" };
+            }
+            catch (Exception ex)
             {
-                return new CreateDeliveryResponse { IsSuccess = true, Message = $"Thêm delivery thất bại" };
+                return new CreateDeliveryResponse { IsSuccess = false, Message = "Thêm delivery thất bại" };
             }
         }
+
 
         public List<Delivery> GetAllDelivery()
         {
@@ -88,7 +102,7 @@ namespace iSmart.Service
         {
             try
             {
-                var deliveries = _context.Deliveries.FirstOrDefault(d => d.DeliveyId == id);
+                var deliveries = _context.Deliveries.FirstOrDefault(d => d.DeliveryId == id);
                 return deliveries ?? null;
             }
             catch (Exception e)
@@ -102,13 +116,34 @@ namespace iSmart.Service
             try
             {
                 var pageSize = 12;
+                List<Delivery> deliveries;
 
-                var deliveries = _context.Deliveries.Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
-                                                .OrderBy(d => d.DeliveyId).ToList();
+                // Kiểm tra nếu keyword là null hoặc là một chuỗi khoảng trắng
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    // Nếu keyword là null hoặc là một chuỗi khoảng trắng, lấy tất cả các delivery
+                    deliveries = _context.Deliveries
+                                         .OrderBy(d => d.DeliveryId)
+                                         .ToList();
+                }
+                else
+                {
+                    // Nếu keyword không phải là null hoặc chuỗi khoảng trắng, thực hiện lọc theo keyword
+                    deliveries = _context.Deliveries
+                                         .Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
+                                         .OrderBy(d => d.DeliveryId)
+                                         .ToList();
+                }
                 var count = deliveries.Count();
                 var res = deliveries.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var totalPages = Math.Ceiling((double)count / pageSize);
-                return new DeliveryFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
+
+                return new DeliveryFilterPaging
+                {
+                    TotalPages = (int)totalPages,
+                    PageSize = pageSize,
+                    Data = res
+                };
             }
             catch (Exception e)
             {
@@ -119,26 +154,47 @@ namespace iSmart.Service
 
 
 
+
         public UpdateDeliveryResponse UpdateDelivery(UpdateDeliveryRequest delivery)
         {
             try
             {
-                var requestDelivery = new Delivery
+                // Kiểm tra nếu DeliveryName là null hoặc là một chuỗi khoảng trắng
+                if (string.IsNullOrWhiteSpace(delivery.DeliveryName))
                 {
-                    DeliveyId = delivery.DeliveyId,
-                    DeliveryName = delivery.DeliveryName
-                };
-                _context.Deliveries.Update(requestDelivery);
-                _context.SaveChanges();
-                return new UpdateDeliveryResponse { IsSuccess = true, Message = $"Thay doi delivery thành công" };
+                    return new UpdateDeliveryResponse { IsSuccess = false, Message = "Tên delivery không được để trống hoặc là khoảng trắng!" };
+                }
 
+                var existingDelivery = _context.Deliveries.SingleOrDefault(d => d.DeliveryId == delivery.DeliveryId);
+
+                if (existingDelivery == null)
+                {
+                    return new UpdateDeliveryResponse { IsSuccess = false, Message = "Delivery không tồn tại!" };
+                }
+
+                // Kiểm tra nếu DeliveryName đã tồn tại (trừ delivery hiện tại)
+                var duplicateDelivery = _context.Deliveries
+                    .SingleOrDefault(d => d.DeliveryName.ToLower() == delivery.DeliveryName.ToLower() && d.DeliveryId != delivery.DeliveryId);
+
+                if (duplicateDelivery != null)
+                {
+                    return new UpdateDeliveryResponse { IsSuccess = false, Message = "Tên delivery đã tồn tại!" };
+                }
+
+                existingDelivery.DeliveryName = delivery.DeliveryName;
+
+                _context.Deliveries.Update(existingDelivery);
+                _context.SaveChanges();
+
+                return new UpdateDeliveryResponse { IsSuccess = true, Message = "Cập nhật delivery thành công" };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return new UpdateDeliveryResponse { IsSuccess = false, Message = $"Thay doi delivery that bai" };
+                return new UpdateDeliveryResponse { IsSuccess = false, Message = "Cập nhật delivery thất bại" };
             }
         }
 
-       
+
+
     }
 }
