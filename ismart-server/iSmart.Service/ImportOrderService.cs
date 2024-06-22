@@ -191,9 +191,13 @@ namespace iSmart.Service
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
+<<<<<<< HEAD
                     //StaffId = _userWarehouseService.GetWarehouseManagerIdByStaffId(staffId),
                     StaffId = 1
 
+=======
+                    StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
+>>>>>>> origin/anhddhe170353
                 };
                 if (_context.ImportOrders.SingleOrDefault(z => importOrder.ImportCode.ToLower() == z.ImportCode.ToLower()) == null)
                 {

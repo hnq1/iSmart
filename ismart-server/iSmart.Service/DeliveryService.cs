@@ -103,10 +103,10 @@ namespace iSmart.Service
             {
                 var pageSize = 12;
 
-<<<<<<< HEAD
+
                 var deliveries = _context.Deliveries.Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
                                                 .OrderBy(d => d.DeliveyId).ToList();
-=======
+
                 // Kiểm tra nếu keyword là null hoặc là một chuỗi khoảng trắng
                 if (string.IsNullOrWhiteSpace(keyword))
                 {
@@ -123,7 +123,7 @@ namespace iSmart.Service
                                          .OrderBy(d => d.DeliveyId)
                                          .ToList();
                 }
->>>>>>> origin/anhddhe170353
+
                 var count = deliveries.Count();
                 var res = deliveries.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var totalPages = Math.Ceiling((double)count / pageSize);
@@ -142,14 +142,9 @@ namespace iSmart.Service
         {
             try
             {
-                var requestDelivery = new Delivery
+                // Kiểm tra nếu DeliveryName là null hoặc là một chuỗi khoảng trắng
+                if (string.IsNullOrWhiteSpace(delivery.DeliveryName))
                 {
-<<<<<<< HEAD
-                    DeliveyId = delivery.DeliveyId,
-                    DeliveryName = delivery.DeliveryName
-                };
-                _context.Deliveries.Update(requestDelivery);
-=======
                     return new UpdateDeliveryResponse { IsSuccess = false, Message = "Tên delivery không được để trống hoặc là khoảng trắng!" };
                 }
 
@@ -172,17 +167,16 @@ namespace iSmart.Service
                 existingDelivery.DeliveryName = delivery.DeliveryName;
 
                 _context.Deliveries.Update(existingDelivery);
->>>>>>> origin/anhddhe170353
                 _context.SaveChanges();
-                return new UpdateDeliveryResponse { IsSuccess = true, Message = $"Thay doi delivery thành công" };
 
+                return new UpdateDeliveryResponse { IsSuccess = true, Message = "Cập nhật delivery thành công" };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return new UpdateDeliveryResponse { IsSuccess = false, Message = $"Thay doi delivery that bai" };
+                return new UpdateDeliveryResponse { IsSuccess = false, Message = "Cập nhật delivery thất bại" };
             }
         }
 
-       
+
     }
 }
