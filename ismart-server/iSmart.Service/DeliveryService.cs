@@ -57,11 +57,7 @@ namespace iSmart.Service
         {
             try
             {
-                // Kiểm tra nếu DeliveryName là null hoặc là một chuỗi khoảng trắng
-                if (string.IsNullOrWhiteSpace(delivery.DeliveryName))
-                {
-                    return new CreateDeliveryResponse { IsSuccess = false, Message = "Tên delivery không được để trống hoặc là khoảng trắng!" };
-                }
+              
 
                 var requestDelivery = new Delivery
                 {
