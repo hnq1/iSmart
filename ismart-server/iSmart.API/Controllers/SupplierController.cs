@@ -25,6 +25,13 @@ namespace WM.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("get-all-supplier-as-internal-warehouses")]
+        public async Task<IActionResult> GetAllSupplierAsInternalWarehouses()
+        {
+            var result = await _supplierService.GetInternalWarehouses();
+            return Ok(result);
+        }
+
         [HttpGet("get-all-supplier-active")]
         public async Task<IActionResult> GetAllSupplierActive()
         {
@@ -40,9 +47,9 @@ namespace WM.API.Controllers
         }
 
         [HttpPost("add-supplier")]
-        public async Task<IActionResult> AddSupplier(CreateSupplierRequest supplier)
+        public async Task<IActionResult> AddSupplier(CreateSupplierRequest supplier, bool isWarehouse)
         {
-            var result = _supplierService.AddSupplier(supplier);
+            var result = _supplierService.AddSupplier(supplier, isWarehouse);
             return Ok(result);
         }
 
