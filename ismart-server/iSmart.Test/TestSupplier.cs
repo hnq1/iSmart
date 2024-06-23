@@ -42,7 +42,7 @@ namespace iSmart.Test
                 SupplierEmail = "Test",
                 Note = "Test",
             };
-            var supplierResponse = supplierService.AddSupplier(supplierEntry);
+            var supplierResponse = supplierService.AddSupplier(supplierEntry,true);
             if (supplierResponse.IsSuccess == true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
