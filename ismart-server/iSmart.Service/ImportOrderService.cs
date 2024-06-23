@@ -20,13 +20,11 @@ namespace iSmart.Service
         List<ImportOrderDTO> GetAllImportOrder();
         ImportOrder? GetImportOrderByOrderCode(string code);
 
-<<<<<<< HEAD
-        CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i, int staffId);
-        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize, int page, int? storage, int? status, int? sortDate, string? keyword = "");
-=======
+
+
         CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
         ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
->>>>>>> origin/anhddhe170353
+
         Task<string> Import(int importid);
     }
 

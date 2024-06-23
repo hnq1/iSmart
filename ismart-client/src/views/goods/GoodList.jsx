@@ -132,7 +132,7 @@ function MyTable() {
                 page, warehouseId,
                 categoryId, supplierId,
                 sortPrice, wordSearch);
-            // console.log("supplierId:", "supplierId");
+            console.log("pageSize:", pageSize);
             setListGoods(res.data);
             setTotalPages(res.totalPages);
             setcurrentPage(page - 1);

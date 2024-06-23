@@ -34,9 +34,9 @@ namespace iSmart.Service
         {
             try
             {
-<<<<<<< HEAD
-                var newSupplier = new Supplier
-=======
+
+                
+
                 if (string.IsNullOrWhiteSpace(supplier.SupplierName))
                 {
                     return new CreateSupplierResponse { IsSuccess = false, Message = "Tên nhà cung cấp không được để trống hoặc là khoảng trắng!" };
@@ -56,7 +56,7 @@ namespace iSmart.Service
                     SupplierEmail = supplier.SupplierEmail,
                     Note = "Kho nội bộ",
                 } : new Supplier
->>>>>>> origin/anhddhe170353
+
                 {
                     SupplierName = supplier.SupplierName,
                     SupplierPhone = supplier.SupplierPhone,
