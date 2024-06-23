@@ -14,10 +14,11 @@ namespace iSmart.Service
 {
     public interface IGoodsService
     {
-        GoodsFilterPaging GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPriece, string? keyword = "");
+        GoodsFilterPaging GetGoodsByKeyword(int pageSize, int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPriece, string? keyword = "");
         Task<List<Good>?> GetAllGoods();
 
         Task<List<Good>?> GetAllGoodsWithStorageAndSupplier(int storageId, int supplierId);
+        Task<List<Good>?> GetAllGoodsOfSupplier(int supplierId);
         Good GetGoodsById(int id);
         CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId);
         CreateGoodsResponse AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId);
@@ -32,11 +33,20 @@ namespace iSmart.Service
     {
         private readonly iSmartContext _context;
         private readonly IUserWarehouseService _userWarehouseService;
+        private iSmartContext context;
 
         public GoodsService(iSmartContext context, IUserWarehouseService userWarehouseService)
         {
             _context = context;
             _userWarehouseService = userWarehouseService;
+        }
+
+
+
+
+        public GoodsService(iSmartContext context)
+        {
+            _context = context;
         }
 
         public CreateGoodsResponse AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId)
@@ -95,6 +105,7 @@ namespace iSmart.Service
                 return new CreateGoodsResponse { IsSuccess = false, Message = $"Thêm hàng hóa thất bại, {ex.Message}" };
             }
         }
+
 
         public CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId)
         {
@@ -189,6 +200,21 @@ namespace iSmart.Service
             }
         }
 
+        public async Task<List<Good>?> GetAllGoodsOfSupplier(int supplierId)
+        {
+            try
+            {
+                var goods = await _context.Goods
+                    .Where(g =>g.SupplierId == supplierId)
+                    .ToListAsync();
+                return goods;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public Good GetGoodsById(int id)
         {
             try
@@ -202,7 +228,7 @@ namespace iSmart.Service
             }
         }
 
-        public GoodsFilterPaging? GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
+        public GoodsFilterPaging? GetGoodsByKeyword(int pageSize, int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
         {
             try
             {
@@ -212,13 +238,11 @@ namespace iSmart.Service
                     page = 1;
                 }
 
-                var pageSize = 12;
-
                 var goodsQuery = _context.Goods
                 .Include(g => g.Status)
                 .Include(g => g.Category)
                 .Include(g => g.Supplier)
-                .Include(g => g.GoodsWarehouses)
+                .Include(g =>g.GoodsWarehouses)
                 .Where(g => (!categoryId.HasValue || g.CategoryId == categoryId)
                     && (!supplierId.HasValue || g.SupplierId == supplierId) && (!warehouseId.HasValue || g.GoodsWarehouses.Any(gw => gw.WarehouseId == warehouseId)));
 

@@ -4,11 +4,22 @@ import { toast } from 'react-toastify';
 import { createNewSupplier } from "~/services/SupplierServices";
 import { validateEmail, validatePhone, validateText, validateTextRequired } from "~/validate";
 
+
 const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
     const [nameSupplier, setNameSupplier] = useState("");
     const [phoneSupplier, setPhoneSupplier] = useState("");
     const [emailSupplier, setEmailSupplier] = useState("");
     const [noteSupplier, setNoteSupplier] = useState("");
+    const [isChecked, setIsChecked] = useState(false);
+
+    const handleCheckboxChange = (event) => {
+        if (event.target.checked) {
+            setNoteSupplier("kho nội bộ");
+        } else {
+            setNoteSupplier("");
+        }
+        setIsChecked(event.target.checked);
+    };
 
     const handleSave = async () => {
         if (!validateTextRequired.test(nameSupplier)) {
@@ -31,6 +42,7 @@ const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
 
 
     };
+
 
     const handleCloseModal = () => {
         handleReset();
@@ -62,8 +74,15 @@ const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
                         <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={emailSupplier} onChange={(event) => setEmailSupplier(event.target.value)} />
                     </div>
                     <div className="form-group mb-3">
-                        <label >Lưu ý</label>
-                        <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={noteSupplier} onChange={(event) => setNoteSupplier(event.target.value)} />
+                        <label>
+                            <input
+                                type="checkbox"
+                                className="form-check-input"
+                                checked={isChecked}
+                                onChange={handleCheckboxChange}
+                            />
+                            Lưu ý: Kho nội bộ
+                        </label>
                     </div>
                     <Button className="ButtonRed" onClick={handleReset}>
                         Xóa thông tin thay đổi

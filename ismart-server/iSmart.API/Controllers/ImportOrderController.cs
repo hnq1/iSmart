@@ -42,16 +42,16 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-import-orders")]
-        public IActionResult ImportOrderFilterPaging(int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
+        public IActionResult ImportOrderFilterPaging(int pageSize, int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
         {
-            var reult = _importService.ImportOrderFilterPaging(page, warehouseId, status, sortDate, keyword);
+            var reult = _importService.ImportOrderFilterPaging(pageSize,page, warehouseId, status, sortDate, keyword);
             return Ok(reult);
         }
 
         [HttpPost("add-import-order")]
-        public IActionResult AddImportOrder(CreateImportOrderRequest i, int staffId)
+        public IActionResult AddImportOrder(bool isInternalTransfer,CreateImportOrderRequest i, int staffId)
         {
-            var result = _importService.CreateImportOrder(i, staffId);
+            var result = _importService.CreateImportOrder(isInternalTransfer, i, staffId);
             return Ok(result);
         }
 

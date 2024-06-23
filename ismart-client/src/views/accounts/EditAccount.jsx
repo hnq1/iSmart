@@ -66,7 +66,6 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
 
 
     const handleSave = async () => {
-        
         let res = await updateUser(
             dataUserEdit.userId,
             email,

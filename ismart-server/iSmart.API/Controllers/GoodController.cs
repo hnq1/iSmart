@@ -44,9 +44,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-goods")]
-        public IActionResult GetGoodsByKeyword(int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
+        public IActionResult GetGoodsByKeyword(int pageSize, int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
         {
-            var result = _goodsService.GetGoodsByKeyword(page, warehouseId, categoryId, supplierId, sortPrice, keyword);
+            var result = _goodsService.GetGoodsByKeyword(pageSize, page, warehouseId, categoryId, supplierId, sortPrice, keyword);
             return Ok(result);
         }
 
@@ -65,7 +65,13 @@ namespace iSmart.API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("get-goods-of-supplier")]
+        public async Task<IActionResult> GetAllGoodsOfSupplier(int supplierId)
+        {
+            var result = await _goodsService.GetAllGoodsOfSupplier(supplierId);
 
+            return Ok(result);
+        }
 
         [HttpPut("update-goods")]
         public async Task<IActionResult> UpdateGoods(UpdateGoodsRequest goods)

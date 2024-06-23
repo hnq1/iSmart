@@ -10,6 +10,7 @@ import SupplierList from '../views/suppliers/SuppliersList';
 import StorageList from '../views/storages/StorageList';
 import CategoryList from '../views/categories/CategoryList';
 import ImportOrderList from '../views/importOrders/ImportOrdersList';
+import ImportOrderListN from '../views/importOrdersN/ImportOrderListN';
 import ExportOrderList from '../views/exportOrders/ExportOrderList';
 import StockTakeList from '~/views/stocktake/StockTakeList';
 import DeliveryList from '~/views/deliveries/ListDelivery';
@@ -120,7 +121,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/cac-lo-hang-nhap"
+                    path="/cac-lo-hang-nhap-ngoai"
                     element={
                         <PrivateRoute>
                             <Container fluid>
@@ -130,6 +131,22 @@ const AppRoutes = () => {
                                     <Col className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <ImportOrderList />
+                                    </Col>
+                                </Row>
+                            </Container></PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/cac-lo-hang-nhap-noi"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <ImportOrderListN />
                                     </Col>
                                 </Row>
                             </Container></PrivateRoute>

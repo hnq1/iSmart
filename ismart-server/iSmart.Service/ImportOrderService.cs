@@ -20,8 +20,11 @@ namespace iSmart.Service
         List<ImportOrderDTO> GetAllImportOrder();
         ImportOrder? GetImportOrderByOrderCode(string code);
 
-        CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i, int staffId);
-        ImportOrderFilterPaging ImportOrderFilterPaging(int page, int? storage, int? status, int? sortDate,  string? keyword = "");
+
+
+        CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
+        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
+
         Task<string> Import(int importid);
     }
 
@@ -46,7 +49,7 @@ namespace iSmart.Service
                         ImportCode = i.ImportCode,
                         UserId = i.UserId,
                         UserName = i.User.UserName,
-                        SupplierId = i.SupplierId,
+                        SupplierId = (int)i.SupplierId,
                         SupplierName = i.Supplier.SupplierName,
                         TotalCost = i.TotalCost,
                         Note = i.Note,
@@ -94,11 +97,10 @@ namespace iSmart.Service
 
         }
 
-        public ImportOrderFilterPaging ImportOrderFilterPaging(int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
+        public ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize, int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
         {
             try
             {
-                var pageSize = 12;
                 if (page <= 0) page = 1;
 
                 var importOrders = _context.ImportOrders
@@ -127,7 +129,7 @@ namespace iSmart.Service
                         ImportCode = i.ImportCode,
                         UserId = i.UserId,
                         UserName = i.User.UserName,
-                        SupplierId = i.SupplierId,
+                        SupplierId = (int)i.SupplierId,
                         SupplierName = i.Supplier.SupplierName,
                         TotalCost = i.TotalCost,
                         Note = i.Note,
@@ -175,11 +177,26 @@ namespace iSmart.Service
 
 
 
-        public CreateImportOrderResponse CreateImportOrder(CreateImportOrderRequest i, int staffId)
+        public CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId)
         {
             try
             {
-                var importOrder = new ImportOrder
+                var importOrder = isInternalTransfer == true ? new ImportOrder
+                {
+                    ImportCode = "IMP" + i.ImportCode,
+                    UserId = staffId,
+                    SupplierId = 69,
+                    TotalCost = 0,
+                    Note = i.Note,
+                    CreatedDate = DateTime.Now,
+                    ImportedDate = i.ImportedDate,
+                    StatusId = i.StatusId,
+                    WarehouseId = i.WarehouseId,
+                    DeliveryId = i.DeliveryId,
+                    Image = i.Image,
+                    StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
+                    WarehouseDestinationId = i.WarehouseDestinationId
+                } : new ImportOrder
                 {
                     ImportCode = "IMP" + i.ImportCode,
                     UserId = staffId,
@@ -192,8 +209,7 @@ namespace iSmart.Service
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
-                    //StaffId = _userWarehouseService.GetWarehouseManagerIdByStaffId(staffId),
-                    StaffId = 1
+                    StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
 
                 };
                 if (_context.ImportOrders.SingleOrDefault(z => importOrder.ImportCode.ToLower() == z.ImportCode.ToLower()) == null)
@@ -346,3 +362,5 @@ namespace iSmart.Service
         }
     }
 }
+
+

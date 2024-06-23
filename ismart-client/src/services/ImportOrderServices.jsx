@@ -33,8 +33,9 @@ const fetchImportOrderNewest = () => {
     return axios.get(`api/import-order/get-newest-import-order`);
 }
 
-const fetchImportOrdersWithfilter = (page, warehouseId, status, sortDate, keyword) => {
-    return axios.get(`api/import-order/get-import-orders?page=${page}
+const fetchImportOrdersWithfilter = (pageSize, page, warehouseId, status, sortDate, keyword) => {
+    return axios.get(`api/import-order/get-import-orders?pageSize=${pageSize}
+    ${page ? `&page=${page}` : ''}
     ${warehouseId ? `&warehouseId=${warehouseId}` : ''}
     ${status ? `&status=${status}` : ''}
     ${sortDate ? `&sortDate=${sortDate}` : ''}

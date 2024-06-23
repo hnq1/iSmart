@@ -12,11 +12,12 @@ namespace iSmart.Service
 {
     public interface ISupplierService
     {
-        SupplierFilterPaging GetSupplierByKeyword(int page, int? statusId, string? keyword = "");
+        SupplierFilterPaging GetSupplierByKeyword(int page, int? statusId, string? keyword = ""); 
         Task<List<SupplierDTO>?> GetAllSupplier();
+        Task<List<SupplierDTO>?> GetInternalWarehouses();
         Task<List<SupplierDTO>?> GetAllActiveSupplier();
         Supplier? GetSupplierById(int id);
-        CreateSupplierResponse AddSupplier(CreateSupplierRequest supplier);
+        CreateSupplierResponse AddSupplier(CreateSupplierRequest supplier, bool isWarehouse);
         UpdateSupplierResponse UpdateSupplier(UpdateSupplierRequest supplier);
         bool UpdateDeleteStatusSupplier(int id);
     }
@@ -29,23 +30,33 @@ namespace iSmart.Service
         {
             _context = context;
         }
-        public CreateSupplierResponse AddSupplier(CreateSupplierRequest supplier)
+        public CreateSupplierResponse AddSupplier(CreateSupplierRequest supplier, bool isWarehouse)
         {
             try
             {
-                // Kiểm tra nếu SupplierName là null hoặc là một chuỗi khoảng trắng
+
+                
+
                 if (string.IsNullOrWhiteSpace(supplier.SupplierName))
                 {
                     return new CreateSupplierResponse { IsSuccess = false, Message = "Tên nhà cung cấp không được để trống hoặc là khoảng trắng!" };
                 }
 
-                // Kiểm tra nếu SupplierName đã tồn tại trong cơ sở dữ liệu
                 if (_context.Suppliers.Any(s => s.SupplierName.ToLower() == supplier.SupplierName.ToLower()))
                 {
                     return new CreateSupplierResponse { IsSuccess = false, Message = "Tên nhà cung cấp đã tồn tại!" };
                 }
 
-                var newSupplier = new Supplier
+                
+                var newSupplier = isWarehouse == true ? new Supplier
+                {
+                    SupplierName = supplier.SupplierName,
+                    SupplierPhone = supplier.SupplierPhone,
+                    StatusId = supplier.StatusId,
+                    SupplierEmail = supplier.SupplierEmail,
+                    Note = "Kho nội bộ",
+                } : new Supplier
+
                 {
                     SupplierName = supplier.SupplierName,
                     SupplierPhone = supplier.SupplierPhone,
@@ -57,14 +68,13 @@ namespace iSmart.Service
                 _context.Suppliers.Add(newSupplier);
                 _context.SaveChanges();
 
-                return new CreateSupplierResponse { IsSuccess = true, Message = "Thêm nhà cung cấp thành công" };
+                return new CreateSupplierResponse { IsSuccess = true, Message = "Supplier added successfully" };
             }
             catch (Exception ex)
             {
-                return new CreateSupplierResponse { IsSuccess = false, Message = "Thêm nhà cung cấp thất bại" };
+                return new CreateSupplierResponse { IsSuccess = false, Message = "Failed to add supplier" };
             }
         }
-
 
         public async Task<List<SupplierDTO>?> GetAllSupplier()
         {
@@ -171,6 +181,33 @@ namespace iSmart.Service
             }
         }
 
+        public async Task<List<SupplierDTO>?> GetInternalWarehouses()
+        {
+            try
+            {
+                // Truy vấn danh sách nhà cung cấp có Note là "Kho nội bộ"
+                var internalWarehouses = await _context.Suppliers
+                    .Where(s => s.Note == "Kho nội bộ")
+                    .Select(s => new SupplierDTO
+                    {
+                        SupplierId = s.SupplierId,
+                        SupplierName = s.SupplierName,
+                        SupplierEmail = s.SupplierEmail,
+                        SupplierPhone = s.SupplierPhone,
+                        StatusId = s.StatusId,
+                        Status = s.Status.StatusType,
+                        Note = s.Note
+                    })
+                    .ToListAsync();
+
+                return internalWarehouses;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi lấy danh sách kho nội bộ: " + ex.Message);
+            }
+        }
+
 
 
 
@@ -202,45 +239,26 @@ namespace iSmart.Service
         {
             try
             {
-                // Kiểm tra nếu SupplierName là null hoặc là một chuỗi khoảng trắng
-                if (string.IsNullOrWhiteSpace(supplier.SupplierName))
+                var updatedSupplier = new Supplier
                 {
-                    return new UpdateSupplierResponse { IsSuccess = false, Message = "Tên nhà cung cấp không được để trống hoặc là khoảng trắng!" };
-                }
+                    SupplierId = supplier.SupplierId,
+                    SupplierName = supplier.SupplierName,
+                    SupplierPhone = supplier.SupplierPhone,
+                    StatusId = supplier.StatusId,
+                    SupplierEmail = supplier.SupplierEmail,
+                    Note = supplier.Note,
+                };
 
-                var existingSupplier = _context.Suppliers.SingleOrDefault(s => s.SupplierId == supplier.SupplierId);
-
-                if (existingSupplier == null)
-                {
-                    return new UpdateSupplierResponse { IsSuccess = false, Message = "Nhà cung cấp không tồn tại!" };
-                }
-
-                // Kiểm tra nếu SupplierName đã tồn tại (trừ nhà cung cấp hiện tại)
-                var duplicateSupplier = _context.Suppliers
-                    .SingleOrDefault(s => s.SupplierName.ToLower() == supplier.SupplierName.ToLower() && s.SupplierId != supplier.SupplierId);
-
-                if (duplicateSupplier != null)
-                {
-                    return new UpdateSupplierResponse { IsSuccess = false, Message = "Tên nhà cung cấp đã tồn tại!" };
-                }
-
-                existingSupplier.SupplierName = supplier.SupplierName;
-                existingSupplier.SupplierPhone = supplier.SupplierPhone;
-                existingSupplier.StatusId = supplier.StatusId;
-                existingSupplier.SupplierEmail = supplier.SupplierEmail;
-                existingSupplier.Note = supplier.Note;
-
-                _context.Suppliers.Update(existingSupplier);
+                _context.Suppliers.Update(updatedSupplier);
                 _context.SaveChanges();
 
-                return new UpdateSupplierResponse { IsSuccess = true, Message = "Cập nhật nhà cung cấp thành công" };
+                return new UpdateSupplierResponse { IsSuccess = true, Message = "Supplier updated successfully" };
             }
             catch (Exception e)
             {
-                return new UpdateSupplierResponse { IsSuccess = false, Message = "Cập nhật nhà cung cấp thất bại" };
+                return new UpdateSupplierResponse { IsSuccess = false, Message = "Failed to update supplier" };
             }
         }
-
 
 
     }
