@@ -21,7 +21,7 @@ namespace iSmart.Service
         ImportOrder? GetImportOrderByOrderCode(string code);
 
         CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
-        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
+        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize, int page, int? storage, int? status, int? sortDate, string? keyword = "");
         Task<string> Import(int importid);
     }
 
@@ -187,7 +187,7 @@ namespace iSmart.Service
                     Note = i.Note,
                     CreatedDate = DateTime.Now,
                     ImportedDate = i.ImportedDate,
-                    StatusId = i.StatusId,
+                    StatusId = 3,
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
@@ -202,7 +202,7 @@ namespace iSmart.Service
                     Note = i.Note,
                     CreatedDate = DateTime.Now,
                     ImportedDate = i.ImportedDate,
-                    StatusId = i.StatusId,
+                    StatusId = 3,
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
@@ -279,7 +279,9 @@ namespace iSmart.Service
         {
             try
             {
-                var result = await _context.ImportOrders.Include(a => a.ImportOrderDetails).SingleOrDefaultAsync(x => x.ImportId == importid);
+                var result = await _context.ImportOrders
+                    .Include(a => a.ImportOrderDetails)
+                    .SingleOrDefaultAsync(x => x.ImportId == importid);
 
                 // Kiểm tra nếu đơn hàng tồn tại và trạng thái của đơn hàng là 3
                 if (result != null && result.StatusId == 3)
@@ -292,23 +294,29 @@ namespace iSmart.Service
                     foreach (var detail in result.ImportOrderDetails)
                     {
                         // Tìm hàng hóa tương ứng với GoodsId trong chi tiết đơn hàng
-                        var goods = await _context.Goods.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+                        var goods = await _context.Goods
+                            .SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+
                         if (goods == null)
                         {
                             return $"Goods with ID {detail.GoodsId} not found";
                         }
 
                         // Tìm thông tin hàng hóa trong kho
-                        var goodsWarehouse = await _context.GoodsWarehouses.SingleOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+                        var goodsWarehouse = await _context.GoodsWarehouses.FirstOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+
                         if (goodsWarehouse == null)
                         {
                             // Nếu chưa có thông tin trong kho, tạo mới
                             goodsWarehouse = new GoodsWarehouse
                             {
                                 GoodsId = goods.GoodsId,
+                                WarehouseId = result.WarehouseId,
                                 Quantity = 0
                             };
-                            _context.GoodsWarehouses.Add(goodsWarehouse);
+
+                            _context.GoodsWarehouses.Add(goodsWarehouse); // Sử dụng Add thay vì AddAsync
+                            _context.SaveChanges();
                         }
 
                         // Tạo bản ghi lịch sử cho hàng hóa
@@ -319,13 +327,12 @@ namespace iSmart.Service
                             OrderCode = result.ImportCode,
                             UserId = (int)result.UserId,
                             Date = DateTime.Now,
-                            Quantity = goodsWarehouse.Quantity
+                            Quantity = detail.Quantity
                         };
 
                         // Cập nhật số lượng hàng trong kho
-                        int total = (int)detail.Quantity;
-                        goodsWarehouse.Quantity += total;
-                        history.QuantityDifferential = $"{total}";
+                        goodsWarehouse.Quantity += detail.Quantity;
+                        history.QuantityDifferential = $"{detail.Quantity}";
 
                         // Cập nhật giá nhập hàng
                         history.CostPrice = goods.StockPrice;
@@ -342,6 +349,7 @@ namespace iSmart.Service
                         _context.Goods.Update(goods);
                         _context.GoodsWarehouses.Update(goodsWarehouse);
                     }
+
                     await _context.SaveChangesAsync();
                     return "Thành công";
                 }
@@ -356,5 +364,6 @@ namespace iSmart.Service
                 return "Internal server error: " + ex.Message;
             }
         }
+
     }
 }
