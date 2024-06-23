@@ -219,55 +219,55 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Vui lòng nhập mã đơn hàng");
         }
         else
-        if (!selectedDate) {
-            toast.warning("Vui lòng nhập ngày nhập hàng");
-        } else if (totalCost === 0) {
-            toast.warning("Vui lòng nhập mặt hàng nhập");
-        } else {
-            const userId = parseInt(localStorage.getItem('userId'), 10);
-            let warehouse = await getWarehouseById(userId);
-            const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
-            console.log("warehouseIdToUse: ", warehouseIdToUse);
-            let res = await addNewImportOrder(userId,
-                1,
-                selectedSupplierId,
-                totalCost,
-                "",
-                "2024-06-20T16:10:19.498Z",
-                formatDateImport(selectedDate),
-                1,
-                importCode,
-                warehouseIdToUse,
-                selectedDeliveryId,
-                imageImportOrder,
-                1
-            );
-            console.log("restotalCost: ", totalCost);
-            if (res.isSuccess == true) {
-                let resImportId = await fetchImportOrderNewest();
-                console.log("ResImportID :", resImportId);
-
-                if (rowsData && rowsData.length > 0) {
-                    await Promise.all(rowsData.map(async (data, index) => {
-                        await createNewImportOrderDetail(
-                            resImportId,
-                            data.costPrice,
-                            data.batchCode,
-                            data.manufactureDate,
-                            data.expiryDate,
-                            data.goodsId,
-                            data.quantity
-                        );
-                    }));
-                }
-                toast.success("Thêm lô hàng nhập thành công");
-                updateTable();
-                handleCloseModal();
+            if (!selectedDate) {
+                toast.warning("Vui lòng nhập ngày nhập hàng");
+            } else if (totalCost === 0) {
+                toast.warning("Vui lòng nhập mặt hàng nhập");
             } else {
-                toast.warning("Mã đơn hàng đã tồn tại");
-            }
+                const userId = parseInt(localStorage.getItem('userId'), 10);
+                let warehouse = await getWarehouseById(userId);
+                const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
+                // console.log("warehouseIdToUse: ", warehouseIdToUse);
+                let res = await addNewImportOrder(userId,
+                    1,
+                    selectedSupplierId,
+                    totalCost,
+                    "",
+                    "2024-06-20T16:10:19.498Z",
+                    formatDateImport(selectedDate),
+                    1,
+                    importCode,
+                    warehouseIdToUse,
+                    selectedDeliveryId,
+                    imageImportOrder,
+                    1
+                );
+                console.log("restotalCost: ", res);
+                if (res.isSuccess == true) {
+                    let resImportId = await fetchImportOrderNewest();
+                    console.log("ResImportID :", resImportId);
 
-        }
+                    if (rowsData && rowsData.length > 0) {
+                        await Promise.all(rowsData.map(async (data, index) => {
+                            await createNewImportOrderDetail(
+                                resImportId,
+                                data.costPrice,
+                                data.batchCode,
+                                data.manufactureDate,
+                                data.expiryDate,
+                                data.goodsId,
+                                data.quantity
+                            );
+                        }));
+                    }
+                    toast.success("Thêm lô hàng nhập thành công");
+                    updateTable();
+                    handleCloseModal();
+                } else {
+                    toast.warning("Mã đơn hàng đã tồn tại");
+                }
+
+            }
 
     }
 

@@ -99,7 +99,7 @@ function MyTable() {
 
     useEffect(() => {
         if (selectedWarehouseId) {
-            getGoods(1, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
+            getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
         }
     }, [selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch])
     useEffect(() => {
@@ -122,9 +122,12 @@ function MyTable() {
 
     const getGoods = async (
         page = 1, pageSize = 15,
-        warehouseId,
-        categoryId, supplierId,
-        sortPrice, wordSearch) => {
+        warehouseId = selectedWarehouseId, // Thêm giá trị mặc định cho warehouseId
+        categoryId = selectedCategoryId, // Thêm giá trị mặc định cho categoryId
+        supplierId = selectedSupplierId, // Thêm giá trị mặc định cho supplierId
+        sortPrice = sortedByPriceId, // Thêm giá trị mặc định cho sortPrice
+        wordSearch = keywordSearch // Thêm giá trị mặc định cho wordSearch
+    ) => {
 
         if (roleId === 1) {
 
@@ -132,7 +135,7 @@ function MyTable() {
                 page, warehouseId,
                 categoryId, supplierId,
                 sortPrice, wordSearch);
-            console.log("pageSize:", pageSize);
+            // console.log("pageSize:", pageSize);
             setListGoods(res.data);
             setTotalPages(res.totalPages);
             setcurrentPage(page - 1);
@@ -213,10 +216,17 @@ function MyTable() {
         // console.log("selectedWarehouseId:", res);
     }
 
+    // const handlePageClick = (event) => {
+    //     setcurrentPage(+event.selected);
+    //     getGoods(+event.selected + 1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+    // }
     const handlePageClick = (event) => {
-        setcurrentPage(+event.selected);
-        getGoods(+event.selected + 1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        const newPage = +event.selected;
+        setcurrentPage(newPage);
+        getGoods(newPage + 1, pageSize); // Gọi getGoods với trang mới và pageSize
     }
+
+    
 
     const handleSearch = () => {
         getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);

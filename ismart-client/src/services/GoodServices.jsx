@@ -23,6 +23,9 @@ const fetchGoodsWithStorageAndSupplier = (warehouseId, supplierId) => {
     return axios.get(`api/goods/get-goods-with-warehouse-supplier?warehouseId=${warehouseId}&supplierId=${supplierId}`)
 }
 
+const fetchGoodsWithSupplier = (supplierId) => {
+    return axios.get(`api/goods/get-goods-of-supplier?supplierId=${supplierId}`)
+}
 const addGood = (userId,
     goodsName, goodsCode, categoryId,
     description, supplierId, measuredUnit,
@@ -77,4 +80,4 @@ const fetchAllGoodsInWarehouse = (id) => {
 }
 
 
-export { updateGood, addGood, addGoodinAdmin, fetchGoodsWithFilter, fetchAllGoods, fetchGoodsWithStorageAndSupplier, fetchGoodById, fetchHistoryGood, fetchAllGoodsInWarehouse }
+export { updateGood, addGood, addGoodinAdmin, fetchGoodsWithFilter, fetchGoodsWithSupplier, fetchAllGoods, fetchGoodsWithStorageAndSupplier, fetchGoodById, fetchHistoryGood, fetchAllGoodsInWarehouse }
