@@ -65,7 +65,13 @@ namespace iSmart.API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("get-goods-of-supplier")]
+        public async Task<IActionResult> GetAllGoodsOfSupplier(int supplierId)
+        {
+            var result = await _goodsService.GetAllGoodsOfSupplier(supplierId);
 
+            return Ok(result);
+        }
 
         [HttpPut("update-goods")]
         public async Task<IActionResult> UpdateGoods(UpdateGoodsRequest goods)

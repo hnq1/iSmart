@@ -18,6 +18,7 @@ namespace iSmart.Service
         Task<List<Good>?> GetAllGoods();
 
         Task<List<Good>?> GetAllGoodsWithStorageAndSupplier(int storageId, int supplierId);
+        Task<List<Good>?> GetAllGoodsOfSupplier(int supplierId);
         Good GetGoodsById(int id);
         CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId);
         CreateGoodsResponse AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId);
@@ -180,6 +181,21 @@ namespace iSmart.Service
             {
                 var goods = await _context.Goods
                     .Where(g => g.GoodsWarehouses.Any(gw => gw.WarehouseId == storageId) && g.SupplierId == supplierId)
+                    .ToListAsync();
+                return goods;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<Good>?> GetAllGoodsOfSupplier(int supplierId)
+        {
+            try
+            {
+                var goods = await _context.Goods
+                    .Where(g =>g.SupplierId == supplierId)
                     .ToListAsync();
                 return goods;
             }
