@@ -23,12 +23,10 @@ namespace iSmart.Service
 
 
         CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
-<<<<<<< HEAD
+
         ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
 
-=======
-        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize, int page, int? storage, int? status, int? sortDate, string? keyword = "");
->>>>>>> origin/anhddhe170353
+
         Task<string> Import(int importid);
     }
 
