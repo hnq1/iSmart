@@ -5,7 +5,7 @@ import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
 import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 import { set } from "lodash";
-import {fetchGoodsWithSupplier} from "~/services/GoodServices";
+import { fetchGoodsWithSupplier } from "~/services/GoodServices";
 
 const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, handleClose, onChange }) => {
 
@@ -34,8 +34,9 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
     // }, [setbatchCode]);
     const getAllGoods = async () => {
         if (roleId === 1) {
-            if (selectedSupplierId) {
-                let res = await fetchGoodsWithSupplier(
+            if (selectedStorageId && selectedSupplierId) {
+                let res = await fetchGoodsWithStorageAndSupplier(
+                    selectedStorageId,
                     selectedSupplierId
                 );
 
@@ -43,11 +44,13 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
             }
         } else if (roleId === 4 || roleId === 3 || roleId === 2) {
             // Nhân viên: lấy danh sách kho cụ thể mà họ quản lý
-            // let rs = await getUserIdWarehouse(userId);
+            let rs = await getUserIdWarehouse(userId);
             // Lấy ra tất cả mã sản phẩm của kho và nhà cung cấp
             if (selectedSupplierId !== null) {
-                let res = await fetchGoodsWithSupplier(
+                let res = await fetchGoodsWithStorageAndSupplier(
+                    rs[0].warehouseId,
                     selectedSupplierId
+
                 );
                 setTotalGoods(res);
             }

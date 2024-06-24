@@ -5,14 +5,14 @@ import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 
 import ModelAddImportOrderN from '../importOrdersN/AddImportOrderN';
-import ConfirmImportOrder from '../importOrders/ConfirmImportOrder';
+import ConfirmImportOrderN from './ConfirmImportOrderN';
 import { fetchImportOrdersWithfilter } from '~/services/ImportOrderServices';
 import { formatDate, formattedAmount } from '~/validate';
 import ModalDetailOrderN from '../importOrdersN/DetailOrderN';
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 import { fetchAllStorages } from '~/services/StorageServices';
 import ModalEditImportOrderN from '../importOrdersN/EditImportOrderN';
-import ModalShowBarCode from '../importOrders/ShowBarCode';
+import ModalShowBarCodeN from '../importOrdersN/ShowBarCodeN';
 import ModalCancel from '../importOrders/ModalCancel';
 import { toast } from 'react-toastify';
 
@@ -424,12 +424,12 @@ function ImportOrderListN() {
             </div>
             <ModalCancel isShow={isShowModalCancelImport} handleClose={() => setIsShowModalCancelImport(false)}
                 title="Hủy đơn hàng nhập" ConfirmCancel={ConfirmCancelImport} />
-            <ModalShowBarCode isShow={isShowBarCode} handleClose={() => setIsShowBarCode(false)} barCodeDetail={barCodeDetail} />
+            <ModalShowBarCodeN isShow={isShowBarCode} handleClose={() => setIsShowBarCode(false)} barCodeDetail={barCodeDetail} />
             <ModalEditImportOrderN isShow={isShowEditOrder} handleClose={() => setIsShowEditOrder(false)}
                 detailOrderEdit={detailOrderEdit} updateTable={updateTable} />
             <ModalDetailOrderN isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={detailOrder} />
             <ModelAddImportOrderN isShow={isShowImportModelAdd} handleClose={() => setIsShowImportModelAdd(false)} updateTable={updateTable} />
-            <ConfirmImportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
+            <ConfirmImportOrderN isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
         </>
 
