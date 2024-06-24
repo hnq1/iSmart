@@ -29,10 +29,13 @@ namespace iSmart.Service
     {
         private readonly iSmartContext _context;
         private readonly IUserWarehouseService _userWarehouseService;
-        public ImportOrderService(iSmartContext context, IUserWarehouseService userWarehouseService)
+        private readonly WebSocketService _webSocketService;
+
+        public ImportOrderService(iSmartContext context, IUserWarehouseService userWarehouseService, WebSocketService webSocketService)
         {
             _context = context;
             _userWarehouseService = userWarehouseService;
+            _webSocketService = webSocketService;
         }
 
         public List<ImportOrderDTO> GetAllImportOrder()
@@ -208,19 +211,24 @@ namespace iSmart.Service
                     Image = i.Image,
                     StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
                 };
+
                 if (_context.ImportOrders.SingleOrDefault(z => importOrder.ImportCode.ToLower() == z.ImportCode.ToLower()) == null)
                 {
                     _context.Add(importOrder);
                     _context.SaveChanges();
-                    return new CreateImportOrderResponse { IsSuccess = true, Message = "Tao don hang nhap vao thanh cong" };
+                    // Gửi thông điệp qua WebSocket
+                    Task.Run(() => _webSocketService.SendMessageAsync("Đơn hàng có mã " + importOrder.ImportCode +" cần được xác nhận"));
+                    return new CreateImportOrderResponse { IsSuccess = true, Message = "Tạo đơn hàng nhập kho thành công" };
                 }
-                else return new CreateImportOrderResponse { IsSuccess = false, Message = $"Ma don hang da ton tai \n" };
+                else
+                {
+                    return new CreateImportOrderResponse { IsSuccess = false, Message = "Mã đơn hàng đã tồn tại" };
+                }
             }
             catch (Exception e)
             {
-                return new CreateImportOrderResponse { IsSuccess = false, Message = $"Tao don hang that bai \n + {e.Message}" };
+                return new CreateImportOrderResponse { IsSuccess = false, Message = $"Tạo đơn hàng thất bại: {e.Message}" };
             }
-
         }
 
 
