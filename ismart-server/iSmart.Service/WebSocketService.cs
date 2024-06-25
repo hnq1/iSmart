@@ -36,21 +36,21 @@ namespace iSmart.Service
             }
         }
 
-        //public async Task ReceiveMessagesAsync(string id, WebSocket webSocket)
-        //{
-        //    var buffer = new byte[1024 * 4];
-        //    var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+        public async Task ReceiveMessagesAsync(string id, WebSocket webSocket)
+        {
+            var buffer = new byte[1024 * 4];
+            var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
-        //    while (!result.CloseStatus.HasValue)
-        //    {
-        //        var receivedMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
+            while (!result.CloseStatus.HasValue)
+            {
+                var receivedMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-        //        result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-        //    }
+                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            }
 
-        //    await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-        //    RemoveSocket(id);
-        //}
+            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+            RemoveSocket(id);
+        }
     }
 
 }

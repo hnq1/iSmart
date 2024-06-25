@@ -317,7 +317,7 @@ namespace iSmart.Service
                         }
 
                         // Tìm thông tin hàng hóa trong kho
-                        var goodsWarehouse = await _context.GoodsWarehouses.FirstOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+                        var goodsWarehouse = await _context.GoodsWarehouses.FirstOrDefaultAsync(x => x.GoodsId == detail.GoodsId && x.WarehouseId == result.WarehouseId);
 
                         if (goodsWarehouse == null)
                         {

@@ -20,7 +20,7 @@ public class WebSocketController : ControllerBase
             var socketId = Guid.NewGuid().ToString();
 
             _webSocketService.AddSocket(socketId, webSocket);
-            //await _webSocketService.ReceiveMessagesAsync(socketId, webSocket);
+            await _webSocketService.ReceiveMessagesAsync(socketId, webSocket);
         }
         else
         {
