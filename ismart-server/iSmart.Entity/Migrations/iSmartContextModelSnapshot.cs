@@ -544,13 +544,17 @@ namespace iSmart.Entity.Migrations
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<float>("TotalCost")
                         .HasColumnType("real");
 
                     b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseDestinationId")
                         .HasColumnType("int");
 
                     b.Property<int>("WarehouseId")

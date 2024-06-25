@@ -168,7 +168,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             //     { id: rowsData.length + 3 }  // Row 3
             // ]);
         } else {
-            toast.info("Vui lòng điền kho hoặc nhà cung cấp");
+
         }
     }
 
@@ -218,17 +218,19 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         if (!importCode.trim()) {
             toast.warning("Vui lòng nhập mã đơn hàng");
         }
-        else
-        if (!selectedDate) {
+        else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
         } else if (totalCost === 0) {
             toast.warning("Vui lòng nhập mặt hàng nhập");
         } else {
+
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
-            console.log("warehouseIdToUse: ", warehouseIdToUse);
-            let res = await addNewImportOrder(userId,
+            let isInternalTransfer = false;
+            // console.log("warehouseIdToUse: ", warehouseIdToUse);
+            let res = await addNewImportOrder(isInternalTransfer,
+                userId,
                 1,
                 selectedSupplierId,
                 totalCost,
@@ -240,9 +242,9 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                 warehouseIdToUse,
                 selectedDeliveryId,
                 imageImportOrder,
-                1
+
             );
-            console.log("restotalCost: ", totalCost);
+            console.log("isInternalTransfer: ", isInternalTransfer);
             if (res.isSuccess == true) {
                 let resImportId = await fetchImportOrderNewest();
                 console.log("ResImportID :", resImportId);

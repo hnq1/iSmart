@@ -20,8 +20,11 @@ const Doashboard = () => {
     const navigate = useNavigate();
     useEffect(() => {
         if (![1, 2, 4].includes(roleId)) {
-            navigate('/404'); // Chuyển hướng người dùng không phù hợp
+            navigate('/ban-khong-co-quyen-truy-cap'); // Chuyển hướng người dùng không phù hợp
+        } else if (roleId === 3) {
+            navigate('/cac-lo-hang-nhap-ngoai'); // Chuyển hướng người dùng với roleId là 3 đến dashboard
         }
+
     }, [roleId, navigate]);
 
     const [totalStorages, setTotalStorages] = useState([]);

@@ -1,15 +1,15 @@
 import { get } from "lodash";
 import axios from "./axios";
 
-const addNewImportOrder = (staffId, userId, supplierId, totalCost,
+const addNewImportOrder = (isInternalTransfer, staffId, userId, supplierId, totalCost,
     note, createdDate, importedDate,
     statusId, importCode, warehouseId,
-    deliveryId, image, stokekeeperId) => {
-    return axios.post(`api/import-order/add-import-order?staffId=${staffId}`, {
+    deliveryId, image, warehouseDestinationId) => {
+    return axios.post(`api/import-order/add-import-order?isInternalTransfer=${isInternalTransfer}&staffId=${staffId}`, {
         userId, supplierId, totalCost,
         note, createdDate, importedDate,
         statusId, importCode, warehouseId,
-        deliveryId, image, stokekeeperId
+        deliveryId, image, warehouseDestinationId
     })
 }
 

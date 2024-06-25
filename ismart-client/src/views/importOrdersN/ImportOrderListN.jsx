@@ -5,14 +5,14 @@ import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 
 import ModelAddImportOrderN from '../importOrdersN/AddImportOrderN';
-import ConfirmImportOrder from '../importOrders/ConfirmImportOrder';
+import ConfirmImportOrderN from './ConfirmImportOrderN';
 import { fetchImportOrdersWithfilter } from '~/services/ImportOrderServices';
 import { formatDate, formattedAmount } from '~/validate';
 import ModalDetailOrderN from '../importOrdersN/DetailOrderN';
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 import { fetchAllStorages } from '~/services/StorageServices';
 import ModalEditImportOrderN from '../importOrdersN/EditImportOrderN';
-import ModalShowBarCode from '../importOrders/ShowBarCode';
+import ModalShowBarCodeN from '../importOrdersN/ShowBarCodeN';
 import ModalCancel from '../importOrders/ModalCancel';
 import { toast } from 'react-toastify';
 
@@ -26,6 +26,7 @@ function ImportOrderListN() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
+    const [pageSize, setPageSize] = useState(15);
 
     const [totalImportOrder, setTotalImportOrder] = useState([]);
     const [totalPages, setTotalPages] = useState(5);
@@ -97,18 +98,27 @@ function ImportOrderListN() {
         }
     }, [selectedWarehouseId, sortedByStatusId, sortedByDateId])
 
+    useEffect(() => {
+        getImportOrders(1, pageSize);
+    }, [pageSize]);
+
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
         setSelectedWarehouse(res.warehouseName);
         // console.log("getStorageIdByUser:", res);
     }
-    const getImportOrders = async (page) => {
+    const getImportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
-        let res = await fetchImportOrdersWithfilter(page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
+        let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
+        // console.log("pageSize:", pageSize);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
-        // console.log("setTotalImportOrder:", res);
+
+    }
+
+    const handlePageSizeChange = (event) => {
+        setPageSize(Number(event.target.value));
     }
 
     const getAllStorages = async () => {
@@ -125,33 +135,33 @@ function ImportOrderListN() {
 
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
-        getImportOrders(1);
+        getImportOrders(1, pageSize);
     }
 
     const handleSortStatusClick = (sort) => {
         setSortedByStatusId(sort.idSort);
         setSortedByStatusName(sort.nameSort);
-        getImportOrders(1);
+        getImportOrders(1, pageSize);
 
     }
 
     const handleSortDateClick = (sort) => {
         setSortedByDateId(sort.idSort);
         setSortedByDateName(sort.nameSort);
-        getImportOrders(1);
+        getImportOrders(1, pageSize);
     }
 
     const handlePageClick = (event) => {
         setcurrentPage(+event.selected);
-        getImportOrders(+event.selected + 1);
+        getImportOrders(+event.selected + 1, pageSize);
     }
 
     const handleSearch = () => {
-        getImportOrders(1);
+        getImportOrders(1, pageSize);
     }
 
     const updateTable = () => {
-        getImportOrders(currentPage + 1);
+        getImportOrders(currentPage + 1, pageSize);
     }
 
     const ShowModelConfirm = (i) => {
@@ -241,6 +251,17 @@ function ImportOrderListN() {
                                 }
 
                                 <Col md={2}>
+                                    <div className="input-group mb-3">
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            placeholder="Nhập pageSize"
+                                            value={pageSize}
+                                            onChange={handlePageSizeChange}
+                                        />
+                                    </div>
+                                </Col>
+                                <Col md={2}>
                                     <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByStatusName ? sortedByStatusName : "Tình trạng"} variant="success" style={{ zIndex: 999 }}>
                                         {sortStatusOptions.map((s, index) => (
                                             <Dropdown.Item key={`sort ${index}`} eventKey={s.nameSort} onClick={(e) => handleSortStatusClick(s, e)}>{s.nameSort}</Dropdown.Item>
@@ -313,6 +334,7 @@ function ImportOrderListN() {
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />nhập hàng</th>
                                         <th className="align-middle  text-nowrap">Kho <br />nhập hàng</th>
+                                        <th className="align-middle  text-nowrap">Kho <br />xuất hàng</th>
                                         <th className="align-middle  text-nowrap">Bên <br />giao hàng</th>
                                         <th className="align-middle  text-nowrap">Hình ảnh</th>
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
@@ -343,6 +365,7 @@ function ImportOrderListN() {
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
                                                 <td className="align-middle">{i.storageName}</td>
+                                                <td className="align-middle">{i.exportStorageName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
@@ -403,12 +426,12 @@ function ImportOrderListN() {
             </div>
             <ModalCancel isShow={isShowModalCancelImport} handleClose={() => setIsShowModalCancelImport(false)}
                 title="Hủy đơn hàng nhập" ConfirmCancel={ConfirmCancelImport} />
-            <ModalShowBarCode isShow={isShowBarCode} handleClose={() => setIsShowBarCode(false)} barCodeDetail={barCodeDetail} />
+            <ModalShowBarCodeN isShow={isShowBarCode} handleClose={() => setIsShowBarCode(false)} barCodeDetail={barCodeDetail} />
             <ModalEditImportOrderN isShow={isShowEditOrder} handleClose={() => setIsShowEditOrder(false)}
                 detailOrderEdit={detailOrderEdit} updateTable={updateTable} />
             <ModalDetailOrderN isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={detailOrder} />
             <ModelAddImportOrderN isShow={isShowImportModelAdd} handleClose={() => setIsShowImportModelAdd(false)} updateTable={updateTable} />
-            <ConfirmImportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
+            <ConfirmImportOrderN isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
         </>
 

@@ -182,9 +182,9 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         else if (!imageGood) {/////
             toast.warning("Vui lòng chọn file ảnh");
         }
-        else if (maxStock < minStock) {/////
-            toast.warning("Vui lòng nhập lại, MaxStock lớn hơn minStock");
-        }
+        // else if (minStock < maxStock) {/////
+        //     toast.warning("Vui lòng nhập lại, MaxStock lớn hơn minStock");
+        // }
         else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }
