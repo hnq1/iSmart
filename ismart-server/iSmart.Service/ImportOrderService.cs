@@ -149,6 +149,8 @@ namespace iSmart.Service
                         Image = i.Image,
                         StorekeeperId = i.StaffId,
                         StorekeeperName = _context.Users.FirstOrDefault(u => u.UserId == i.StaffId).UserName,
+                        WarehouseDestinationId = i.WarehouseDestinationId,
+                        WarehouseDestinationName = _context.Warehouses.FirstOrDefault(u => u.WarehouseId == i.WarehouseDestinationId).WarehouseName,
                         ImportOrderDetails = i.ImportOrderDetails
                             .Select(id => new ImportDetailDTO
                             {
