@@ -144,6 +144,8 @@ namespace iSmart.Service
                         Image = i.Image,
                         StorekeeperId = i.StaffId,
                         StorekeeperName = _context.Users.FirstOrDefault(u => u.UserId == i.StaffId).UserName,
+                        WarehouseDestinationId = i.WarehouseDestinationId,
+                        WarehouseDestinationName = _context.Warehouses.FirstOrDefault(u => u.WarehouseId == i.WarehouseDestinationId).WarehouseName,
                         ImportOrderDetails = i.ImportOrderDetails
                             .Select(id => new ImportDetailDTO
                             {
@@ -311,7 +313,7 @@ namespace iSmart.Service
                         }
 
                         // Tìm thông tin hàng hóa trong kho
-                        var goodsWarehouse = await _context.GoodsWarehouses.FirstOrDefaultAsync(x => x.GoodsId == detail.GoodsId);
+                        var goodsWarehouse = await _context.GoodsWarehouses.FirstOrDefaultAsync(x => x.GoodsId == detail.GoodsId && x.WarehouseId == result.WarehouseId);
 
                         if (goodsWarehouse == null)
                         {
