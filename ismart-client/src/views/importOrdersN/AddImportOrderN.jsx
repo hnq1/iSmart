@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import React from 'react';
 import { Modal, Button, Row, Col, DropdownButton, Dropdown } from "react-bootstrap"
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
@@ -14,7 +14,7 @@ import { format, addDays } from 'date-fns';
 
 import RowDataImportOrderN from "./RowDataImportN";
 import { toast } from "react-toastify";
-
+import setupWebSocket from "~/services/NotifyServices";
 import uploadImage from "~/services/ImageServices";
 import { data } from "autoprefixer";
 import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
@@ -65,6 +65,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         getAllStorages2();
         getAllSuppliers();
         getAllDelivery();
+        setupWebSocket();
     }, [])
 
     useEffect(() => {
@@ -149,6 +150,8 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
     }
+
+
 
     const handleReset = () => {
         setRowsData([]);
@@ -264,7 +267,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
             } else {
                 const userId = parseInt(localStorage.getItem('userId'), 10);
                 let warehouse = await getWarehouseById(userId);
-                // const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
+                const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
                 // console.log("warehouseIdToUse: ", warehouseIdToUse);
                 // const warehouseDestinationId = selectedWarehouseExportId;
                 let isInternalTransfer = true;
@@ -279,7 +282,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                     formatDateImport(selectedDate),
                     1,
                     importCode,
-                    selectedWarehouseImportId,
+                    warehouseIdToUse,
                     selectedDeliveryId,
                     imageImportOrder,
                     selectedWarehouseExportId
@@ -304,6 +307,8 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                         }));
                     }
                     toast.success("Thêm lô hàng nhập thành công");
+
+
                     updateTable();
                     handleCloseModal();
                 } else {
@@ -313,9 +318,6 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
             }
 
     }
-
-
-
 
 
 

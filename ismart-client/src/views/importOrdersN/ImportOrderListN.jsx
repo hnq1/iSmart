@@ -334,6 +334,7 @@ function ImportOrderListN() {
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />nhập hàng</th>
                                         <th className="align-middle  text-nowrap">Kho <br />nhập hàng</th>
+                                        <th className="align-middle  text-nowrap">Kho <br />xuất hàng</th>
                                         <th className="align-middle  text-nowrap">Bên <br />giao hàng</th>
                                         <th className="align-middle  text-nowrap">Hình ảnh</th>
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
@@ -364,6 +365,7 @@ function ImportOrderListN() {
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
                                                 <td className="align-middle">{i.storageName}</td>
+                                                <td className="align-middle">{i.exportStorageName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
