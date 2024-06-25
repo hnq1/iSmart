@@ -23,9 +23,9 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
     const [goodName, setGoodName] = useState(null);
     const [goodCode, setGoodCode] = useState(null);
@@ -49,8 +49,8 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setSelectedSupplier(dataGoodEdit.supplierName);
         setSelectedSupplierId(dataGoodEdit.supplierId);
 
-        setSelectedStorage(dataGoodEdit.storageName);
-        setSelectedStorageId(dataGoodEdit.storageId);
+        setSelectedWarehouse(dataGoodEdit.storageName);
+        setSelectedWarehouseId(dataGoodEdit.storageId);
 
         setStockPrice(dataGoodEdit.stockPrice);
         setMaxStock(dataGoodEdit.maxStock);
@@ -71,16 +71,21 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         getAllStorages();
         getAllCategories();
         getAllSuppliers();
-
     }, [])
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+    const handleStorageTotalClick = () => {
+        setSelectedWarehouse("Tất cả Kho");
+        setSelectedWarehouseId("");
+    }
+
+
+    const handleStorageClick = (warehouse) => {
+        setSelectedWarehouse(warehouse.warehouseName);
+        setSelectedWarehouseId(warehouse.warehouseId);
     }
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
@@ -104,14 +109,11 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
 
 
-
-
     const handleChooseFile = async (event) => { //validate file ảnh and size ảnh
         const file = event.target.files[0];
         let res = await uploadImage(file)
         const urlImage = res.url;
         setImageGood(urlImage);
-
     }
 
 
@@ -159,7 +161,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             stockPrice,
             warrantyTime,
             barCode,
-            selectedStorageId,
+            selectedWarehouseId,
             maxStock,
             minStock);
         // console.log("RES UPDATE", res);
@@ -194,7 +196,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 stockPrice,
                 warrantyTime,
                 barCode,
-                selectedStorageId,
+                selectedWarehouseId,
                 maxStock,
                 minStock);
             // console.log("RES UPDATE", res);
@@ -214,19 +216,30 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    {roleId == 1 ?
-                        <Row>
-                            <label >Kho</label>
+                    {
+                        roleId === 1 ?
+                            <Row>
+                                <label >Kho</label>
+                                <DropdownButton
+                                    className="DropdownButtonCSS ButtonCSSDropdown"
+                                    title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                    variant="success"
+                                    style={{ zIndex: 999 }}
+                                >
+                                    <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
 
-                            <Col md={5}>
-                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                    {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                        <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                    {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                        <Dropdown.Item
+                                            key={`warehouse ${index}`}
+                                            eventKey={c.warehouseName}
+                                            onClick={(e) => handleStorageClick(c, e)}
+                                        >
+                                            {c.warehouseName}
+                                        </Dropdown.Item>
                                     ))}
                                 </DropdownButton>
-                            </Col>
-                        </Row>
-                        : ''
+                            </Row>
+                            : ''
                     }
                     <Col md={2}>
                         <label >Đơn vị </label>
