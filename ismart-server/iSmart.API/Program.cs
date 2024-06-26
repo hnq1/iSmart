@@ -110,6 +110,7 @@ internal class Program
         builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
         builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
         builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
+        builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
         builder.Services.AddSingleton<WebSocketService>();
 
         // Đăng ký các dịch vụ
@@ -117,7 +118,7 @@ internal class Program
         // builder.Services.AddScoped<ISupplierService, SupplierService>();
         // builder.Services.AddScoped<IUserService, UserService>();
         // builder.Services.AddScoped<IStatusService, StatusService>();
-        // builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
+         
         // builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
         // builder.Services.AddScoped<IProjectService, ProjectService>();
         // builder.Services.AddScoped<IStocktakeNoteService, StocktakeNoteService>();

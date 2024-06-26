@@ -65,7 +65,8 @@ namespace iSmart.Service
 
                 var requestDelivery = new Delivery
                 {
-                    DeliveryName = delivery.DeliveryName
+                    DeliveryName = delivery.DeliveryName,
+                    StatusId = 1,               
                 };
 
                 // Kiểm tra nếu DeliveryName đã tồn tại trong cơ sở dữ liệu
