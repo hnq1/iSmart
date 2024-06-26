@@ -74,6 +74,57 @@ namespace iSmart.Service
             }
         }
 
+        public List<ExportOrderDTO> GetAllExportOrder()
+        {
+            try
+            {
+                var exportOrder = _context.ExportOrders
+                    // .Include(i => i.Status).Include(i => i.User).Include(i => i.Storage).Include(i => i.Storage).Include(i => i.Project)
+                    .Select(i => new ExportOrderDTO
+                    {
+                        ExportId = i.ExportId,
+                        ExportCode = i.ExportCode,
+                        UserId = i.UserId,
+                        UserName = i.User.FullName,
+                        TotalPrice = i.TotalPrice,
+                        Note = i.Note,
+                        StatusId = i.StatusId,
+                        StatusType = i.Status.StatusType,
+                        CreatedDate = i.CreatedDate,
+                        ExportedDate = i.ExportedDate,
+                        StorageId = i.StorageId,
+                        StorageName = i.Storage.StorageName,
+                        ProjectId = i.ProjectId,
+                        ProjectName = i.Project.ProjectName,
+                        CancelDate = i.CancelDate,
+                        DeliveryId = i.DeliveryId,
+                        DeliveryName = i.Delivery.DeliveryName,
+                        Image = i.Image,
+                        StorekeeperId = i.StorekeeperId,
+                        StorekeeperName = _context.Users.FirstOrDefault(u => u.UserId == i.StorekeeperId).UserName,
+                        Customer = i.Customer,
+                        Address = i.Address,
+                        ExportOrderDetails = (List<ExportDetailDTO>)i.ExportOrderDetails.
+                        Select(
+                            i => new ExportDetailDTO
+                            {
+                                ExportId = i.ExportId,
+                                GoodsId = i.GoodsId,
+                                Price = i.Price,
+                                Quantity = i.Quantity,
+                                GoodsCode = i.Goods.GoodsCode
+
+                            })
+                    })
+                    .ToList();
+                return exportOrder;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         //    public int GetExportOrderNewest()
         //    {
         //        var importOrderNewest = _context.ExportOrders.OrderByDescending(i => i.ExportId).FirstOrDefault();
@@ -153,56 +204,7 @@ namespace iSmart.Service
         //        }
         //    }
 
-        //    public List<ExportOrderDTO> GetAllExportOrder()
-        //    {
-        //        try
-        //        {
-        //            var exportOrder = _context.ExportOrders
-        //                // .Include(i => i.Status).Include(i => i.User).Include(i => i.Storage).Include(i => i.Storage).Include(i => i.Project)
-        //                .Select(i => new ExportOrderDTO
-        //                {
-        //                    ExportId = i.ExportId,
-        //                    ExportCode = i.ExportCode,
-        //                    UserId = i.UserId,
-        //                    UserName = i.User.FullName,
-        //                    TotalPrice = i.TotalPrice,
-        //                    Note = i.Note,
-        //                    StatusId = i.StatusId,
-        //                    StatusType = i.Status.StatusType,
-        //                    CreatedDate = i.CreatedDate,
-        //                    ExportedDate = i.ExportedDate,
-        //                    StorageId = i.StorageId,
-        //                    StorageName = i.Storage.StorageName,
-        //                    ProjectId = i.ProjectId,
-        //                    ProjectName = i.Project.ProjectName,
-        //                    CancelDate = i.CancelDate,
-        //                    DeliveryId = i.DeliveryId,
-        //                    DeliveryName = i.Delivery.DeliveryName,
-        //                    Image = i.Image,
-        //                    StorekeeperId = i.StorekeeperId,
-        //                    StorekeeperName = _context.Users.FirstOrDefault(u => u.UserId == i.StorekeeperId).UserName,
-        //                    Customer = i.Customer,
-        //                    Address = i.Address,
-        //                    ExportOrderDetails = (List<ExportDetailDTO>)i.ExportOrderDetails.
-        //                    Select(
-        //                        i => new ExportDetailDTO
-        //                        {
-        //                            ExportId = i.ExportId,
-        //                            GoodsId = i.GoodsId,
-        //                            Price = i.Price,
-        //                            Quantity = i.Quantity,
-        //                            GoodsCode = i.Goods.GoodsCode
 
-        //                        })
-        //                })
-        //                .ToList();
-        //            return exportOrder;
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            throw new Exception(e.Message);
-        //        }
-        //    }
 
         //    public ExportOrder? GetExportOrderById(int id)
         //    {
