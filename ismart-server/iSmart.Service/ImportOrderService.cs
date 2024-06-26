@@ -24,8 +24,11 @@ namespace iSmart.Service
 
         CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
 
+
         ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
 
+
+      //  ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
 
         Task<string> Import(int importid);
     }
@@ -195,7 +198,11 @@ namespace iSmart.Service
                     Note = i.Note,
                     CreatedDate = DateTime.Now,
                     ImportedDate = i.ImportedDate,
+
                     StatusId = 3,
+
+                  //  StatusId = i.StatusId,
+
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,

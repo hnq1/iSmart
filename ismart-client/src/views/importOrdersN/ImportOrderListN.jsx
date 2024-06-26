@@ -249,7 +249,17 @@ function ImportOrderListN() {
                                             aria-describedby="emailHelp" value={selectedWarehouse} disabled />
                                     </Col>
                                 }
-
+                                <Col md={2}>
+                                    <div className="input-group mb-3">
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            placeholder="Nhập pageSize"
+                                            value={pageSize}
+                                            onChange={handlePageSizeChange}
+                                        />
+                                    </div>
+                                </Col>
                                 <Col md={2}>
                                     <div className="input-group mb-3">
                                         <input

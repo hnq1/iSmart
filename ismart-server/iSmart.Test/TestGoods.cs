@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using iSmart.Entity.DTOs.CategoryDTO;
 using iSmart.Entity.DTOs.GoodsDTO;
 using iSmart.Entity.Models;
 using iSmart.Service;
@@ -31,6 +32,15 @@ namespace iSmart.Test
         //Create new goods
         [Test]
         public void CreateGoods_Test() {
+            //var result = false;
+            //var categoryEntry = new CreateCategoryRequest
+            //{
+            //    CategoryName = " ",
+            //    Description = " ",
+            //};
+            //var categoryResponse = _categoryService.AddCategory(categoryEntry);
+            //if (categoryResponse.IsSuccess == true) result = true;
+            //Assert.That(result, Is.EqualTo(true));
             var result = false;
             var goodsEntry = new CreateGoodsRequest
             {

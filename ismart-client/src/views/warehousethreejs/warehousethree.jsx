@@ -65,7 +65,7 @@ const Warehouse3D = () => {
             for (let j = 0; j < numShelvesWidth; j++) {
                 const shelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
                 shelf.position.set(
-                    -length / 2 + shelfLength / 2 + aisleWidth + i * (shelfLength + aisleWidth)*0.8 ,
+                    -length / 2 + shelfLength / 2 + aisleWidth + i * (shelfLength + aisleWidth) ,
                     shelfHeight / 2,
                     -width / 2 + shelfWidth / 2 + aisleWidth + j * (shelfWidth + aisleWidth)
                 );

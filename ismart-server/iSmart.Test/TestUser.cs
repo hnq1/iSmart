@@ -8,6 +8,7 @@ using iSmart.Entity.DTOs.CategoryDTO;
 using iSmart.Entity.DTOs.UserDTO;
 using iSmart.Entity.Models;
 using iSmart.Service;
+using Microsoft.Extensions.Configuration;
 
 namespace iSmart.Test
 {
@@ -15,13 +16,13 @@ namespace iSmart.Test
     {
         private UserService _userService { get; set; } = null;
         private iSmartContext _context;
-
+        public IConfiguration _configuration;
         [SetUp]
         public void Setup()
         {
             var context = new iSmartContext();
             _context = context;
-            _userService = new UserService(context);
+            _userService = new UserService(context,_configuration);
         }
         // get all user
         [Test]
@@ -63,7 +64,7 @@ namespace iSmart.Test
                 StatusId = 1,
                 Image = "Tes1t5"
             };
-            var userResponse = _userService.AddUser(userEntry);
+            var userResponse = _userService.AddUser(userEntry,1);
             if (userResponse.IsSuccess is true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }

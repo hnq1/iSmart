@@ -33,6 +33,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const [warrantyTime, setwarrantyTime] = useState(0);
     const [description, setDescription] = useState(null);
     const [stockPrice, setStockPrice] = useState(0);
+    const [insertStockPrice, setInsertStockPrice] = useState(0);
     const [maxStock, setMaxStock] = useState(0);
     const [minStock, setMinStock] = useState(0);
     const [imageGood, setImageGood] = useState(null);
@@ -134,9 +135,25 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setImageGood(urlImage);
     };
 
+    // const formatNumberImport = (value) => {
+    //     return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    // }
 
+    // const parseNumber = (value) => {
+    //     return value.replace(/\./g, '');
+    // };
 
+    // const handleStockPriceChange = (event) => {
+    //     let inputValue = event.target.value;
+    //     setInsertStockPrice(parseNumber(inputValue));
+    //     // Xóa các ký tự không phải số và dấu chấm
+    //     inputValue = inputValue.replace(/[^0-9]/g, '');
+    //     // Định dạng lại số thành dạng tiền tệ
+    //     const formattedValue = formatNumberImport(inputValue);
 
+    //     setStockPrice(formattedValue);
+
+    // }
 
     const handleGoodName = (event) => {
         setGoodName(event.target.value);
