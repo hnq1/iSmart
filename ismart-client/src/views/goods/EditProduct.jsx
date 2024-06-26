@@ -41,7 +41,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
 
     useEffect(() => {
-        console.log(dataGoodEdit);
+
 
         setSelectedCategory(dataGoodEdit.categoryName);
         setSelectedCategoryId(dataGoodEdit.categoryId);
@@ -49,8 +49,8 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setSelectedSupplier(dataGoodEdit.supplierName);
         setSelectedSupplierId(dataGoodEdit.supplierId);
 
-        setSelectedWarehouse(dataGoodEdit.storageName);
-        setSelectedWarehouseId(dataGoodEdit.storageId);
+        setSelectedWarehouse(dataGoodEdit.warehouseName);
+        setSelectedWarehouseId(dataGoodEdit.warehouseId);
 
         setStockPrice(dataGoodEdit.stockPrice);
         setMaxStock(dataGoodEdit.maxStock);
@@ -66,7 +66,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setBarCode(dataGoodEdit.barcode);
 
     }, [dataGoodEdit])
-
+    console.log(dataGoodEdit);
     useEffect(() => {
         getAllStorages();
         getAllCategories();
@@ -147,39 +147,18 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     }
 
     const handleSave = async () => {
-
-        let res = await updateGood(dataGoodEdit.goodsId,
-            goodName,
-            goodCode,
-            selectedCategoryId,
-            description,
-            selectedSupplierId,
-            measuredUnit,
-            0,
-            imageGood,
-            1,
-            stockPrice,
-            warrantyTime,
-            barCode,
-            selectedWarehouseId,
-            maxStock,
-            minStock);
-        // console.log("RES UPDATE", res);
-        updateTable();
-        toast.success("Sửa mặt hàng thành công");
-        handleCloseModal();
-        if (warrantyTime <= 0) {/////
+        if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }
-        else if (stockPrice <= 0) {///////
+        else if (stockPrice <= 0) {
             toast.warning("Vui lòng nhập giá lớn hơn 0");
         }
-        else if (!imageGood) {/////////
+        else if (!imageGood) {
             toast.warning("Vui lòng nhập file ảnh");
         }
-        else if (maxStock <= 0) {///////
+        else if (maxStock <= 0) {
             toast.warning("Vui lòng nhập maxstock lớn hơn 0");
-        } else if (minStock <= 0) {//////////
+        } else if (minStock <= 0) {
             toast.warning("Vui lòng nhập minstock lớn hơn 0");
         }
         else {
@@ -199,7 +178,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 selectedWarehouseId,
                 maxStock,
                 minStock);
-            // console.log("RES UPDATE", res);
+            console.log("RES UPDATE", selectedWarehouseId);
             updateTable();
             toast.success("Sửa mặt hàng thành công");
             handleCloseModal();
@@ -216,13 +195,13 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    {
+                    {/* {
                         roleId === 1 ?
                             <Row>
                                 <label >Kho</label>
                                 <DropdownButton
                                     className="DropdownButtonCSS ButtonCSSDropdown"
-                                    title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                    title={selectedWarehouse == null ? selectedWarehouse : "Tất cả Kho"}
                                     variant="success"
                                     style={{ zIndex: 999 }}
                                 >
@@ -240,7 +219,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                                 </DropdownButton>
                             </Row>
                             : ''
-                    }
+                    } */}
                     <Col md={2}>
                         <label >Đơn vị </label>
                         <DropdownButton

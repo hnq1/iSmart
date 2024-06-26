@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
-
+import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 
@@ -15,9 +15,7 @@ import ModalEditImportOrderN from '../importOrdersN/EditImportOrderN';
 import ModalShowBarCodeN from '../importOrdersN/ShowBarCodeN';
 import ModalCancel from '../importOrders/ModalCancel';
 import { toast } from 'react-toastify';
-
 import { cancelImport } from '~/services/ImportOrderServices';
-
 import { fetchUserByUserId } from '~/services/UserServices';
 import { get } from 'lodash';
 
@@ -72,7 +70,7 @@ function ImportOrderListN() {
     const [keywordSearch, setKeywordSearch] = useState("");
 
     const [currentDate, setCurrentDate] = useState();
-
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -84,7 +82,7 @@ function ImportOrderListN() {
         setSortStatusOptions([{ idSort: null, nameSort: "Tình trạng" },
         { idSort: 3, nameSort: "Đang tiến hành" },
         { idSort: 4, nameSort: "Đã hoàn thành" },
-        { idSort: 5, nameSort: "Đã hủy" }]);
+        { idSort: 5, nameSort: "Nhập hàng" }]);
 
         setSortDateOptions([{ idSort: null, nameSort: "Tất cả ngày" },
         { idSort: 1, nameSort: "Gần nhất" },
@@ -164,6 +162,7 @@ function ImportOrderListN() {
         getImportOrders(currentPage + 1, pageSize);
     }
 
+    // Check chưa đến ngày nhập hàng trong hợp đồng bàn giao
     const ShowModelConfirm = (i) => {
         if (currentDate !== formatDate(i.importedDate)) {
             toast.warning("Chưa đến ngày nhập hàng trong hợp đồng bàn giao");
@@ -365,13 +364,13 @@ function ImportOrderListN() {
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
                                                 <td className="align-middle">{i.storageName}</td>
-                                                <td className="align-middle">{i.exportStorageName}</td>
+                                                <td className="align-middle">{i.warehouseDestinationName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
                                                 <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
-                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Nhập hàng"}
+                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Tiến hành nhập hàng" : "Nhập hàng"}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>

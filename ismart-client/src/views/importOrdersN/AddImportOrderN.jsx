@@ -14,7 +14,6 @@ import { format, addDays } from 'date-fns';
 
 import RowDataImportOrderN from "./RowDataImportN";
 import { toast } from "react-toastify";
-import setupWebSocket from "~/services/NotifyServices";
 import uploadImage from "~/services/ImageServices";
 import { data } from "autoprefixer";
 import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
@@ -65,7 +64,6 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         getAllStorages2();
         getAllSuppliers();
         getAllDelivery();
-        setupWebSocket();
     }, [])
 
     useEffect(() => {
