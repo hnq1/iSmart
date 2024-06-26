@@ -80,7 +80,7 @@ function ImportOrderListN() {
         setSortStatusOptions([{ idSort: null, nameSort: "Tình trạng" },
         { idSort: 3, nameSort: "Đang tiến hành" },
         { idSort: 4, nameSort: "Đã hoàn thành" },
-        { idSort: 5, nameSort: "Nhập hàng" }]);
+        { idSort: 5, nameSort: "Đã huỷ" }]);
 
         setSortDateOptions([{ idSort: null, nameSort: "Tất cả ngày" },
         { idSort: 1, nameSort: "Gần nhất" },
@@ -90,15 +90,18 @@ function ImportOrderListN() {
 
     // Mỗi khi selectedWarehouseId, sortedByStatusId hoặc sortedByDateId thay đổi, gọi lại getImportOrders
     useEffect(() => {
-        if (selectedWarehouseId !== undefined) {
-            getImportOrders(1);
+        // Đảm bảo rằng getImportOrders được gọi mỗi khi có sự thay đổi cần thiết
+        if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
+            getImportOrders(1, pageSize);
         }
-    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId])
+    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId, pageSize]);
 
     // Khi pageSize thay đổi, gọi lại getImportOrders
     useEffect(() => {
-        getImportOrders(1, pageSize);
-    }, [pageSize]);
+        if (sortedByStatusId !== undefined) {
+            getImportOrders(1, pageSize);
+        }
+    }, [sortedByStatusId, pageSize]);
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
@@ -371,7 +374,7 @@ function ImportOrderListN() {
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
                                                 <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
-                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Tiến hành nhập hàng" : "Nhập hàng"}
+                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã huỷ"}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>
