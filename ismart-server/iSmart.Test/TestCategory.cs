@@ -49,9 +49,22 @@ namespace iSmart.Test
             if (categories != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
-        //create new category
         [Test]
         public void CreateCategory_Test()
+        {
+            var result = false;
+            var categoryEntry = new CreateCategoryRequest
+            {
+                CategoryName = "Máy Giặt",
+                Description = " ",
+            };
+            var categoryResponse = _categoryService.AddCategory(categoryEntry);
+            if (categoryResponse.IsSuccess == true) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+        //create new category
+        [Test]
+        public void CreateCategory_TestBlank()
         {
             var result = false;
             var categoryEntry = new CreateCategoryRequest
@@ -60,12 +73,26 @@ namespace iSmart.Test
                 Description = " ",
             };
             var categoryResponse = _categoryService.AddCategory(categoryEntry);
-            if(categoryResponse.IsSuccess == true) result = true;
-            Assert.That(result, Is.EqualTo(true));
+            if (categoryResponse.IsSuccess == true) result = true;
+            Assert.That(result, Is.EqualTo(false));
+        }
+        //create new category
+        [Test]
+        public void CreateCategory_TestRepeat()
+        {
+            var result = false;
+            var categoryEntry = new CreateCategoryRequest
+            {
+                CategoryName = "Tivi",
+                Description = " ",
+            };
+            var categoryResponse = _categoryService.AddCategory(categoryEntry);
+            if (categoryResponse.IsSuccess == true) result = true;
+            Assert.That(result, Is.EqualTo(false));
         }
         //update category
         [Test]
-        public void EditCategory_Test()
+        public void EditCategory_TestBlank()
         {
             var result = false;
             var categoryEntry = new UpdateCategoryRequest
@@ -76,7 +103,21 @@ namespace iSmart.Test
             };
             var categoryResponse = _categoryService.UpdateCaregory(categoryEntry);
             if (categoryResponse.IsSuccess is true) result = true;
-            Assert.That(result, Is.EqualTo(true));
+            Assert.That(result, Is.EqualTo(false));
+        }
+        [Test]
+        public void EditCategory_TestRepeat()
+        {
+            var result = false;
+            var categoryEntry = new UpdateCategoryRequest
+            {
+                CategoryId = 11,
+                CategoryName = "Tivi",
+                Description = " "
+            };
+            var categoryResponse = _categoryService.UpdateCaregory(categoryEntry);
+            if (categoryResponse.IsSuccess is true) result = true;
+            Assert.That(result, Is.EqualTo(false));
         }
     }
 }
