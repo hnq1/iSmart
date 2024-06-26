@@ -70,8 +70,6 @@ function ImportOrderListN() {
     const [keywordSearch, setKeywordSearch] = useState("");
 
     const [currentDate, setCurrentDate] = useState();
-    const navigate = useNavigate();
-
 
     useEffect(() => {
         getImportOrders(1);
@@ -90,12 +88,14 @@ function ImportOrderListN() {
         setCurrentDate(format(new Date(), 'dd/MM/yyyy'));
     }, [])
 
+    // Mỗi khi selectedWarehouseId, sortedByStatusId hoặc sortedByDateId thay đổi, gọi lại getImportOrders
     useEffect(() => {
         if (selectedWarehouseId !== undefined) {
             getImportOrders(1);
         }
     }, [selectedWarehouseId, sortedByStatusId, sortedByDateId])
 
+    // Khi pageSize thay đổi, gọi lại getImportOrders
     useEffect(() => {
         getImportOrders(1, pageSize);
     }, [pageSize]);
@@ -109,7 +109,7 @@ function ImportOrderListN() {
     const getImportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
         let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-        // console.log("pageSize:", pageSize);
+        console.log("sortedByStatusId:", sortedByStatusId);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
 
@@ -217,7 +217,7 @@ function ImportOrderListN() {
             <div className="container" style={{ maxWidth: "1600px" }}>
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập</h5>
+                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập giữa các kho</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <Row>
                                 {roleId == 1 ?
@@ -260,6 +260,7 @@ function ImportOrderListN() {
                                         />
                                     </div>
                                 </Col>
+                                {/* lọc tình trạng và sắp xếp theo ngày */}
                                 <Col md={2}>
                                     <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByStatusName ? sortedByStatusName : "Tình trạng"} variant="success" style={{ zIndex: 999 }}>
                                         {sortStatusOptions.map((s, index) => (
