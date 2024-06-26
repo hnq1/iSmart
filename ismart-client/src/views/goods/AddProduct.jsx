@@ -134,7 +134,23 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const handleChangeCreatedDate = (event) => {
         setCreatedDate(event.target.value);
     }
+    // // Hàm định dạng giá tiền
+    // const formatPrice = (value) => {
+    //     // Loại bỏ ký tự không phải số và chuyển đổi sang dạng số
+    //     let num = value.replace(/\D/g, '');
+    //     // Định dạng lại số theo dạng 000.000
+    //     return num.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+    // }
 
+    // // Hàm xử lý thay đổi giá trị của input giá nhập
+    // const handleChangeStockPrice = (event) => {
+    //     // Lấy giá trị nhập vào từ input
+    //     const { value } = event.target;
+    //     // Định dạng giá trị nhập vào
+    //     const formattedPrice = formatPrice(value);
+    //     // Cập nhật state với giá trị đã được định dạng
+    //     setStockPrice(formattedPrice);
+    // }
 
     const handleCloseModal = () => {
         handleReset();
@@ -228,7 +244,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     minStock
                 );
             }
-
+            console.log("resAddProduct: ", res);
+            console.log("stockPrice: ", stockPrice);
             toast.success("Thêm mặt hàng mới thành công");
             handleCloseModal();
             updateTable();
@@ -364,6 +381,12 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                         </Col>
                         <Col md={5}>
                             <label >Giá nhập </label>
+                            {/* <input
+                                type="text"
+                                className="form-control inputCSS"
+                                value={stockPrice}
+                                onChange={handleChangeStockPrice} // Sử dụng hàm xử lý thay đổi giá trị
+                            /> */}
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
                         </Col>
                     </Row>
