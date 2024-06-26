@@ -48,7 +48,7 @@ namespace iSmart.Test
                 DeliveryName = "test"
             };
             var deliveries = _deliveryService.AddDelivery(deliveryEntry);
-            if (deliveries != null) result = true;
+            if (deliveries.IsSuccess == false) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
 
@@ -74,9 +74,23 @@ namespace iSmart.Test
         public void UpdateDelivery_Test()
         {
             var result = false;
-            var deliveryEntry =new UpdateDeliveryRequest{
+            var deliveryEntry = new UpdateDeliveryRequest
+            {
                 DeliveryId = 2,
                 DeliveryName = "test",
+            };
+            var deliveries = _deliveryService.UpdateDelivery(deliveryEntry);
+            if (deliveries != null) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+        [Test]
+        public void UpdateDelivery_TestRepeat()
+        {
+            var result = false;
+            var deliveryEntry = new UpdateDeliveryRequest
+            {
+                DeliveryId = 2,
+                DeliveryName = "Giao hàng tiết kiệm",
             };
             var deliveries = _deliveryService.UpdateDelivery(deliveryEntry);
             if (deliveries != null) result = true;
