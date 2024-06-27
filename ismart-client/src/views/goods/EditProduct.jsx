@@ -7,7 +7,7 @@ import { fetchAllCategories } from '~/services/CategoryServices';
 import { fetchAllStorages } from '~/services/StorageServices';
 import uploadImage from '~/services/ImageServices';
 import { toast } from 'react-toastify';
-
+import currency from 'currency.js';
 import { updateGood } from '~/services/GoodServices';
 import { set } from 'lodash';
 
@@ -134,26 +134,12 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         const urlImage = res.url;
         setImageGood(urlImage);
     };
+    const handleStockPriceChange = (event) => {
+        const value = event.target.value;
+        const formattedValue = currency(value, { symbol: '', separator: '.', decimal: ',', precision: 0 }).format();
+        setStockPrice(formattedValue);
+    };
 
-    // const formatNumberImport = (value) => {
-    //     return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    // }
-
-    // const parseNumber = (value) => {
-    //     return value.replace(/\./g, '');
-    // };
-
-    // const handleStockPriceChange = (event) => {
-    //     let inputValue = event.target.value;
-    //     setInsertStockPrice(parseNumber(inputValue));
-    //     // Xóa các ký tự không phải số và dấu chấm
-    //     inputValue = inputValue.replace(/[^0-9]/g, '');
-    //     // Định dạng lại số thành dạng tiền tệ
-    //     const formattedValue = formatNumberImport(inputValue);
-
-    //     setStockPrice(formattedValue);
-
-    // }
 
     const handleGoodName = (event) => {
         setGoodName(event.target.value);
@@ -206,7 +192,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 0,
                 imageGood,
                 1,
-                stockPrice,
+                currency(stockPrice, { separator: '.', decimal: ',', precision: 0 }).value,
                 warrantyTime,
                 barCode,
                 selectedStorageId,
@@ -330,7 +316,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                     <row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >Giá nhập </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} min={0} />
+                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={handleStockPriceChange} />
                         </Col>
                     </row>
                     <Row style={{ marginTop: '15px' }}>
