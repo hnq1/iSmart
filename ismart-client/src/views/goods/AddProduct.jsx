@@ -8,6 +8,7 @@ import { fetchAllStorages } from '~/services/StorageServices';
 import uploadImage from '~/services/ImageServices';
 import { addGood, addGoodinAdmin } from '~/services/GoodServices';
 import { toast } from 'react-toastify';
+import currency from 'currency.js';
 import { select } from '@material-tailwind/react';
 import { create } from 'lodash';
 
@@ -95,6 +96,11 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setImageGood(urlImage);
     }
 
+    const handleStockPriceChange = (event) => {
+        const value = event.target.value;
+        const formattedValue = currency(value, { symbol: '', separator: '.', decimal: ',', precision: 0 }).format();
+        setStockPrice(formattedValue);
+    };
 
     const handleStorageTotalClick = () => {
         setSelectedWarehouse("Tất cả Kho");
@@ -205,7 +211,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     measuredUnit,
                     imageGood,
                     1,
-                    stockPrice,
+                    currency(stockPrice, { separator: '.', decimal: ',', precision: 0 }).value,
                     createdDate,
                     warrantyTime,
                     barCode,
@@ -364,7 +370,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                         </Col>
                         <Col md={5}>
                             <label >Giá nhập </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
+                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={handleStockPriceChange} />
+
                         </Col>
                     </Row>
 

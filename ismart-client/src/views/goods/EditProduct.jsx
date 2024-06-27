@@ -192,6 +192,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 0,
                 imageGood,
                 1,
+                //stockPrice,
                 currency(stockPrice, { separator: '.', decimal: ',', precision: 0 }).value,
                 warrantyTime,
                 barCode,
@@ -316,6 +317,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                     <row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >Giá nhập </label>
+                            {/* <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} /> */}
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={handleStockPriceChange} />
                         </Col>
                     </row>
