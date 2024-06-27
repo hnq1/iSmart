@@ -229,7 +229,28 @@ const Sidebar = () => {
                         </Nav.Item>
                         // : ''
                     }
-
+                    {
+                        // (roleId == 1 || roleId == 2 || roleId == 4) ?
+                        <Nav.Item className="mb-2">
+                            <Nav.Link as={Link} to="/quan-ly-khach-hang"
+                                className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                                style={{ width: 180 }}
+                            >
+                                <div className="d-flex">
+                                    <div style={{ width: 30 }}>
+                                        <i class="fa-duotone fa-boxes-packing"></i>
+                                    </div>
+                                    <div>
+                                        <span className="ms-1 d-none d-sm-inline">Khách hàng</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <i className="fa-solid fa-angle-right"></i>
+                                </div>
+                            </Nav.Link>
+                        </Nav.Item>
+                        // : ''
+                    }
                     {
                         // (roleId == 1 || roleId == 2) ?
                         <Nav.Item className="mb-2">

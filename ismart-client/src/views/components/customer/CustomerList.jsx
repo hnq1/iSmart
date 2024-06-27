@@ -1,44 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Form } from 'react-bootstrap';
-import ModelAddSupplier from './AddSupplier';
-import ModelEditSupplier from './EditSupplier';
-import ModalConfirm from '../components/others/Modal/ModalConfirm';
-import SwitchButton from '../components/others/SwitchButton';
-import { fetchSuppliersWithKeyword, updateStatusSupplier } from '~/services/SupplierServices';
+
+// import SwitchButton from '../components/others/SwitchButton';
 import { removeWhiteSpace } from '~/validate';
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify';
+import { fetchCustomerwithKeyword } from '~/services/CustomerServices';
+import ModelAddCustomer from './AddCustomer';
+import ModelEditCustomer from './EditCustomer';
 
-
-function SupplierList() {
+function CustomerList() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
-    
+
     const [isShowModelAddNew, setIsShowModelAddNew] = useState(false);
     const [isShowModelEdit, setIsShowModelEdit] = useState(false);
-    const [isShowModalConfirm, setIsShowModalConfirm] = useState(false);
+    const [listCustomer, setListCustomer] = useState([]);
 
-    const [listSuppliers, setListSuppliers] = useState([]);
+    const [dataUpdateCustomer, setDataUpdateCustomer] = useState({});
     const [totalPages, setTotalPages] = useState(5);
     const [currentPage, setcurrentPage] = useState(0);
 
     const [keywordSearch, setKeywordSearch] = useState("");
-    const [selectOption, setSelectOption] = useState();
-
-    const [dataUpdateSupplier, setDataUpdateSupplier] = useState({});
-    const [dataUpdateStatus, setdataUpdateStatus] = useState({});
-
+    ;
 
     useEffect(() => {
-        getSuppliers(1);
-
-    }, [])
-
+        getListCustomer(1);
+    }, []);
 
 
     useEffect(() => {
         setcurrentPage(0);
         const fetchData = async () => {
-            let res = await getSuppliers(1, selectOption, keywordSearch);
+            let res = await getListCustomer(1, keywordSearch);
             console.log(res);
 
             if (res.data.length == 0) {
@@ -47,60 +40,28 @@ function SupplierList() {
         };
 
         fetchData();
-    }, [selectOption]);
+    }, []);
 
-    const getSuppliers = async (page, statusId, keyword) => {
-        let res = await fetchSuppliersWithKeyword(page, statusId, removeWhiteSpace(keyword ? keyword : ""));
-        if (res) {
-            setListSuppliers(res.data);
-            setTotalPages(res.totalPages);
-        }
-        return res;
-
-    }
-
-    const handlePageClick = (event) => {
-        setcurrentPage(+event.selected);
-        if (keywordSearch) {
-            getSuppliers(+event.selected + 1, selectOption, keywordSearch);
-        } else {
-            getSuppliers(+event.selected + 1, selectOption);
-        }
-    }
-
-    const handleFilterStatus = (event) => {
-        const selectOption = event.target.value;
-        setSelectOption(selectOption);
-    }
-
-
-    const handleChangeStatus = async (supplier) => {
-        setdataUpdateStatus(supplier);
-        setIsShowModalConfirm(true);
-    }
-
-    const updateTableSupplier = async () => {
-        await getSuppliers(currentPage + 1, selectOption, keywordSearch);
-    }
-
-    const ShowModelEditSupplier = (supplier) => {
+    const ShowModelEditCustomer = (customer) => {
+        setDataUpdateCustomer(customer);
         setIsShowModelEdit(true);
-        setDataUpdateSupplier(supplier);
     }
 
+    const getListCustomer = async (page, keyword) => {
+        let res = await fetchCustomerwithKeyword(page, removeWhiteSpace(keyword ? keyword : ""));
+        if (res) {
+            setListCustomer(res.data);
+            console.log(res.data);
+            setTotalPages(res.totalPages);
 
-    const confirmChangeStatus = async (confirm) => {
-        if (confirm) {
-            await updateStatusSupplier(dataUpdateStatus.supplierId);
-            getSuppliers(currentPage + 1, selectOption, keywordSearch);
         }
     }
 
     const handleSearch = () => {
         setcurrentPage(0);
         const fetchData = async () => {
-            let res = await getSuppliers(1, selectOption, keywordSearch);
-            console.log(res);
+            let res = await getListCustomer(1, keywordSearch);
+            console.log("fetchData: ", res);
 
             if (res.data.length == 0) {
                 toast.warning("Vui lòng nhập từ khóa tìm kiếm khác");
@@ -109,21 +70,34 @@ function SupplierList() {
 
         fetchData();
     }
+    const updateTableCustomer = async () => {
+        await getListCustomer(currentPage + 1, keywordSearch);
+    }
 
+    const handlePageClick = (event) => {
+        setcurrentPage(+event.selected);
+        if (keywordSearch) {
+            getListCustomer(+event.selected + 1, keywordSearch);
+        } else {
+            getListCustomer(+event.selected + 1);
+        }
+    }
     return (
         <>
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                        <h5 style={{ color: '#a5a2ad' }}>Quản lý nhà cung cấp</h5>
+                        <h5 style={{ color: '#a5a2ad' }}>Quản lý khách hàng</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                            <div className="col-2">
+
+                            {/* <div className="col-2">
                                 <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={(event) => handleFilterStatus(event)} value={selectOption}>
                                     <option value="">Tất cả</option>
                                     <option value="1">Đang hợp tác</option>
                                     <option value="2">Ngừng hợp tác</option>
                                 </Form.Select>
-                            </div>
+                            </div> */}
+
                             <div className='col'>
 
 
@@ -149,6 +123,7 @@ function SupplierList() {
                                     </div>
                                 </div>
                             </div>
+
                             {
                                 (roleId == 1 || roleId == 2) ?
                                     <div className="col-auto ButtonCSSDropdown">
@@ -158,7 +133,7 @@ function SupplierList() {
                                             onClick={() => setIsShowModelAddNew(true)}
                                         ><i className="fa-solid fa-plus"></i>
                                             &nbsp;
-                                            Thêm nhà cung cấp
+                                            Thêm khách hàng
 
                                         </button>
                                     </div>
@@ -171,15 +146,17 @@ function SupplierList() {
                                 <thead>
                                     <tr>
                                         <th className="align-middle   text-nowrap">STT</th>
-                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>NHÀ CUNG CẤP</th>
-
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>KHÁCH HÀNG</th>
+                                        <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>ĐỊA CHỈ</th>
                                         <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>EMAIL</th>
                                         <th className="align-middle  text-nowrap">SỐ ĐIỆN THOẠI</th>
-                                        {
+
+
+                                        {/* {
                                             (roleId == 1 || roleId == 2) ?
                                                 <th className="align-middle  text-nowrap">Tình trạng</th>
                                                 : ''
-                                        }
+                                        } */}
 
 
 
@@ -188,27 +165,29 @@ function SupplierList() {
                                 </thead>
                                 <tbody>
 
-                                    {listSuppliers && listSuppliers.length > 0 &&
-                                        listSuppliers.map((s, index) => (
-                                            <tr key={`supplier${index}`} >
+                                    {listCustomer && listCustomer.length > 0 &&
+                                        listCustomer.map((c, index) => (
+                                            <tr key={`cumtomer${index}`} >
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
-                                                <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{s.supplierName}</td>
-                                                <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{s.supplierEmail}</td>
-                                                <td className="align-middle">{s.supplierPhone}</td>
-                                                {
+                                                <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{c.customerName}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{c.customerAddress}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{c.customerEmail}</td>
+                                                <td className="align-middle">{c.customerPhone}</td>
+
+                                                {/* {
                                                     (roleId == 1 || roleId == 2) ?
                                                         <td className="align-middle">
                                                             <SwitchButton status={s.statusId} handleChangeStatus={() => handleChangeStatus(s)} />
                                                         </td>
                                                         : ''
-                                                }
+                                                } */}
 
 
                                                 {
                                                     (roleId == 1 || roleId == 2) ?
                                                         <td className="align-middle " style={{ padding: '10px' }}>
 
-                                                            <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditSupplier(s)}></i>
+                                                            <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditCustomer(c)}></i>
                                                         </td>
                                                         : ''
                                                 }
@@ -218,8 +197,6 @@ function SupplierList() {
 
 
                                     }
-
-
 
                                 </tbody>
                             </Table>
@@ -250,20 +227,28 @@ function SupplierList() {
                 />
             </div>
 
-            <ModelAddSupplier isShow={isShowModelAddNew} handleClose={() => setIsShowModelAddNew(false)} updateTableSupplier={updateTableSupplier} />
-            <ModelEditSupplier isShow={isShowModelEdit} handleClose={() => setIsShowModelEdit(false)} dataUpdateSupplier={dataUpdateSupplier}
-                updateTableSupplier={updateTableSupplier} />
-            <ModalConfirm title="nhà cung cấp"
+            <ModelAddCustomer isShow={isShowModelAddNew}
+                handleClose={() => setIsShowModelAddNew(false)}
+                updateTableCustomer={updateTableCustomer}
+            />
+
+            <ModelEditCustomer isShow={isShowModelEdit}
+                handleClose={() => setIsShowModelEdit(false)}
+                dataUpdateCustomer={dataUpdateCustomer}
+                updateTableCustomer={updateTableCustomer}
+            />
+
+
+            {/* <ModalConfirm title="nhà cung cấp"
                 statusText1={<span style={{ color: '#24cbc7' }}>Đang hợp tác</span>}
                 statusText2={<span style={{ color: '#ff0000' }}>Ngừng hợp tác</span>} isShow={isShowModalConfirm}
                 handleClose={() => setIsShowModalConfirm(false)}
                 confirmChangeStatus={confirmChangeStatus}
                 name={<span style={{ color: 'black' }}>{dataUpdateStatus.supplierName}</span>} status={dataUpdateStatus.status}
 
-            />
+            /> */}
         </>
-
     );
 }
 
-export default SupplierList;
+export default CustomerList;

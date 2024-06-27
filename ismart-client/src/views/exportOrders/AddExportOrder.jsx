@@ -48,7 +48,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
 
     useEffect(() => {
         getAllStorages();
-        getAllProjects();
+        // getAllProjects();
         getAllDelivery();
     }, [])
 
@@ -85,16 +85,16 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
         console.log(delivery);
     }
 
-    const getAllProjects = async () => {
-        let res = await fetchAllProjects();
-        setTotalProjects(res);
-    }
+    // const getAllProjects = async () => {
+    //     let res = await fetchAllProjects();
+    //     setTotalProjects(res);
+    // }
 
 
-    const handleProjectClick = (project, event) => {
-        setSelectedProject(project.projectName);
-        setSelectedProjectId(project.projectId);
-    }
+    // const handleProjectClick = (project, event) => {
+    //     setSelectedProject(project.projectName);
+    //     setSelectedProjectId(project.projectId);
+    // }
 
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
@@ -260,7 +260,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
 
 
 
-                        <Col md={3} >
+                        {/* <Col md={3} >
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                 <Dropdown style={{ position: 'relative' }}>
                                     <Dropdown.Toggle className="ButtonCSSDropdown" as={CustomToggle} id="dropdown-custom-components">
@@ -276,7 +276,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </div>
-                        </Col>
+                        </Col> */}
 
                         <Col md={2} style={{ width: '220px' }}>
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>

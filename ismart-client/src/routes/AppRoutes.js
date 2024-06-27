@@ -23,6 +23,7 @@ import Error from '~/views/error/error';
 import PrivateRoute from './PrivateRoute';
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
+import CustomerList from '~/views/components/customer/CustomerList';
 const AppRoutes = () => {
     const roleId = parseInt(localStorage.getItem('RoleId'), 10);
 
@@ -87,6 +88,22 @@ const AppRoutes = () => {
                     }
                 />
 
+                <Route
+                    path="/quan-ly-khach-hang"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+
+                                    <Col className="py-3 background-primary">
+                                        <NavbarCom />
+                                        <CustomerList />
+                                    </Col>
+                                </Row>
+                            </Container></PrivateRoute>
+                    }
+                />
                 <Route
                     path="/cac-kho-hang"
                     element={
