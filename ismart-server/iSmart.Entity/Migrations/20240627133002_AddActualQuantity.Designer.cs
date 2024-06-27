@@ -12,8 +12,8 @@ using iSmart.Entity.Models;
 namespace iSmart.Entity.Migrations
 {
     [DbContext(typeof(iSmartContext))]
-    [Migration("20240625184459_AddCustomerAndUpdateExportOrder")]
-    partial class AddCustomerAndUpdateExportOrder
+    [Migration("20240627133002_AddActualQuantity")]
+    partial class AddActualQuantity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -618,6 +618,9 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetailId"), 1L, 1);
+
+                    b.Property<int>("ActualQuantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("BatchCode")
                         .IsRequired()

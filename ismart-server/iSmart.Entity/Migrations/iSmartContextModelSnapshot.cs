@@ -617,6 +617,9 @@ namespace iSmart.Entity.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetailId"), 1L, 1);
 
+                    b.Property<int>("ActualQuantity")
+                        .HasColumnType("int");
+
                     b.Property<string>("BatchCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

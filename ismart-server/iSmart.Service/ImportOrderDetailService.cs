@@ -8,6 +8,7 @@ using iSmart.Entity.DTOs.ImportOrderDetailDTO;
 using iSmart.Entity.DTOs.ImportOrderDTO;
 using iSmart.Entity.Models;
 using iSmart.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace iSmart.Service
 {
@@ -18,6 +19,7 @@ namespace iSmart.Service
         UpdateImportOrderDetailResponse UpdateOrderDetail(UpdateImportOrderDetailRequest detail);
         bool DeleteImportOrderDetail(int id);
         List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid);
+        List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int goodId);
     }
     public class ImportOrderDetailService : IImportOrderDetailService
     {
@@ -34,6 +36,29 @@ namespace iSmart.Service
         public ImportOrderDetailService(iSmartContext context)
         {
             _context = context;
+        }
+
+        public List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int goodId)
+        {
+            try
+            {
+                var batchGoods = (List<BatchInventoryDTO>)_context.ImportOrderDetails.Include(i => i.Import).Where(i => i.Import.StatusId == 4 && i.GoodsId == goodId)
+                    .Select(s => new BatchInventoryDTO
+                    {
+                        ImportOrderDetailId = s.DetailId,
+                        BatchCode = s.BatchCode,
+                        Quantity = s.ActualQuantity,
+                        CostPrice = s.CostPrice,
+                        ManufactureDate = s.ManufactureDate,
+                        ExpiryDate = s.ExpiryDate
+                    }).ToList();
+                return batchGoods;
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public List<ImportOrderDetail> GetAllOrderDetails()
@@ -59,6 +84,7 @@ namespace iSmart.Service
                     ImportId = detail.ImportId,
                     GoodsId = (int)detail.GoodsId,
                     Quantity = (int)detail.Quantity,
+                    ActualQuantity = (int)detail.Quantity,
                     CostPrice = detail.CostPrice,
                     BatchCode = detail.BatchCode,
                     ExpiryDate = detail.ExpiryDate,
@@ -141,6 +167,7 @@ namespace iSmart.Service
                     ImportId = detail.ImportId,
                     GoodsId = (int)detail.GoodsId,
                     Quantity = (int)detail.Quantity,
+                    ActualQuantity = (int)detail.Quantity,
                     CostPrice = detail.CostPrice,
                     BatchCode = detail.BatchCode,
                     ExpiryDate = detail.ExpiryDate,

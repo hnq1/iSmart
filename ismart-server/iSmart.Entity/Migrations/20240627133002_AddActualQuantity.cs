@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace iSmart.Entity.Migrations
 {
-    public partial class AddCustomerAndUpdateExportOrder : Migration
+    public partial class AddActualQuantity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -613,7 +613,8 @@ namespace iSmart.Entity.Migrations
                     CostPrice = table.Column<float>(type: "real", nullable: false),
                     ManufactureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    ActualQuantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
