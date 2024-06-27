@@ -111,6 +111,7 @@ internal class Program
         builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
         builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
         builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
+        builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddSingleton<WebSocketService>();
 
         // Đăng ký các dịch vụ
