@@ -109,7 +109,7 @@ function ImportOrderList() {
     const getImportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
         let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-        // console.log("pageSize:", pageSize);
+        console.log("pageSize:", selectedWarehouseId);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
 
@@ -122,6 +122,7 @@ function ImportOrderList() {
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
+        // console.log("totalWarehouse:", res);
     }
 
     const handleStorageClickTotal = () => {

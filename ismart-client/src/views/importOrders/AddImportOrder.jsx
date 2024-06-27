@@ -22,7 +22,6 @@ import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-    const warehouseId = parseInt(localStorage.getItem('warehouseId'), 10);
 
     const [importCode, setImportCode] = useState('');
 
