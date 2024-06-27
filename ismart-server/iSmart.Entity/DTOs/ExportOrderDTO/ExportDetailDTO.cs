@@ -19,8 +19,6 @@ namespace iSmart.Entity.DTOs.ExportOrderDTO
 
         public int? Quantity { get; set; }
 
- 
-
-        
+        public int ImportOrderDetailId { get; set; }
     }
 }

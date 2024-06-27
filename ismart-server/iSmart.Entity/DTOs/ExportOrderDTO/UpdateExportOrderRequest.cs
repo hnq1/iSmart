@@ -12,30 +12,25 @@ namespace iSmart.Entity.DTOs.ExportOrderDTO
 
         public int UserId { get; set; }
 
-        public int ProjectId { get; set; }
-
-        public float TotalPrice{ get; set; }
+        public float? TotalPrice{ get; set; }
 
         public string? Note { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
         public DateTime? ExportedDate { get; set; }
 
+        public int? StatusId { get; set; }
 
+        public string? ExportCode { get; set; } = null!;
 
-        public int StatusId { get; set; }
-
-        public string ExportCode { get; set; } = null!;
-
-        public int StorageId { get; set; }
-
-
+        public int? WarehouseId { get; set; }
 
         public int? DeliveryId { get; set; }
 
         public string? Image { get; set; }
 
-        public int? StokekeeperId { get; set; }
+        public int? ManagerId { get; set; }
+        public int? CustomerId { get; set; }
     }
 }
