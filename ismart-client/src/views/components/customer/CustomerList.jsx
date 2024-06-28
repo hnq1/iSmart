@@ -32,11 +32,11 @@ function CustomerList() {
         setcurrentPage(0);
         const fetchData = async () => {
             let res = await getListCustomer(1, keywordSearch);
-            console.log(res);
+            // console.log(res);
 
-            if (res.data.length == 0) {
-                toast.warning("Vui lòng nhập từ khóa tìm kiếm khác");
-            }
+            // if (res.data.length == 0) {
+            //     toast.warning("Vui lòng nhập từ khóa tìm kiếm khác");
+            // }
         };
 
         fetchData();
@@ -61,11 +61,7 @@ function CustomerList() {
         setcurrentPage(0);
         const fetchData = async () => {
             let res = await getListCustomer(1, keywordSearch);
-            console.log("fetchData: ", res);
-
-            if (res.data.length == 0) {
-                toast.warning("Vui lòng nhập từ khóa tìm kiếm khác");
-            }
+            // console.log("fetchData: ", res);
         };
 
         fetchData();
@@ -76,11 +72,7 @@ function CustomerList() {
 
     const handlePageClick = (event) => {
         setcurrentPage(+event.selected);
-        if (keywordSearch) {
-            getListCustomer(+event.selected + 1, keywordSearch);
-        } else {
-            getListCustomer(+event.selected + 1);
-        }
+        getListCustomer(+event.selected + 1, keywordSearch);
     }
     return (
         <>

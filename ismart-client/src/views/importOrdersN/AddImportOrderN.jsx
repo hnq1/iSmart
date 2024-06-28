@@ -257,63 +257,63 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         if (!importCode.trim()) {
             toast.warning("Vui lòng nhập mã đơn hàng");
         }
-        else
-            if (!selectedDate) {
-                toast.warning("Vui lòng nhập ngày nhập hàng");
-            } else if (totalCost === 0) {
-                toast.warning("Vui lòng nhập mặt hàng nhập");
-            } else {
-                const userId = parseInt(localStorage.getItem('userId'), 10);
-                let warehouse = await getWarehouseById(userId);
-                const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
-                // console.log("warehouseIdToUse: ", warehouseIdToUse);
-                // const warehouseDestinationId = selectedWarehouseExportId;
-                let isInternalTransfer = true;
-                let res = await addNewImportOrder(
-                    isInternalTransfer,
-                    userId,
-                    1,
-                    selectedSupplierId,
-                    totalCost,
-                    "",
-                    "2024-06-20T16:10:19.498Z",
-                    formatDateImport(selectedDate),
-                    1,
-                    importCode,
-                    warehouseIdToUse,
-                    selectedDeliveryId,
-                    imageImportOrder,
-                    selectedWarehouseExportId
-                );
-                // console.log("res warehouseDestinationId: ", selectedWarehouseExportId);
-                console.log("res warehouseIdToUse: ", res);
-                if (res.isSuccess == true) {
-                    let resImportId = await fetchImportOrderNewest();
-                    // console.log("ResImportID :", resImportId);
+        else if (!selectedDate) {
+            toast.warning("Vui lòng nhập ngày nhập hàng");
+        } else if (totalCost === 0) {
+            toast.warning("Vui lòng nhập mặt hàng nhập");
+        } else {
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+            const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
+            console.log("warehouseIdToUse: ", warehouseIdToUse);
+            // const warehouseDestinationId = selectedWarehouseExportId;
+            let isInternalTransfer = true;
+            let r = await addNewImportOrder(
+                isInternalTransfer,
+                userId,
+                userId,
+                selectedSupplierId,
+                totalCost,
+                "",
+                "2024-06-20T16:10:19.498Z",
+                formatDateImport(selectedDate),
+                1,
+                importCode,
+                warehouseIdToUse,
+                selectedDeliveryId,
+                imageImportOrder,
+                selectedWarehouseExportId
+            );
+            // console.log("res warehouseDestinationId: ", selectedWarehouseExportId);
+            console.log("res warehouseIdToUse: ", r);
+            if (r.isSuccess == true) {
+                let resImportId = await fetchImportOrderNewest();
+                console.log("ResImportID :", resImportId);
 
-                    if (rowsData && rowsData.length > 0) {
-                        await Promise.all(rowsData.map(async (data, index) => {
-                            await createNewImportOrderDetail(
-                                resImportId,
-                                data.costPrice,
-                                data.batchCode,
-                                data.manufactureDate,
-                                data.expiryDate,
-                                data.goodsId,
-                                data.quantity
-                            );
-                        }));
-                    }
-                    toast.success("Thêm lô hàng nhập thành công");
-
-
-                    updateTable();
-                    handleCloseModal();
-                } else {
-                    toast.warning("Mã đơn hàng đã tồn tại");
+                if (rowsData && rowsData.length > 0) {
+                    await Promise.all(rowsData.map(async (data, index) => {
+                        await createNewImportOrderDetail(
+                            resImportId,
+                            data.costPrice,
+                            data.batchCode,
+                            data.manufactureDate,
+                            data.expiryDate,
+                            data.goodsId,
+                            data.quantity
+                        );
+                    }));
                 }
+                console.log("rowsData: ", resImportId);
+                toast.success("Thêm lô hàng nhập thành công");
 
+
+                updateTable();
+                handleCloseModal();
+            } else {
+                toast.warning("Thêm lô hàng nhập thất bại");
             }
+
+        }
 
     }
 

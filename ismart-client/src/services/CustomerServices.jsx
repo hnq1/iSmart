@@ -1,7 +1,7 @@
 import axios from "./axios"
 
 const fetchAllCustomer = () => {
-    return axios.get(`api/customer/customer`);
+    return axios.get(`api/customer`);
 }
 
 const createNewCustomer = (customerName, customerAddress, customerPhone, customerEmail) => {

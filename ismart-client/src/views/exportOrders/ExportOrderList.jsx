@@ -87,7 +87,7 @@ const ExportOrderList = () => {
         if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
             getExportOrders(1, pageSize);
         }
-    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId, pageSize]);
+    }, [pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId ]);
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();

@@ -42,7 +42,6 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
             console.log(res);
             setTotalGoods(res);
         }
-
     }
 
     const getGoodById = async (id) => {
@@ -127,11 +126,11 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                                     </Dropdown.Item>
                                 ))}
 
-                                {totalGoods.length === 0 && (
+                                {/* {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
                                     </Dropdown.Item>
-                                )}
+                                )} */}
                             </Dropdown.Menu>
                         </Dropdown>
 
@@ -153,11 +152,37 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                                     </Dropdown.Item>
                                 ))}
 
-                                {totalGoods.length === 0 && (
+                                {/* {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
                                     </Dropdown.Item>
-                                )}
+                                )} */}
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                    </div>
+                </Col>
+
+                <Col md={3}>
+                    <label>Lô hàng</label>
+                    <div>
+                        <Dropdown style={{ position: 'relative' }}>
+                            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                                <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Lô hàng"}</span>
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
+                                {totalGoods && totalGoods.length > 0 && totalGoods.map((g, index) => (
+                                    <Dropdown.Item key={`good ${index}`} eventKey={g.goodsCode} onClick={(e) => handleGoodClick(g, e)}>
+                                        {g.goodsCode}
+                                    </Dropdown.Item>
+                                ))}
+
+                                {/* {totalGoods.length === 0 && (
+                                    <Dropdown.Item key="empty" disabled>
+                                        Không có mặt hàng
+                                    </Dropdown.Item>
+                                )} */}
                             </Dropdown.Menu>
                         </Dropdown>
 

@@ -327,7 +327,7 @@ function ImportOrderList() {
                                         <th className="align-middle  text-nowrap position-sticky" style={{ left: 0 }}>STT</th>
                                         <th className="align-middle  text-nowrap">Mã<br />đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Người <br />tạo đơn hàng</th>
-                                        <th className="align-middle  text-nowrap">Nhà <br />cung cấp</th>
+                                        <th className="align-middle  text-nowrap"   >Nhà <br />cung cấp</th>
                                         <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />nhập hàng</th>
@@ -357,12 +357,12 @@ function ImportOrderList() {
                                                 <td className="align-middle position-sticky" style={{ left: 0 }}>{index + 1}</td>
                                                 <td className="align-middle">{i.importCode}</td>
                                                 <td className="align-middle">{i.userName}</td>
-                                                <td className="align-middle">{i.supplierName}</td>
-                                                <td className="align-middle">{formattedAmount(i.totalCost)}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{i.supplierName}</td>
+                                                <td className="align-middle text-right" style={{ paddingLeft: '30px' }} >{formattedAmount(i.totalCost)}</td>
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
                                                 <td className="align-middle">{i.storageName}</td>
-                                                <td className="align-middle">{i.deliveryName}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left' }}>{i.deliveryName}</td>
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>

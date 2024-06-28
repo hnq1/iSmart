@@ -4,7 +4,7 @@ import { Modal, Button, Row, Col, DropdownButton, Dropdown } from "react-bootstr
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { fetchAllStorages } from '~/services/StorageServices';
 import { fetchAllDelivery } from "~/services/DeliveryServices";
-import { fetchAllProjects } from "~/services/ProjectServices";
+import { fetchAllCustomer } from "~/services/CustomerServices";
 import { addNewExportOrder, fetchExportOrderNewest } from "~/services/ExportOrderService";
 import { createNewExportOrderDetail } from "~/services/ExportOrderDetailService";
 import { format, addDays } from 'date-fns';
@@ -28,9 +28,9 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
     const [selectedDelivery, setSelectedDelivery] = useState(null);
     const [selectedDeliveryId, setSelectedDeliveryId] = useState(null);
 
-    const [totalProjects, setTotalProjects] = useState([]);
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const [totalCustomer, setTotalCustomer] = useState([]);
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
     const [minDate, setMinDate] = useState();
     const [selectedDate, setSelectedDate] = useState('');
@@ -48,7 +48,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
 
     useEffect(() => {
         getAllStorages();
-        // getAllProjects();
+        getAllCustomer();
         getAllDelivery();
     }, [])
 
@@ -85,16 +85,16 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
         console.log(delivery);
     }
 
-    // const getAllProjects = async () => {
-    //     let res = await fetchAllProjects();
-    //     setTotalProjects(res);
-    // }
+    const getAllCustomer = async () => {
+        let res = await fetchAllCustomer();
+        setTotalCustomer(res);
+    }
 
 
-    // const handleProjectClick = (project, event) => {
-    //     setSelectedProject(project.projectName);
-    //     setSelectedProjectId(project.projectId);
-    // }
+    const handleCustomerClick = (c, event) => {
+        setSelectedCustomer(c.customerName);
+        setSelectedCustomerId(c.customerId);
+    }
 
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
@@ -151,8 +151,8 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
         let res = await uploadImage(file);
-        setImageExportOrder(res);
-        console.log(res);
+        const urlImage = res.url;
+        setImageExportOrder(urlImage);
     }
 
     const handleAddExportOrder = async () => {
@@ -167,8 +167,8 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
-        } else if (!selectedProject) {
-            toast.warning("Vui lòng chọn dự án");
+        } else if (!selectedCustomer) {
+            toast.warning("Vui lòng chọn khách hàng");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let res = await addNewExportOrder(userId,
@@ -180,7 +180,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
                 "2024-03-24T08:47:56.243Z",
                 selectedDeliveryId,
                 imageExportOrder,
-                );
+            );
             console.log(res);
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
@@ -206,8 +206,8 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedWarehouseId(null);
         setSelectedDelivery(null);
         setSelectedDeliveryId(null);
-        setSelectedProject(null);
-        setSelectedProjectId(null);
+        // setSelectedProject(null);
+        // setSelectedProjectId(null);
         setSelectedDate('');
         setTotalPrice(0);
     }
@@ -260,23 +260,23 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
 
 
 
-                        {/* <Col md={3} >
+                        <Col md={3} >
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                 <Dropdown style={{ position: 'relative' }}>
                                     <Dropdown.Toggle className="ButtonCSSDropdown" as={CustomToggle} id="dropdown-custom-components">
-                                        <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedProject !== null ? selectedProject : "Dự án"}</span>
+                                        <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedCustomer !== null ? selectedCustomer : "Khách hàng"}</span>
                                     </Dropdown.Toggle>
 
                                     <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
-                                        {totalProjects && totalProjects.length > 0 && totalProjects.map((s, index) => (
-                                            <Dropdown.Item key={`delivery ${index}`} eventKey={s.projectName} onClick={(e) => handleProjectClick(s, e)}>
-                                                {s.projectName}
+                                        {totalCustomer && totalCustomer.length > 0 && totalCustomer.map((s, index) => (
+                                            <Dropdown.Item key={`delivery ${index}`} eventKey={s.customerName} onClick={(e) => handleCustomerClick(s, e)}>
+                                                {s.customerName}
                                             </Dropdown.Item>
                                         ))}
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </div>
-                        </Col> */}
+                        </Col>
 
                         <Col md={2} style={{ width: '220px' }}>
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
