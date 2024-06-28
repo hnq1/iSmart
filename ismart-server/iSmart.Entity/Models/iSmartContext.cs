@@ -64,7 +64,7 @@ namespace iSmart.Entity.Models
                 entity.HasKey(e => e.CustomerId);
                 entity.Property(e => e.CustomerName)
                       .IsRequired()
-                      .HasMaxLength(100); 
+                      .HasMaxLength(100);
 
                 entity.Property(e => e.CustomerAddress)
                       .HasMaxLength(200);
@@ -73,7 +73,7 @@ namespace iSmart.Entity.Models
                       .HasMaxLength(20);
 
                 entity.Property(e => e.CustomerEmail)
-                      .HasMaxLength(100); 
+                      .HasMaxLength(100);
 
             });
 

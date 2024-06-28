@@ -115,8 +115,10 @@ namespace iSmart.API.Controllers
                         {
                             return BadRequest("Số lượng xuất lớn hơn tồn kho");
                         }
-
+                        _context.ImportOrderDetails.FirstOrDefault(i => i.DetailId == detail.ImportOrderDetailId).ActualQuantity -= total;
+                        _context.SaveChanges();
                         goodWarehouse.Quantity -= total;
+                        
 
                         var history = new GoodsHistory
                         {
