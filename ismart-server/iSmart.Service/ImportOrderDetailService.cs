@@ -19,7 +19,7 @@ namespace iSmart.Service
         UpdateImportOrderDetailResponse UpdateOrderDetail(UpdateImportOrderDetailRequest detail);
         bool DeleteImportOrderDetail(int id);
         List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid);
-        List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int goodId);
+        List<BatchInventoryDTO> SelectBatchesForExport(int goodId, int quantity, string method);
     }
     public class ImportOrderDetailService : IImportOrderDetailService
     {
@@ -37,7 +37,54 @@ namespace iSmart.Service
         {
             _context = context;
         }
+        public List<BatchInventoryDTO> SelectBatchesForExport(int goodId, int quantity, string method)
+        {
+            List<BatchInventoryDTO> selectedBatches = new List<BatchInventoryDTO>();
 
+            // Lấy danh sách các lô hàng có sẵn cho sản phẩm productId
+            List<BatchInventoryDTO> batches = GetBatchInventoryByGoodsId(goodId);
+
+            if (method == "FIFO")
+            {
+                batches = batches.OrderBy(b => b.ExpiryDate).ToList();
+            }
+            else if (method == "LIFO")
+            {
+                // Sắp xếp các lô hàng theo ngày nhận từ sau về trước (LIFO)
+                batches = batches.OrderByDescending(b => b.ManufactureDate).ToList();
+            }
+            else
+            {
+                throw new ArgumentException("Phương pháp quản lý kho không hợp lệ.");
+            }
+
+            foreach (var batch in batches)
+            {
+                if (quantity <= 0)
+                {
+                    break;
+                }
+
+                int quantityToTake = Math.Min(batch.Quantity, quantity);
+
+                // Tạo một bản sao của lô hàng để tránh ảnh hưởng đến cơ sở dữ liệu
+                BatchInventoryDTO selectedBatch = new BatchInventoryDTO
+                {
+                    ImportOrderDetailId = batch.ImportOrderDetailId,
+                    BatchCode = batch.BatchCode,
+                    Quantity = batch.Quantity,
+                    CostPrice = batch.CostPrice,
+                    ManufactureDate = batch.ManufactureDate,
+                    ExpiryDate = batch.ExpiryDate
+                };
+
+                selectedBatches.Add(selectedBatch);
+
+                quantity -= quantityToTake;
+            }
+
+            return selectedBatches;
+        }
         public List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int goodId)
         {
             try
