@@ -31,6 +31,22 @@ namespace iSmart.Test
             Assert.That(result, Is.EqualTo(true));
 
         }
+        public void GetAllCategory_Test1()
+        {
+            var result = false;
+            var categories = _categoryService.GetAllCategory();
+            if (categories != null) result = true;
+            Assert.That(result, Is.EqualTo(true));
+
+        }
+        public void GetAllCategory_Test2()
+        {
+            var result = false;
+            var categories = _categoryService.GetAllCategory();
+            if (categories != null) result = true;
+            Assert.That(result, Is.EqualTo(true));
+
+        }
         //get category by keyword
         [Test]
         public void GetCategoryWithFilter_Test()
