@@ -28,9 +28,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpPost("add-export-order")]
-        public IActionResult AddExportOrder(CreateExportOrderRequest i, int staffId)
+        public IActionResult AddExportOrder(bool isInternalTransfer, CreateExportOrderRequest i, int staffId)
         {
-            var result = _exportService.CreateExportOrder(i, staffId);
+            var result = _exportService.CreateExportOrder(isInternalTransfer, i, staffId);
             return Ok(result);
         }
 

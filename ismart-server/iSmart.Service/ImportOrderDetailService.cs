@@ -20,6 +20,7 @@ namespace iSmart.Service
         bool DeleteImportOrderDetail(int id);
         List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid);
         List<BatchInventoryDTO> SelectBatchesForExport(int goodId, int quantity, string method);
+        List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int goodId);
     }
     public class ImportOrderDetailService : IImportOrderDetailService
     {
