@@ -6,6 +6,7 @@ import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { fetchGoodById } from "~/services/GoodServices";
 import { toast } from "react-toastify";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
+import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 
 const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
@@ -31,7 +32,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
 
     // useEffect(() => {
     //     if (selectedGoodId) {
-    //         let res = fetchAllGoodsInWarehouse(selectedGoodId);
+    //         let res = getGoodinWarehouseById(selectedGoodId);
     //     }
 
     // }, [selectedGoodId])
@@ -40,27 +41,24 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     const getAllGoods = async () => {
         if (selectedStorageId !== null) {
             let res = await fetchAllGoodsInWarehouse(selectedStorageId);
+            // console.log("getAllGoods: ", res);
             setTotalGoods(res);
-            const inStockValues = res.map(item => item.inStock);
-            setQuantityInStock(inStockValues);
-            console.log("res.inStock: ", inStockValues);
         }
     }
 
-    // const getGoodById = async (id) => {
-    //     let res = await fetchGoodById(id);
-    //     setQuantityInStock(res.inStock)
-    //     console.log("res.inStock: ", res.inStock);
+
+
+    // const getAllSuppliers = async () => {
+    //     let res = await fetchAllSuppliers();
+    //     setTotalSuppliers(res);
     // }
 
-    const getAllSuppliers = async () => {
-        let res = await fetchAllSuppliers();
-        setTotalSuppliers(res);
-    }
-
-    const handleGoodClick = (good, event) => {
+    const handleGoodClick = async (good, event) => {
         setSelectedGoodCode(good.goodsCode);
         setSelectedGoodId(good.goodsId);
+        let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
+        setQuantityInStock(res.inStock);
+        // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
     }
 
     // const handleSupplierClick = (supplier, event) => {
@@ -72,21 +70,20 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         setQuantity(event.target.value);
     }
 
-    const handleChangePrice = (event) => {
-        setCostPrice(event.target.value);
-    }
+    // const handleChangePrice = (event) => {
+    //     setCostPrice(event.target.value);
+    // }
 
     const handleConfirmRowData = () => {
         if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm")
         } else if (quantity === 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0")
-        } else if (costPrice === 0) {
-            toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
         } else if (quantity > quantityInStock) {
             toast.warning("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
         } else {
-            onChange({ costPrice: costPrice, quantity: quantity, goodsId: selectedGoodId, goodsCode: selectedGoodCode, totalOneGoodPrice: costPrice * quantity });
+            onChange({ costPrice: 0, quantity: quantity, goodsId: selectedGoodId, goodsCode: selectedGoodCode, totalOneGoodPrice: 0 });
+            // console.log("selectedGoodId: ", quantity);
             handleCloseModal();
         }
 
@@ -99,8 +96,8 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     }
 
     const handleReset = () => {
-        setSelectedSupplier(null);
-        setSelectedSupplierId(null);
+        // setSelectedSupplier(null);
+        // setSelectedSupplierId(null);
         setSelectedGoodCode(null);
         setSelectedGoodId(null);
         setQuantityInStock(0);
@@ -188,7 +185,8 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                         </div>
                     </Col>
-                    <Col md={2}>
+
+                    {/* <Col md={2}>
                         <div className="form-group mb-3">
                             <label >Giá tiền</label>
                             <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
@@ -200,7 +198,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             <label >Tổng giá tiền</label>
                             <input type="number" className="form-control inputCSS" value={costPrice * quantity} disabled />
                         </div>
-                    </Col>
+                    </Col> */}
 
 
 

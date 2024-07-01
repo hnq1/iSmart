@@ -352,7 +352,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
             </Modal.Body>
 
             <Modal.Footer>
-                <div className=" ">
+                {/* <div className=" ">
                     <button
                         className="btn  border-left-0 rounded ButtonRed"
                         type="button"
@@ -361,7 +361,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
                         Tổng giá tiền: {formattedAmount(totalPrice)}
                     </button>
 
-                </div>
+                </div> */}
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
                 </Button>
