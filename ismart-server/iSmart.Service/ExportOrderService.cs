@@ -15,7 +15,7 @@ namespace iSmart.Service
 {
     public interface IExportOrderService
     {
-        CreateExportOrderResponse CreateExportOrder(CreateExportOrderRequest i, int staffId);
+        CreateExportOrderResponse CreateExportOrder(bool isInternalTransfer, CreateExportOrderRequest i, int staffId);
         List<ExportOrderDTO> GetAllExportOrder();
         int GetExportOrderNewest();
         ExportOrderFilterPaging ExportOrderFilterPaging(int pageSize, int page, int? warehouseId, int? userId, int? managerId, int? status, int? sortDate, string? keyword = "");
@@ -38,11 +38,11 @@ namespace iSmart.Service
             _webSocketService = webSocketService;
         }
 
-        public CreateExportOrderResponse CreateExportOrder(CreateExportOrderRequest i, int staffId)
+        public CreateExportOrderResponse CreateExportOrder(bool isInternalTransfer, CreateExportOrderRequest i, int staffId)
         {
             try
             {
-                var exportOrder = new ExportOrder
+                var exportOrder = isInternalTransfer == false ? new ExportOrder
                 {
                     ExportCode = "XH" + i.ExportCode,
                     UserId = staffId,
@@ -57,6 +57,22 @@ namespace iSmart.Service
                     Image = i.Image,
                     StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
                     CustomerId = i.CustomerId,
+                } : new ExportOrder
+                {
+                    ExportCode = "XH" + i.ExportCode,
+                    UserId = staffId,
+                    TotalPrice = 0,
+                    Note = i.Note,
+                    StatusId = 3,
+                    CreatedDate = DateTime.Now,
+                    ExportedDate = i.ExportedDate,
+                    WarehouseId = i.WarehouseId,
+                    CancelDate = i.CancelDate,
+                    DeliveryId = i.DeliveryId,
+                    Image = i.Image,
+                    StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
+                    CustomerId = 0,
+                    WarehouseDestinationId = i.WarehouseDestinationId
                 };
                 if (_context.ExportOrders.SingleOrDefault(z => exportOrder.ExportCode.ToLower() == z.ExportCode.ToLower()) == null)
                 {
