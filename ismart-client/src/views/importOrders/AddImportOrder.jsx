@@ -243,7 +243,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                 imageImportOrder,
 
             );
-            console.log("isInternalTransfer: ", isInternalTransfer);
+            // console.log("isInternalTransfer: ", isInternalTransfer);
             if (res.isSuccess == true) {
                 let resImportId = await fetchImportOrderNewest();
                 console.log("ResImportID :", resImportId);

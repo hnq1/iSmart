@@ -5,6 +5,7 @@ import { fetchAllSuppliers } from "~/services/SupplierServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { fetchGoodById } from "~/services/GoodServices";
 import { toast } from "react-toastify";
+import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 
 const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
@@ -20,34 +21,37 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
-    useEffect(() => {
-        getAllSuppliers();
-    }, [])
+    // useEffect(() => {
+    //     getAllSuppliers();
+    // }, [])
 
     useEffect(() => {
         getAllGoods();
-    }, [selectedStorageId, selectedSupplierId])
+    }, [selectedStorageId])
 
-    useEffect(() => {
-        if (selectedGoodId) {
-            let res = getGoodById(selectedGoodId);
-        }
+    // useEffect(() => {
+    //     if (selectedGoodId) {
+    //         let res = fetchAllGoodsInWarehouse(selectedGoodId);
+    //     }
 
-    }, [selectedGoodId])
+    // }, [selectedGoodId])
 
 
     const getAllGoods = async () => {
-        if (selectedStorageId && selectedSupplierId) {
-            let res = await fetchGoodsWithStorageAndSupplier(selectedStorageId, selectedSupplierId);
-            console.log(res);
+        if (selectedStorageId !== null) {
+            let res = await fetchAllGoodsInWarehouse(selectedStorageId);
             setTotalGoods(res);
+            const inStockValues = res.map(item => item.inStock);
+            setQuantityInStock(inStockValues);
+            console.log("res.inStock: ", inStockValues);
         }
     }
 
-    const getGoodById = async (id) => {
-        let res = await fetchGoodById(id);
-        setQuantityInStock(res.inStock)
-    }
+    // const getGoodById = async (id) => {
+    //     let res = await fetchGoodById(id);
+    //     setQuantityInStock(res.inStock)
+    //     console.log("res.inStock: ", res.inStock);
+    // }
 
     const getAllSuppliers = async () => {
         let res = await fetchAllSuppliers();
@@ -59,10 +63,10 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         setSelectedGoodId(good.goodsId);
     }
 
-    const handleSupplierClick = (supplier, event) => {
-        setSelectedSupplier(supplier.supplierName);
-        setSelectedSupplierId(supplier.supplierId)
-    }
+    // const handleSupplierClick = (supplier, event) => {
+    //     setSelectedSupplier(supplier.supplierName);
+    //     setSelectedSupplierId(supplier.supplierId)
+    // }
 
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
@@ -110,8 +114,8 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                 <Modal.Title>Chọn sản phẩm</Modal.Title>
             </Modal.Header>
             <Modal.Body><Row>
-
-                <Col md={3}>
+                {/* Nhà cung cấp */}
+                {/* <Col md={3}>
                     <label>Nhà cung cấp</label>
                     <div>
                         <Dropdown style={{ position: 'relative' }}>
@@ -126,16 +130,19 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                                     </Dropdown.Item>
                                 ))}
 
-                                {/* {totalGoods.length === 0 && (
+
+                                {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
                                     </Dropdown.Item>
-                                )} */}
+                                )}
+
+
                             </Dropdown.Menu>
                         </Dropdown>
 
                     </div>
-                </Col>
+                </Col> */}
 
                 <Col md={3}>
                     <label>Mã sản phẩm</label>
@@ -163,31 +170,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                     </div>
                 </Col>
 
-                <Col md={3}>
-                    <label>Lô hàng</label>
-                    <div>
-                        <Dropdown style={{ position: 'relative' }}>
-                            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Lô hàng"}</span>
-                            </Dropdown.Toggle>
 
-                            <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
-                                {totalGoods && totalGoods.length > 0 && totalGoods.map((g, index) => (
-                                    <Dropdown.Item key={`good ${index}`} eventKey={g.goodsCode} onClick={(e) => handleGoodClick(g, e)}>
-                                        {g.goodsCode}
-                                    </Dropdown.Item>
-                                ))}
-
-                                {/* {totalGoods.length === 0 && (
-                                    <Dropdown.Item key="empty" disabled>
-                                        Không có mặt hàng
-                                    </Dropdown.Item>
-                                )} */}
-                            </Dropdown.Menu>
-                        </Dropdown>
-
-                    </div>
-                </Col>
 
             </Row>
                 <Row style={{ marginTop: "20px" }}>

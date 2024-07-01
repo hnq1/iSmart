@@ -333,7 +333,7 @@ function ImportOrderListN() {
                                         <th className="align-middle  text-nowrap">Mã<br />đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Người <br />tạo đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Nhà <br />cung cấp</th>
-                                        <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th>
+                                        {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />nhập hàng</th>
                                         <th className="align-middle  text-nowrap">Kho <br />nhập hàng</th>
@@ -364,7 +364,7 @@ function ImportOrderListN() {
                                                 <td className="align-middle">{i.importCode}</td>
                                                 <td className="align-middle">{i.userName}</td>
                                                 <td className="align-middle">{i.supplierName}</td>
-                                                <td className="align-middle">{formattedAmount(i.totalCost)}</td>
+                                                {/* <td className="align-middle">{formattedAmount(i.totalCost)}</td> */}
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
                                                 <td className="align-middle">{i.storageName}</td>

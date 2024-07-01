@@ -39,7 +39,7 @@ namespace iSmart.API.Controllers
             if (order == null)
             {
                 return NotFound("Don't have batch in warehouse");
-            } 
+            }
             return Ok(order);
         }
 

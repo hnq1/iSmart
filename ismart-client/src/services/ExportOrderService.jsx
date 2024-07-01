@@ -11,7 +11,7 @@ const addNewExportOrder = (staffId, exportCode, totalPrice,
 }
 
 const fetchExportOrderNewest = () => {
-    return axios.get(`api/ExportOrder/get-newest-export-order`);
+    return axios.get(`api/export-order/get-newest-export-order`);
 }
 
 const fetchAllExportOrders = () => {

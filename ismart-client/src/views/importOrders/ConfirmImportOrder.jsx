@@ -4,17 +4,21 @@ import { addSuccessFullImportOrder } from "~/services/ImportOrderServices";
 import { updateImportOrder } from "~/services/ImportOrderServices";
 import { getImportOrderDetailByImportId } from "~/services/ImportOrderDetailServices";
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 
 const ConfirmImportOrder = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
     const [totalOrderDetail, setTotalOrderDetail] = useState([]);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
+
     useEffect(() => {
+
         if (dataImportOrder.importId) {
-            console.log(dataImportOrder);
+
             getTotalOrderDetail(dataImportOrder.importId);
+            // console.log("dataImportOrder.importId:", dataImportOrder.importId);
         }
-    }, [dataImportOrder])
+    }, [dataImportOrder.importId])
 
     const handleCloseModal = () => {
         handleClose();
@@ -22,13 +26,15 @@ const ConfirmImportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
 
     const getTotalOrderDetail = async (importId) => {
         let res = await getImportOrderDetailByImportId(importId);
-        // console.log(res);
+        // console.log("r1: ", res);
+
         setTotalOrderDetail(res);
     }
 
     const SaveAddImportOrder = async () => {
         let resSuccessImportOrder = await updateImportOrder(dataImportOrder.importId, dataImportOrder.userId, dataImportOrder.supplierId, dataImportOrder.totalCost, "", dataImportOrder.createdDate, dataImportOrder.importedDate, 3, dataImportOrder.importCode, dataImportOrder.storageId, dataImportOrder.deliveryId, dataImportOrder.image, userId);
         let res = await addSuccessFullImportOrder(dataImportOrder.importId);
+        // console.log("dataImportOrder.importId:", dataImportOrder.importId);
         toast.success("Xác nhận nhập kho thành công");
         updateTable();
         handleClose();

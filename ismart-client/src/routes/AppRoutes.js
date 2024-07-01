@@ -24,6 +24,7 @@ import PrivateRoute from './PrivateRoute';
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 import CustomerList from '~/views/components/customer/CustomerList';
+import ConfirmImportOrder from '~/views/importOrders/ConfirmImportOrder';
 const AppRoutes = () => {
     const roleId = parseInt(localStorage.getItem('RoleId'), 10);
 
@@ -312,7 +313,22 @@ const AppRoutes = () => {
                         </PrivateRoute>
                     }
                 />
-
+                <Route
+                    path="/confirm-import-order/:importId"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <ConfirmImportOrder />
+                                    </Col>
+                                </Row>
+                            </Container>
+                        </PrivateRoute>
+                    }
+                />
             </Routes >
 
         </>

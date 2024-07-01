@@ -14,6 +14,7 @@ import uploadImage from "~/services/ImageServices";
 
 import AddRowDataExportOrder from "./AddRowDataExport";
 import RowDataExportOrder from "./RowDataExport";
+import { set } from "lodash";
 
 const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
 
@@ -206,6 +207,8 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedWarehouseId(null);
         setSelectedDelivery(null);
         setSelectedDeliveryId(null);
+        setSelectedCustomer(null);
+        setSelectedCustomerId(null);
         // setSelectedProject(null);
         // setSelectedProjectId(null);
         setSelectedDate('');
