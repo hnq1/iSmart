@@ -1,12 +1,12 @@
 import axios from "./axios";
 
-const addNewExportOrder = (staffId, exportCode, totalPrice,
+const addNewExportOrder = (isInternalTransfer, staffId, exportCode, totalPrice,
     note, exportedDate, warehouseId,
-    cancelDate, deliveryId, image, customerId,) => {
-    return axios.post(`api/export-order/add-export-order?staffId=${staffId}`, {
+    cancelDate, deliveryId, image, customerId, warehouseDestinationId) => {
+    return axios.post(`api/export-order/add-export-order?isInternalTransfer=${isInternalTransfer}&staffId=${staffId}`, {
         exportCode, totalPrice,
         note, exportedDate, warehouseId,
-        cancelDate, deliveryId, image, customerId,
+        cancelDate, deliveryId, image, customerId, warehouseDestinationId
     })
 }
 

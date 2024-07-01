@@ -18,9 +18,9 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     const [selectedGoodCode, setSelectedGoodCode] = useState(null);
     const [selectedGoodId, setSelectedGoodId] = useState(null);
 
-    const [totalSuppliers, setTotalSuppliers] = useState([]);
-    const [selectedSupplier, setSelectedSupplier] = useState(null);
-    const [selectedSupplierId, setSelectedSupplierId] = useState(null);
+    // const [totalSuppliers, setTotalSuppliers] = useState([]);
+    // const [selectedSupplier, setSelectedSupplier] = useState(null);
+    // const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
     // useEffect(() => {
     //     getAllSuppliers();
@@ -82,7 +82,14 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         } else if (quantity > quantityInStock) {
             toast.warning("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
         } else {
-            onChange({ costPrice: 0, quantity: quantity, goodsId: selectedGoodId, goodsCode: selectedGoodCode, totalOneGoodPrice: 0 });
+            onChange({
+                costPrice: 0,
+                quantity: quantity,
+                goodsId: selectedGoodId,
+                goodsCode: selectedGoodCode,
+                totalOneGoodPrice: 0,
+                importOrderDetailId: null
+            });
             // console.log("selectedGoodId: ", quantity);
             handleCloseModal();
         }
@@ -167,7 +174,21 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                     </div>
                 </Col>
 
+                <Col md={3}>
+                    <div className="form-group mb-3">
+                        <label>Phương thức xuất kho</label>
+                        <Dropdown style={{ position: 'relative' }}>
+                            <Dropdown.Toggle variant="success" id="dropdown-custom-components" >
+                                <span style={{ color: 'white' }}>Chọn phương thức</span>
+                            </Dropdown.Toggle>
 
+                            <Dropdown.Menu>
+                                <Dropdown.Item href="#/action-1">LIFO (Last In, First Out)</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2">FIFO (First In, First Out)</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                </Col>
 
             </Row>
                 <Row style={{ marginTop: "20px" }}>

@@ -164,30 +164,35 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Vui lòng chọn kho xuất hàng");
         } else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
-        } else if (totalPrice === 0) {
-            toast.warning("Vui lòng nhập mặt hàng xuất");
+            // } else if (totalPrice === 0) {
+            //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
         } else if (!selectedCustomer) {
             toast.warning("Vui lòng chọn khách hàng");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
-            let res = await addNewExportOrder(userId,
+            console.log("userId", userId);
+            let isInternalTransfer = false;
+            let res = await addNewExportOrder(isInternalTransfer,
+                userId,
                 exportCode,
-                totalPrice,
+                0,
                 "",
                 "2024-03-24T08:47:56.243Z",
                 selectedWarehouseId,
                 "2024-03-24T08:47:56.243Z",
                 selectedDeliveryId,
                 imageExportOrder,
+                selectedCustomerId,
+                0
             );
-            console.log(res);
+            console.log("addNewExportOrder:", res);
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
-                        await createNewExportOrderDetail(resExportId, data.costPrice, data.goodsId, data.quantity);
+                        await createNewExportOrderDetail(resExportId, data.costPrice, data.goodsId, data.quantity, data.importOrderDetailId);
                     }));
                 }
                 toast.success("Thêm lô hàng xuất thành công");
