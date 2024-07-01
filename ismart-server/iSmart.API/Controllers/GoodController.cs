@@ -57,6 +57,12 @@ namespace iSmart.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("get-good-in-warehouse-by-id")]
+        public IActionResult GetGoodsInWarehouse(int warehouseId, int goodId)
+        {
+            var result = _goodsService.GetGoodsInWarehouseById(warehouseId, goodId);
+            return Ok(result);
+        }
 
         [HttpGet("get-goods-with-warehouse-supplier")]
         public async Task<IActionResult> GetAllGoodsWithStorageAndSupplier(int warehouseId, int supplierId)

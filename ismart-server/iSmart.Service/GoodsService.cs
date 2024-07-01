@@ -25,7 +25,7 @@ namespace iSmart.Service
         UpdateGoodsResponse UpdateGoods(UpdateGoodsRequest goods);
         bool UpdateStatusGoods(int id, int StatusId);
         Task<List<GoodsDTO>?> GetGoodsInWarehouse(int warehouseId);
-
+        GoodsDTO GetGoodsInWarehouseById(int warehouseId, int goodId);
 
 
     }
@@ -217,6 +217,54 @@ namespace iSmart.Service
                 throw new Exception(e.Message);
             }
         }
+
+        public GoodsDTO GetGoodsInWarehouseById(int warehouseId, int goodId)
+        {
+            try
+            {
+                var goods = _context.GoodsWarehouses
+                    .Include(g => g.Good)
+                        .ThenInclude(g => g.Category)
+                    .Include(g => g.Good)
+                        .ThenInclude(g => g.Supplier)
+                    .Include(g => g.Good)
+                        .ThenInclude(g => g.Status)
+                    .FirstOrDefault(g => g.WarehouseId == warehouseId && g.GoodsId == goodId);
+
+                if (goods == null)
+                {
+                    throw new Exception("Không tìm thấy sản phẩm trong kho với ID được cung cấp.");
+                }
+
+                return new GoodsDTO
+                {
+                    GoodsId = goods.GoodsId,
+                    GoodsCode = goods.Good.GoodsCode,
+                    GoodsName = goods.Good.GoodsName,
+                    CategoryId = goods.Good.CategoryId,
+                    CategoryName = goods.Good.Category?.CategoryName,
+                    Description = goods.Good.Description,
+                    StockPrice = goods.Good.StockPrice,
+                    MeasuredUnit = goods.Good.MeasuredUnit,
+                    InStock = goods.Quantity,
+                    Image = goods.Good.Image,
+                    CreatedDate = goods.Good.CreatedDate,
+                    WarrantyTime = goods.Good.WarrantyTime,
+                    Barcode = goods.Good.Barcode,
+                    MinStock = goods.Good.MinStock,
+                    MaxStock = goods.Good.MaxStock,
+                    SupplierId = goods.Good.SupplierId,
+                    SupplierName = goods.Good.Supplier?.SupplierName,
+                    StatusId = goods.Good.StatusId,
+                    Status = goods.Good.Status?.StatusType
+                };
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Lỗi khi truy xuất sản phẩm: {e.Message}");
+            }
+        }
+
 
         public GoodsFilterPaging? GetGoodsByKeyword(int pageSize, int page, int? warehouseId, int? categoryId, int? supplierId, int? sortPrice, string? keyword = "")
         {
