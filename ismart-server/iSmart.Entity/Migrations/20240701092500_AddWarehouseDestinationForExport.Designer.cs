@@ -12,8 +12,8 @@ using iSmart.Entity.Models;
 namespace iSmart.Entity.Migrations
 {
     [DbContext(typeof(iSmartContext))]
-    [Migration("20240608100305_AddStatusForDelivery")]
-    partial class AddStatusForDelivery
+    [Migration("20240701092500_AddWarehouseDestinationForExport")]
+    partial class AddWarehouseDestinationForExport
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,39 @@ namespace iSmart.Entity.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Customer", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"), 1L, 1);
+
+                    b.Property<string>("CustomerAddress")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("CustomerEmail")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CustomerPhone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Customers");
+                });
 
             modelBuilder.Entity("iSmart.Entity.Models.ActionType", b =>
                 {
@@ -251,18 +284,15 @@ namespace iSmart.Entity.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExportId"), 1L, 1);
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("CancelDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Customer")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int?>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("int");
 
                     b.Property<int?>("DeliveryId")
                         .IsRequired()
@@ -285,9 +315,6 @@ namespace iSmart.Entity.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("StaffId")
                         .HasColumnType("int");
 
@@ -300,10 +327,15 @@ namespace iSmart.Entity.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("WarehouseDestinationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("WarehouseId")
                         .HasColumnType("int");
 
                     b.HasKey("ExportId");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("DeliveryId");
 
@@ -331,6 +363,9 @@ namespace iSmart.Entity.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<int>("ImportOrderDetailId")
+                        .HasColumnType("int");
+
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
@@ -342,6 +377,8 @@ namespace iSmart.Entity.Migrations
                     b.HasIndex("ExportId");
 
                     b.HasIndex("GoodsId");
+
+                    b.HasIndex("ImportOrderDetailId");
 
                     b.ToTable("ExportOrderDetail", (string)null);
                 });
@@ -403,9 +440,6 @@ namespace iSmart.Entity.Migrations
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InStock")
-                        .HasColumnType("int");
 
                     b.Property<int?>("MaxStock")
                         .HasColumnType("int");
@@ -549,13 +583,17 @@ namespace iSmart.Entity.Migrations
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<float>("TotalCost")
                         .HasColumnType("real");
 
                     b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseDestinationId")
                         .HasColumnType("int");
 
                     b.Property<int>("WarehouseId")
@@ -583,6 +621,9 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetailId"), 1L, 1);
+
+                    b.Property<int>("ActualQuantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("BatchCode")
                         .IsRequired()
@@ -627,9 +668,6 @@ namespace iSmart.Entity.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("MeasuredUnitValue")
-                        .HasColumnType("int");
 
                     b.HasKey("MeasuredUnitId");
 
@@ -1077,6 +1115,12 @@ namespace iSmart.Entity.Migrations
 
             modelBuilder.Entity("iSmart.Entity.Models.ExportOrder", b =>
                 {
+                    b.HasOne("Customer", "Customer")
+                        .WithMany("ExportOrders")
+                        .HasForeignKey("CustomerId")
+                        .IsRequired()
+                        .HasConstraintName("FK_ExportOrder_Customer_CustomerId");
+
                     b.HasOne("iSmart.Entity.Models.Delivery", "Delivery")
                         .WithMany("ExportOrders")
                         .HasForeignKey("DeliveryId")
@@ -1102,6 +1146,8 @@ namespace iSmart.Entity.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_ExportOrder_Storage_StorageId");
 
+                    b.Navigation("Customer");
+
                     b.Navigation("Delivery");
 
                     b.Navigation("Status");
@@ -1126,9 +1172,17 @@ namespace iSmart.Entity.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_ExportOrderDetail_Goods");
 
+                    b.HasOne("iSmart.Entity.Models.ImportOrderDetail", "ImportOrderDetail")
+                        .WithMany()
+                        .HasForeignKey("ImportOrderDetailId")
+                        .IsRequired()
+                        .HasConstraintName("FK_ExportOrderDetail_ImportOrderDetail");
+
                     b.Navigation("Export");
 
                     b.Navigation("Goods");
+
+                    b.Navigation("ImportOrderDetail");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.Good", b =>
@@ -1410,6 +1464,11 @@ namespace iSmart.Entity.Migrations
                         .HasForeignKey("RoleId")
                         .IsRequired()
                         .HasConstraintName("FK_RoleFeature_Role");
+                });
+
+            modelBuilder.Entity("Customer", b =>
+                {
+                    b.Navigation("ExportOrders");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.ActionType", b =>

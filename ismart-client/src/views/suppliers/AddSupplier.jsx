@@ -54,53 +54,55 @@ const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
         setEmailSupplier("");
         setNoteSupplier("");
     }
-    return (<>
-        <Modal show={isShow} onHide={handleCloseModal}>
-            <Modal.Header closeButton>
-                <Modal.Title>Thêm nhà cung cấp</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <div className="body-add-new">
-                    <div className="form-group mb-3">
-                        <label >Tên nhà cung cấp</label>
-                        <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={nameSupplier} onChange={(event) => setNameSupplier(event.target.value)} />
+    return (
+        <>
+            <Modal show={isShow} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Thêm nhà cung cấp</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="body-add-new">
+                        <div className="form-group mb-3">
+                            <label >Tên nhà cung cấp</label>
+                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={nameSupplier} onChange={(event) => setNameSupplier(event.target.value)} />
+                        </div>
+                        <div className="form-group mb-3">
+                            <label >Số điện thoại</label>
+                            <input type="text" className="form-control inputCSS" value={phoneSupplier} onChange={(event) => setPhoneSupplier(event.target.value)} />
+                        </div>
+                        <div className="form-group mb-3">
+                            <label >Email</label>
+                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={emailSupplier} onChange={(event) => setEmailSupplier(event.target.value)} />
+                        </div>
+                        <div className="form-group mb-3">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    checked={isChecked}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Lưu ý: Kho nội bộ
+                            </label>
+                        </div>
+                        <Button className="ButtonRed" onClick={handleReset}>
+                            Xóa thông tin thay đổi
+                        </Button>
+
                     </div>
-                    <div className="form-group mb-3">
-                        <label >Số điện thoại</label>
-                        <input type="text" className="form-control inputCSS" value={phoneSupplier} onChange={(event) => setPhoneSupplier(event.target.value)} />
-                    </div>
-                    <div className="form-group mb-3">
-                        <label >Email</label>
-                        <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={emailSupplier} onChange={(event) => setEmailSupplier(event.target.value)} />
-                    </div>
-                    <div className="form-group mb-3">
-                        <label>
-                            <input
-                                type="checkbox"
-                                className="form-check-input"
-                                checked={isChecked}
-                                onChange={handleCheckboxChange}
-                            />
-                            Lưu ý: Kho nội bộ
-                        </label>
-                    </div>
-                    <Button className="ButtonRed" onClick={handleReset}>
-                        Xóa thông tin thay đổi
+                </Modal.Body>
+                <Modal.Footer>
+
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                        Đóng
                     </Button>
-
-                </div>
-            </Modal.Body>
-            <Modal.Footer>
-
-                <Button variant="secondary" onClick={handleCloseModal}>
-                    Đóng
-                </Button>
-                <Button variant="primary" className="ButtonCSS" onClick={handleSave}>
-                    Lưu
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    </>)
+                    <Button variant="primary" className="ButtonCSS" onClick={handleSave}>
+                        Lưu
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
 }
 
 export default ModelAddSupplier;

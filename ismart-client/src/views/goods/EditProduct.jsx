@@ -23,9 +23,9 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
     const [goodName, setGoodName] = useState(null);
     const [goodCode, setGoodCode] = useState(null);
@@ -42,7 +42,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
 
     useEffect(() => {
-        console.log(dataGoodEdit);
+
 
         setSelectedCategory(dataGoodEdit.categoryName);
         setSelectedCategoryId(dataGoodEdit.categoryId);
@@ -50,8 +50,8 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setSelectedSupplier(dataGoodEdit.supplierName);
         setSelectedSupplierId(dataGoodEdit.supplierId);
 
-        setSelectedStorage(dataGoodEdit.storageName);
-        setSelectedStorageId(dataGoodEdit.storageId);
+        setSelectedWarehouse(dataGoodEdit.warehouseName);
+        setSelectedWarehouseId(dataGoodEdit.warehouseId);
 
         setStockPrice(dataGoodEdit.stockPrice);
         setMaxStock(dataGoodEdit.maxStock);
@@ -67,21 +67,26 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setBarCode(dataGoodEdit.barcode);
 
     }, [dataGoodEdit])
-
+    console.log(dataGoodEdit);
     useEffect(() => {
         getAllStorages();
         getAllCategories();
         getAllSuppliers();
-
     }, [])
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+    const handleStorageTotalClick = () => {
+        setSelectedWarehouse("Tất cả Kho");
+        setSelectedWarehouseId("");
+    }
+
+
+    const handleStorageClick = (warehouse) => {
+        setSelectedWarehouse(warehouse.warehouseName);
+        setSelectedWarehouseId(warehouse.warehouseId);
     }
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
@@ -102,8 +107,6 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId)
     }
-
-
 
 
 
@@ -133,12 +136,21 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         let res = await uploadImage(file);
         const urlImage = res.url;
         setImageGood(urlImage);
+<<<<<<< HEAD
     };
     const handleStockPriceChange = (event) => {
         const value = event.target.value;
         const formattedValue = currency(value, { symbol: '', separator: '.', decimal: ',', precision: 0 }).format();
         setStockPrice(formattedValue);
     };
+
+    
+=======
+    }
+
+
+
+>>>>>>> main
 
 
     const handleGoodName = (event) => {
@@ -167,18 +179,22 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         handleClose();
     }
     const handleSave = async () => {
-        if (warrantyTime <= 0) {/////
+<<<<<<< HEAD
+
+=======
+>>>>>>> main
+        if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }
-        else if (stockPrice <= 0) {///////
+        else if (stockPrice <= 0) {
             toast.warning("Vui lòng nhập giá lớn hơn 0");
         }
-        else if (!imageGood) {/////////
+        else if (!imageGood) {
             toast.warning("Vui lòng nhập file ảnh");
         }
-        else if (maxStock <= 0) {///////
+        else if (maxStock <= 0) {
             toast.warning("Vui lòng nhập maxstock lớn hơn 0");
-        } else if (minStock <= 0) {//////////
+        } else if (minStock <= 0) {
             toast.warning("Vui lòng nhập minstock lớn hơn 0");
         }
         else {
@@ -196,10 +212,10 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 currency(stockPrice, { separator: '.', decimal: ',', precision: 0 }).value,
                 warrantyTime,
                 barCode,
-                selectedStorageId,
+                selectedWarehouseId,
                 maxStock,
                 minStock);
-            // console.log("RES UPDATE", res);
+            console.log("RES UPDATE", selectedWarehouseId);
             updateTable();
             toast.success("Sửa mặt hàng thành công");
             handleCloseModal();
@@ -209,6 +225,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const handleReset = () => {
 
     }
+
     return (
         <Modal show={isShow} onHide={handleCloseModal} size="xs">
             <Modal.Header closeButton>
@@ -216,20 +233,39 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    {roleId == 1 ?
-                        <Row>
-                            <label >Kho</label>
+<<<<<<< HEAD
+                    {
+=======
+                    {/* {
+>>>>>>> main
+                        roleId === 1 ?
+                            <Row>
+                                <label >Kho</label>
+                                <DropdownButton
+                                    className="DropdownButtonCSS ButtonCSSDropdown"
+                                    title={selectedWarehouse == null ? selectedWarehouse : "Tất cả Kho"}
+                                    variant="success"
+                                    style={{ zIndex: 999 }}
+                                >
+                                    <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
 
-                            <Col md={5}>
-                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                    {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                        <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                    {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                        <Dropdown.Item
+                                            key={`warehouse ${index}`}
+                                            eventKey={c.warehouseName}
+                                            onClick={(e) => handleStorageClick(c, e)}
+                                        >
+                                            {c.warehouseName}
+                                        </Dropdown.Item>
                                     ))}
                                 </DropdownButton>
-                            </Col>
-                        </Row>
-                        : ''
+                            </Row>
+                            : ''
+<<<<<<< HEAD
                     }
+=======
+                    } */}
+>>>>>>> main
                     <Col md={2}>
                         <label >Đơn vị </label>
                         <DropdownButton
@@ -362,6 +398,4 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         </Modal >
     );
 }
-
-
 export default ModalEditGood;

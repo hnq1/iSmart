@@ -79,5 +79,16 @@ const fetchAllGoodsInWarehouse = (id) => {
     return axios.get(`api/goods/get-goods-in-warehouse?warehouseId=${id}`)
 }
 
+const fetchGoodinWarehouseById = (warehouseId, goodId) => {
+    return axios.get(`api/goods/get-good-in-warehouse-by-id?warehouseId=${warehouseId}&goodId=${goodId}`)
+}
 
+<<<<<<< HEAD
 export { updateGood, addGood, addGoodinAdmin, fetchGoodsWithFilter, fetchGoodsWithSupplier, fetchAllGoods, fetchGoodsWithStorageAndSupplier, fetchGoodById, fetchHistoryGood, fetchAllGoodsInWarehouse }
+=======
+export {
+    updateGood, addGood, addGoodinAdmin, fetchGoodsWithFilter, fetchGoodsWithSupplier,
+    fetchAllGoods, fetchGoodsWithStorageAndSupplier, fetchGoodById,
+    fetchHistoryGood, fetchAllGoodsInWarehouse, fetchGoodinWarehouseById
+}
+>>>>>>> main

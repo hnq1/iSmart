@@ -16,7 +16,7 @@ namespace iSmart.Entity.Models
             : base(options)
         {
         }
-
+        public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<ActionType> ActionTypes { get; set; }
         public virtual DbSet<AvailableForReturn> AvailableForReturns { get; set; }
         public virtual DbSet<Bill> Bills { get; set; }
@@ -59,6 +59,24 @@ namespace iSmart.Entity.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.HasKey(e => e.CustomerId);
+                entity.Property(e => e.CustomerName)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.CustomerAddress)
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.CustomerPhone)
+                      .HasMaxLength(20);
+
+                entity.Property(e => e.CustomerEmail)
+                      .HasMaxLength(100);
+
+            });
+
             modelBuilder.Entity<GoodsWarehouse>(entity =>
             {
                 entity.HasKey(e => new { e.GoodsId, e.WarehouseId });
@@ -206,8 +224,6 @@ namespace iSmart.Entity.Models
 
                 entity.ToTable("ExportOrder");
 
-                entity.Property(e => e.Customer).HasMaxLength(50);
-
                 entity.Property(e => e.ExportCode)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -238,6 +254,12 @@ namespace iSmart.Entity.Models
                     .HasForeignKey(d => d.WarehouseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ExportOrder_Storage_StorageId");
+
+                entity.HasOne(d => d.Customer)
+                   .WithMany(c => c.ExportOrders)  // Customer can have many ExportOrders
+                   .HasForeignKey(d => d.CustomerId)  // Foreign key property in ExportOrder
+                   .OnDelete(DeleteBehavior.ClientSetNull)  // If Customer is deleted, set CustomerId to null
+                   .HasConstraintName("FK_ExportOrder_Customer_CustomerId");
             });
 
             modelBuilder.Entity<ExportOrderDetail>(entity =>
@@ -254,6 +276,11 @@ namespace iSmart.Entity.Models
                     .WithMany(p => p.ExportOrderDetails)
                     .HasForeignKey(d => d.GoodsId)
                     .HasConstraintName("FK_ExportOrderDetail_Goods");
+                entity.HasOne(eod => eod.ImportOrderDetail)
+                     .WithMany()
+                     .HasForeignKey(eod => eod.ImportOrderDetailId)
+                     .OnDelete(DeleteBehavior.ClientSetNull)
+                     .HasConstraintName("FK_ExportOrderDetail_ImportOrderDetail");
             });
 
             modelBuilder.Entity<Feature>(entity =>

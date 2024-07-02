@@ -24,12 +24,19 @@ namespace iSmart.Service
 
         CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
 
+<<<<<<< HEAD
 
         ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
 
 
-      //  ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
 
+
+
+=======
+        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
+
+
+>>>>>>> main
         Task<string> Import(int importid);
     }
 
@@ -152,6 +159,8 @@ namespace iSmart.Service
                         Image = i.Image,
                         StorekeeperId = i.StaffId,
                         StorekeeperName = _context.Users.FirstOrDefault(u => u.UserId == i.StaffId).UserName,
+                        WarehouseDestinationId = i.WarehouseDestinationId,
+                        WarehouseDestinationName = _context.Warehouses.FirstOrDefault(u => u.WarehouseId == i.WarehouseDestinationId).WarehouseName,
                         ImportOrderDetails = i.ImportOrderDetails
                             .Select(id => new ImportDetailDTO
                             {
@@ -198,11 +207,16 @@ namespace iSmart.Service
                     Note = i.Note,
                     CreatedDate = DateTime.Now,
                     ImportedDate = i.ImportedDate,
+<<<<<<< HEAD
 
-                    StatusId = 3,
+
 
                   //  StatusId = i.StatusId,
 
+
+=======
+>>>>>>> main
+                    StatusId = 3,
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
@@ -230,7 +244,11 @@ namespace iSmart.Service
                     _context.Add(importOrder);
                     _context.SaveChanges();
                     // Gửi thông điệp qua WebSocket
+<<<<<<< HEAD
                     Task.Run(() => _webSocketService.SendMessageAsync("Đơn hàng có mã " + importOrder.ImportCode +" cần được xác nhận"));
+=======
+>>>>>>> main
+                    Task.Run(() => _webSocketService.SendMessageAsync("Đơn hàng nhập kho có mã " + importOrder.ImportCode +" cần được xác nhận"));
                     return new CreateImportOrderResponse { IsSuccess = true, Message = "Tạo đơn hàng nhập kho thành công" };
                 }
                 else

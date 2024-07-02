@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 
 function SupplierList() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    
     const [isShowModelAddNew, setIsShowModelAddNew] = useState(false);
     const [isShowModelEdit, setIsShowModelEdit] = useState(false);
     const [isShowModalConfirm, setIsShowModalConfirm] = useState(false);

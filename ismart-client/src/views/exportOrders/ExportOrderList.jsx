@@ -29,9 +29,9 @@ const ExportOrderList = () => {
     const [currentPage, setcurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(5);
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
     const [isShowExportModelAdd, setIsShowExportModelAdd] = useState(false);
     const [isShowModelConfirm, setIsShowModelConfirm] = useState(false);
@@ -60,6 +60,9 @@ const ExportOrderList = () => {
     const [keywordSearch, setKeywordSearch] = useState("");
     const [currentDate, setCurrentDate] = useState();
 
+    const [pageSize, setPageSize] = useState(15);
+    const [selectManagerId, setSelectManagerId] = useState(null);
+    const [selectUserId, setSelectUserId] = useState(null);
 
     useEffect(() => {
         getExportOrders(1);
@@ -80,39 +83,51 @@ const ExportOrderList = () => {
     }, [])
 
     useEffect(() => {
-        getExportOrders(1);
-    }, [selectedStorageId, sortedByStatusId, sortedByDateId])
+        // Đảm bảo rằng getExportOrders được gọi mỗi khi có sự thay đổi cần thiết
+        if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
+            getExportOrders(1, pageSize);
+        }
+    }, [pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId ]);
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
+        // console.log("fetchAllStorages: ", res);
     }
 
     const handleStorageClickTotal = () => {
-        setSelectedStorage("Tất cả kho");
-        setSelectedStorageId("");
+        setSelectedWarehouse("Tất cả kho");
+        setSelectedWarehouseId(null);
     }
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+    const handleStorageClick = async (warehouse) => {
+        setSelectedWarehouse(warehouse.warehouseName);
+        setSelectedWarehouseId(warehouse.warehouseId);
     }
 
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
-        setSelectedStorageId(res.storageId);
-        setSelectedStorage(res.storageName);
+        // console.log("fetchUserByUserId: ", res);
+        setSelectedWarehouseId(res.warehouseId);
+        setSelectedWarehouse(res.warehouseName);
     }
 
-    const getExportOrders = async (page) => {
+    const getExportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
-        let res = await fetchExportOrdersWithFilter(page, null, selectedStorageId, null, null, sortedByStatusId, sortedByDateId, keywordSearch);
+        let res = await fetchExportOrdersWithFilter(
+            pageSize, page, selectedWarehouseId,
+            "", "", "",
+            sortedByDateId, keywordSearch);
+
         setTotalExportOrder(res.data);
         setTotalPages(res.totalPages);
-        console.log(res);
+        console.log("fetchExportOrdersWithFilter: ", res.data);
     }
 
+    const handlePageSizeChange = (event) => {
+        setPageSize(Number(event.target.value));
+    }
     const handleSortStatusClick = (sort) => {
         setSortedByStatusId(sort.idSort);
         setSortedByStatusName(sort.nameSort);
@@ -182,16 +197,45 @@ const ExportOrderList = () => {
                     <div className="col-sm-12">
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng xuất kho</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                            {roleId == 2 || roleId == 4 ? <Col md={2}>
-                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                    <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-                                    {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                        <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
-                                    ))}
-                                </DropdownButton>
-                            </Col> : <Col md={2}>
-                                <input type="text" className="form-control inputCSS"
-                                    aria-describedby="emailHelp" value={selectedStorage} disabled /></Col>}
+                            {roleId == 2 || roleId == 4 || roleId == 1 ?
+                                <Col md={2}>
+                                    <DropdownButton
+                                        className="DropdownButtonCSS ButtonCSSDropdown"
+                                        title={selectedWarehouse ? selectedWarehouse : "Tất cả Kho"}
+                                        variant="success"
+                                        style={{ zIndex: 999 }}
+                                    >
+
+                                        <Dropdown.Item eventKey=""
+                                            onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
+                                        {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                            <Dropdown.Item
+                                                key={`warehouse ${index}`}
+                                                eventKey={c.warehouseName}
+                                                onClick={(e) => handleStorageClick(c, e)}
+                                            >
+                                                {c.warehouseName}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col> :
+                                <Col md={2}>
+                                    <input type="text" className="form-control inputCSS"
+                                        aria-describedby="emailHelp" value={selectedWarehouse} disabled />
+                                </Col>
+                            }
+                            <Col md={2}>
+                                <div className="input-group mb-3">
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        placeholder="Nhập pageSize"
+                                        value={pageSize}
+                                        onChange={handlePageSizeChange}
+                                    />
+                                </div>
+                            </Col>
                             <Col md={2}>
                                 <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByStatusName ? sortedByStatusName : "Tình trạng"} variant="success" style={{ zIndex: 999 }}>
                                     {sortStatusOptions.map((s, index) => (
@@ -273,8 +317,7 @@ const ExportOrderList = () => {
                                                 <td className="align-middle">{formattedAmount(i.totalPrice)}</td>
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{i.exportedDate ? formatDate(i.exportedDate) : ""}</td>
-
-                                                <td className="align-middle">{i.storageName}</td>
+                                                <td className="align-middle">{i.warehouseName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
 
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>

@@ -4,7 +4,7 @@ import { Modal, Button, Row, Col, DropdownButton, Dropdown } from "react-bootstr
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { fetchAllStorages } from '~/services/StorageServices';
 import { fetchAllDelivery } from "~/services/DeliveryServices";
-import { fetchAllProjects } from "~/services/ProjectServices";
+import { fetchAllCustomer } from "~/services/CustomerServices";
 import { addNewExportOrder, fetchExportOrderNewest } from "~/services/ExportOrderService";
 import { createNewExportOrderDetail } from "~/services/ExportOrderDetailService";
 import { format, addDays } from 'date-fns';
@@ -14,23 +14,24 @@ import uploadImage from "~/services/ImageServices";
 
 import AddRowDataExportOrder from "./AddRowDataExport";
 import RowDataExportOrder from "./RowDataExport";
+import { set } from "lodash";
 
 const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const [exportCode, setExportCode] = useState('');
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
     const [totalDelivery, setTotalDelivery] = useState([]);
     const [selectedDelivery, setSelectedDelivery] = useState(null);
     const [selectedDeliveryId, setSelectedDeliveryId] = useState(null);
 
-    const [totalProjects, setTotalProjects] = useState([]);
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const [totalCustomer, setTotalCustomer] = useState([]);
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
     const [minDate, setMinDate] = useState();
     const [selectedDate, setSelectedDate] = useState('');
@@ -48,7 +49,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
 
     useEffect(() => {
         getAllStorages();
-        getAllProjects();
+        getAllCustomer();
         getAllDelivery();
     }, [])
 
@@ -60,13 +61,18 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+    const handleStorageClickTotal = () => {
+        setSelectedWarehouseId("");
+        setSelectedWarehouse("Tất cả kho");
+    }
+
+    const handleStorageClick = async (warehouse) => {
+        setSelectedWarehouse(warehouse.warehouseName);
+        setSelectedWarehouseId(warehouse.warehouseId);
     }
 
     const getAllDelivery = async () => {
@@ -80,15 +86,15 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
         console.log(delivery);
     }
 
-    const getAllProjects = async () => {
-        let res = await fetchAllProjects();
-        setTotalProjects(res);
+    const getAllCustomer = async () => {
+        let res = await fetchAllCustomer();
+        setTotalCustomer(res);
     }
 
 
-    const handleProjectClick = (project, event) => {
-        setSelectedProject(project.projectName);
-        setSelectedProjectId(project.projectId);
+    const handleCustomerClick = (c, event) => {
+        setSelectedCustomer(c.customerName);
+        setSelectedCustomerId(c.customerId);
     }
 
     const handleDateChange = (event) => {
@@ -97,7 +103,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
 
     // mở modal AddRowDataExport
     const handleAddRowDataExport = () => {
-        if (selectedStorageId) {
+        if (selectedWarehouseId) {
             setIsShowRowDataExport(true);
         } else {
             toast.warning("Vui lòng điền kho")
@@ -146,32 +152,58 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
         let res = await uploadImage(file);
-        setImageExportOrder(res);
-        console.log(res);
+        const urlImage = res.url;
+        setImageExportOrder(urlImage);
     }
 
     const handleAddExportOrder = async () => {
         if (!exportCode.trim()) {
             toast.warning("Vui lòng nhập mã đơn hàng");
         }
-        else if (!selectedStorage) {
+        else if (!selectedWarehouse) {
             toast.warning("Vui lòng chọn kho xuất hàng");
         } else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
-        } else if (totalPrice === 0) {
-            toast.warning("Vui lòng nhập mặt hàng xuất");
+            // } else if (totalPrice === 0) {
+            //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
-        } else if (!selectedProject) {
-            toast.warning("Vui lòng chọn dự án");
+        } else if (!selectedCustomer) {
+            toast.warning("Vui lòng chọn khách hàng");
         } else {
-            let res = await addNewExportOrder(exportCode, userId, totalPrice, "", 3, "2024-03-24T08:47:56.243Z", formatDateImport(selectedDate), selectedStorageId, selectedProjectId, "2024-03-24T08:47:56.243Z", selectedDeliveryId, imageExportOrder, null);
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+<<<<<<< HEAD
+            let res = await addNewExportOrder(userId,
+                exportCode,
+                totalPrice,
+=======
+            console.log("userId", userId);
+            let isInternalTransfer = false;
+            let res = await addNewExportOrder(isInternalTransfer,
+                userId,
+                exportCode,
+                0,
+>>>>>>> main
+                "",
+                "2024-03-24T08:47:56.243Z",
+                selectedWarehouseId,
+                "2024-03-24T08:47:56.243Z",
+                selectedDeliveryId,
+                imageExportOrder,
+<<<<<<< HEAD
+            );
             console.log(res);
+=======
+                selectedCustomerId,
+                0
+            );
+            console.log("addNewExportOrder:", res);
+>>>>>>> main
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
-                        await createNewExportOrderDetail(resExportId, data.costPrice, data.goodsId, data.quantity);
+                        await createNewExportOrderDetail(resExportId, data.costPrice, data.goodsId, data.quantity, data.importOrderDetailId);
                     }));
                 }
                 toast.success("Thêm lô hàng xuất thành công");
@@ -187,12 +219,17 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
     const handleReset = () => {
         setRowsData([]);
         setExportCode(null);
-        setSelectedStorage(null);
-        setSelectedStorageId(null);
+        setSelectedWarehouse(null);
+        setSelectedWarehouseId(null);
         setSelectedDelivery(null);
         setSelectedDeliveryId(null);
-        setSelectedProject(null);
-        setSelectedProjectId(null);
+<<<<<<< HEAD
+=======
+        setSelectedCustomer(null);
+        setSelectedCustomerId(null);
+>>>>>>> main
+        // setSelectedProject(null);
+        // setSelectedProjectId(null);
         setSelectedDate('');
         setTotalPrice(0);
     }
@@ -219,13 +256,28 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
                                 <input type="text" className="form-control inputCSS" placeholder="Mã đơn hàng" value={exportCode} onChange={(event) => setExportCode(event.target.value)} />
                             </div>
                         </Col>
-                        <Col md={1} style={{ width: '130px' }}>
-                            <DropdownButton className="ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả kho"} variant="success" style={{ zIndex: 9999 }}>
-                                {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                        <Col md={2}>
+                            <DropdownButton
+                                className="DropdownButtonCSS ButtonCSSDropdown"
+                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                variant="success"
+                                style={{ zIndex: 999 }}
+                            >
+                                <Dropdown.Item eventKey=""
+                                    onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
+                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                    <Dropdown.Item
+                                        key={`warehouse ${index}`}
+                                        eventKey={c.warehouseName}
+                                        onClick={(e) => handleStorageClick(c, e)}
+                                    >
+                                        {c.warehouseName}
+                                    </Dropdown.Item>
                                 ))}
                             </DropdownButton>
                         </Col>
+
 
 
 
@@ -234,13 +286,13 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                 <Dropdown style={{ position: 'relative' }}>
                                     <Dropdown.Toggle className="ButtonCSSDropdown" as={CustomToggle} id="dropdown-custom-components">
-                                        <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedProject !== null ? selectedProject : "Dự án"}</span>
+                                        <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedCustomer !== null ? selectedCustomer : "Khách hàng"}</span>
                                     </Dropdown.Toggle>
 
                                     <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
-                                        {totalProjects && totalProjects.length > 0 && totalProjects.map((s, index) => (
-                                            <Dropdown.Item key={`delivery ${index}`} eventKey={s.projectName} onClick={(e) => handleProjectClick(s, e)}>
-                                                {s.projectName}
+                                        {totalCustomer && totalCustomer.length > 0 && totalCustomer.map((s, index) => (
+                                            <Dropdown.Item key={`delivery ${index}`} eventKey={s.customerName} onClick={(e) => handleCustomerClick(s, e)}>
+                                                {s.customerName}
                                             </Dropdown.Item>
                                         ))}
                                     </Dropdown.Menu>
@@ -319,7 +371,7 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
             </Modal.Body>
 
             <Modal.Footer>
-                <div className=" ">
+                {/* <div className=" ">
                     <button
                         className="btn  border-left-0 rounded ButtonRed"
                         type="button"
@@ -328,14 +380,14 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
                         Tổng giá tiền: {formattedAmount(totalPrice)}
                     </button>
 
-                </div>
+                </div> */}
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
                 </Button>
             </Modal.Footer>
         </Modal >
 
-        <AddRowDataExportOrder isShow={isShowRowDataExport} selectedStorageId={selectedStorageId}
+        <AddRowDataExportOrder isShow={isShowRowDataExport} selectedStorageId={selectedWarehouseId}
             onChange={(exportData) => takeRowDataExportOrder(exportData)}
             handleClose={() => setIsShowRowDataExport(false)} />
     </>)

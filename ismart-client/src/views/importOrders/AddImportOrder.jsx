@@ -22,7 +22,6 @@ import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-    const warehouseId = parseInt(localStorage.getItem('warehouseId'), 10);
 
     const [importCode, setImportCode] = useState('');
 
@@ -244,7 +243,11 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                 imageImportOrder,
 
             );
+<<<<<<< HEAD
             console.log("isInternalTransfer: ", isInternalTransfer);
+=======
+            // console.log("isInternalTransfer: ", isInternalTransfer);
+>>>>>>> main
             if (res.isSuccess == true) {
                 let resImportId = await fetchImportOrderNewest();
                 console.log("ResImportID :", resImportId);

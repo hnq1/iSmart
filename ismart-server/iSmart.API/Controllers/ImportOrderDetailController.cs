@@ -32,6 +32,31 @@ namespace iSmart.API.Controllers
             return Ok(order);
 
         }
+        [HttpGet("get-batch-inventory-for-export-goods")]
+        public IActionResult SelectBatchesForExport(int goodId, int quantity, string method)
+        {
+            var order = _orderDetailService.SelectBatchesForExport(goodId, quantity, method);
+            if (order == null)
+            {
+                return NotFound("Don't have batch in warehouse");
+<<<<<<< HEAD
+            } 
+=======
+            }
+            return Ok(order);
+        }
+
+        [HttpGet("get-available-batch")]
+        public IActionResult GetAvailableBatch(int goodId)
+        {
+            var order = _orderDetailService.GetBatchInventoryByGoodsId(goodId);
+            if (order == null)
+            {
+                return NotFound("Don't have batch in warehouse");
+            }
+>>>>>>> main
+            return Ok(order);
+        }
 
         [HttpPost("add-order-detail")]
         public IActionResult AddImportOrderDetail([FromBody] CreateImportOrderDetailRequest detail)

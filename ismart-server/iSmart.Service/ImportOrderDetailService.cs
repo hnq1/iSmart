@@ -8,6 +8,7 @@ using iSmart.Entity.DTOs.ImportOrderDetailDTO;
 using iSmart.Entity.DTOs.ImportOrderDTO;
 using iSmart.Entity.Models;
 using iSmart.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace iSmart.Service
 {
@@ -18,6 +19,11 @@ namespace iSmart.Service
         UpdateImportOrderDetailResponse UpdateOrderDetail(UpdateImportOrderDetailRequest detail);
         bool DeleteImportOrderDetail(int id);
         List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid);
+        List<BatchInventoryDTO> SelectBatchesForExport(int goodId, int quantity, string method);
+<<<<<<< HEAD
+=======
+        List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int goodId);
+>>>>>>> main
     }
     public class ImportOrderDetailService : IImportOrderDetailService
     {
@@ -34,6 +40,76 @@ namespace iSmart.Service
         public ImportOrderDetailService(iSmartContext context)
         {
             _context = context;
+        }
+        public List<BatchInventoryDTO> SelectBatchesForExport(int goodId, int quantity, string method)
+        {
+            List<BatchInventoryDTO> selectedBatches = new List<BatchInventoryDTO>();
+
+            // Lấy danh sách các lô hàng có sẵn cho sản phẩm productId
+            List<BatchInventoryDTO> batches = GetBatchInventoryByGoodsId(goodId);
+
+            if (method == "FIFO")
+            {
+                batches = batches.OrderBy(b => b.ExpiryDate).ToList();
+            }
+            else if (method == "LIFO")
+            {
+                // Sắp xếp các lô hàng theo ngày nhận từ sau về trước (LIFO)
+                batches = batches.OrderByDescending(b => b.ManufactureDate).ToList();
+            }
+            else
+            {
+                throw new ArgumentException("Phương pháp quản lý kho không hợp lệ.");
+            }
+
+            foreach (var batch in batches)
+            {
+                if (quantity <= 0)
+                {
+                    break;
+                }
+
+                int quantityToTake = Math.Min(batch.Quantity, quantity);
+
+                // Tạo một bản sao của lô hàng để tránh ảnh hưởng đến cơ sở dữ liệu
+                BatchInventoryDTO selectedBatch = new BatchInventoryDTO
+                {
+                    ImportOrderDetailId = batch.ImportOrderDetailId,
+                    BatchCode = batch.BatchCode,
+                    Quantity = batch.Quantity,
+                    CostPrice = batch.CostPrice,
+                    ManufactureDate = batch.ManufactureDate,
+                    ExpiryDate = batch.ExpiryDate
+                };
+
+                selectedBatches.Add(selectedBatch);
+
+                quantity -= quantityToTake;
+            }
+
+            return selectedBatches;
+        }
+        public List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int goodId)
+        {
+            try
+            {
+                var batchGoods = (List<BatchInventoryDTO>)_context.ImportOrderDetails.Include(i => i.Import).Where(i => i.Import.StatusId == 4 && i.GoodsId == goodId)
+                    .Select(s => new BatchInventoryDTO
+                    {
+                        ImportOrderDetailId = s.DetailId,
+                        BatchCode = s.BatchCode,
+                        Quantity = s.ActualQuantity,
+                        CostPrice = s.CostPrice,
+                        ManufactureDate = s.ManufactureDate,
+                        ExpiryDate = s.ExpiryDate
+                    }).ToList();
+                return batchGoods;
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public List<ImportOrderDetail> GetAllOrderDetails()
@@ -59,6 +135,7 @@ namespace iSmart.Service
                     ImportId = detail.ImportId,
                     GoodsId = (int)detail.GoodsId,
                     Quantity = (int)detail.Quantity,
+                    ActualQuantity = (int)detail.Quantity,
                     CostPrice = detail.CostPrice,
                     BatchCode = detail.BatchCode,
                     ExpiryDate = detail.ExpiryDate,
@@ -141,6 +218,7 @@ namespace iSmart.Service
                     ImportId = detail.ImportId,
                     GoodsId = (int)detail.GoodsId,
                     Quantity = (int)detail.Quantity,
+                    ActualQuantity = (int)detail.Quantity,
                     CostPrice = detail.CostPrice,
                     BatchCode = detail.BatchCode,
                     ExpiryDate = detail.ExpiryDate,

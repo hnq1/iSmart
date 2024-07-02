@@ -260,7 +260,6 @@ function MyTable() {
 
     const handleImportClick = () => {
         setIsShowModalInputExcel(true);
-
     }
 
 
@@ -426,7 +425,7 @@ function MyTable() {
                                     {showInStock && <th className="align-middle text-nowrap">TỒN KHO</th>}
                                     <th className="align-middle text-nowrap">ĐƠN VỊ</th>
                                     <th className="align-middle text-nowrap">NGÀY NHẬP</th>
-                                    <th className='align-middle text-nowrap'>GIÁ NHẬP</th>
+                                    {/* <th className='align-middle text-nowrap'>GIÁ NHẬP</th> */}
                                     <th className="align-middle text-nowrap">HẠN<br />BẢO HÀNH</th>
                                     <th className="align-middle text-nowrap">BARCODE</th>
                                     <th className="align-middle text-nowrap">LỊCH SỬ<br />HÀNG HÓA</th>
@@ -450,7 +449,7 @@ function MyTable() {
                                             {showInStock && <td className="align-middle">{g.inStock}</td>}
                                             <td className="align-middle">{g.measuredUnit}</td>
                                             <td className="align-middle">{formatDate(g.createdDate ? g.createdDate : "2024-03-18T04:10:59.041Z")}</td>
-                                            <td className='align-middle'>{formattedAmount(g.stockPrice)}</td>
+                                            {/* <td className='align-middle'>{formattedAmount(g.stockPrice)}</td> */}
                                             <td className="align-middle">{g.warrantyTime + " Tháng "}</td>
                                             <td className="align-middle">{g.barcode}</td>
                                             <td className="align-middle"><i className="fa-solid fa-clock-rotate-left actionButtonCSS" onClick={() => handleShowGoodHistory(g)}></i></td>

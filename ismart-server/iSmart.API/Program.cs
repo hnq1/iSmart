@@ -110,15 +110,20 @@ internal class Program
         builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
         builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
         builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
+<<<<<<< HEAD
+
+=======
+>>>>>>> main
+        builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
+        builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
+        builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddSingleton<WebSocketService>();
 
         // Đăng ký các dịch vụ
         // builder.Services.AddScoped<ICategoryService, CategoryService>();
         // builder.Services.AddScoped<ISupplierService, SupplierService>();
         // builder.Services.AddScoped<IUserService, UserService>();
-        // builder.Services.AddScoped<IStatusService, StatusService>();
-        // builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
-        // builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
+        // builder.Services.AddScoped<IStatusService, StatusService>();         
         // builder.Services.AddScoped<IProjectService, ProjectService>();
         // builder.Services.AddScoped<IStocktakeNoteService, StocktakeNoteService>();
         // builder.Services.AddScoped<IStocktakeNoteDetailService, StocktakeNoteDetailService>();

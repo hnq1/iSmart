@@ -19,5 +19,8 @@ const deleteImportOrderDetail = (id) => {
 const getImportOrderDetailByImportId = (oid) => {
     return axios.get(`api/import-order-detail/get-import-order-details?oid=${oid}`)
 }
+const getBatchInventoryForExportgoods = (goodsId, quantity, method) => {
+    return axios.get(`api/import-order-detail/get-batch-inventory-for-export-goods?goodsId=${goodsId}&quantity=${quantity}&method=${method}`)
+}
 
-export { getAllImportOrderDetails, createNewImportOrderDetail, updateImportOrderDetail, deleteImportOrderDetail, getImportOrderDetailByImportId }
+export { getAllImportOrderDetails, createNewImportOrderDetail, updateImportOrderDetail, deleteImportOrderDetail, getImportOrderDetailByImportId, getBatchInventoryForExportgoods }

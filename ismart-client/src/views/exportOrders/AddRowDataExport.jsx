@@ -5,6 +5,8 @@ import { fetchAllSuppliers } from "~/services/SupplierServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { fetchGoodById } from "~/services/GoodServices";
 import { toast } from "react-toastify";
+import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
+import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 
 const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
@@ -16,74 +18,79 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     const [selectedGoodCode, setSelectedGoodCode] = useState(null);
     const [selectedGoodId, setSelectedGoodId] = useState(null);
 
-    const [totalSuppliers, setTotalSuppliers] = useState([]);
-    const [selectedSupplier, setSelectedSupplier] = useState(null);
-    const [selectedSupplierId, setSelectedSupplierId] = useState(null);
+    // const [totalSuppliers, setTotalSuppliers] = useState([]);
+    // const [selectedSupplier, setSelectedSupplier] = useState(null);
+    // const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
-    useEffect(() => {
-        getAllSuppliers();
-    }, [])
+    // useEffect(() => {
+    //     getAllSuppliers();
+    // }, [])
 
     useEffect(() => {
         getAllGoods();
-    }, [selectedStorageId, selectedSupplierId])
+    }, [selectedStorageId])
 
-    useEffect(() => {
-        if (selectedGoodId) {
-            let res = getGoodById(selectedGoodId);
-        }
+    // useEffect(() => {
+    //     if (selectedGoodId) {
+    //         let res = getGoodinWarehouseById(selectedGoodId);
+    //     }
 
-    }, [selectedGoodId])
+    // }, [selectedGoodId])
 
 
     const getAllGoods = async () => {
-        if (selectedStorageId && selectedSupplierId) {
-            let res = await fetchGoodsWithStorageAndSupplier(selectedStorageId, selectedSupplierId);
-            console.log(res);
+        if (selectedStorageId !== null) {
+            let res = await fetchAllGoodsInWarehouse(selectedStorageId);
+            // console.log("getAllGoods: ", res);
             setTotalGoods(res);
         }
-
     }
 
-    const getGoodById = async (id) => {
-        let res = await fetchGoodById(id);
-        setQuantityInStock(res.inStock)
-    }
 
-    const getAllSuppliers = async () => {
-        let res = await fetchAllSuppliers();
-        setTotalSuppliers(res);
-    }
 
-    const handleGoodClick = (good, event) => {
+    // const getAllSuppliers = async () => {
+    //     let res = await fetchAllSuppliers();
+    //     setTotalSuppliers(res);
+    // }
+
+    const handleGoodClick = async (good, event) => {
         setSelectedGoodCode(good.goodsCode);
         setSelectedGoodId(good.goodsId);
+        let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
+        setQuantityInStock(res.inStock);
+        // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
     }
 
-    const handleSupplierClick = (supplier, event) => {
-        setSelectedSupplier(supplier.supplierName);
-        setSelectedSupplierId(supplier.supplierId)
-    }
+    // const handleSupplierClick = (supplier, event) => {
+    //     setSelectedSupplier(supplier.supplierName);
+    //     setSelectedSupplierId(supplier.supplierId)
+    // }
 
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
     }
 
-    const handleChangePrice = (event) => {
-        setCostPrice(event.target.value);
-    }
+    // const handleChangePrice = (event) => {
+    //     setCostPrice(event.target.value);
+    // }
 
     const handleConfirmRowData = () => {
         if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm")
         } else if (quantity === 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0")
-        } else if (costPrice === 0) {
-            toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
         } else if (quantity > quantityInStock) {
             toast.warning("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
         } else {
-            onChange({ costPrice: costPrice, quantity: quantity, goodsId: selectedGoodId, goodsCode: selectedGoodCode, totalOneGoodPrice: costPrice * quantity });
+            onChange({
+                costPrice: 0,
+                quantity: quantity,
+                goodsId: selectedGoodId,
+                goodsCode: selectedGoodCode,
+                totalOneGoodPrice: 0,
+                importOrderDetailId: null
+            });
+            // console.log("selectedGoodId: ", quantity);
             handleCloseModal();
         }
 
@@ -96,8 +103,8 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     }
 
     const handleReset = () => {
-        setSelectedSupplier(null);
-        setSelectedSupplierId(null);
+        // setSelectedSupplier(null);
+        // setSelectedSupplierId(null);
         setSelectedGoodCode(null);
         setSelectedGoodId(null);
         setQuantityInStock(0);
@@ -111,8 +118,8 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                 <Modal.Title>Chọn sản phẩm</Modal.Title>
             </Modal.Header>
             <Modal.Body><Row>
-
-                <Col md={3}>
+                {/* Nhà cung cấp */}
+                {/* <Col md={3}>
                     <label>Nhà cung cấp</label>
                     <div>
                         <Dropdown style={{ position: 'relative' }}>
@@ -127,16 +134,27 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                                     </Dropdown.Item>
                                 ))}
 
+<<<<<<< HEAD
+                                {/* {totalGoods.length === 0 && (
+                                    <Dropdown.Item key="empty" disabled>
+                                        Không có mặt hàng
+                                    </Dropdown.Item>
+                                )} */}
+=======
+
                                 {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
                                     </Dropdown.Item>
                                 )}
+
+
+>>>>>>> main
                             </Dropdown.Menu>
                         </Dropdown>
 
                     </div>
-                </Col>
+                </Col> */}
 
                 <Col md={3}>
                     <label>Mã sản phẩm</label>
@@ -153,14 +171,59 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                                     </Dropdown.Item>
                                 ))}
 
-                                {totalGoods.length === 0 && (
+                                {/* {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
                                     </Dropdown.Item>
-                                )}
+                                )} */}
+<<<<<<< HEAD
                             </Dropdown.Menu>
                         </Dropdown>
 
+                    </div>
+                </Col>
+
+                <Col md={3}>
+                    <label>Lô hàng</label>
+                    <div>
+                        <Dropdown style={{ position: 'relative' }}>
+                            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                                <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Lô hàng"}</span>
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
+                                {totalGoods && totalGoods.length > 0 && totalGoods.map((g, index) => (
+                                    <Dropdown.Item key={`good ${index}`} eventKey={g.goodsCode} onClick={(e) => handleGoodClick(g, e)}>
+                                        {g.goodsCode}
+                                    </Dropdown.Item>
+                                ))}
+
+                                {/* {totalGoods.length === 0 && (
+                                    <Dropdown.Item key="empty" disabled>
+                                        Không có mặt hàng
+                                    </Dropdown.Item>
+                                )} */}
+=======
+>>>>>>> main
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                    </div>
+                </Col>
+
+                <Col md={3}>
+                    <div className="form-group mb-3">
+                        <label>Phương thức xuất kho</label>
+                        <Dropdown style={{ position: 'relative' }}>
+                            <Dropdown.Toggle variant="success" id="dropdown-custom-components" >
+                                <span style={{ color: 'white' }}>Chọn phương thức</span>
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item href="#/action-1">LIFO (Last In, First Out)</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2">FIFO (First In, First Out)</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
                 </Col>
 
@@ -180,7 +243,8 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                         </div>
                     </Col>
-                    <Col md={2}>
+
+                    {/* <Col md={2}>
                         <div className="form-group mb-3">
                             <label >Giá tiền</label>
                             <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
@@ -192,7 +256,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             <label >Tổng giá tiền</label>
                             <input type="number" className="form-control inputCSS" value={costPrice * quantity} disabled />
                         </div>
-                    </Col>
+                    </Col> */}
 
 
 
