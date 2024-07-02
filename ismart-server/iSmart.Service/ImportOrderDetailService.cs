@@ -19,8 +19,8 @@ namespace iSmart.Service
         UpdateImportOrderDetailResponse UpdateOrderDetail(UpdateImportOrderDetailRequest detail);
         bool DeleteImportOrderDetail(int id);
         List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid);
-        List<BatchInventoryDTO> SelectBatchesForExport(int goodId, int quantity, string method);
-        List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int goodId);
+        List<BatchInventoryDTO> SelectBatchesForExport(int warehouseId, int goodId, int quantity, string method);
+        List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int warehouseId, int goodId);
     }
     public class ImportOrderDetailService : IImportOrderDetailService
     {
@@ -38,12 +38,12 @@ namespace iSmart.Service
         {
             _context = context;
         }
-        public List<BatchInventoryDTO> SelectBatchesForExport(int goodId, int quantity, string method)
+        public List<BatchInventoryDTO> SelectBatchesForExport(int warehouseId, int goodId, int quantity, string method)
         {
             List<BatchInventoryDTO> selectedBatches = new List<BatchInventoryDTO>();
 
             // Lấy danh sách các lô hàng có sẵn cho sản phẩm productId
-            List<BatchInventoryDTO> batches = GetBatchInventoryByGoodsId(goodId);
+            List<BatchInventoryDTO> batches = GetBatchInventoryByGoodsId(warehouseId, goodId);
 
             if (method == "FIFO")
             {
@@ -86,11 +86,11 @@ namespace iSmart.Service
 
             return selectedBatches;
         }
-        public List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int goodId)
+        public List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int warehouseId,int goodId)
         {
             try
             {
-                var batchGoods = (List<BatchInventoryDTO>)_context.ImportOrderDetails.Include(i => i.Import).Where(i => i.Import.StatusId == 4 && i.GoodsId == goodId)
+                var batchGoods = (List<BatchInventoryDTO>)_context.ImportOrderDetails.Include(i => i.Import).Where(i => i.Import.StatusId == 4 && i.GoodsId == goodId && i.Import.WarehouseId == warehouseId)
                     .Select(s => new BatchInventoryDTO
                     {
                         ImportOrderDetailId = s.DetailId,

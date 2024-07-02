@@ -33,9 +33,9 @@ namespace iSmart.API.Controllers
 
         }
         [HttpGet("get-batch-inventory-for-export-goods")]
-        public IActionResult SelectBatchesForExport(int goodId, int quantity, string method)
+        public IActionResult SelectBatchesForExport(int warehouseId, int goodId, int quantity, string method)
         {
-            var order = _orderDetailService.SelectBatchesForExport(goodId, quantity, method);
+            var order = _orderDetailService.SelectBatchesForExport(warehouseId, goodId, quantity, method);
             if (order == null)
             {
                 return NotFound("Don't have batch in warehouse");
@@ -44,9 +44,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-available-batch")]
-        public IActionResult GetAvailableBatch(int goodId)
+        public IActionResult GetAvailableBatch(int warehouseId, int goodId)
         {
-            var order = _orderDetailService.GetBatchInventoryByGoodsId(goodId);
+            var order = _orderDetailService.GetBatchInventoryByGoodsId(warehouseId, goodId);
             if (order == null)
             {
                 return NotFound("Don't have batch in warehouse");
