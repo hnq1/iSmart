@@ -32,16 +32,16 @@ const fetchExportOrdersWithFilter = (pageSize, page, warehouseId,
 }
 
 const addSuccessFullExportOrder = (exportId) => {
-    return axios.post(`api/ExportOrder/Export?exportId=${exportId}`)
+    return axios.post(`api/export-order/export?exportId=${exportId}`)
 }
 
 
-const updateExportOrder = (exportId, userId, projectId, totalPrice, note, createdDate, exportedDate, statusId, exportCode, storageId, deliveryId, image, stokekeeperId) => {
-    return axios.put(`api/ExportOrder/update-export-order`, { exportId, userId, projectId, totalPrice, note, createdDate, exportedDate, statusId, exportCode, storageId, deliveryId, image, stokekeeperId })
+const updateExportOrder = (exportId, userId, projectId, totalPrice, note, createdDate, exportedDate, statusId, exportCode, warehouseId, deliveryId, image, managerId, customerId) => {
+    return axios.put(`api/export-order/update-export-order`, { exportId, userId, projectId, totalPrice, note, createdDate, exportedDate, statusId, exportCode, warehouseId, deliveryId, image, managerId, customerId })
 }
 
 const cancelExportOrder = (exportId) => {
-    return axios.post(`api/ExportOrder/cancel-export?exportId=${exportId}`)
+    return axios.post(`api/export-order/cancel-export?exportId=${exportId}`)
 }
 
 export { cancelExportOrder, addNewExportOrder, fetchAllExportOrders, fetchExportOrdersWithFilter, fetchExportOrderNewest, addSuccessFullExportOrder, updateExportOrder }

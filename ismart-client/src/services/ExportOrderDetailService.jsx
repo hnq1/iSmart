@@ -5,7 +5,7 @@ const createNewExportOrderDetail = (exportId, price, goodsId, quantity, importOr
 }
 
 const getExportOrderDetailByExportId = (exportId) => {
-    return axios.get(`api/ExportOrderDetail/get-export-order-details?oid=${exportId}`)
+    return axios.get(`api/export-order-detail/get-export-order-details?oid=${exportId}`)
 }
 
 const updateExportOrderDetail = (exportId, price, detailId, goodsId, quantity) => {

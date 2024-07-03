@@ -7,7 +7,7 @@ import { addSuccessFullExportOrder } from "~/services/ExportOrderService";
 import { formattedAmount } from "~/validate";
 import { updateExportOrder } from "~/services/ExportOrderService";
 
-const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
+const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
     const [totalOrderDetail, setTotalOrderDetail] = useState([]);
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
@@ -32,8 +32,7 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
     }
 
     const SaveAddImportOrder = async () => {
-        let resSuccessImportOrder = await updateExportOrder(
-            dataImportOrder.exportId,
+        let resSuccessImportOrder = await updateExportOrder(dataImportOrder.exportId,
             dataImportOrder.userId,
             dataImportOrder.projectId,
             dataImportOrder.totalPrice,
@@ -44,7 +43,7 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
             dataImportOrder.exportCode,
             dataImportOrder.storageId,
             dataImportOrder.deliveryId,
-            dataImportOrder.image, 
+            dataImportOrder.image,
             userId)
         let res = await addSuccessFullExportOrder(dataImportOrder.exportId);
         console.log(res);
@@ -130,4 +129,4 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
 }
 
 
-export default ConfirmExportOrder
+export default ConfirmExportOrderInternal

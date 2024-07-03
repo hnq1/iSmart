@@ -3,12 +3,12 @@ import { fetchExportOrdersWithFilter } from "~/services/ExportOrderService";
 import { formatDate, formattedAmount } from '~/validate';
 import ReactPaginate from 'react-paginate';
 import { Table, Form, Modal, Button } from 'react-bootstrap';
-import ModelAddExportOrderAuto from "./AddExportOrderAuto";
-import ModelAddExportOrderManual from "./AddExportOrderManual";
-import ConfirmExportOrder from "./ConfirmExportOrder";
+import ModelAddExportOrderInternalAuto from "./AddExportOrderInternalAuto";
+import ModelAddExportOrderInternalManual from "./AddExportOrderInternalManual";
+import ConfirmExportOrderInternal from "./ConfirmExportOrderInternal";
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
-import ModalDetailExportOrder from "./DetailExportOrder";
-import ModalEditExportOrder from "./EditExportOrder";
+import ModalDetailExportOrderInternal from "./DetailExportOrderInternal";
+import ModalEditExportOrderInternal from "./EditExportOrderInternal";
 import { cancelExportOrder } from "~/services/ExportOrderService";
 import ModalCancel from "../importOrders/ModalCancel";
 import { fetchAllStorages } from '~/services/StorageServices';
@@ -19,9 +19,7 @@ import { toast } from "react-toastify";
 import { format } from 'date-fns';
 
 
-
-
-const ExportOrderList = () => {
+const ExportOrderListInternal = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
@@ -198,7 +196,7 @@ const ExportOrderList = () => {
             <div className="container" style={{ maxWidth: "1600px" }}>
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng xuất kho</h5>
+                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng xuất giữa các kho</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             {roleId == 2 || roleId == 4 || roleId == 1 ?
                                 <Col md={2}>
@@ -358,7 +356,7 @@ const ExportOrderList = () => {
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 3}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
                                                 >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Tiến hành xuất hàng" : "Đã hủy"}
                                                 </button></td>
 
@@ -398,14 +396,14 @@ const ExportOrderList = () => {
             </div>
             <ModalCancel isShow={isShowModalCancelExport} handleClose={() => setIsShowModalCancelExport(false)}
                 title="Hủy đơn hàng xuất" ConfirmCancel={ConfirmCancelExport} />
-            <ModalEditExportOrder isShow={isShowEditOrder} handleClose={() => setIsShowEditOrder(false)} detailOrderEdit={dataEditOrder} updateTable={updateTable} />
-            <ModalDetailExportOrder isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={dataDetailOrder} />
+            <ModalEditExportOrderInternal isShow={isShowEditOrder} handleClose={() => setIsShowEditOrder(false)} detailOrderEdit={dataEditOrder} updateTable={updateTable} />
+            <ModalDetailExportOrderInternal isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={dataDetailOrder} />
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
-            <ConfirmExportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
-            <ModelAddExportOrderAuto isShow={isShowExportModelAddAuto} handleClose={() => setIsShowExportModelAddAuto(false)} updateTable={updateTable} />
-            <ModelAddExportOrderManual isShow={isShowExportModelAddManual} handleClose={() => setIsShowExportModelAddManual(false)} updateTable={updateTable} />
+            <ConfirmExportOrderInternal isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
+            <ModelAddExportOrderInternalAuto isShow={isShowExportModelAddAuto} handleClose={() => setIsShowExportModelAddAuto(false)} updateTable={updateTable} />
+            <ModelAddExportOrderInternalManual isShow={isShowExportModelAddManual} handleClose={() => setIsShowExportModelAddManual(false)} updateTable={updateTable} />
         </>
     )
 }
 
-export default ExportOrderList
+export default ExportOrderListInternal

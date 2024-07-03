@@ -5,14 +5,14 @@ import { formattedAmount } from "~/validate";
 import { toast } from 'react-toastify';
 
 
-const ModalDetailExportOrder = ({ isShow, handleClose, detailOrder }) => {
+const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) => {
     const [totalOrderDetail, setTotalOrderDetail] = useState([]);
 
     useEffect(() => {
         if (detailOrder.exportId) {
             getTotalOrderDetail(detailOrder.exportId);
         }
-        console.log("detailOrder:", detailOrder);
+        console.log(detailOrder);
 
     }, [detailOrder])
 
@@ -36,7 +36,14 @@ const ModalDetailExportOrder = ({ isShow, handleClose, detailOrder }) => {
                         <Col md={2}>
                             <div className="form-group mb-3">
                                 <label >Kho hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseName}</button>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.storageName}</button>
+                            </div>
+                        </Col>
+
+                        <Col md={3}>
+                            <div className="form-group mb-3">
+                                <label >Tổng giá trị đơn hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{formattedAmount(detailOrder.totalPrice)}</button>
                             </div>
                         </Col>
                         <Col md={2}>
@@ -45,21 +52,7 @@ const ModalDetailExportOrder = ({ isShow, handleClose, detailOrder }) => {
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.statusType == "On Progress" ? "Đang tiến hành" : detailOrder.statusType == "Completed" ? "Đã hoàn thành" : "Đã hủy"}</button>
                             </div>
                         </Col>
-                        <Col md={2}>
-                            <div className="form-group mb-3">
-                                <label >Khách hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.customerName}</button>
-                            </div>
-                        </Col>
-                        <Col md={2}>
-                            <div className="form-group mb-3">
-
-                                <label >Giao hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.deliveryName}</button>
-                            </div>
-                        </Col>
                     </Row>
-
 
 
                     {totalOrderDetail && totalOrderDetail.length > 0
@@ -78,7 +71,19 @@ const ModalDetailExportOrder = ({ isShow, handleClose, detailOrder }) => {
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
+                                <Col >
 
+                                    <label >Giá tiền</label>
+                                    <input type="number" className="form-control inputCSS" value={o.price} readOnly />
+
+                                </Col>
+
+                                <Col >
+
+                                    <label >Tổng giá tiền</label>
+                                    <input type="number" className="form-control inputCSS" value={o.quantity * o.price} readOnly />
+
+                                </Col>
                             </Row>
                         ))
                     }
@@ -94,4 +99,4 @@ const ModalDetailExportOrder = ({ isShow, handleClose, detailOrder }) => {
     </>)
 }
 
-export default ModalDetailExportOrder
+export default ModalDetailExportOrderInternal

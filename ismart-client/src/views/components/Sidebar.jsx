@@ -112,7 +112,7 @@ const Sidebar = () => {
                                     <i className="fa-duotone fa-file-import fa-xl"></i>
                                 </div>
                                 <div>
-                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng Ngoại</span>
+                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng từ nhà cung cấp</span>
                                 </div>
                             </div>
                             <div>
@@ -131,7 +131,7 @@ const Sidebar = () => {
                                     <i className="fa-duotone fa-file-import fa-xl"></i>
                                 </div>
                                 <div>
-                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng Nội</span>
+                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng giữa các kho </span>
                                 </div>
                             </div>
                             <div>
@@ -142,7 +142,7 @@ const Sidebar = () => {
 
 
                     <Nav.Item className="mb-2">
-                        <Nav.Link as={Link} to="/cac-lo-hang-xuat"
+                        <Nav.Link as={Link} to="/cac-lo-hang-xuat-khach-hang"
                             className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
                             style={{ width: 180 }}
                         >
@@ -151,7 +151,27 @@ const Sidebar = () => {
                                     <i className="fa-duotone fa-file-export fa-xl"></i>
                                 </div>
                                 <div>
-                                    <span className="ms-1 d-none d-sm-inline">Xuất hàng</span>
+                                    <span className="ms-1 d-none d-sm-inline">Xuất hàng cho khách hàng </span>
+                                </div>
+                            </div>
+                            <div>
+                                <i className="fa-solid fa-angle-right"></i>
+                            </div>
+                        </Nav.Link>
+                    </Nav.Item>
+
+
+                    <Nav.Item className="mb-2">
+                        <Nav.Link as={Link} to="/cac-lo-hang-xuat-noi"
+                            className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                            style={{ width: 180 }}
+                        >
+                            <div className="d-flex">
+                                <div style={{ width: 30 }}>
+                                    <i className="fa-duotone fa-file-export fa-xl"></i>
+                                </div>
+                                <div>
+                                    <span className="ms-1 d-none d-sm-inline">Xuất hàng giữa các kho </span>
                                 </div>
                             </div>
                             <div>

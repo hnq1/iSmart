@@ -12,11 +12,11 @@ import { formatDateImport, formattedAmount } from "~/validate";
 import { toast } from "react-toastify";
 import uploadImage from "~/services/ImageServices";
 
-import AddRowDataExportOrder from "./AddRowDataExport";
+import AddRowDataExportOrderManual from "./AddRowDataExportManual";
 import RowDataExportOrder from "./RowDataExport";
 import { set } from "lodash";
 
-const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
+const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
@@ -192,7 +192,8 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
                 let resExportId = await fetchExportOrderNewest();
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
-                        await createNewExportOrderDetail(resExportId, data.costPrice, data.goodsId, data.quantity, data.importOrderDetailId);
+                        await createNewExportOrderDetail(resExportId,
+                            data.costPrice, data.goodsId, data.quantity, data.importOrderDetailId);
                     }));
                 }
                 toast.success("Thêm lô hàng xuất thành công");
@@ -373,11 +374,11 @@ const ModelAddExportOrder = ({ isShow, handleClose, updateTable }) => {
             </Modal.Footer>
         </Modal >
 
-        <AddRowDataExportOrder isShow={isShowRowDataExport} selectedStorageId={selectedWarehouseId}
+        <AddRowDataExportOrderManual isShow={isShowRowDataExport} selectedStorageId={selectedWarehouseId}
             onChange={(exportData) => takeRowDataExportOrder(exportData)}
             handleClose={() => setIsShowRowDataExport(false)} />
     </>)
 
 }
 
-export default ModelAddExportOrder
+export default ModelAddExportOrderManual

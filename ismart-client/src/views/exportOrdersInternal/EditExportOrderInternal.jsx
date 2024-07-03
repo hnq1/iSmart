@@ -6,13 +6,13 @@ import { updateExportOrder } from "~/services/ExportOrderService";
 import { getImportOrderDetailByImportId, updateImportOrderDetail } from "~/services/ImportOrderDetailServices";
 import { formatDateImport, formattedAmount } from "~/validate";
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
-import RowDataEditExportOrder from "./RowDataEditExportOrder";
+import RowDataEditExportOrder from "./RowDataEditExportOrderInternal";
 import { updateExportOrderDetail } from "~/services/ExportOrderDetailService";
 import { format, addDays } from 'date-fns';
 
 import { toast } from "react-toastify";
 
-const ModalEditExportOrder = ({ isShow, handleClose, detailOrderEdit, updateTable }) => {
+const ModalEditExportOrderInternal = ({ isShow, handleClose, detailOrderEdit, updateTable }) => {
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
@@ -202,4 +202,4 @@ const ModalEditExportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
     </>)
 }
 
-export default ModalEditExportOrder
+export default ModalEditExportOrderInternal

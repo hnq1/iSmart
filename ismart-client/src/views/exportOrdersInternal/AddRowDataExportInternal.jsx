@@ -6,7 +6,7 @@ import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
 
-const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChange }) => {
+const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
@@ -220,4 +220,4 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     )
 }
 
-export default AddRowDataExportOrder
+export default AddRowDataExportOrderInternal

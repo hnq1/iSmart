@@ -5,8 +5,9 @@ import { toast } from "react-toastify";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
+import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
 
-const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChange }) => {
+const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
@@ -18,7 +19,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     const [dataMethod, setDataMethod] = useState(null);
     const [selectedMethod, setSelectedMethod] = useState('');
     const [selectImportOrderDetailId, setSelectImportOrderDetailId] = useState(null);
-
+    const [inputQuantities, setInputQuantities] = useState({});
     useEffect(() => {
         getAllGoods();
     }, [selectedStorageId])
@@ -49,27 +50,25 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
     }
 
-
-
-    const handleSelectMethod = async (method) => {
-        if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
-            toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
-            return;
-        }
-        setSelectedMethod(method);
-        let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
-        setDataMethod(res);
-        setSelectImportOrderDetailId(res[0].importOrderDetailId);
-        console.log("method:", res[0].importOrderDetailId);
-
-        // console.log("getBatchInventoryForExportgoods:", res);
-    };
-
-
-    const handleChangeQuantity = (event) => {
+    const handleChangeTotalQuantity = (event) => {
         setQuantity(event.target.value);
     }
 
+    const handleInputQuantityChange = (index, value) => {
+        const newInputQuantities = { ...inputQuantities, [index]: Number(value) };
+        setInputQuantities(newInputQuantities);
+
+        // Calculate the new total quantity
+        const newTotalQuantity = Object.values(newInputQuantities).reduce((acc, curr) => acc + curr, 0);
+        setQuantity(newTotalQuantity);
+    }
+
+    const handleManualClick = async () => {
+        let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
+        setDataMethod(m);
+        setSelectImportOrderDetailId(m[0].importOrderDetailId);
+        console.log("dataMethod: ", m[0].importOrderDetailId);
+    }
 
 
     const handleConfirmRowData = () => {
@@ -77,8 +76,6 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
             toast.warning("Vui lòng chọn sản phẩm")
         } else if (quantity === 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0")
-        } else if (quantity > quantityInStock) {
-            toast.warning("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
         } else {
             onChange({
                 costPrice: 0,
@@ -109,6 +106,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         setQuantityInStock(0);
         setQuantity(0);
         setCostPrice(0);
+        setInputQuantities({});
     }
 
     return (
@@ -150,19 +148,11 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                         <label>Phương thức xuất kho</label>
                         <Dropdown style={{ position: 'relative' }}>
                             <Dropdown.Toggle as={CustomToggle}
-                                className="DropdownButtonCSS ButtonCSSDropdown">
-                                {/* <span style={{ color: 'white' }}>{selectedMethod || 'Chọn phương thức'}</span> */}
-                                <span style={{ color: 'white' }}>{selectedMethod !== null ? selectedMethod : "Chọn phương thức"}</span>
+                                className="DropdownButtonCSS ButtonCSSDropdown"
+                                onClick={handleManualClick}
+                            >
+                                <span style={{ color: 'white' }}>{"Chọn lô hàng"}</span>
                             </Dropdown.Toggle>
-
-                            <Dropdown.Menu style={{ position: 'absolute', zIndex: '9999' }}>
-                                <Dropdown.Item
-                                    onClick={() => handleSelectMethod('LIFO')}
-                                >LIFO (Last In, First Out)</Dropdown.Item>
-                                <Dropdown.Item
-                                    onClick={() => handleSelectMethod('FIFO')}
-                                >FIFO (First In, First Out)</Dropdown.Item>
-                            </Dropdown.Menu>
                         </Dropdown>
 
                     </div>
@@ -182,7 +172,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                     <Col md={2}>
                         <div className="form-group mb-3">
                             <label >Số lượng</label>
-                            <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
+                            <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeTotalQuantity} readOnly />
                         </div>
                     </Col>
 
@@ -197,6 +187,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                         <th>Expiry Date</th>
                         <th>Quantity</th>
                         <th>Location</th>
+                        <th>Input Quantity</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -207,6 +198,14 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             <td>{new Date(d.expiryDate).toLocaleDateString()}</td>
                             <td>{d.quantity}</td>
                             <td>{d.location || 'N/A'}</td>
+                            <td>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={inputQuantities[index] || ''}
+                                    onChange={(e) => handleInputQuantityChange(index, e.target.value)}
+                                />
+                            </td>
                         </tr>
                     ))}
                 </tbody>
@@ -220,4 +219,4 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     )
 }
 
-export default AddRowDataExportOrder
+export default AddRowDataExportOrderManual

@@ -112,7 +112,7 @@ function ImportOrderListN() {
     const getImportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
         let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-        console.log("sortedByStatusId:", sortedByStatusId);
+        // console.log("sortedByStatusId:", sortedByStatusId);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
 
