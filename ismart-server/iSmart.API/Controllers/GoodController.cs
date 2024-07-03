@@ -99,5 +99,12 @@ namespace iSmart.API.Controllers
             var result = await _goodsService.GetGoodsInWarehouse(warehouseId);
             return Ok(result);
         }
+
+        [HttpGet("alerts")]
+        public IActionResult GetAlerts(int warehouseId)
+        {
+            var alerts = _goodsService.Alert(warehouseId);
+            return Ok(alerts);
+        }
     }
 }
