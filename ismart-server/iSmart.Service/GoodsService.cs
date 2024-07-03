@@ -26,8 +26,7 @@ namespace iSmart.Service
         bool UpdateStatusGoods(int id, int StatusId);
         Task<List<GoodsDTO>?> GetGoodsInWarehouse(int warehouseId);
         GoodsDTO GetGoodsInWarehouseById(int warehouseId, int goodId);
-
-
+        List<GoodAlert> Alert(int warehouseId);
     }
     public class GoodsService : IGoodsService
     {
@@ -429,5 +428,72 @@ namespace iSmart.Service
                 .ToListAsync();
         }
 
+        public List<GoodAlert> Alert(int warehouseId)
+        {
+            var products = _context.GoodsWarehouses.Include(g => g.Good).Where(g => g.WarehouseId == warehouseId).ToList();
+            var bactchs = _context.ImportOrderDetails.Include(i => i.Import).Where(i => i.Import.StatusId == 4 && i.Import.WarehouseId == warehouseId).ToList();
+            var alertGoods = new List<GoodAlert>();
+            var today = DateTime.Now;
+            foreach(var  product in products)
+            {
+                if(product.Good.MinStock > product.Quantity)
+                {
+                    alertGoods.Add(new GoodAlert
+                    {
+                         GoodName = product.Good.GoodsName,
+                         GoodCode = product.Good.GoodsCode,
+                         Quantity = product.Quantity,
+                         MinStock = product.Good.MinStock,
+                         MaxStock = product.Good.MaxStock,
+                         AlertType = "Thiếu Hàng",
+                         Message = $"Hàng tồn kho của {product.Good.GoodsName} đang ở mức thấp. Số lượng hiện tại: {product.Quantity}. Số lượng tối thiểu yêu cầu: {product.Good.MinStock}.",
+                    });
+                }
+                else if(product.Good.MaxStock < product.Quantity)
+                {
+                    alertGoods .Add(new GoodAlert
+                    {
+                        GoodName = product.Good.GoodsName,
+                        GoodCode = product.Good.GoodsCode,
+                        Quantity = product.Quantity,
+                        MinStock = product.Good.MinStock,
+                        MaxStock = product.Good.MaxStock,
+                        AlertType = "Thừa Hàng",
+                        Message = $"Hàng tồn kho của {product.Good.GoodsName} đang ở mức cao. Số lượng hiện tại: {product.Quantity}. Số lượng tối đa cho phép: {product.Good.MaxStock}.",
+                    });
+                }
+            }
+            foreach(var batch in bactchs)
+            {
+                if(batch.ExpiryDate < today.AddDays(30)) {
+                    alertGoods.Add(new GoodAlert
+                    {
+                        GoodName = batch.Goods.GoodsName,
+                        GoodCode = batch.Goods.GoodsCode,
+                        Quantity = batch.Quantity,
+                        ManufactureDate = batch.ManufactureDate,
+                        ExpiryDate = batch.ExpiryDate,
+                        AlertType = "Lô hàng sắp hết hạn",
+                        Message = $"Lô hàng tồn kho có mã {batch.BatchCode} sắp hết hạn vào ngày {batch.ExpiryDate.ToShortDateString()}.",
+                    });
+                }
+            }
+            return alertGoods;
+        }
+
+    }
+
+    public class GoodAlert
+    {
+        public string GoodCode { get; set; }
+        public string GoodName { get; set; }
+        public string? BatchCode { get; set; }
+        public DateTime? ManufactureDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
+        public int? MaxStock { get; set; }
+        public int? MinStock { get; set; }
+        public int? Quantity { get; set; }
+        public string AlertType { get; set; }
+        public string Message { get; set; }
     }
 }
