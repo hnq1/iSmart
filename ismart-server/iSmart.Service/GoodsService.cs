@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using iSmart.Entity.DTOs;
 using iSmart.Entity.DTOs.GoodsDTO;
 using iSmart.Entity.Models;
+using System.Net.Mail;
+using System.Net;
 
 namespace iSmart.Service
 {
@@ -433,8 +435,9 @@ namespace iSmart.Service
             var products = _context.GoodsWarehouses.Include(g => g.Good).Where(g => g.WarehouseId == warehouseId).ToList();
             var bactchs = _context.ImportOrderDetails.Include(i => i.Import).Where(i => i.Import.StatusId == 4 && i.Import.WarehouseId == warehouseId).ToList();
             var alertGoods = new List<GoodAlert>();
+            var managers = _context.UserWarehouses.Include(uw => uw.User).ThenInclude(uw => uw.Role).Where(uw => uw.User.RoleId == 1 || uw.WarehouseId == warehouseId && uw.User.RoleId == 2).ToList();
             var today = DateTime.Now;
-            foreach(var  product in products)
+            foreach (var  product in products)
             {
                 if(product.Good.MinStock > product.Quantity)
                 {
@@ -477,6 +480,32 @@ namespace iSmart.Service
                         Message = $"Lô hàng tồn kho có mã {batch.BatchCode} sắp hết hạn vào ngày {batch.ExpiryDate.ToShortDateString()}.",
                     });
                 }
+            }
+            string emailBody = "Dưới đây là các cảnh báo về hàng tồn kho:\n\n";
+            foreach (var alert in alertGoods)
+            {
+                emailBody += $"{alert.AlertType}: {alert.Message}\n";
+            }
+
+            // Gửi email cảnh báo
+            foreach (var manager in managers)
+            {
+                string email = manager.User.Email.Trim();
+                MailMessage mm = new MailMessage("wmsystemsp24@gmail.com", email);
+                mm.Subject = "Cảnh báo hàng tồn kho";
+                mm.Body = emailBody;
+                mm.IsBodyHtml = false;
+
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.EnableSsl = true;
+                NetworkCredential NetworkCred = new NetworkCredential();
+                NetworkCred.UserName = "wmsystemsp24@gmail.com";
+                NetworkCred.Password = "jxpd wccm kits gona"; // Mật khẩu của bạn
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = NetworkCred;
+                smtp.Port = 587;
+                smtp.Send(mm);
             }
             return alertGoods;
         }
