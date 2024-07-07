@@ -481,31 +481,34 @@ namespace iSmart.Service
                     });
                 }
             }
-            string emailBody = "Dưới đây là các cảnh báo về hàng tồn kho:\n\n";
-            foreach (var alert in alertGoods)
+            if(alertGoods.Count > 0)
             {
-                emailBody += $"{alert.AlertType}: {alert.Message}\n";
-            }
+                string emailBody = "Dưới đây là các cảnh báo về hàng tồn kho:\n\n";
+                foreach (var alert in alertGoods)
+                {
+                    emailBody += $"{alert.AlertType}: {alert.Message}\n";
+                }
 
-            // Gửi email cảnh báo
-            foreach (var manager in managers)
-            {
-                string email = manager.User.Email.Trim();
-                MailMessage mm = new MailMessage("wmsystemsp24@gmail.com", email);
-                mm.Subject = "Cảnh báo hàng tồn kho";
-                mm.Body = emailBody;
-                mm.IsBodyHtml = false;
+                // Gửi email cảnh báo
+                foreach (var manager in managers)
+                {
+                    string email = manager.User.Email.Trim();
+                    MailMessage mm = new MailMessage("wmsystemsp24@gmail.com", email);
+                    mm.Subject = "Cảnh báo hàng tồn kho";
+                    mm.Body = emailBody;
+                    mm.IsBodyHtml = false;
 
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.EnableSsl = true;
-                NetworkCredential NetworkCred = new NetworkCredential();
-                NetworkCred.UserName = "wmsystemsp24@gmail.com";
-                NetworkCred.Password = "jxpd wccm kits gona"; // Mật khẩu của bạn
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = NetworkCred;
-                smtp.Port = 587;
-                smtp.Send(mm);
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.EnableSsl = true;
+                    NetworkCredential NetworkCred = new NetworkCredential();
+                    NetworkCred.UserName = "wmsystemsp24@gmail.com";
+                    NetworkCred.Password = "jxpd wccm kits gona"; // Mật khẩu của bạn
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = NetworkCred;
+                    smtp.Port = 587;
+                    smtp.Send(mm);
+                }
             }
             return alertGoods;
         }
