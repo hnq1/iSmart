@@ -4,7 +4,7 @@ import { Modal, Button, Row, Col, DropdownButton, Dropdown } from "react-bootstr
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { fetchAllStorages } from '~/services/StorageServices';
 import { fetchAllDelivery } from "~/services/DeliveryServices";
-import { fetchAllCustomer } from "~/services/CustomerServices";
+// import { fetchAllCustomer } from "~/services/CustomerServices";
 import { addNewExportOrder, fetchExportOrderNewest } from "~/services/ExportOrderService";
 import { createNewExportOrderDetail } from "~/services/ExportOrderDetailService";
 import { format, addDays } from 'date-fns';
@@ -22,15 +22,12 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const [exportCode, setExportCode] = useState('');
-    const [totalWarehouse, setTotalWarehouse] = useState([]);
-    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
-    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
     const [totalDelivery, setTotalDelivery] = useState([]);
     const [selectedDelivery, setSelectedDelivery] = useState(null);
     const [selectedDeliveryId, setSelectedDeliveryId] = useState(null);
 
-    const [totalCustomer, setTotalCustomer] = useState([]);
+    // const [totalCustomer, setTotalCustomer] = useState([]);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
@@ -61,7 +58,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
     useEffect(() => {
         getAllStorages1();
         getAllStorages2();
-        getAllCustomer();
+        // getAllCustomer();
         getAllDelivery();
     }, [])
 
@@ -86,16 +83,6 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
         console.log(delivery);
     }
 
-    const getAllCustomer = async () => {
-        let res = await fetchAllCustomer();
-        setTotalCustomer(res);
-    }
-
-
-    const handleCustomerClick = (c, event) => {
-        setSelectedCustomer(c.customerName);
-        setSelectedCustomerId(c.customerId);
-    }
 
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
@@ -213,13 +200,11 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
             toast.warning("Vui lòng nhập mã đơn hàng");
 
         } else if (!selectedDate) {
-            toast.warning("Vui lòng nhập ngày nhập hàng");
+            toast.warning("Vui lòng nhập ngày xuất hàng");
             // } else if (totalPrice === 0) {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
-        } else if (!selectedCustomer) {
-            toast.warning("Vui lòng chọn khách hàng");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             console.log("userId", userId);
@@ -231,9 +216,9 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
                 exportCode,
                 0,
                 "",
-                "2024-03-24T08:47:56.243Z",
+                formatDateImport(selectedDate),
                 warehouseIdToUse,
-                "2024-03-24T08:47:56.243Z",
+                "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
                 selectedCustomerId,
@@ -264,7 +249,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
         setExportCode(null);
         setSelectedDelivery(null);
         setSelectedDeliveryId(null);
-        setSelectedCustomer(null);
+        // setSelectedCustomer(null);
         setSelectedCustomerId(null);
         // setSelectedProject(null);
         // setSelectedProjectId(null);
@@ -339,7 +324,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
                         </Col>
 
 
-                        <Col md={3} >
+                        {/* <Col md={3} >
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                 <Dropdown style={{ position: 'relative' }}>
                                     <Dropdown.Toggle className="ButtonCSSDropdown" as={CustomToggle} id="dropdown-custom-components">
@@ -355,7 +340,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </div>
-                        </Col>
+                        </Col> */}
 
                         <Col md={2} style={{ width: '220px' }}>
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>

@@ -24,16 +24,12 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
         getAllGoods();
     }, [selectedStorageId])
 
-    // useEffect(() => {
-    //     if (selectedGoodId) {
-    //         let res = getGoodinWarehouseById(selectedGoodId);
-    //     }
-
-    // }, [selectedGoodId])
 
     useEffect(() => {
         setDataMethod();
     }, [selectedMethod])
+
+
     const getAllGoods = async () => {
         if (selectedStorageId !== null) {
             let res = await fetchAllGoodsInWarehouse(selectedStorageId);
@@ -50,45 +46,71 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
         // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
     }
 
-    const handleChangeTotalQuantity = (event) => {
-        setQuantity(event.target.value);
-    }
+    // const handleChangeTotalQuantity = (event) => {
+    //     setQuantity(event.target.value);
+    // }
 
-    const handleInputQuantityChange = (index, value) => {
-        const newInputQuantities = { ...inputQuantities, [index]: Number(value) };
-        setInputQuantities(newInputQuantities);
 
-        // Calculate the new total quantity
-        const newTotalQuantity = Object.values(newInputQuantities).reduce((acc, curr) => acc + curr, 0);
-        setQuantity(newTotalQuantity);
-    }
 
     const handleManualClick = async () => {
         let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
         setDataMethod(m);
-        setSelectImportOrderDetailId(m[0].importOrderDetailId);
-        console.log("dataMethod: ", m[0].importOrderDetailId);
+        // Tạo một mảng mới chứa chỉ importOrderDetailId từ mỗi phần tử trong m
+        const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+        setSelectImportOrderDetailId(importOrderDetailIds);
+        console.log("importOrderDetailId: ", importOrderDetailIds);
+    }
+    const handleInputQuantityChange = (index, value) => {
+        // Lấy ra importOrderDetailId tương ứng với index của input
+        const importOrderDetailId = selectImportOrderDetailId[index];
+        console.log("importOrderDetailId: ", importOrderDetailId);
+        // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
+        const newInputQuantities = {
+            ...inputQuantities,
+            [index]: {
+                quantity: Number(value),
+                importOrderDetailId: importOrderDetailId
+            }
+        };
+        setInputQuantities(newInputQuantities);
+        console.log("newInputQuantities: ", newInputQuantities);
+        // Tính toán lại tổng số lượng từ các giá trị mới
+        // const newTotalQuantity = Object.values(newInputQuantities).reduce((acc, curr) => acc + curr.quantity, 0);
+        // setQuantity(newInputQuantities);
+        // console.log("newTotalQuantity: ", newInputQuantities.quantity);
     }
 
 
+
+    // mới
     const handleConfirmRowData = () => {
         if (!selectedGoodCode) {
-            toast.warning("Vui lòng chọn sản phẩm")
-        } else if (quantity === 0) {
-            toast.warning("Vui lòng nhập số lượng lớn hơn 0")
+            toast.warning("Vui lòng chọn sản phẩm");
+            // } else if (quantity === 0) {
+            //     toast.warning("Vui lòng nhập số lượng lớn hơn 0");
         } else {
-            onChange({
+            // Tạo mảng từ inputQuantities để gửi đi
+            const inputQuantitiesArray = Object.keys(inputQuantities).map(key => ({
+                importOrderDetailId: inputQuantities[key].importOrderDetailId,
+                quantity: inputQuantities[key].quantity
+            }));
+
+            // Tạo mảng mới với thông tin sản phẩm cho mỗi importOrderDetailId
+            const exportDataArray = inputQuantitiesArray.map(item => ({
                 costPrice: 0,
-                quantity: quantity,
                 goodsId: selectedGoodId,
                 goodsCode: selectedGoodCode,
-                totalOneGoodPrice: 0,
-                importOrderDetailId: selectImportOrderDetailId
-            });
-            console.log("selectedGoodId: ", selectImportOrderDetailId);
+                quantity: item.quantity,
+                importOrderDetailId: item.importOrderDetailId,
+                totalOneGoodPrice: 0
+
+            }));
+
+
+            onChange(exportDataArray);
+            // console.log("exportDataArray: ", exportDataArray);
             handleCloseModal();
         }
-
     }
 
     const handleCloseModal = () => {
@@ -169,12 +191,12 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
                         </div>
                     </Col>
 
-                    <Col md={2}>
+                    {/* <Col md={2}>
                         <div className="form-group mb-3">
                             <label >Số lượng</label>
                             <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeTotalQuantity} readOnly />
                         </div>
-                    </Col>
+                    </Col> */}
 
 
                 </Row>
@@ -202,7 +224,7 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
                                 <input
                                     type="number"
                                     className="form-control"
-                                    value={inputQuantities[index] || ''}
+                                    value={inputQuantities[index]?.quantity || ''}
                                     onChange={(e) => handleInputQuantityChange(index, e.target.value)}
                                 />
                             </td>

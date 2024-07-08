@@ -36,8 +36,8 @@ const addSuccessFullExportOrder = (exportId) => {
 }
 
 
-const updateExportOrder = (exportId, userId, projectId, totalPrice, note, createdDate, exportedDate, statusId, exportCode, warehouseId, deliveryId, image, managerId, customerId) => {
-    return axios.put(`api/export-order/update-export-order`, { exportId, userId, projectId, totalPrice, note, createdDate, exportedDate, statusId, exportCode, warehouseId, deliveryId, image, managerId, customerId })
+const updateExportOrder = (exportId, userId, totalPrice, note, createdDate, exportedDate, statusId, exportCode, warehouseId, deliveryId, image, managerId, customerId) => {
+    return axios.put(`api/export-order/update-export-order`, { exportId, userId, totalPrice, note, createdDate, exportedDate, statusId, exportCode, warehouseId, deliveryId, image, managerId, customerId })
 }
 
 const cancelExportOrder = (exportId) => {

@@ -386,7 +386,7 @@ function ImportOrderList() {
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 3}
                                                 >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
                                             </tr>

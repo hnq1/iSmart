@@ -85,10 +85,8 @@ const ExportOrderListInternal = () => {
 
     useEffect(() => {
         // Đảm bảo rằng getExportOrders được gọi mỗi khi có sự thay đổi cần thiết
-        if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
-            getExportOrders(1, pageSize);
-        }
-    }, [pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId]);
+        getExportOrders(1, pageSize, sortedByStatusId, sortedByDateId, keywordSearch);
+    }, [pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch]);
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
@@ -114,11 +112,12 @@ const ExportOrderListInternal = () => {
         setSelectedWarehouse(res.warehouseName);
     }
 
-    const getExportOrders = async (page, pageSize = 15) => {
+    const getExportOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
         setcurrentPage(page - 1);
         let res = await fetchExportOrdersWithFilter(
             pageSize, page, selectedWarehouseId,
-            "", "", "",
+            "", "",
+            sortedByStatusId,
             sortedByDateId, keywordSearch);
 
         setTotalExportOrder(res.data);
@@ -141,11 +140,11 @@ const ExportOrderListInternal = () => {
     }
 
     const handlePageClick = (event) => {
-        getExportOrders(+event.selected + 1);
+        getExportOrders(+event.selected + 1, pageSize, sortedByStatusId, sortedByDateId, keywordSearch);
     }
 
     const handleSearch = () => {
-        getExportOrders(1);
+        getExportOrders(1, pageSize, sortedByStatusId, sortedByDateId, keywordSearch);
     }
 
     const updateTable = () => {
@@ -153,12 +152,15 @@ const ExportOrderListInternal = () => {
     }
 
     const ShowModelConfirm = (i) => {
-        if (currentDate !== formatDate(i.exportedDate)) {
-            toast.warning("Chưa đến ngày nhập hàng trong hợp đồng bàn giao");
-        } else {
-            console.log(i);
+        console.log("ShowModelConfirm", i);
+        if (currentDate <= formatDate(i.exportedDate)) {
+            // Điều kiện này kiểm tra nếu ngày hiện tại nhỏ hơn hoặc bằng ngày xuất hàng
+            // Nếu đúng, cho phép thực hiện hành động xuất hàng
             setIsShowModelConfirm(true);
             setDataImportOrder(i);
+        } else {
+            // Nếu ngày hiện tại lớn hơn ngày xuất hàng, hiển thị cảnh báo
+            toast.warning("Chưa đến ngày xuất hàng trong hợp đồng bàn giao");
         }
     }
 
@@ -226,7 +228,7 @@ const ExportOrderListInternal = () => {
                                         aria-describedby="emailHelp" value={selectedWarehouse} disabled />
                                 </Col>
                             }
-                            <Col md={2}>
+                            <Col md={1}>
                                 <div className="input-group mb-3">
                                     <input
                                         type="number"
@@ -251,7 +253,7 @@ const ExportOrderListInternal = () => {
                                     ))}
                                 </DropdownButton>
                             </Col>
-                            <div className="col-3">
+                            <div className="col-2">
                                 <div className="input-group">
                                     <input
                                         className="form-control border-secondary inputCSS"
@@ -272,7 +274,7 @@ const ExportOrderListInternal = () => {
                                     </div>
                                 </div>
                             </div>
-                            {roleId === 2 || roleId === 1 ?
+                            {roleId === 3 || roleId === 1 ?
 
                                 <div className="col-auto ButtonCSSDropdown">
                                     <DropdownButton
@@ -316,9 +318,9 @@ const ExportOrderListInternal = () => {
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
                                         <th className="align-middle  text-nowrap">Người <br />nhận hàng</th>
                                         <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
-                                        <th className="align-middle  text-nowrap">Hủy bỏ<br />đơn hàng</th>
-                                        <th className="align-middle  text-nowrap">Chỉnh sửa</th>
-                                        <th className="align-middle  text-nowrap position-sticky" style={{ right: 0, minWidth: '150px' }}>Hành động</th>
+                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy bỏ<br />đơn hàng</th> : ''}
+                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Chỉnh sửa</th> : ''}
+                                        {roleId === 2 ? <th className="align-middle  text-nowrap position-sticky" style={{ right: 0, minWidth: '150px' }}>Hành động</th> : ''}
 
                                     </tr>
                                 </thead>
@@ -352,13 +354,14 @@ const ExportOrderListInternal = () => {
 
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : <td></td>}
-                                                <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
+                                                {roleId === 2 ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
                                                     disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
                                                 >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Tiến hành xuất hàng" : "Đã hủy"}
-                                                </button></td>
+                                                </button></td> : ''}
+
 
 
 

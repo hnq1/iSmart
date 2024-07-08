@@ -152,7 +152,7 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
                             <Dropdown.Toggle as={CustomToggle}
                                 className="DropdownButtonCSS ButtonCSSDropdown">
                                 {/* <span style={{ color: 'white' }}>{selectedMethod || 'Chọn phương thức'}</span> */}
-                                <span style={{ color: 'white' }}>{selectedMethod !== null ? selectedMethod : "Chọn phương thức"}</span>
+                                <span style={{ color: 'white' }}>{selectedMethod  ? selectedMethod : "Chọn phương thức"}</span>
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu style={{ position: 'absolute', zIndex: '9999' }}>

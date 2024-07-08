@@ -60,7 +60,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
         setDataMethod(res);
         setSelectImportOrderDetailId(res[0].importOrderDetailId);
-        console.log("method:", res[0].importOrderDetailId);
+        // console.log("method:", res[0].importOrderDetailId);
 
         // console.log("getBatchInventoryForExportgoods:", res);
     };
@@ -152,7 +152,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             <Dropdown.Toggle as={CustomToggle}
                                 className="DropdownButtonCSS ButtonCSSDropdown">
                                 {/* <span style={{ color: 'white' }}>{selectedMethod || 'Chọn phương thức'}</span> */}
-                                <span style={{ color: 'white' }}>{selectedMethod !== null ? selectedMethod : "Chọn phương thức"}</span>
+                                <span style={{ color: 'white' }}>{selectedMethod ? selectedMethod : "Chọn phương thức"}</span>
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu style={{ position: 'absolute', zIndex: '9999' }}>

@@ -13,8 +13,8 @@ import { toast } from "react-toastify";
 import uploadImage from "~/services/ImageServices";
 
 import AddRowDataExportOrderManual from "./AddRowDataExportManual";
-import RowDataExportOrder from "./RowDataExport";
-import { set } from "lodash";
+import RowDataExportOrderManual from "./RowDataExportManual";
+import { forEach, set } from "lodash";
 
 const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
 
@@ -121,10 +121,11 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
 
     // nhận data từ AddRowDataExport
     const takeRowDataExportOrder = (exportData) => {
-        console.log(exportData);
+        console.log("exportData:", exportData);
         const updateDataExport = [...rowsData, exportData];
-        setRowsData(updateDataExport);
 
+        setRowsData(updateDataExport);
+        console.log("updateDataExport:", updateDataExport);
         setTotalPrice(x => x + exportData.totalOneGoodPrice);
 
     }
@@ -141,7 +142,7 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
     // render rowsData
     const renderExportData = () => {
         return rowsData.map((data, index) => (
-            <RowDataExportOrder key={index} data={rowsData[index]} index={index}
+            <RowDataExportOrderManual key={index} data={rowsData[index]} index={index}
                 updateRowData={updateRowData} deleteRowData={deleteRowData}
             />
         ))
@@ -163,7 +164,7 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         else if (!selectedWarehouse) {
             toast.warning("Vui lòng chọn kho xuất hàng");
         } else if (!selectedDate) {
-            toast.warning("Vui lòng nhập ngày nhập hàng");
+            toast.warning("Vui lòng nhập ngày xuất hàng");
             // } else if (totalPrice === 0) {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
@@ -179,22 +180,25 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 exportCode,
                 0,
                 "",
-                "2024-03-24T08:47:56.243Z",
+                formatDateImport(selectedDate),
                 selectedWarehouseId,
-                "2024-03-24T08:47:56.243Z",
+                "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
                 selectedCustomerId,
                 0
             );
-            console.log("addNewExportOrder:", res);
+            // console.log("addNewExportOrder:", res);
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
+                // const importOrderDetailIds = rowsData.map(data => parseInt(data.importOrderDetailId, 10));
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
-                        await createNewExportOrderDetail(resExportId,
-                            data.costPrice, data.goodsId, data.quantity, data.importOrderDetailId);
-                    }));
+                        data.forEach(item => {
+                            createNewExportOrderDetail(resExportId, item.costPrice, item.goodsId, item.quantity, item.importOrderDetailId);
+                        })
+                    }))
+
                 }
                 toast.success("Thêm lô hàng xuất thành công");
                 updateTable();

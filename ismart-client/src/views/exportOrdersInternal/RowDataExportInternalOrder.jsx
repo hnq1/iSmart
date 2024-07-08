@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Row, Col, Dropdown } from "react-bootstrap";
-import EditRowDataExportOrder from "./EditRowDataExportOrder";
+import EditRowDataExportOrderInternal from "./EditRowDataExportOrderInternal";
 
-const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
+const RowDataExportInternalOrder = ({ data, index, deleteRowData, updateRowData }) => {
 
     const [isShowEditRowData, setIsShowEditRowData] = useState(false);
 
@@ -11,36 +11,28 @@ const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
     const [quantity, setQuantity] = useState();
     const [costPrice, setCostPrice] = useState();
 
-    // useEffect(() => {
-    //     // Tính tổng số lượng
-    //     const totalQuantity = data.reduce((total, item) => total + item.quantity, 0);
-
-    //     // Thiết lập tổng số lượng
-    //     setQuantity(totalQuantity);
-    //     data.forEach(item => {
-
-    //         console.log("item: ", item);
-    //         setGoodsCode(item.goodsCode);
-    //         setGoodsId(item.goodsId);
-    //         setCostPrice(item.costPrice);
-
-
-    //     });
-
-
-
-
-    //     // console.log("dataRowDataExportOrder: ", data[0].goodsId);
-    // }, [data])
-
     useEffect(() => {
-        setGoodsId(data.goodsId);
-        setGoodsCode(data.goodsCode);
-        setQuantity(data.quantity);
-        setCostPrice(data.costPrice);
-        // console.log("dataRowDataExportOrder: ", data.quantity);
+        // Tính tổng số lượng
+        const totalQuantity = data.reduce((total, item) => total + item.quantity, 0);
+
+        // Thiết lập tổng số lượng
+        setQuantity(totalQuantity);
+        data.forEach(item => {
+
+            console.log("item: ", item);
+            setGoodsCode(item.goodsCode);
+            setGoodsId(item.goodsId);
+            setCostPrice(item.costPrice);
+
+
+        });
+
+
+
+
+        // console.log("dataRowDataExportOrder: ", data[0].goodsId);
     }, [data])
-    
+
     const handleEditRowData = () => {
         setIsShowEditRowData(true);
     }
@@ -114,9 +106,9 @@ const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
 
     </Row>
 
-        <EditRowDataExportOrder isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
+        <EditRowDataExportOrderInternal isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
     </>)
 }
 
 
-export default RowDataExportOrder
+export default RowDataExportInternalOrder

@@ -163,7 +163,7 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
         else if (!selectedWarehouse) {
             toast.warning("Vui lòng chọn kho xuất hàng");
         } else if (!selectedDate) {
-            toast.warning("Vui lòng nhập ngày nhập hàng");
+            toast.warning("Vui lòng nhập ngày xuất hàng");
             // } else if (totalPrice === 0) {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
@@ -179,9 +179,9 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
                 exportCode,
                 0,
                 "",
-                "2024-03-24T08:47:56.243Z",
+                formatDateImport(selectedDate),
                 selectedWarehouseId,
-                "2024-03-24T08:47:56.243Z",
+                "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
                 selectedCustomerId,
