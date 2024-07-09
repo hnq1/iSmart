@@ -4,18 +4,13 @@
 
 namespace iSmart.Entity.Migrations
 {
-    public partial class AddWarehouseDestinationToImportOrder : Migration
+    public partial class AddWarehouseDestinationForExport : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "DeliveryId",
-                table: "Delivery",
-                newName: "DeliveyId");
-
             migrationBuilder.AddColumn<int>(
                 name: "WarehouseDestinationId",
-                table: "ImportOrder",
+                table: "ExportOrder",
                 type: "int",
                 nullable: true);
         }
@@ -24,12 +19,7 @@ namespace iSmart.Entity.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "WarehouseDestinationId",
-                table: "ImportOrder");
-
-            migrationBuilder.RenameColumn(
-                name: "DeliveyId",
-                table: "Delivery",
-                newName: "DeliveryId");
+                table: "ExportOrder");
         }
     }
 }

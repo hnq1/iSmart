@@ -12,6 +12,7 @@ import CategoryList from '../views/categories/CategoryList';
 import ImportOrderList from '../views/importOrders/ImportOrdersList';
 import ImportOrderListN from '../views/importOrdersN/ImportOrderListN';
 import ExportOrderList from '../views/exportOrders/ExportOrderList';
+import ExportOrderListInternal from '../views/exportOrdersInternal/ExportOrderListInternal';
 import StockTakeList from '~/views/stocktake/StockTakeList';
 import DeliveryList from '~/views/deliveries/ListDelivery';
 import Sidebar from '../views/components/Sidebar';
@@ -23,6 +24,8 @@ import Error from '~/views/error/error';
 import PrivateRoute from './PrivateRoute';
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
+import CustomerList from '~/views/components/customer/CustomerList';
+import ConfirmImportOrder from '~/views/importOrders/ConfirmImportOrder';
 const AppRoutes = () => {
     const roleId = parseInt(localStorage.getItem('RoleId'), 10);
 
@@ -87,6 +90,22 @@ const AppRoutes = () => {
                     }
                 />
 
+                <Route
+                    path="/quan-ly-khach-hang"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+
+                                    <Col className="py-3 background-primary">
+                                        <NavbarCom />
+                                        <CustomerList />
+                                    </Col>
+                                </Row>
+                            </Container></PrivateRoute>
+                    }
+                />
                 <Route
                     path="/cac-kho-hang"
                     element={
@@ -154,7 +173,7 @@ const AppRoutes = () => {
                 />
 
                 <Route
-                    path="/cac-lo-hang-xuat"
+                    path="/cac-lo-hang-xuat-khach-hang"
                     element={
                         <PrivateRoute>
                             <Container fluid>
@@ -169,6 +188,24 @@ const AppRoutes = () => {
                             </Container></PrivateRoute>
                     }
                 />
+
+                <Route
+                    path="/cac-lo-hang-xuat-noi"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <ExportOrderListInternal />
+                                    </Col>
+                                </Row>
+                            </Container></PrivateRoute>
+                    }
+                />
+
                 <Route path='/thong-ke'
                     element={
                         // roleId === 1 || roleId === 2 || roleId === 4 ? (
@@ -295,7 +332,22 @@ const AppRoutes = () => {
                         </PrivateRoute>
                     }
                 />
-
+                <Route
+                    path="/confirm-import-order/:importId"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <ConfirmImportOrder />
+                                    </Col>
+                                </Row>
+                            </Container>
+                        </PrivateRoute>
+                    }
+                />
             </Routes >
 
         </>

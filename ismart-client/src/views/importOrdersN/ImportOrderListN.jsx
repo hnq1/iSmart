@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
-
+import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 
 import ModelAddImportOrderN from '../importOrdersN/AddImportOrderN';
-import ConfirmImportOrder from '../importOrders/ConfirmImportOrder';
+import ConfirmImportOrderN from './ConfirmImportOrderN';
 import { fetchImportOrdersWithfilter } from '~/services/ImportOrderServices';
 import { formatDate, formattedAmount } from '~/validate';
 import ModalDetailOrderN from '../importOrdersN/DetailOrderN';
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 import { fetchAllStorages } from '~/services/StorageServices';
 import ModalEditImportOrderN from '../importOrdersN/EditImportOrderN';
-import ModalShowBarCode from '../importOrders/ShowBarCode';
+import ModalShowBarCodeN from '../importOrdersN/ShowBarCodeN';
 import ModalCancel from '../importOrders/ModalCancel';
 import { toast } from 'react-toastify';
-
 import { cancelImport } from '~/services/ImportOrderServices';
-
 import { fetchUserByUserId } from '~/services/UserServices';
 import { get } from 'lodash';
 
@@ -73,8 +71,6 @@ function ImportOrderListN() {
 
     const [currentDate, setCurrentDate] = useState();
 
-
-
     useEffect(() => {
         getImportOrders(1);
         getAllStorages();
@@ -84,7 +80,7 @@ function ImportOrderListN() {
         setSortStatusOptions([{ idSort: null, nameSort: "Tình trạng" },
         { idSort: 3, nameSort: "Đang tiến hành" },
         { idSort: 4, nameSort: "Đã hoàn thành" },
-        { idSort: 5, nameSort: "Đã hủy" }]);
+        { idSort: 5, nameSort: "Đã huỷ" }]);
 
         setSortDateOptions([{ idSort: null, nameSort: "Tất cả ngày" },
         { idSort: 1, nameSort: "Gần nhất" },
@@ -92,15 +88,20 @@ function ImportOrderListN() {
         setCurrentDate(format(new Date(), 'dd/MM/yyyy'));
     }, [])
 
+    // Mỗi khi selectedWarehouseId, sortedByStatusId hoặc sortedByDateId thay đổi, gọi lại getImportOrders
     useEffect(() => {
-        if (selectedWarehouseId !== undefined) {
-            getImportOrders(1);
+        // Đảm bảo rằng getImportOrders được gọi mỗi khi có sự thay đổi cần thiết
+        if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
+            getImportOrders(1, pageSize);
         }
-    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId])
+    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId, pageSize]);
 
+    // Khi pageSize thay đổi, gọi lại getImportOrders
     useEffect(() => {
-        getImportOrders(1, pageSize);
-    }, [pageSize]);
+        if (sortedByStatusId !== undefined) {
+            getImportOrders(1, pageSize);
+        }
+    }, [sortedByStatusId, pageSize]);
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
@@ -111,7 +112,7 @@ function ImportOrderListN() {
     const getImportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
         let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-        // console.log("pageSize:", pageSize);
+        // console.log("sortedByStatusId:", sortedByStatusId);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
 
@@ -164,6 +165,7 @@ function ImportOrderListN() {
         getImportOrders(currentPage + 1, pageSize);
     }
 
+    // Check chưa đến ngày nhập hàng trong hợp đồng bàn giao
     const ShowModelConfirm = (i) => {
         if (currentDate !== formatDate(i.importedDate)) {
             toast.warning("Chưa đến ngày nhập hàng trong hợp đồng bàn giao");
@@ -218,7 +220,7 @@ function ImportOrderListN() {
             <div className="container" style={{ maxWidth: "1600px" }}>
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập</h5>
+                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập giữa các kho</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <Row>
                                 {roleId == 1 ?
@@ -249,6 +251,7 @@ function ImportOrderListN() {
                                             aria-describedby="emailHelp" value={selectedWarehouse} disabled />
                                     </Col>
                                 }
+
                                 <Col md={2}>
                                     <div className="input-group mb-3">
                                         <input
@@ -260,6 +263,7 @@ function ImportOrderListN() {
                                         />
                                     </div>
                                 </Col>
+                                {/* lọc tình trạng và sắp xếp theo ngày */}
                                 <Col md={2}>
                                     <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={sortedByStatusName ? sortedByStatusName : "Tình trạng"} variant="success" style={{ zIndex: 999 }}>
                                         {sortStatusOptions.map((s, index) => (
@@ -329,10 +333,11 @@ function ImportOrderListN() {
                                         <th className="align-middle  text-nowrap">Mã<br />đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Người <br />tạo đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Nhà <br />cung cấp</th>
-                                        <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th>
+                                        {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />nhập hàng</th>
                                         <th className="align-middle  text-nowrap">Kho <br />nhập hàng</th>
+                                        <th className="align-middle  text-nowrap">Kho <br />xuất hàng</th>
                                         <th className="align-middle  text-nowrap">Bên <br />giao hàng</th>
                                         <th className="align-middle  text-nowrap">Hình ảnh</th>
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
@@ -359,16 +364,17 @@ function ImportOrderListN() {
                                                 <td className="align-middle">{i.importCode}</td>
                                                 <td className="align-middle">{i.userName}</td>
                                                 <td className="align-middle">{i.supplierName}</td>
-                                                <td className="align-middle">{formattedAmount(i.totalCost)}</td>
+                                                {/* <td className="align-middle">{formattedAmount(i.totalCost)}</td> */}
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
                                                 <td className="align-middle">{i.storageName}</td>
+                                                <td className="align-middle">{i.warehouseDestinationName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
                                                 <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
-                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Nhập hàng"}
+                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã huỷ"}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>
@@ -423,12 +429,12 @@ function ImportOrderListN() {
             </div>
             <ModalCancel isShow={isShowModalCancelImport} handleClose={() => setIsShowModalCancelImport(false)}
                 title="Hủy đơn hàng nhập" ConfirmCancel={ConfirmCancelImport} />
-            <ModalShowBarCode isShow={isShowBarCode} handleClose={() => setIsShowBarCode(false)} barCodeDetail={barCodeDetail} />
+            <ModalShowBarCodeN isShow={isShowBarCode} handleClose={() => setIsShowBarCode(false)} barCodeDetail={barCodeDetail} />
             <ModalEditImportOrderN isShow={isShowEditOrder} handleClose={() => setIsShowEditOrder(false)}
                 detailOrderEdit={detailOrderEdit} updateTable={updateTable} />
             <ModalDetailOrderN isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={detailOrder} />
             <ModelAddImportOrderN isShow={isShowImportModelAdd} handleClose={() => setIsShowImportModelAdd(false)} updateTable={updateTable} />
-            <ConfirmImportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
+            <ConfirmImportOrderN isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
         </>
 

@@ -16,14 +16,17 @@ namespace iSmart.Test
         private ImportOrderService importOrderService { get; set; } = null;
         private iSmartContext _context;
         private IUserWarehouseService _userWarehouseService;
+        private  WebSocketService _webSocketService;
         [SetUp]
         public void Setup()
         {
             var context = new iSmartContext();
             var userWarehouseService = new UserWarehouseService(context);
+            var webSocketService = new WebSocketService();
+            _webSocketService = webSocketService;
             _userWarehouseService = userWarehouseService;
             _context = context;
-            importOrderService = new ImportOrderService(context,userWarehouseService);
+            importOrderService = new ImportOrderService(context,userWarehouseService,webSocketService);
         }
 
         [Test]

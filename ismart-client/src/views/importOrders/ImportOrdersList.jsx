@@ -93,14 +93,12 @@ function ImportOrderList() {
     }, [])
 
     useEffect(() => {
-        if (selectedWarehouseId !== undefined) {
-            getImportOrders(1);
+        // Đảm bảo rằng getImportOrders được gọi mỗi khi có sự thay đổi cần thiết
+        if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
+            getImportOrders(1, pageSize);
         }
-    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId])
+    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId, pageSize]);
 
-    useEffect(() => {
-        getImportOrders(1, pageSize);
-    }, [pageSize]);
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
@@ -111,7 +109,7 @@ function ImportOrderList() {
     const getImportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
         let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-        // console.log("pageSize:", pageSize);
+        // console.log("pageSize:", selectedWarehouseId);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
 
@@ -124,6 +122,7 @@ function ImportOrderList() {
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
+        // console.log("totalWarehouse:", res);
     }
 
     const handleStorageClickTotal = () => {
@@ -148,7 +147,7 @@ function ImportOrderList() {
     const handleSortDateClick = (sort) => {
         setSortedByDateId(sort.idSort);
         setSortedByDateName(sort.nameSort);
-        getImportOrders(1, pageSize);
+        getImportOrders(1, pageSize, selectedWarehouseId, sortedByStatusId, sort.idSort); // Gọi lại hàm lấy dữ liệu với tham số mới
     }
 
     const handlePageClick = (event) => {
@@ -218,7 +217,7 @@ function ImportOrderList() {
             <div className="container" style={{ maxWidth: "1600px" }}>
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập</h5>
+                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập từ nhà cung cấp</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <Row>
                                 {roleId == 1 ?
@@ -328,8 +327,8 @@ function ImportOrderList() {
                                         <th className="align-middle  text-nowrap position-sticky" style={{ left: 0 }}>STT</th>
                                         <th className="align-middle  text-nowrap">Mã<br />đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Người <br />tạo đơn hàng</th>
-                                        <th className="align-middle  text-nowrap">Nhà <br />cung cấp</th>
-                                        <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th>
+                                        <th className="align-middle  text-nowrap"   >Nhà <br />cung cấp</th>
+                                        {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />nhập hàng</th>
                                         <th className="align-middle  text-nowrap">Kho <br />nhập hàng</th>
@@ -358,17 +357,17 @@ function ImportOrderList() {
                                                 <td className="align-middle position-sticky" style={{ left: 0 }}>{index + 1}</td>
                                                 <td className="align-middle">{i.importCode}</td>
                                                 <td className="align-middle">{i.userName}</td>
-                                                <td className="align-middle">{i.supplierName}</td>
-                                                <td className="align-middle">{formattedAmount(i.totalCost)}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{i.supplierName}</td>
+                                                {/* <td className="align-middle text-right" style={{ paddingLeft: '30px' }} >{formattedAmount(i.totalCost)}</td> */}
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
                                                 <td className="align-middle">{i.storageName}</td>
-                                                <td className="align-middle">{i.deliveryName}</td>
+                                                <td className="align-middle" style={{ textAlign: 'left' }}>{i.deliveryName}</td>
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
                                                 <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
-                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Nhập hàng"}
+                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã huỷ"}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>
@@ -387,7 +386,7 @@ function ImportOrderList() {
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 3}
                                                 >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
                                             </tr>

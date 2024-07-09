@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Row, Col, Dropdown } from "react-bootstrap";
-import EditRowDataOrder from "./EditRowDataN";
+import EditRowDataOrderN from "./EditRowDataN";
 import { set } from "lodash";
 
 const RowDataImportOrderN = ({ data, index, deleteRowData, updateRowData }) => {
@@ -151,7 +151,7 @@ const RowDataImportOrderN = ({ data, index, deleteRowData, updateRowData }) => {
 
         </Row>
 
-        <EditRowDataOrder isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
+        <EditRowDataOrderN isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
     </>)
 }
 

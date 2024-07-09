@@ -1,4 +1,3 @@
-
 using iSmart.Entity.Models;
 using iSmart.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,6 +11,9 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using iSmart.Entity.Models;
 using iSmart.Service;
+using System.Net.WebSockets;
+using iSmart.API.Controllers;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 internal class Program
 {
@@ -68,9 +70,26 @@ internal class Program
                     new string[]{}
                 }
             });
-        });
+            // Remove WebSocket actions from Swagger document generation
+            option.DocInclusionPredicate((docName, apiDesc) =>
+            {
+                // Exclude WebSocket actions from Swagger
+                if (apiDesc.TryGetMethodInfo(out var methodInfo))
+                {
+                    if (methodInfo.DeclaringType == typeof(WebSocketController))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            });
+    });
 
         builder.Services.AddControllers();
+
+        var openAiApiKey = builder.Configuration["OpenAI:ApiKey"];
+        
+        
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", builder =>
@@ -95,18 +114,22 @@ internal class Program
         builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
         builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
         builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
-
+        builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
+        builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
+        builder.Services.AddScoped<ICustomerService, CustomerService>();
+        builder.Services.AddScoped<IReportService, ReportService>();
+        builder.Services.AddSingleton<WebSocketService>();
+        builder.Services.AddSingleton(new OpenAIService(openAiApiKey));
 
         // Đăng ký các dịch vụ
         // builder.Services.AddScoped<ICategoryService, CategoryService>();
         // builder.Services.AddScoped<ISupplierService, SupplierService>();
         // builder.Services.AddScoped<IUserService, UserService>();
-        // builder.Services.AddScoped<IStatusService, StatusService>();
-        // builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
-        // builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
+        // builder.Services.AddScoped<IStatusService, StatusService>();         
         // builder.Services.AddScoped<IProjectService, ProjectService>();
         // builder.Services.AddScoped<IStocktakeNoteService, StocktakeNoteService>();
         // builder.Services.AddScoped<IStocktakeNoteDetailService, StocktakeNoteDetailService>();
+
 
         var app = builder.Build();
 
@@ -128,7 +151,17 @@ internal class Program
         app.UseStaticFiles();
 
         app.UseCors("AllowAll");
+        app.UseWebSockets();
 
+        var webSocketOptions = new WebSocketOptions
+        {
+            KeepAliveInterval = TimeSpan.FromMinutes(2)
+        };
+        webSocketOptions.AllowedOrigins.Add("https://client.com");
+        webSocketOptions.AllowedOrigins.Add("https://www.client.com");
+
+        app.UseWebSockets(webSocketOptions);
         app.Run();
+
     }
 }

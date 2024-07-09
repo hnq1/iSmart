@@ -74,7 +74,7 @@ namespace iSmart.Service
                 var requestDelivery = new Delivery
                 {
                     DeliveryName = delivery.DeliveryName,
-                    StatusId = 1
+                    StatusId = 1,               
                 };
                 _context.Deliveries.Add(requestDelivery);
                 _context.SaveChanges();

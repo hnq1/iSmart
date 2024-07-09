@@ -64,12 +64,12 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                         <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                     </div>
                 </Col>
-                <Col md={2}>
+                {/* <Col md={2}>
                     <div className="form-group mb-3">
                         <label >Giá tiền</label>
                         <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
                     </div>
-                </Col>
+                </Col> */}
 
                 {/* <Col md={2}>
                     <div className="form-group mb-3">

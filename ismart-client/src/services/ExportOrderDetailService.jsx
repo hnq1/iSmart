@@ -1,11 +1,11 @@
 import axios from "./axios"
 
-const createNewExportOrderDetail = (exportId, price, goodsId, quantity) => {
-    return axios.post(`api/ExportOrderDetail/add-order-detail`, { exportId, price, goodsId, quantity })
+const createNewExportOrderDetail = (exportId, price, goodsId, quantity, importOrderDetailId) => {
+    return axios.post(`api/export-order-detail/add-export-order-detail`, { exportId, price, goodsId, quantity, importOrderDetailId })
 }
 
 const getExportOrderDetailByExportId = (exportId) => {
-    return axios.get(`api/ExportOrderDetail/get-export-order-details?oid=${exportId}`)
+    return axios.get(`api/export-order-detail/get-export-order-details?oid=${exportId}`)
 }
 
 const updateExportOrderDetail = (exportId, price, detailId, goodsId, quantity) => {

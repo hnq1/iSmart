@@ -1,15 +1,15 @@
 import { get } from "lodash";
 import axios from "./axios";
 
-const addNewImportOrder = (staffId, userId, supplierId, totalCost,
+const addNewImportOrder = (isInternalTransfer, staffId, userId, supplierId, totalCost,
     note, createdDate, importedDate,
     statusId, importCode, warehouseId,
-    deliveryId, image, stokekeeperId) => {
-    return axios.post(`api/import-order/add-import-order?staffId=${staffId}`, {
+    deliveryId, image, warehouseDestinationId) => {
+    return axios.post(`api/import-order/add-import-order?isInternalTransfer=${isInternalTransfer}&staffId=${staffId}`, {
         userId, supplierId, totalCost,
         note, createdDate, importedDate,
         statusId, importCode, warehouseId,
-        deliveryId, image, stokekeeperId
+        deliveryId, image, warehouseDestinationId
     })
 }
 
@@ -33,7 +33,8 @@ const fetchImportOrderNewest = () => {
     return axios.get(`api/import-order/get-newest-import-order`);
 }
 
-const fetchImportOrdersWithfilter = (pageSize, page, warehouseId, status, sortDate, keyword) => {
+const fetchImportOrdersWithfilter = (pageSize, page, warehouseId,
+    status, sortDate, keyword) => {
     return axios.get(`api/import-order/get-import-orders?pageSize=${pageSize}
     ${page ? `&page=${page}` : ''}
     ${warehouseId ? `&warehouseId=${warehouseId}` : ''}

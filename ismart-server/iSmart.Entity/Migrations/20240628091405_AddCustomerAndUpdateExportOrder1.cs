@@ -4,7 +4,7 @@
 
 namespace iSmart.Entity.Migrations
 {
-    public partial class UpdateNullforSupplierToImportOrder : Migration
+    public partial class AddCustomerAndUpdateExportOrder1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

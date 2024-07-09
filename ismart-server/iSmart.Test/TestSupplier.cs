@@ -30,6 +30,7 @@ namespace iSmart.Test
             if (suppliers != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
+
         [Test]
         public void AddSupplier_Test()
         {
@@ -46,6 +47,7 @@ namespace iSmart.Test
             if (supplierResponse.IsSuccess == true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
+
 
         [Test]
         public void GetAllActiveSupplier_Test()

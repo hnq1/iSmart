@@ -5,6 +5,7 @@ import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
 import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 import { set } from "lodash";
+import { fetchGoodsWithSupplier } from "~/services/GoodServices";
 
 const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow, handleClose, onChange }) => {
 
@@ -35,10 +36,10 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
         if (roleId === 1) {
             if (selectedStorageId && selectedSupplierId) {
                 let res = await fetchGoodsWithStorageAndSupplier(
-                    selectedStorageId,
-                    selectedSupplierId
-                );
+                    selectedStorageId, selectedSupplierId
 
+                );
+                // console.log("wh vs sup", selectedStorageId);
                 setTotalGoods(res);
             }
         } else if (roleId === 4 || roleId === 3 || roleId === 2) {
