@@ -8,6 +8,9 @@ import { toast } from 'react-toastify';
 import { fetchCustomerwithKeyword } from '~/services/CustomerServices';
 import ModelAddCustomer from './AddCustomer';
 import ModelEditCustomer from './EditCustomer';
+import ModelCustomerTransaction from './CustomerTransaction';
+import { forEach, get } from 'lodash';
+import { getCustomerById } from '~/services/CustomerServices';
 
 function CustomerList() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
@@ -21,8 +24,11 @@ function CustomerList() {
     const [currentPage, setcurrentPage] = useState(0);
 
     const [keywordSearch, setKeywordSearch] = useState("");
-    ;
 
+    const [dataTransactions, setDataTransactions] = useState({});
+    const [isShowModelTransactions, setIsShowModelTransactions] = useState(false);
+
+    const [customerName, setCustomerName] = useState('');
     useEffect(() => {
         getListCustomer(1);
     }, []);
@@ -32,15 +38,13 @@ function CustomerList() {
         setcurrentPage(0);
         const fetchData = async () => {
             let res = await getListCustomer(1, keywordSearch);
-            // console.log(res);
 
-            // if (res.data.length == 0) {
-            //     toast.warning("Vui lòng nhập từ khóa tìm kiếm khác");
-            // }
         };
 
         fetchData();
     }, []);
+
+
 
     const ShowModelEditCustomer = (customer) => {
         setDataUpdateCustomer(customer);
@@ -51,10 +55,13 @@ function CustomerList() {
         let res = await fetchCustomerwithKeyword(page, removeWhiteSpace(keyword ? keyword : ""));
         if (res) {
             setListCustomer(res.data);
-            console.log(res.data);
             setTotalPages(res.totalPages);
-
         }
+    }
+
+    const ShowModelCustomerTransactions = (customerId) => {
+        setIsShowModelTransactions(true);
+        setDataTransactions(customerId);
     }
 
     const handleSearch = () => {
@@ -123,7 +130,8 @@ function CustomerList() {
                                             className="btn btn-success border-left-0 rounded"
                                             type="button"
                                             onClick={() => setIsShowModelAddNew(true)}
-                                        ><i className="fa-solid fa-plus"></i>
+                                        >
+                                            {/* <i className="fa-solid fa-plus"></i> */}
                                             &nbsp;
                                             Thêm khách hàng
 
@@ -142,7 +150,7 @@ function CustomerList() {
                                         <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>ĐỊA CHỈ</th>
                                         <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>EMAIL</th>
                                         <th className="align-middle  text-nowrap">SỐ ĐIỆN THOẠI</th>
-
+                                        <th className="align-middle  text-nowrap">LỊCH SỬ <br />GIAO DỊCH</th>
 
                                         {/* {
                                             (roleId == 1 || roleId == 2) ?
@@ -173,7 +181,14 @@ function CustomerList() {
                                                         </td>
                                                         : ''
                                                 } */}
+                                                <td className="align-middle " style={{ padding: '10px' }}>
 
+                                                    <i className="fa-solid fa-clock-rotate-left actionButtonCSS"
+                                                        onClick={() => ShowModelCustomerTransactions(c)}
+                                                    >
+
+                                                    </i>
+                                                </td>
 
                                                 {
                                                     (roleId == 1 || roleId == 2) ?
@@ -230,15 +245,11 @@ function CustomerList() {
                 updateTableCustomer={updateTableCustomer}
             />
 
-
-            {/* <ModalConfirm title="nhà cung cấp"
-                statusText1={<span style={{ color: '#24cbc7' }}>Đang hợp tác</span>}
-                statusText2={<span style={{ color: '#ff0000' }}>Ngừng hợp tác</span>} isShow={isShowModalConfirm}
-                handleClose={() => setIsShowModalConfirm(false)}
-                confirmChangeStatus={confirmChangeStatus}
-                name={<span style={{ color: 'black' }}>{dataUpdateStatus.supplierName}</span>} status={dataUpdateStatus.status}
-
-            /> */}
+            <ModelCustomerTransaction isShow={isShowModelTransactions}
+                handleClose={() => setIsShowModelTransactions(false)}
+                dataTransaction={dataTransactions}
+                
+            />
         </>
     );
 }

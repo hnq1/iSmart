@@ -72,7 +72,7 @@ const updateGood = (goodsId, goodsName, goodsCode,
 
 
 const fetchHistoryGood = (id) => {
-    return axios.get(`api/Dashboard/get-data-by-goods-id?id=${id}`);
+    return axios.get(`api/goods/get-good-by-id?id=${id}`);
 }
 
 const fetchAllGoodsInWarehouse = (id) => {

@@ -122,7 +122,6 @@ function ImportOrderList() {
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
-        // console.log("totalWarehouse:", res);
     }
 
     const handleStorageClickTotal = () => {

@@ -203,9 +203,9 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         }
         else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
-        }
-        else if (stockPrice <= 0) {//////
-            toast.warning("Vui lòng nhập giá lớn hơn 0");
+            // }
+            // else if (stockPrice <= 0) {//////
+            //     toast.warning("Vui lòng nhập giá lớn hơn 0");
         }
         else if (maxStock <= 0) {///////
             toast.warning("Vui lòng nhập maxstock lớn hơn 0");
@@ -221,7 +221,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     measuredUnit,
                     imageGood,
                     1,
-                    stockPrice,
+                    0,
                     createdDate,
                     warrantyTime,
                     barCode,
@@ -236,7 +236,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     measuredUnit,
                     imageGood,
                     1,
-                    stockPrice,
+                    0,
                     createdDate,
                     warrantyTime,
                     barCode,
@@ -379,16 +379,10 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                             <label >Ngày tạo </label>
                             <input type="date" className="form-control inputCSS" aria-describedby="emailHelp" value={createdDate} onChange={handleChangeCreatedDate} />
                         </Col>
-                        <Col md={5}>
+                        {/* <Col md={5}>
                             <label >Giá nhập </label>
-                            {/* <input
-                                type="text"
-                                className="form-control inputCSS"
-                                value={stockPrice}
-                                onChange={handleChangeStockPrice} // Sử dụng hàm xử lý thay đổi giá trị
-                            /> */}
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
-                        </Col>
+                        </Col> */}
                     </Row>
 
                     <Row style={{ marginTop: '15px' }}>
