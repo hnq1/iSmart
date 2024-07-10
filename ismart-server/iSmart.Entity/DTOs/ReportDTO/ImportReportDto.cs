@@ -8,6 +8,7 @@ namespace iSmart.Entity.DTOs.ReportDTO
 {
     public class ImportReportDto
     {
+        public string TransactionCode { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string MeasureUnit { get; set; }
