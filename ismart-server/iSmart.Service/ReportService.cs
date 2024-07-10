@@ -38,6 +38,7 @@ namespace iSmart.Service
                         ProductId = (int)eod.GoodsId,
                         ProductName = eod.Goods.GoodsCode,
                         Quantity = (int)eod.Quantity,
+                        MeasureUnit = eod.Goods.MeasuredUnit,
                         TransactionDate = (DateTime)e.ExportedDate
                     }))
                     .ToListAsync();
@@ -63,6 +64,7 @@ namespace iSmart.Service
                     ProductName = io.ImportOrderDetails.Select(iod => iod.Goods.GoodsCode).FirstOrDefault(),
                     Quantity = io.ImportOrderDetails.Sum(iod => iod.Quantity),
                     TransactionDate = (DateTime)io.ImportedDate,
+                    MeasureUnit = io.ImportOrderDetails.Select(iod => iod.Goods.MeasuredUnit).FirstOrDefault()
                 })
                 .ToListAsync();
 
@@ -97,17 +99,19 @@ namespace iSmart.Service
                         ProductName = eod.Goods.GoodsCode,
                         Imports = 0,
                         Exports = (int)eod.Quantity,
+                        MeasureUnit = eod.Goods.MeasuredUnit,
                         Balance = (int)-eod.Quantity
                     }))
                     .ToListAsync();
 
                 var inventoryReports = importReports
                     .Concat(exportReports)
-                    .GroupBy(ir => new { ir.ProductId, ir.ProductName })
+                    .GroupBy(ir => new { ir.ProductId, ir.ProductName, ir.MeasureUnit })
                     .Select(g => new InventoryReportDto
                     {
                         ProductId = g.Key.ProductId,
                         ProductName = g.Key.ProductName,
+                        MeasureUnit = g.Key.MeasureUnit,
                         Imports = g.Sum(x => x.Imports),
                         Exports = g.Sum(x => x.Exports),
                         Balance = g.Sum(x => x.Imports) - g.Sum(x => x.Exports)
