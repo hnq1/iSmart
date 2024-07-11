@@ -118,6 +118,7 @@ internal class Program
         builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<IReportService, ReportService>();
+        builder.Services.AddScoped<IReturnOrderService, ReturnOrderService>();
         builder.Services.AddSingleton<WebSocketService>();
         builder.Services.AddSingleton(new OpenAIService(openAiApiKey));
 

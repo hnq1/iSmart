@@ -12,8 +12,8 @@ using iSmart.Entity.Models;
 namespace iSmart.Entity.Migrations
 {
     [DbContext(typeof(iSmartContext))]
-    [Migration("20240627133002_AddActualQuantity")]
-    partial class AddActualQuantity
+    [Migration("20240711165953_UpdateReturnOrder")]
+    partial class UpdateReturnOrder
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -325,6 +325,9 @@ namespace iSmart.Entity.Migrations
                         .HasColumnType("real");
 
                     b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseDestinationId")
                         .HasColumnType("int");
 
                     b.Property<int>("WarehouseId")
@@ -713,62 +716,45 @@ namespace iSmart.Entity.Migrations
 
             modelBuilder.Entity("iSmart.Entity.Models.ReturnsOrder", b =>
                 {
-                    b.Property<int>("ReturnsId")
+                    b.Property<int>("ReturnOrderId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReturnsId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReturnOrderId"), 1L, 1);
 
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
-
-                    b.Property<int?>("ExportId")
-                        .IsRequired()
+                    b.Property<int?>("ApprovedBy")
                         .HasColumnType("int");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("image");
-
-                    b.Property<int?>("ImportId")
-                        .IsRequired()
+                    b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ImportedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("ReturnsCode")
+                    b.Property<string>("ReturnOrderCode")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime>("ReturnedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
+
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SupplierId")
-                        .IsRequired()
+                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
-                    b.Property<float>("TotalPrice")
-                        .HasColumnType("real");
-
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.Property<int>("WarehouseId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReturnsId");
+                    b.HasKey("ReturnOrderId");
 
-                    b.HasIndex("ExportId");
+                    b.HasIndex("ApprovedBy");
 
-                    b.HasIndex("ImportId");
+                    b.HasIndex("CreatedBy");
 
                     b.HasIndex("StatusId");
 
@@ -778,36 +764,43 @@ namespace iSmart.Entity.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("ReturnsOrder", (string)null);
+                    b.ToTable("ReturnOrder", (string)null);
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.ReturnsOrderDetail", b =>
                 {
-                    b.Property<int>("DetailId")
+                    b.Property<int>("ReturnOrderDetailId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetailId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReturnOrderDetailId"), 1L, 1);
+
+                    b.Property<string>("BatchCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("GoodsId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReturnsId")
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<int>("ReturnOrderId")
                         .HasColumnType("int");
 
-                    b.HasKey("DetailId");
+                    b.HasKey("ReturnOrderDetailId");
 
                     b.HasIndex("GoodsId");
 
-                    b.HasIndex("ReturnsId");
+                    b.HasIndex("ReturnOrderId");
 
-                    b.ToTable("ReturnsOrderDetail", (string)null);
+                    b.ToTable("ReturnOrderDetail", (string)null);
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.Role", b =>
@@ -1330,46 +1323,44 @@ namespace iSmart.Entity.Migrations
 
             modelBuilder.Entity("iSmart.Entity.Models.ReturnsOrder", b =>
                 {
-                    b.HasOne("iSmart.Entity.Models.ExportOrder", "Export")
-                        .WithMany("ReturnsOrders")
-                        .HasForeignKey("ExportId")
+                    b.HasOne("iSmart.Entity.Models.User", "ApprovedByUser")
+                        .WithMany("ApprovedReturnOrders")
+                        .HasForeignKey("ApprovedBy")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasConstraintName("FK_ReturnOrder_ApprovedByUser");
 
-                    b.HasOne("iSmart.Entity.Models.ImportOrder", "Import")
-                        .WithMany("ReturnsOrders")
-                        .HasForeignKey("ImportId")
+                    b.HasOne("iSmart.Entity.Models.User", "User")
+                        .WithMany("CreatedReturnOrders")
+                        .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_ReturnOrder_CreatedByUser");
 
                     b.HasOne("iSmart.Entity.Models.Status", "Status")
                         .WithMany("ReturnsOrders")
                         .HasForeignKey("StatusId")
                         .IsRequired()
-                        .HasConstraintName("FK_ReturnsOrder_Status");
+                        .HasConstraintName("FK_ReturnOrder_Status");
 
                     b.HasOne("iSmart.Entity.Models.Supplier", "Supplier")
                         .WithMany("ReturnsOrders")
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_ReturnOrder_Supplier");
 
-                    b.HasOne("iSmart.Entity.Models.User", "User")
+                    b.HasOne("iSmart.Entity.Models.User", null)
                         .WithMany("ReturnsOrders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.HasOne("iSmart.Entity.Models.Warehouse", "Warehouse")
                         .WithMany("ReturnsOrders")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_ReturnsOrder_Storage_StorageId");
+                        .HasConstraintName("FK_ReturnOrder_Warehouse");
 
-                    b.Navigation("Export");
-
-                    b.Navigation("Import");
+                    b.Navigation("ApprovedByUser");
 
                     b.Navigation("Status");
 
@@ -1386,17 +1377,19 @@ namespace iSmart.Entity.Migrations
                         .WithMany("ReturnsOrderDetails")
                         .HasForeignKey("GoodsId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_ReturnOrderDetail_Goods");
 
-                    b.HasOne("iSmart.Entity.Models.ReturnsOrder", "Returns")
+                    b.HasOne("iSmart.Entity.Models.ReturnsOrder", "ReturnOrder")
                         .WithMany("ReturnsOrderDetails")
-                        .HasForeignKey("ReturnsId")
+                        .HasForeignKey("ReturnOrderId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_ReturnOrderDetail_ReturnOrder");
 
                     b.Navigation("Goods");
 
-                    b.Navigation("Returns");
+                    b.Navigation("ReturnOrder");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.Supplier", b =>
@@ -1495,8 +1488,6 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("AvailableForReturns");
 
                     b.Navigation("ExportOrderDetails");
-
-                    b.Navigation("ReturnsOrders");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.Good", b =>
@@ -1521,8 +1512,6 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("AvailableForReturns");
 
                     b.Navigation("ImportOrderDetails");
-
-                    b.Navigation("ReturnsOrders");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.ReturnsOrder", b =>
@@ -1565,9 +1554,13 @@ namespace iSmart.Entity.Migrations
 
             modelBuilder.Entity("iSmart.Entity.Models.User", b =>
                 {
+                    b.Navigation("ApprovedReturnOrders");
+
                     b.Navigation("BillCreatedNavigations");
 
                     b.Navigation("BillUpdatedNavigations");
+
+                    b.Navigation("CreatedReturnOrders");
 
                     b.Navigation("EmailTokens");
 

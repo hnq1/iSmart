@@ -455,65 +455,64 @@ namespace iSmart.Entity.Models
 
             modelBuilder.Entity<ReturnsOrder>(entity =>
             {
-                entity.HasKey(e => e.ReturnsId);
+                entity.HasKey(e => e.ReturnOrderId);
 
-                entity.ToTable("ReturnsOrder");
+                entity.ToTable("ReturnOrder");
 
-                entity.Property(e => e.CreatedDate).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
-
-                entity.Property(e => e.Image).HasColumnName("image");
-
-                entity.Property(e => e.Note).HasMaxLength(250);
-
-                entity.Property(e => e.ReturnsCode)
+                entity.Property(e => e.ReturnOrderCode)
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.Export)
-                    .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.ExportId)
-                     .OnDelete(DeleteBehavior.NoAction);
+                entity.Property(e => e.ReturnedDate).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
 
-                entity.HasOne(d => d.Import)
+                entity.HasOne(d => d.Warehouse)
                     .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.ImportId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .HasForeignKey(d => d.WarehouseId)
+                    .HasConstraintName("FK_ReturnOrder_Warehouse");
+
+                entity.HasOne(d => d.Supplier)
+                    .WithMany(p => p.ReturnsOrders)
+                    .HasForeignKey(d => d.SupplierId)
+                    .HasConstraintName("FK_ReturnOrder_Supplier");
 
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.ReturnsOrders)
                     .HasForeignKey(d => d.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ReturnsOrder_Status");
-
-                entity.HasOne(d => d.Supplier)
-                    .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.SupplierId);
+                    .HasConstraintName("FK_ReturnOrder_Status");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                   .WithMany(p => p.CreatedReturnOrders)
+                   .HasForeignKey(d => d.CreatedBy)
+                   .OnDelete(DeleteBehavior.NoAction)
+                   .HasConstraintName("FK_ReturnOrder_CreatedByUser");
 
-                entity.HasOne(d => d.Warehouse)
-                    .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.WarehouseId)
-                    .HasConstraintName("FK_ReturnsOrder_Storage_StorageId");
+                entity.HasOne(d => d.ApprovedByUser)
+                    .WithMany(p => p.ApprovedReturnOrders)
+                    .HasForeignKey(d => d.ApprovedBy)
+                    .OnDelete(DeleteBehavior.NoAction)
+                    .HasConstraintName("FK_ReturnOrder_ApprovedByUser");
             });
 
             modelBuilder.Entity<ReturnsOrderDetail>(entity =>
             {
-                entity.HasKey(e => e.DetailId);
+                entity.HasKey(e => e.ReturnOrderDetailId);
 
-                entity.ToTable("ReturnsOrderDetail");
+                entity.ToTable("ReturnOrderDetail");
 
                 entity.HasOne(d => d.Goods)
                     .WithMany(p => p.ReturnsOrderDetails)
-                    .HasForeignKey(d => d.GoodsId);
+                    .HasForeignKey(d => d.GoodsId)
+                    .HasConstraintName("FK_ReturnOrderDetail_Goods");
 
-                entity.HasOne(d => d.Returns)
+                entity.HasOne(d => d.ReturnOrder)
                     .WithMany(p => p.ReturnsOrderDetails)
-                    .HasForeignKey(d => d.ReturnsId)
-                     .OnDelete(DeleteBehavior.NoAction);
+                    .HasForeignKey(d => d.ReturnOrderId)
+                    .OnDelete(DeleteBehavior.NoAction)
+                    .HasConstraintName("FK_ReturnOrderDetail_ReturnOrder");
+
+                entity.Property(e => e.Reason).HasMaxLength(250);
+                entity.Property(e => e.BatchCode).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Role>(entity =>

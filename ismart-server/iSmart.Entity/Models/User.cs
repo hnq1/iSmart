@@ -14,8 +14,9 @@ namespace iSmart.Entity.Models
             GoodsHistories = new HashSet<GoodsHistory>();
             ImportOrders = new HashSet<ImportOrder>();
             RefreshTokens = new HashSet<RefreshToken>();
-            ReturnsOrders = new HashSet<ReturnsOrder>();
             UserWarehouses = new HashSet<UserWarehouse>();
+            CreatedReturnOrders = new HashSet<ReturnsOrder>();
+            ApprovedReturnOrders = new HashSet<ReturnsOrder>();
         }
 
         public int UserId { get; set; }
@@ -40,7 +41,8 @@ namespace iSmart.Entity.Models
         public virtual ICollection<GoodsHistory> GoodsHistories { get; set; }
         public virtual ICollection<ImportOrder> ImportOrders { get; set; }
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
-        public virtual ICollection<ReturnsOrder> ReturnsOrders { get; set; }
         public virtual ICollection<UserWarehouse> UserWarehouses { get; set; }
+        public virtual ICollection<ReturnsOrder> CreatedReturnOrders { get; set; }
+        public virtual ICollection<ReturnsOrder> ApprovedReturnOrders { get; set; }
     }
 }
