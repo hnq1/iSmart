@@ -18,6 +18,10 @@ const InventoryExport = () => {
     const [endDate, setEndDate] = useState('');
     const [inventoryData, setInventoryData] = useState([]);
 
+    const [showMode, setShowMode] = useState(null); // Quản lý chế độ hiển thị
+    const [Month, setMonth] = useState('');
+    const [year, setYear] = useState(new Date().getFullYear()); // Thêm state để lưu trữ năm
+
     useEffect(() => {
         getAllStorages();
     }, []);
@@ -66,6 +70,79 @@ const InventoryExport = () => {
         setSelectedWarehouseId(warehouse.warehouseId);
     }
 
+    const handleSelectAction = (mode) => {
+        setShowMode(mode);
+        if (mode === 'year') {
+            // Nếu chọn theo năm, tính toán ngày đầu tiên và cuối cùng của năm hiện tại
+            const currentYear = new Date().getFullYear();
+            setYear(currentYear);
+            setStartDate(`${currentYear}-01-01`);
+            setEndDate(`${currentYear}-12-31`);
+        }
+    }
+
+    const getTitle = () => {
+        switch (showMode) {
+            case 'date':
+                return 'Chọn theo ngày';
+            case 'month':
+                return 'Chọn theo tháng';
+            case 'quarter':
+                return 'Chọn theo quý';
+            case 'year':
+                return 'Chọn theo năm';
+            default:
+                return 'Chọn Hành Động';
+        }
+    };
+
+    const handlMonth = (e) => {
+        const selectedMonth = e.target.value;
+        const date = new Date(selectedMonth);
+
+        // Tính ngày đầu tiên của tháng
+        const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+
+        // Tính ngày cuối cùng của tháng
+        const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+        // Cập nhật startDate và endDate với định dạng YYYY-MM-DD
+        setStartDate(firstDayOfMonth.toLocaleDateString('en-CA')); // Định dạng YYYY-MM-DD
+        setEndDate(lastDayOfMonth.toLocaleDateString('en-CA')); // Định dạng YYYY-MM-DD
+
+        // Cập nhật Month state để hiển thị tháng được chọn
+        setMonth(selectedMonth);
+    }
+
+    const setQuarter = (quarter, year) => {
+        switch (quarter) {
+            case '1':
+                setStartDate(`${year}-01-01`);
+                setEndDate(`${year}-03-31`);
+                break;
+            case '2':
+                setStartDate(`${year}-04-01`);
+                setEndDate(`${year}-06-30`);
+                break;
+            case '3':
+                setStartDate(`${year}-07-01`);
+                setEndDate(`${year}-09-30`);
+                break;
+            case '4':
+                setStartDate(`${year}-10-01`);
+                setEndDate(`${year}-12-31`);
+                break;
+            default:
+                break;
+        }
+    }
+
+    const handleYearChange = (e) => {
+        const selectedYear = e.target.value;
+        setYear(selectedYear);
+        setStartDate(`${selectedYear}-01-01`);
+        setEndDate(`${selectedYear}-12-31`);
+    }
 
     return (
         <>
@@ -101,19 +178,93 @@ const InventoryExport = () => {
                                     : ''
                                 }
 
-                                <Col md={2} className="px-md-1">
-                                    <div className="input-group mb-3">
-                                        <h6>Ngày bắt đầu</h6>
-                                        <input type="date" className="datepickerCSS" id="datepickerStart" value={startDate} onChange={hanldStartDate} />
-                                    </div>
+                                <Col md={2} className="px-md-1 d-flex align-items-center">
+                                    <DropdownButton
+                                        title={getTitle()}
+                                        variant="success"
+                                        className="DropdownButtonCSS ButtonCSSDropdown"
+                                        style={{ zIndex: 999 }}
+                                    >
+                                        <Dropdown.Item eventKey="Date"
+                                            onClick={() => handleSelectAction('date')}
+                                        >Chọn theo ngày</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Month"
+                                            onClick={() => handleSelectAction('month')}
+                                        >Chọn theo tháng</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Quarter"
+                                            onClick={() => handleSelectAction('quarter')}
+                                        >Chọn theo quý</Dropdown.Item>
+                                        <Dropdown.Item eventKey="Year"
+                                            onClick={() => handleSelectAction('year')}
+                                        >Chọn theo năm</Dropdown.Item>
+                                    </DropdownButton>
                                 </Col>
 
-                                <Col md={2} className="px-md-1">
-                                    <div className="input-group mb-3">
-                                        <h6>Ngày kết thúc</h6>
-                                        <input type="date" className="datepickerCSS" id="datepickerEnd" value={endDate} onChange={hanldEndDate} />
-                                    </div>
-                                </Col>
+                                {showMode === 'date' && (
+                                    <>
+                                        <Col md={2} className="px-md-1 d-flex align-items-center">
+                                            <div className="input-group mb-3">
+                                                <h6>Ngày bắt đầu</h6>
+                                                <input type="date" className="datepickerCSS" id="datepickerStart" value={startDate} onChange={hanldStartDate} />
+                                            </div>
+                                        </Col>
+
+                                        <Col md={2} className="px-md-1">
+                                            <div className="input-group mb-3">
+                                                <h6>Ngày kết thúc</h6>
+                                                <input type="date" className="datepickerCSS" id="datepickerEnd" value={endDate} onChange={hanldEndDate} />
+                                            </div>
+                                        </Col>
+                                    </>
+                                )}
+
+                                {showMode === 'month' && (
+                                    <>
+                                        <Col md={2} className="px-md-1 d-flex align-items-center">
+                                            <div className="input-group mb-3">
+                                                <h6>Chọn tháng</h6>
+                                                <input type="month" className="datepickerCSS" id="monthpicker" value={Month} onChange={handlMonth} />
+                                            </div>
+                                        </Col>
+                                    </>
+                                )}
+
+                                {showMode === 'quarter' && (
+                                    <>
+                                        <Col md={2} className="px-md-1 d-flex align-items-center">
+                                            <DropdownButton
+                                                title="Chọn Quý"
+                                                variant="success"
+                                                className="DropdownButtonCSS ButtonCSSDropdown"
+                                                style={{ zIndex: 999 }}
+                                            >
+                                                <Dropdown.Item eventKey="1"
+                                                    onClick={() => setQuarter('1', year)}
+                                                >Quý 1</Dropdown.Item>
+                                                <Dropdown.Item eventKey="2"
+                                                    onClick={() => setQuarter('2', year)}
+                                                >Quý 2</Dropdown.Item>
+                                                <Dropdown.Item eventKey="3"
+                                                    onClick={() => setQuarter('3', year)}
+                                                >Quý 3</Dropdown.Item>
+                                                <Dropdown.Item eventKey="4"
+                                                    onClick={() => setQuarter('4', year)}
+                                                >Quý 4</Dropdown.Item>
+                                            </DropdownButton>
+                                        </Col>
+                                    </>
+                                )}
+
+                                {showMode === 'year' && (
+                                    <>
+                                        <Col md={2} className="px-md-1 d-flex align-items-center">
+                                            <div className="input-group mb-3">
+                                                <h6>Chọn năm</h6>
+                                                <input type="number" className="datepickerCSS" id="yearpicker" value={year} onChange={handleYearChange} />
+                                            </div>
+                                        </Col>
+                                    </>
+                                )}
 
                             </Row>
                         </div>
