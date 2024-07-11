@@ -5,7 +5,7 @@ using iSmart.Service;
 
 namespace iSmart.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/return-order")]
     [ApiController]
     public class ReturnOrderController : ControllerBase
     {
@@ -34,21 +34,21 @@ namespace iSmart.API.Controllers
             return Ok(returnOrders);
         }
 
-        [HttpGet("GetReturnOrderNewest")]
+        [HttpGet("get-return-order-newest")]
         public ActionResult<int> GetReturnOrderNewest()
         {
             var returnOrderId = _returnOrderService.GetReturnOrderNewest();
             return Ok(returnOrderId);
         }
 
-        [HttpGet("ReturnOrderFilterPaging")]
+        [HttpGet("return-order-filter-paging")]
         public ActionResult<ReturnOrderFilterPaging> ReturnOrderFilterPaging(int pageSize, int page, int? warehouseId, int? userId, int? approvedById, int? status, int? sortDate, string? keyword = "")
         {
             var result = _returnOrderService.ReturnOrderFilterPaging(pageSize, page, warehouseId, userId, approvedById, status, sortDate, keyword);
             return Ok(result);
         }
 
-        [HttpPost("UpdateOrder")]
+        [HttpPost("update-order")]
         public ActionResult<UpdateReturnOrderResponse> UpdateOrder(UpdateReturnOrderRequest request)
         {
             var response = _returnOrderService.UpdateOrder(request);
