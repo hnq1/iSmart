@@ -279,7 +279,7 @@ function ImportOrderListN() {
                                     </DropdownButton>
                                 </Col>
 
-                                <Col md={4}>
+                                <Col md={3}>
                                     <div className="input-group">
                                         <input
                                             className="form-control border-secondary inputCSS"

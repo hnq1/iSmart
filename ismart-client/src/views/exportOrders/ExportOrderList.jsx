@@ -408,7 +408,9 @@ const ExportOrderList = () => {
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
             <ConfirmExportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
             <ModelAddExportOrderAuto isShow={isShowExportModelAddAuto} handleClose={() => setIsShowExportModelAddAuto(false)} updateTable={updateTable} />
-            <ModelAddExportOrderManual isShow={isShowExportModelAddManual} handleClose={() => setIsShowExportModelAddManual(false)} updateTable={updateTable} />
+            <ModelAddExportOrderManual isShow={isShowExportModelAddManual} 
+            handleClose={() => setIsShowExportModelAddManual(false)} 
+            updateTable={updateTable} />
         </>
     )
 }

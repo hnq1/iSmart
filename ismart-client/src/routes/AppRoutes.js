@@ -29,6 +29,9 @@ import ConfirmImportOrder from '~/views/importOrders/ConfirmImportOrder';
 import InventoryInport from '~/views/inventoryReport/import/InventoryImport';
 import InventoryExport from '~/views/inventoryReport/export/InventoryExport';
 import InventoryAll from '~/views/inventoryReport/inventory/Inventory';
+import ReturnOrderList from '~/views/returnOrder/ReturnOrderList';
+
+
 const AppRoutes = () => {
     const roleId = parseInt(localStorage.getItem('RoleId'), 10);
 
@@ -252,6 +255,23 @@ const AppRoutes = () => {
                                     <Col className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <ExportOrderListInternal />
+                                    </Col>
+                                </Row>
+                            </Container></PrivateRoute>
+                    }
+                />
+
+<Route
+                    path="/tra-lai-don-hang"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <ReturnOrderList />
                                     </Col>
                                 </Row>
                             </Container></PrivateRoute>
