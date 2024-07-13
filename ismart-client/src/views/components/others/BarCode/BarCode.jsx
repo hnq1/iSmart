@@ -20,9 +20,18 @@ const BarCode = (barCodeDetail) => {
     }, [barCodeDetail])
 
     useEffect(() => {
-        setBarCodeValue(`${supplierName} - ${importedDate}`);
+        // Hàm để loại bỏ các ký tự đặc biệt và định dạng lại ngày giờ
+        const formatBarCodeValue = (name, date) => {
+            const formattedName = name.replace(/[^a-zA-Z0-9]/g, ''); // Loại bỏ ký tự đặc biệt từ tên
+            const formattedDate = date.replace(/[^a-zA-Z0-9]/g, ''); // Loại bỏ ký tự đặc biệt từ ngày
+            return `${formattedName}${formattedDate}`;
+        };
+
+        const formattedBarCodeValue = formatBarCodeValue(supplierName, importedDate);
+        setBarCodeValue(formattedBarCodeValue);
     }, [supplierName, importedDate]);
 
+    const renderBarcode = barcodeValue && barcodeValue.trim().length > 0;
 
     const test = "ABC Inc.";
     const importDate = "2024-04-19";
@@ -44,14 +53,19 @@ const BarCode = (barCodeDetail) => {
     return (
         <div className="App">
             {/* Truyền giá trị và cấu hình vào component Barcode */}
-            <div ref={componentRef}>
-                <ReactBarcode value={barcodeValue} options={barcodeOptions} />
-                <br />
-            </div>
+            {renderBarcode ? (
+                <div ref={componentRef}>
+                    <ReactBarcode value={barcodeValue} options={barcodeOptions} />
+                    <br />
+                </div>
+            ) : (
+                <div>No valid barcode value provided</div>
+            )}
             <ReactToPrint
-                trigger={() => <button variant="primary">In</button>}
+                trigger={() => <button style={{ border: '5px solid #808080', backgroundColor: '#808080' }} variant="primary">In</button>}
                 content={() => componentRef.current}
             />
+
         </div>
     );
 }

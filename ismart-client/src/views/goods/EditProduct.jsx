@@ -150,9 +150,6 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }
-        else if (stockPrice <= 0) {
-            toast.warning("Vui lòng nhập giá lớn hơn 0");
-        }
         else if (!imageGood) {
             toast.warning("Vui lòng nhập file ảnh");
         }
@@ -172,7 +169,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 0,
                 imageGood,
                 1,
-                stockPrice,
+                0,
                 warrantyTime,
                 barCode,
                 selectedWarehouseId,
@@ -305,10 +302,10 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                     </Row>
 
                     <row style={{ marginTop: '15px' }}>
-                        <Col md={5}>
+                        {/* <Col md={5}>
                             <label >Giá nhập </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
-                        </Col>
+                        </Col> */}
                     </row>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
