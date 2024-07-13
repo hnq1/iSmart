@@ -460,7 +460,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                         {renderImportData()}
 
                     </Row>
-                    <div className="">
+                    {/* <div className="">
                         <button
                             className="btn rounded ButtonRed"
                             type="button"
@@ -469,7 +469,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                             Tổng giá tiền: {formattedAmount(totalCost)}
                         </button>
 
-                    </div>
+                    </div> */}
 
                 </div>
             </Modal.Body>

@@ -24,8 +24,14 @@ import Error from '~/views/error/error';
 import PrivateRoute from './PrivateRoute';
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
-import CustomerList from '~/views/components/customer/CustomerList';
+import CustomerList from '~/views/customer/CustomerList';
 import ConfirmImportOrder from '~/views/importOrders/ConfirmImportOrder';
+import InventoryInport from '~/views/inventoryReport/import/InventoryImport';
+import InventoryExport from '~/views/inventoryReport/export/InventoryExport';
+import InventoryAll from '~/views/inventoryReport/inventory/Inventory';
+import ReturnOrderList from '~/views/returnOrder/ReturnOrderList';
+
+
 const AppRoutes = () => {
     const roleId = parseInt(localStorage.getItem('RoleId'), 10);
 
@@ -173,6 +179,55 @@ const AppRoutes = () => {
                 />
 
                 <Route
+                    path="/quan-ly-ton-kho-nhap"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <InventoryInport />
+                                    </Col>
+                                </Row>
+                            </Container></PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/quan-ly-ton-kho-xuat"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <InventoryExport />
+                                    </Col>
+                                </Row>
+                            </Container></PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/quan-ly-ton-all"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <InventoryAll />
+                                    </Col>
+                                </Row>
+                            </Container></PrivateRoute>
+                    }
+                />
+                <Route
                     path="/cac-lo-hang-xuat-khach-hang"
                     element={
                         <PrivateRoute>
@@ -200,6 +255,23 @@ const AppRoutes = () => {
                                     <Col className="py-3 background-primary overflow-auto">
                                         <NavbarCom />
                                         <ExportOrderListInternal />
+                                    </Col>
+                                </Row>
+                            </Container></PrivateRoute>
+                    }
+                />
+
+<Route
+                    path="/tra-lai-don-hang"
+                    element={
+                        <PrivateRoute>
+                            <Container fluid>
+                                <Row className="flex-nowrap">
+                                    <Sidebar />
+
+                                    <Col className="py-3 background-primary overflow-auto">
+                                        <NavbarCom />
+                                        <ReturnOrderList />
                                     </Col>
                                 </Row>
                             </Container></PrivateRoute>

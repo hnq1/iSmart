@@ -122,7 +122,6 @@ function ImportOrderList() {
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
-        // console.log("totalWarehouse:", res);
     }
 
     const handleStorageClickTotal = () => {
@@ -219,7 +218,7 @@ function ImportOrderList() {
                     <div className="col-sm-12">
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập từ nhà cung cấp</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                            <Row>
+                        <Row>
                                 {roleId == 1 ?
                                     <Col md={2}>
                                         <DropdownButton
@@ -274,7 +273,7 @@ function ImportOrderList() {
                                     </DropdownButton>
                                 </Col>
 
-                                <Col md={4}>
+                                <Col md={2}>
                                     <div className="input-group">
                                         <input
                                             className="form-control border-secondary inputCSS"
