@@ -18,6 +18,7 @@ import { toast } from 'react-toastify';
 import { cancelImport } from '~/services/ImportOrderServices';
 import { fetchUserByUserId } from '~/services/UserServices';
 import { get } from 'lodash';
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 
 function ImportOrderListN() {
 
@@ -110,11 +111,20 @@ function ImportOrderListN() {
         // console.log("getStorageIdByUser:", res);
     }
     const getImportOrders = async (page, pageSize = 15) => {
-        setcurrentPage(page - 1);
-        let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-        // console.log("sortedByStatusId:", sortedByStatusId);
-        setTotalImportOrder(res.data);
-        setTotalPages(res.totalPages);
+        if (roleId === 1) {
+            setcurrentPage(page - 1);
+            let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
+            // console.log("pageSize:", selectedWarehouseId);
+            setTotalImportOrder(res.data);
+            setTotalPages(res.totalPages);
+        } if (roleId === 2 || roleId === 3) {
+            let wh = await getUserIdWarehouse(userId);
+            setcurrentPage(page - 1);
+            let res = await fetchImportOrdersWithfilter(pageSize, page, wh[0].warehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
+            
+            setTotalImportOrder(res.data);
+            setTotalPages(res.totalPages);
+        }
 
     }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, DropdownButton, Col } from 'react-bootstrap';
+import { Table, DropdownButton, Col, Row } from 'react-bootstrap';
 import { fetchGoodsWithFilter, fetchAllGoodsInWarehouse } from '~/services/GoodServices';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { fetchAllCategories } from '~/services/CategoryServices';
@@ -76,6 +76,7 @@ function MyTable() {
     const [isShowModalInputExcel, setIsShowModalInputExcel] = useState(false);
     const [isShowModalExportExcel, setIsShowModalExportExcel] = useState(false);
 
+    const [startIndexOfPage, setStartIndexOfPage] = useState(1);
 
     useEffect(() => {
         let res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
@@ -96,6 +97,7 @@ function MyTable() {
             setShowInStock(true);// Show inStock for role 2
         }
     }, [])
+
 
     useEffect(() => {
         if (selectedWarehouseId) {
@@ -128,7 +130,7 @@ function MyTable() {
         sortPrice = sortedByPriceId, // Thêm giá trị mặc định cho sortPrice
         wordSearch = keywordSearch // Thêm giá trị mặc định cho wordSearch
     ) => {
-
+        setStartIndexOfPage((page - 1) * pageSize + 1);
         if (roleId === 1) {
 
             let res = await fetchGoodsWithFilter(pageSize,
@@ -229,12 +231,6 @@ function MyTable() {
         getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
 
-    const handleSortPirceClick = (sort) => {
-        setSortedByPriceId(sort.idSort);
-        setSortedByPriceName(sort.nameSort);
-        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sort.idSort, keywordSearch);
-    }
-
     const handleShowGoodHistory = (good) => {
         setIsShowGoodHistory(true);
         setDataGood(good);
@@ -265,109 +261,108 @@ function MyTable() {
             <div className="row justify-content-center">
                 <div className="col-sm-12">
                     <h5 style={{ color: '#a5a2ad' }}>Quản lý hàng hóa</h5>
-                    <div className="row no-gutters my-3 ">
-                        {(roleId == 1) ?
-                            <div className="col-2">
-                                <DropdownButton
-                                    className="DropdownButtonCSS ButtonCSSDropdown"
-                                    title={selectedWarehouse ? selectedWarehouse : "Tất cả Kho"}
-                                    variant="success"
-                                    style={{ zIndex: 999 }}
-                                >
-
-                                    <Dropdown.Item eventKey=""
-                                        onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-
-                                    {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
-                                        <Dropdown.Item
-                                            key={`warehouse ${index}`}
-                                            eventKey={c.warehouseName}
-                                            onClick={(e) => handleStorageClick(c, e)}
+                    <Row>
+                        <div className="row no-gutters my-3 ">
+                            <Col md={2}>
+                                {(roleId == 1) ?
+                                    <div className="col-2">
+                                        <DropdownButton
+                                            className="DropdownButtonCSS ButtonCSSDropdown"
+                                            title={selectedWarehouse ? selectedWarehouse : "Tất cả Kho"}
+                                            variant="success"
+                                            style={{ zIndex: 999 }}
                                         >
-                                            {c.warehouseName}
-                                        </Dropdown.Item>
-                                    ))}
+
+                                            <Dropdown.Item eventKey=""
+                                                onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
+                                            {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                                <Dropdown.Item
+                                                    key={`warehouse ${index}`}
+                                                    eventKey={c.warehouseName}
+                                                    onClick={(e) => handleStorageClick(c, e)}
+                                                >
+                                                    {c.warehouseName}
+                                                </Dropdown.Item>
+                                            ))}
+                                        </DropdownButton>
+
+
+
+                                    </div>
+                                    :
+                                    <Col md={2}>
+                                        <input type="text" className="form-control inputCSS"
+                                            aria-describedby="emailHelp"
+                                            value={selectedWarehouse} disabled />
+                                    </Col>
+
+                                }
+                            </Col>
+                            <Col md={2}>
+                                <h8>Nhập số bản ghi</h8>
+                                <div className="input-group mb-3">
+
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        placeholder="Nhập pageSize"
+                                        value={pageSize}
+                                        onChange={handlePageSizeChange}
+
+                                    />
+                                </div>
+                            </Col>
+                            <div className="col-2">
+
+                            </div>
+
+                            <div className="col">
+
+                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập"
+                                    variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()}>
                                 </DropdownButton>
 
-
-
                             </div>
-                            :
-                            <Col md={2}>
-                                <input type="text" className="form-control inputCSS"
-                                    aria-describedby="emailHelp"
-                                    value={selectedWarehouse} disabled />
-                            </Col>
+                            <div className="col">
+                                <div className="input-group">
+                                    <input
+                                        className="form-control border-secondary inputCSS"
+                                        type="search"
+                                        placeholder='Tìm kiếm...'
+                                        id="example-search-input4"
+                                        onChange={(event) => setKeywordSearch(event.target.value)}
 
-                        }
-                        <Col md={2}>
-                            <div className="input-group mb-3">
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    placeholder="Nhập pageSize"
-                                    value={pageSize}
-                                    onChange={handlePageSizeChange}
-                                />
-                            </div>
-                        </Col>
-                        <div className="col-2">
-                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={sortedByPriceName ? sortedByPriceName : "Giá"} variant="success" style={{ zIndex: 999 }}>
-                                {sortOptions.map((s, index) => (
-                                    <Dropdown.Item key={`sort ${index}`} eventKey={s.nameSort} onClick={(e) => handleSortPirceClick(s, e)}>
-                                        {s.nameSort}</Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </div>
-
-                        <div className="col">
-
-                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập"
-                                variant="primary" style={{ zIndex: 999 }}>
-                                <Dropdown.Item onClick={() => handleImportClick()}>Nhập</Dropdown.Item>
-
-                            </DropdownButton>
-
-                        </div>
-                        <div className="col">
-                            <div className="input-group">
-                                <input
-                                    className="form-control border-secondary inputCSS"
-                                    type="search"
-                                    placeholder='Tìm kiếm...'
-                                    id="example-search-input4"
-                                    onChange={(event) => setKeywordSearch(event.target.value)}
-
-                                    readOnly={false}
-                                />
-                                <div className="input-group-append">
-                                    <button
-                                        className="btn btn-outline-secondary border-left-0 rounded-0 rounded-right"
-                                        type="button"
-                                        onClick={handleSearch}
-                                    >
-                                        <i className="fa-solid fa-magnifying-glass"></i>
-                                    </button>
+                                        readOnly={false}
+                                    />
+                                    <div className="input-group-append">
+                                        <button
+                                            className="btn btn-outline-secondary border-left-0 rounded-0 rounded-right"
+                                            type="button"
+                                            onClick={handleSearch}
+                                        >
+                                            <i className="fa-solid fa-magnifying-glass"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                            {
+                                (roleId == 1 || roleId == 2) ?
+                                    <div className="col-auto">
+
+                                        <button
+                                            className="btn btn-success border-left-0 rounded ButtonCSS"
+                                            type="button"
+                                            onClick={() => setIsShowModelAddGood(true)}
+                                        ><i className="fa-solid fa-plus"></i>
+                                            &nbsp;Thêm hàng hóa
+                                        </button>
+
+                                    </div>
+                                    : ''
+                            }
                         </div>
-                        {
-                            (roleId == 1 || roleId == 2) ?
-                                <div className="col-auto">
-
-                                    <button
-                                        className="btn btn-success border-left-0 rounded ButtonCSS"
-                                        type="button"
-                                        onClick={() => setIsShowModelAddGood(true)}
-                                    ><i className="fa-solid fa-plus"></i>
-                                        &nbsp;Thêm hàng hóa
-                                    </button>
-
-                                </div>
-                                : ''
-                        }
-                    </div>
+                    </Row>
 
                     <div className=" table-responsive" style={{ overflowY: 'auto', overflowX: 'auto', zIndex: 3 }}>
                         <Table className="table text-center table-border table-hover  border-primary table-sm " >
@@ -435,7 +430,8 @@ function MyTable() {
                                 {listGoods && listGoods.length > 0 &&
                                     listGoods.map((g, index) => (
                                         <tr key={`goods${index}`}>
-                                            <td className="align-middle text-color-primary">{index + 1}</td>
+
+                                            <td className="align-middle text-color-primary">{startIndexOfPage + index}</td>
                                             <td className="align-middle text-color-primary">{g.goodsCode}</td>
                                             <td className="align-middle">{g.goodsName}</td>
                                             <td className="align-middle" onClick={() => handleZoomImage(g.image)}>

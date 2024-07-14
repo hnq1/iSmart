@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { Form, Button, Modal, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap';
-import { fetchAllSuppliers } from '~/services/SupplierServices';
+import { fetchAllSupplierActive } from "~/services/SupplierServices";
 import { fetchAllCategories } from '~/services/CategoryServices';
 import { fetchAllStorages } from '~/services/StorageServices';
 import uploadImage from '~/services/ImageServices';
@@ -77,7 +77,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     }
 
     const getAllSuppliers = async () => {
-        let res = await fetchAllSuppliers();
+        let res = await fetchAllSupplierActive();
         setTotalSuppliers(res);
     }
 
@@ -127,6 +127,33 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setBarCode(event.target.value);
     }
 
+    function generateRandomBarCode() {
+        // Nhóm 1: Ba chữ số đầu tiên đại diện cho quốc gia
+        const countryPrefix = "893"; // Ví dụ: "893" cho quốc gia Việt Nam
+
+        // Nhóm 2: Bốn chữ số tiếp theo là doanh nghiệp
+        const businessCode = "2001"; // Ví dụ: "4567" cho doanh nghiệp giả định
+
+        // Nhóm 3: Năm chữ số tiếp theo là mã số sản phẩm
+        // const productCode = "89012"; // Ví dụ: "89012" cho mã sản phẩm giả định
+
+        const productCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+        // Nhóm 4: Số cuối cùng là số kiểm tra, tính bằng cách lấy tổng các số trước đó chia 10 lấy phần dư
+        const digits = countryPrefix + businessCode + productCode;
+        let sum = 0;
+        for (let i = 0; i < digits.length; i++) {
+            sum += parseInt(digits[i], 10);
+        }
+        const checkDigit = sum % 10;
+
+        // Kết hợp tất cả các phần để tạo ra mã vạch hoàn chỉnh
+        const customBarCode = `${countryPrefix}${businessCode}${productCode}${checkDigit}`;
+        return customBarCode;
+    }
+
+
+
     const handleUnitClick = (unit) => {
         setMeasuredUnit(unit);
     }
@@ -134,23 +161,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const handleChangeCreatedDate = (event) => {
         setCreatedDate(event.target.value);
     }
-    // // Hàm định dạng giá tiền
-    // const formatPrice = (value) => {
-    //     // Loại bỏ ký tự không phải số và chuyển đổi sang dạng số
-    //     let num = value.replace(/\D/g, '');
-    //     // Định dạng lại số theo dạng 000.000
-    //     return num.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-    // }
 
-    // // Hàm xử lý thay đổi giá trị của input giá nhập
-    // const handleChangeStockPrice = (event) => {
-    //     // Lấy giá trị nhập vào từ input
-    //     const { value } = event.target;
-    //     // Định dạng giá trị nhập vào
-    //     const formattedPrice = formatPrice(value);
-    //     // Cập nhật state với giá trị đã được định dạng
-    //     setStockPrice(formattedPrice);
-    // }
 
     const handleCloseModal = () => {
         handleReset();
@@ -198,14 +209,9 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         else if (!imageGood) {/////
             toast.warning("Vui lòng chọn file ảnh");
         }
-        else if (maxStock < minStock) {/////
-            toast.warning("Vui lòng nhập lại, MaxStock lớn hơn minStock");
-        }
         else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
-            // }
-            // else if (stockPrice <= 0) {//////
-            //     toast.warning("Vui lòng nhập giá lớn hơn 0");
+
         }
         else if (maxStock <= 0) {///////
             toast.warning("Vui lòng nhập maxstock lớn hơn 0");
@@ -244,12 +250,12 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     minStock
                 );
             }
-            console.log("resAddProduct: ", res);
-            console.log("stockPrice: ", stockPrice);
+            // console.log("resAddProduct: ", res);
+            // console.log("stockPrice: ", stockPrice);
             toast.success("Thêm mặt hàng mới thành công");
             handleCloseModal();
             updateTable();
-            console.log("resAddProduct: ", res);
+            // console.log("resAddProduct: ", res);
         }
 
     }
@@ -261,10 +267,10 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    <row style={{ marginTop: '15px' }}>
+                    <Row style={{ display: 'flex', alignItems: 'center' }}>
                         {
                             roleId === 1 ?
-                                <Row>
+                                <Col md={2}>
                                     <label >Kho</label>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"
@@ -284,11 +290,13 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                                             </Dropdown.Item>
                                         ))}
                                     </DropdownButton>
-                                </Row>
+                                </Col>
                                 : ''
                         }
 
-                        <Col md={2}>
+                        <Col md={5}></Col>
+
+                        <Col md={3}>
                             <label >Đơn vị </label>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
@@ -303,7 +311,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                             </DropdownButton>
                         </Col>
 
-                    </row>
+                    </Row>
+
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >Tên hàng </label>
@@ -355,9 +364,14 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     </Row>
 
                     <Row style={{ marginTop: '15px' }}>
-                        <Col md={5}>
-                            <label >BarCode </label>
-                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={barCode} onChange={handleChangeBarCode} />
+                        <Col md={6}>
+                            <label>BarCode </label>
+                            <div className="input-group">
+                                <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={barCode} onChange={handleChangeBarCode} />
+                                <div className="input-group-append">
+                                    <button className="btn btn-outline-secondary" type="button" onClick={() => setBarCode(generateRandomBarCode())}>Tạo</button>
+                                </div>
+                            </div>
                         </Col>
 
                         <Col md={5}>

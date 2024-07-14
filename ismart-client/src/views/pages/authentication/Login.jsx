@@ -55,14 +55,11 @@ const Login = () => {
 
 
                 loginContext(username, res.token.accessToken, res.userId, res.roleId);
-                // toast.error('Bạn không có quyền truy cập vao day');
-                // Mở modal sau khi đăng nhập thành công
-                navigate("/thong-ke");
-                // Xử lý đăng nhập thành công
-                // if (res.roleId === 1) {
-                // else {
-                //     toast.error('Bạn không có quyền truy cập');
-                // }
+                if (res.roleId === 1 || res.roleId === 2 || res.roleId === 4) {
+                    navigate("/thong-ke");
+                } else if (res.roleId === 3) {
+                    navigate("/cac-lo-hang-nhap-ngoai");
+                }
             }
             else {
                 return (

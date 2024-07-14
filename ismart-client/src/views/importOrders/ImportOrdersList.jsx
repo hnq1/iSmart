@@ -15,7 +15,7 @@ import ModelEditImportOrder from './EditImportOrder'
 import ModalShowBarCode from './ShowBarCode';
 import ModalCancel from './ModalCancel';
 import { toast } from 'react-toastify';
-
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 import { cancelImport } from '~/services/ImportOrderServices';
 
 import { fetchUserByUserId } from '~/services/UserServices';
@@ -107,11 +107,20 @@ function ImportOrderList() {
         // console.log("getStorageIdByUser:", res);
     }
     const getImportOrders = async (page, pageSize = 15) => {
-        setcurrentPage(page - 1);
-        let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-        // console.log("pageSize:", selectedWarehouseId);
-        setTotalImportOrder(res.data);
-        setTotalPages(res.totalPages);
+        if (roleId === 1) {
+            setcurrentPage(page - 1);
+            let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
+            // console.log("pageSize:", selectedWarehouseId);
+            setTotalImportOrder(res.data);
+            setTotalPages(res.totalPages);
+        } if (roleId === 2 || roleId === 3) {
+            let wh = await getUserIdWarehouse(userId);
+            setcurrentPage(page - 1);
+            let res = await fetchImportOrdersWithfilter(pageSize, page, wh[0].warehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
+            
+            setTotalImportOrder(res.data);
+            setTotalPages(res.totalPages);
+        }
 
     }
 
@@ -218,7 +227,7 @@ function ImportOrderList() {
                     <div className="col-sm-12">
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập từ nhà cung cấp</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                        <Row>
+                            <Row>
                                 {roleId == 1 ?
                                     <Col md={2}>
                                         <DropdownButton
@@ -385,7 +394,7 @@ function ImportOrderList() {
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 3}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
                                                 >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
                                             </tr>

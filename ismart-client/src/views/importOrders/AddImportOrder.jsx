@@ -90,6 +90,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const getAllSuppliers = async () => {
         let res = await fetchAllSupplierActive();
+        console.log("getAllSuppliers: ", res);
         setTotalSuppliers(res);
     }
 
@@ -142,6 +143,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         importData.supplierId = selectedSupplierId;
         importData.supplierName = selectedSupplier;
 
+        // Kiếm tra Id nếu trùng thì cập nhật số lượng
         // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
         const res = rowsData.find(row => row.goodsId === importData.goodsId);
 
