@@ -62,8 +62,6 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
             toast.warning("Vui lòng chọn sản phẩm")
         } else if (quantity <= 0 || !quantity) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0")
-        } else if (costPrice <= 0 || !costPrice) {
-            toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
         } else {
             onChange({
                 batchCode: selectedBatchCode,
@@ -152,19 +150,7 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
                             <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                         </div>
                     </Col>
-                    <Col md={2}>
-                        <div className="form-group mb-3">
-                            <label >Giá tiền</label>
-                            <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
-                        </div>
-                    </Col>
 
-                    <Col md={2}>
-                        <div className="form-group mb-3">
-                            <label >Tổng giá tiền</label>
-                            <input type="number" className="form-control inputCSS" value={costPrice * quantity} disabled />
-                        </div>
-                    </Col>
 
                     <Col md={2}>
                         <div className="form-group mb-3">

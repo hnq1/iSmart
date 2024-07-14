@@ -143,8 +143,10 @@ function MyTable() {
             setcurrentPage(page - 1);
         } else if (roleId === 2) {
             let warehouse = await getWarehouseById(userId);
-            let goods = await fetchAllGoodsInWarehouse(warehouse.warehouseId);
-            setListGoods(goods);
+            let goods = await fetchGoodsWithFilter(pageSize, page, warehouse.warehouseId, categoryId, supplierId,
+                sortPrice, wordSearch);
+            // console.log("goods:", goods.data);
+            setListGoods(goods.data);
             setTotalPages(goods.totalPages);
             setcurrentPage(page - 1);
 
