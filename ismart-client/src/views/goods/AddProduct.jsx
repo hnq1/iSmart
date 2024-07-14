@@ -128,9 +128,28 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     }
 
     function generateRandomBarCode() {
-        //tạo một chuỗi số ngẫu nhiên có độ dài 10
-        const randomBarCode = Math.random().toString().slice(2, 12);
-        return randomBarCode;
+        // Nhóm 1: Ba chữ số đầu tiên đại diện cho quốc gia
+        const countryPrefix = "893"; // Ví dụ: "893" cho quốc gia Việt Nam
+
+        // Nhóm 2: Bốn chữ số tiếp theo là doanh nghiệp
+        const businessCode = "2001"; // Ví dụ: "4567" cho doanh nghiệp giả định
+
+        // Nhóm 3: Năm chữ số tiếp theo là mã số sản phẩm
+        // const productCode = "89012"; // Ví dụ: "89012" cho mã sản phẩm giả định
+
+        const productCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+        // Nhóm 4: Số cuối cùng là số kiểm tra, tính bằng cách lấy tổng các số trước đó chia 10 lấy phần dư
+        const digits = countryPrefix + businessCode + productCode;
+        let sum = 0;
+        for (let i = 0; i < digits.length; i++) {
+            sum += parseInt(digits[i], 10);
+        }
+        const checkDigit = sum % 10;
+
+        // Kết hợp tất cả các phần để tạo ra mã vạch hoàn chỉnh
+        const customBarCode = `${countryPrefix}${businessCode}${productCode}${checkDigit}`;
+        return customBarCode;
     }
 
 
@@ -345,7 +364,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     </Row>
 
                     <Row style={{ marginTop: '15px' }}>
-                        <Col md={5}>
+                        <Col md={6}>
                             <label>BarCode </label>
                             <div className="input-group">
                                 <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={barCode} onChange={handleChangeBarCode} />

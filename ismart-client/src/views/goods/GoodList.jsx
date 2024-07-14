@@ -76,6 +76,7 @@ function MyTable() {
     const [isShowModalInputExcel, setIsShowModalInputExcel] = useState(false);
     const [isShowModalExportExcel, setIsShowModalExportExcel] = useState(false);
 
+    const [startIndexOfPage, setStartIndexOfPage] = useState(1);
 
     useEffect(() => {
         let res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
@@ -129,7 +130,7 @@ function MyTable() {
         sortPrice = sortedByPriceId, // Thêm giá trị mặc định cho sortPrice
         wordSearch = keywordSearch // Thêm giá trị mặc định cho wordSearch
     ) => {
-
+        setStartIndexOfPage((page - 1) * pageSize + 1);
         if (roleId === 1) {
 
             let res = await fetchGoodsWithFilter(pageSize,
@@ -429,7 +430,8 @@ function MyTable() {
                                 {listGoods && listGoods.length > 0 &&
                                     listGoods.map((g, index) => (
                                         <tr key={`goods${index}`}>
-                                            <td className="align-middle text-color-primary">{index + 1}</td>
+
+                                            <td className="align-middle text-color-primary">{startIndexOfPage + index}</td>
                                             <td className="align-middle text-color-primary">{g.goodsCode}</td>
                                             <td className="align-middle">{g.goodsName}</td>
                                             <td className="align-middle" onClick={() => handleZoomImage(g.image)}>
