@@ -94,6 +94,7 @@ namespace iSmart.Service
             try
             {
                 var exportOrder = _context.ExportOrders
+                    .OrderByDescending(e => e.ExportedDate)
                     .Select(i => new ExportOrderDTO
                     {
                         ExportId = i.ExportId,
@@ -167,7 +168,7 @@ namespace iSmart.Service
                     );
                 if (sortDate != null)
                 {
-                    exports = exports.OrderBy(s => s.ExportedDate);
+                    exports = exports.OrderByDescending(s => s.ExportedDate);
                 }
 
                 var count = exports.Count();
