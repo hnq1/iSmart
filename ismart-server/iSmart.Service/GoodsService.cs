@@ -316,6 +316,10 @@ namespace iSmart.Service
                 {
                     goodsQuery = goodsQuery.OrderByDescending(g => g.StockPrice);
                 }
+                else
+                {
+                    goodsQuery = goodsQuery.OrderByDescending(g => g.CreatedDate);
+                }
 
                 var count = goodsQuery.Count();
                 var goods = goodsQuery
@@ -415,6 +419,7 @@ namespace iSmart.Service
         {
             return await _context.GoodsWarehouses
                 .Where(gw => gw.WarehouseId == warehouseId)
+                .OrderByDescending(g => g.Good.CreatedDate)
                 .Select(gw => new GoodsDTO
                 {
                     GoodsId = gw.Good.GoodsId,
