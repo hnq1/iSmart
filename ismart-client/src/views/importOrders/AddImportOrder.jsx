@@ -228,8 +228,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         }
         else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
-        } else if (totalCost === 0) {
-            toast.warning("Vui lòng nhập mặt hàng nhập");
         } else {
 
             const userId = parseInt(localStorage.getItem('userId'), 10);
@@ -267,7 +265,9 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                             data.expiryDate,
                             data.goodsId,
                             data.quantity
+                            
                         );
+                        console.log("data1:", data);
                     }));
                 }
                 toast.success("Thêm lô hàng nhập thành công");

@@ -263,8 +263,6 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         }
         else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
-        } else if (totalCost === 0) {
-            toast.warning("Vui lòng nhập mặt hàng nhập");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);

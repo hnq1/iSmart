@@ -12,15 +12,21 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
     const [costPrice, setCostPrice] = useState();
     const [detailId, setDetailId] = useState();
     const [importId, setImportId] = useState();
+    const [batchCode, setBatchCode] = useState();
+    const [expiryDate, setExpiryDate] = useState();
+    const [manufactureDate, setManufactureDate] = useState();
 
     useEffect(() => {
         console.log("RowDataEditImportOrder", data);
         setGoodsId(data.goodsId);
         setGoodsCode(data.goodsCode);
         setQuantity(data.quantity);
-        setCostPrice(data.costPrice);
+        // setCostPrice(data.costPrice);
         setDetailId(data.detailId);
         setImportId(data.importId);
+        setBatchCode(data.batchCode);
+        setExpiryDate(data.expiryDate);
+        setManufactureDate(data.manufactureDate);
     }, [data])
 
     const handleEditRowData = () => {
@@ -31,10 +37,30 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
         deleteRowData(index);
     }
 
-    const dataAfterEdit = (data) => {
-        setQuantity(data.quantity);
-        setCostPrice(data.costPrice);
-        updateRowData(index, { costPrice: data.costPrice, detailId: detailId, quantity: data.quantity, goodsId: goodsId, goodsCode: goodsCode, importId: importId })
+    const dataAfterEdit = (newData) => {
+        setGoodsId(newData.goodsId);
+        setGoodsCode(newData.goodsCode);
+        setQuantity(newData.quantity);
+        setCostPrice(newData.costPrice);
+        setBatchCode(newData.batchCode);
+        setExpiryDate(newData.expiryDate);
+        setManufactureDate(newData.manufactureDate);
+        // setTotalOneGoodPrice(newData.quantity * newData.costPrice);
+
+
+        // setTotalOneGoodPrice(data.totalOneGoodPrice);
+        updateRowData(index, {
+
+            batchCode: newData.batchCode,
+            costPrice: newData.costPrice,
+            expiryDate: newData.expiryDate,
+            goodsCode: newData.goodsCode,
+            goodsId: newData.goodsId,
+            manufactureDate: newData.manufactureDate,
+            quantity: newData.quantity,
+            totalOneGoodPrice: newData.quantity * newData.costPrice
+        })
+        // console.log("dataAfterEdit: ", SelecttotalOneGoodPrice);
     }
 
 
@@ -55,7 +81,24 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
                     <input type="number" className="form-control" defaultValue={quantity} disabled />
                 </div>
             </Col>
-            
+            <Col md={2}>
+                <div className="form-group mb-3">
+                    <label >Mã lô hàng</label>
+                    <input type="text" className="form-control" defaultValue={batchCode} disabled />
+                </div>
+            </Col>
+            <Col md={3}>
+                <div className="form-group mb-3">
+                    <label >Ngày sản xuất</label>
+                    <input type="date" className="form-control" defaultValue={manufactureDate} disabled />
+                </div>
+            </Col>
+            <Col md={3}>
+                <div className="form-group mb-3">
+                    <label >Ngày hết hạn</label>
+                    <input type="date" className="form-control" defaultValue={expiryDate} disabled />
+                </div>
+            </Col>
 
             {/* <Col md={2}>
             <div className="form-group mb-3">

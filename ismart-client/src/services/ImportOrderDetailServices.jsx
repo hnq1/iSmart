@@ -10,7 +10,7 @@ const createNewImportOrderDetail = (importId, costPrice, batchCode, manufactureD
 }
 
 const updateImportOrderDetail = (importId, costPrice, detailId, goodsId, quantity, manufactureDate, expiryDate, batchCode) => {
-    return axios.put(`api/ImportOrderDetail/update-import-order-detail`, { importId, costPrice, detailId, goodsId, quantity, manufactureDate, expiryDate, batchCode })
+    return axios.put(`api/import-order-detail/update-import-order-detail`, { importId, costPrice, detailId, goodsId, quantity, manufactureDate, expiryDate, batchCode })
 }
 
 const deleteImportOrderDetail = (id) => {
@@ -26,4 +26,4 @@ const getBatchInventoryForExportgoods = (warehouseId, goodsId, quantity, method)
 const getAvailableBatch = (warehouseId, goodId) => {
     return axios.get(`api/import-order-detail/get-available-batch?warehouseId=${warehouseId}&goodId=${goodId}`)
 }
-export { getAllImportOrderDetails, createNewImportOrderDetail, updateImportOrderDetail, deleteImportOrderDetail, getImportOrderDetailByImportId, getBatchInventoryForExportgoods, getAvailableBatch}
+export { getAllImportOrderDetails, createNewImportOrderDetail, updateImportOrderDetail, deleteImportOrderDetail, getImportOrderDetailByImportId, getBatchInventoryForExportgoods, getAvailableBatch }
