@@ -77,13 +77,11 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const handleEditRowData = () => {
         if (quantity <= 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        } else if (costPrice <= 0) {
-            toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
         } else {
             dataAfterEdit({
                 // ...data,
                 batchCode: batchCode,
-                costPrice: costPrice,
+                costPrice: 0,
                 expiryDate: expiryDate,
                 goodsCode: goodsCode,
                 goodsId: goodsId,
@@ -121,19 +119,7 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
                         <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                     </div>
                 </Col>
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Giá tiền</label>
-                        <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
-                    </div>
-                </Col>
-
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Tổng giá tiền</label>
-                        <input type="text" className="form-control" value={totalOneGoodPrice} disabled />
-                    </div>
-                </Col>
+                
                 <Col md={2}>
                     <div className="form-group mb-3">
                         <label >Mã lô hàng</label>

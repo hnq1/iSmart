@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using static iSmart.Entity.Models.ReturnsOrder;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace iSmart.Entity.Models
+namespace iSmart.Entity.DTOs.ReturnOrderDTO
 {
-    public partial class ReturnsOrderDetail
+    public class ReturnOrderDetailDto
     {
         public int ReturnOrderDetailId { get; set; }
         public int ReturnOrderId { get; set; }
-        public ReturnsOrder ReturnOrder { get; set; }
         public int GoodsId { get; set; }
-        public Good Goods { get; set; }
+        public string GoodsCode { get; set; }
+        public decimal Price { get; set; }
         public int Quantity { get; set; }
-        public string Reason { get; set; } 
+        public string Reason { get; set; }
         public string BatchCode { get; set; }
     }
-
 }

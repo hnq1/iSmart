@@ -9,7 +9,6 @@ namespace iSmart.Entity.Models
         {
             AvailableForReturns = new HashSet<AvailableForReturn>();
             ExportOrderDetails = new HashSet<ExportOrderDetail>();
-            ReturnsOrders = new HashSet<ReturnsOrder>();
         }
 
         public int ExportId { get; set; }
@@ -34,6 +33,5 @@ namespace iSmart.Entity.Models
         public virtual Warehouse Warehouse { get; set; }
         public virtual ICollection<AvailableForReturn> AvailableForReturns { get; set; }
         public virtual ICollection<ExportOrderDetail> ExportOrderDetails { get; set; }
-        public virtual ICollection<ReturnsOrder> ReturnsOrders { get; set; }
     }
 }

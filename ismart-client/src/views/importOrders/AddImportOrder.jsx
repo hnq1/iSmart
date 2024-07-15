@@ -143,18 +143,25 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         importData.supplierId = selectedSupplierId;
         importData.supplierName = selectedSupplier;
 
-        // Kiếm tra Id nếu trùng thì cập nhật số lượng
         // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
-        const res = rowsData.find(row => row.goodsId === importData.goodsId);
+        const existingProductIndex = rowsData.findIndex(row => row.goodsId === importData.goodsId);
 
-        if (res) {
-            // Nếu sản phẩm đã tồn tại, hiển thị thông báo và không thêm vào danh sách
-            toast.warning("Sản phẩm đã tồn tại trong danh sách yêu cầu nhập lại");
+        if (existingProductIndex !== -1) {
+            // Nếu sản phẩm đã tồn tại, cập nhật số lượng và các giá trị mới
+            const updatedRowsData = [...rowsData];
+            
+            updatedRowsData[existingProductIndex].quantity += importData.quantity; // Cập nhật số lượng
+            updatedRowsData[existingProductIndex] = { ...updatedRowsData[existingProductIndex], ...importData }; // Cập nhật các giá trị mới
+
+            setRowsData(updatedRowsData);
+            
+            //setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice); // Cập nhật tổng chi phí
+            toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
         } else {
             // Nếu sản phẩm chưa tồn tại, thêm vào danh sách và cập nhật tổng chi phí
             const updateDataImport = [...rowsData, importData];
             setRowsData(updateDataImport);
-            setTotalCost(x => x + importData.totalOneGoodPrice);
+            setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice);
         }
     }
 

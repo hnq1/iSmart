@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace iSmart.Entity.Migrations
 {
-    public partial class AddActualQuantity : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -344,7 +344,8 @@ namespace iSmart.Entity.Migrations
                     DeliveryId = table.Column<int>(type: "int", nullable: false),
                     image = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
                     StaffId = table.Column<int>(type: "int", nullable: true),
-                    CustomerId = table.Column<int>(type: "int", nullable: false)
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    WarehouseDestinationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -634,59 +635,67 @@ namespace iSmart.Entity.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReturnsOrder",
+                name: "ReturnOrder",
                 columns: table => new
                 {
-                    ReturnsId = table.Column<int>(type: "int", nullable: false)
+                    ReturnOrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ImportId = table.Column<int>(type: "int", nullable: false),
-                    ExportId = table.Column<int>(type: "int", nullable: false),
-                    SupplierId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "('0001-01-01T00:00:00.0000000')"),
-                    ReturnsCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ReturnOrderCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ReturnedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "('0001-01-01T00:00:00.0000000')"),
                     WarehouseId = table.Column<int>(type: "int", nullable: false),
-                    TotalPrice = table.Column<float>(type: "real", nullable: false),
+                    SupplierId = table.Column<int>(type: "int", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
-                    ImportedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    CreatedBy = table.Column<int>(type: "int", nullable: false),
+                    ApprovedBy = table.Column<int>(type: "int", nullable: true),
+                    ExportOrderExportId = table.Column<int>(type: "int", nullable: true),
+                    ImportOrderImportId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReturnsOrder", x => x.ReturnsId);
+                    table.PrimaryKey("PK_ReturnOrder", x => x.ReturnOrderId);
                     table.ForeignKey(
-                        name: "FK_ReturnsOrder_ExportOrder_ExportId",
-                        column: x => x.ExportId,
+                        name: "FK_ReturnOrder_ApprovedByUser",
+                        column: x => x.ApprovedBy,
+                        principalTable: "User",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_ReturnOrder_CreatedByUser",
+                        column: x => x.CreatedBy,
+                        principalTable: "User",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_ReturnOrder_ExportOrder_ExportOrderExportId",
+                        column: x => x.ExportOrderExportId,
                         principalTable: "ExportOrder",
                         principalColumn: "ExportId");
                     table.ForeignKey(
-                        name: "FK_ReturnsOrder_ImportOrder_ImportId",
-                        column: x => x.ImportId,
+                        name: "FK_ReturnOrder_ImportOrder_ImportOrderImportId",
+                        column: x => x.ImportOrderImportId,
                         principalTable: "ImportOrder",
                         principalColumn: "ImportId");
                     table.ForeignKey(
-                        name: "FK_ReturnsOrder_Status",
+                        name: "FK_ReturnOrder_Status",
                         column: x => x.StatusId,
                         principalTable: "Status",
                         principalColumn: "StatusId");
                     table.ForeignKey(
-                        name: "FK_ReturnsOrder_Storage_StorageId",
-                        column: x => x.WarehouseId,
-                        principalTable: "Warehouse",
-                        principalColumn: "WarehouseId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ReturnsOrder_Supplier_SupplierId",
+                        name: "FK_ReturnOrder_Supplier",
                         column: x => x.SupplierId,
                         principalTable: "Supplier",
                         principalColumn: "SupplierId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ReturnsOrder_User_UserId",
+                        name: "FK_ReturnOrder_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_ReturnOrder_Warehouse",
+                        column: x => x.WarehouseId,
+                        principalTable: "Warehouse",
+                        principalColumn: "WarehouseId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -724,30 +733,31 @@ namespace iSmart.Entity.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReturnsOrderDetail",
+                name: "ReturnOrderDetail",
                 columns: table => new
                 {
-                    DetailId = table.Column<int>(type: "int", nullable: false)
+                    ReturnOrderDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ReturnsId = table.Column<int>(type: "int", nullable: false),
+                    ReturnOrderId = table.Column<int>(type: "int", nullable: false),
                     GoodsId = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    BatchCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReturnsOrderDetail", x => x.DetailId);
+                    table.PrimaryKey("PK_ReturnOrderDetail", x => x.ReturnOrderDetailId);
                     table.ForeignKey(
-                        name: "FK_ReturnsOrderDetail_Goods_GoodsId",
+                        name: "FK_ReturnOrderDetail_Goods",
                         column: x => x.GoodsId,
                         principalTable: "Goods",
                         principalColumn: "GoodsId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ReturnsOrderDetail_ReturnsOrder_ReturnsId",
-                        column: x => x.ReturnsId,
-                        principalTable: "ReturnsOrder",
-                        principalColumn: "ReturnsId");
+                        name: "FK_ReturnOrderDetail_ReturnOrder",
+                        column: x => x.ReturnOrderId,
+                        principalTable: "ReturnOrder",
+                        principalColumn: "ReturnOrderId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -921,44 +931,54 @@ namespace iSmart.Entity.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnsOrder_ExportId",
-                table: "ReturnsOrder",
-                column: "ExportId");
+                name: "IX_ReturnOrder_ApprovedBy",
+                table: "ReturnOrder",
+                column: "ApprovedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnsOrder_ImportId",
-                table: "ReturnsOrder",
-                column: "ImportId");
+                name: "IX_ReturnOrder_CreatedBy",
+                table: "ReturnOrder",
+                column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnsOrder_StatusId",
-                table: "ReturnsOrder",
+                name: "IX_ReturnOrder_ExportOrderExportId",
+                table: "ReturnOrder",
+                column: "ExportOrderExportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReturnOrder_ImportOrderImportId",
+                table: "ReturnOrder",
+                column: "ImportOrderImportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReturnOrder_StatusId",
+                table: "ReturnOrder",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnsOrder_SupplierId",
-                table: "ReturnsOrder",
+                name: "IX_ReturnOrder_SupplierId",
+                table: "ReturnOrder",
                 column: "SupplierId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnsOrder_UserId",
-                table: "ReturnsOrder",
+                name: "IX_ReturnOrder_UserId",
+                table: "ReturnOrder",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnsOrder_WarehouseId",
-                table: "ReturnsOrder",
+                name: "IX_ReturnOrder_WarehouseId",
+                table: "ReturnOrder",
                 column: "WarehouseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnsOrderDetail_GoodsId",
-                table: "ReturnsOrderDetail",
+                name: "IX_ReturnOrderDetail_GoodsId",
+                table: "ReturnOrderDetail",
                 column: "GoodsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnsOrderDetail_ReturnsId",
-                table: "ReturnsOrderDetail",
-                column: "ReturnsId");
+                name: "IX_ReturnOrderDetail_ReturnOrderId",
+                table: "ReturnOrderDetail",
+                column: "ReturnOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleFeature_featureId",
@@ -1019,7 +1039,7 @@ namespace iSmart.Entity.Migrations
                 name: "RefreshToken");
 
             migrationBuilder.DropTable(
-                name: "ReturnsOrderDetail");
+                name: "ReturnOrderDetail");
 
             migrationBuilder.DropTable(
                 name: "RoleFeature");
@@ -1037,7 +1057,7 @@ namespace iSmart.Entity.Migrations
                 name: "ActionType");
 
             migrationBuilder.DropTable(
-                name: "ReturnsOrder");
+                name: "ReturnOrder");
 
             migrationBuilder.DropTable(
                 name: "Features");

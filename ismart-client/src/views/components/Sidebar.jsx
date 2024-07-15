@@ -7,7 +7,12 @@ const Sidebar = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const [isInventoryOpen, setIsInventoryOpen] = useState(false);
 
+    const [isImportOrderOpen, setIsImportOrderOpen] = useState(false);  // Import Order
+    const [isExportOrderOpen, setIsExportOrderOpen] = useState(false);  // Export Order
+
     const toggleInventory = () => setIsInventoryOpen(!isInventoryOpen);
+    const toggleImportOrder = () => setIsImportOrderOpen(!isImportOrderOpen);
+    const toggleExportOrder = () => setIsExportOrderOpen(!isExportOrderOpen);
 
     return (
 
@@ -178,18 +183,18 @@ const Sidebar = () => {
                             </Nav>
                         )}
                     </Nav.Item>
-
                     <Nav.Item className="mb-2">
-                        <Nav.Link as={Link} to="/cac-lo-hang-nhap-ngoai"
+                        <Nav.Link as={Link} to=""
                             className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
                             style={{ width: 180 }}
+                            onClick={toggleImportOrder} // Prevent default to not navigate immediately
                         >
                             <div className="d-flex">
                                 <div style={{ width: 30 }}>
                                     <i className="fa-duotone fa-file-import fa-xl"></i>
                                 </div>
                                 <div>
-                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng từ nhà cung cấp</span>
+                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng </span>
                                 </div>
                             </div>
                             <div>
@@ -197,38 +202,61 @@ const Sidebar = () => {
                             </div>
                         </Nav.Link>
                     </Nav.Item>
+                    {isImportOrderOpen && (
+                        <Nav className="flex-column pl-4">
+                            <Nav.Item className="mb-2">
+                                <Nav.Link as={Link} to="/cac-lo-hang-nhap-ngoai"
+                                    className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                                    style={{ width: 180 }}
+                                >
+                                    <div className="d-flex">
+                                        <div style={{ width: 30 }}>
+                                            <i className="fa-duotone fa-file-import fa-xl" style={{ fontSize: '16px' }}></i>
+                                        </div>
+                                        <div>
+                                            <span className="ms-1 d-none d-sm-inline">Nhập hàng từ nhà cung cấp</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {/* <i className="fa-solid fa-angle-right" ></i> */}
+                                    </div>
+                                </Nav.Link>
+                            </Nav.Item>
+
+                            <Nav.Item className="mb-2">
+                                <Nav.Link as={Link} to="/cac-lo-hang-nhap-noi"
+                                    className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                                    style={{ width: 180 }}
+                                >
+                                    <div className="d-flex">
+                                        <div style={{ width: 30 }}>
+                                            <i className="fa-duotone fa-file-import fa-xl" style={{ fontSize: '16px' }}></i>
+                                        </div>
+                                        <div>
+                                            <span className="ms-1 d-none d-sm-inline">Nhập hàng giữa các kho </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {/* <i className="fa-solid fa-angle-right"></i> */}
+                                    </div>
+                                </Nav.Link>
+                            </Nav.Item>
+                        </Nav>
+                    )}
+
 
                     <Nav.Item className="mb-2">
-                        <Nav.Link as={Link} to="/cac-lo-hang-nhap-noi"
+                        <Nav.Link as={Link} to=""
                             className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
                             style={{ width: 180 }}
-                        >
-                            <div className="d-flex">
-                                <div style={{ width: 30 }}>
-                                    <i className="fa-duotone fa-file-import fa-xl"></i>
-                                </div>
-                                <div>
-                                    <span className="ms-1 d-none d-sm-inline">Nhập hàng giữa các kho </span>
-                                </div>
-                            </div>
-                            <div>
-                                <i className="fa-solid fa-angle-right"></i>
-                            </div>
-                        </Nav.Link>
-                    </Nav.Item>
-
-
-                    <Nav.Item className="mb-2">
-                        <Nav.Link as={Link} to="/cac-lo-hang-xuat-khach-hang"
-                            className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
-                            style={{ width: 180 }}
+                            onClick={toggleExportOrder} // Prevent default to not navigate immediately
                         >
                             <div className="d-flex">
                                 <div style={{ width: 30 }}>
                                     <i className="fa-duotone fa-file-export fa-xl"></i>
                                 </div>
                                 <div>
-                                    <span className="ms-1 d-none d-sm-inline">Xuất hàng cho khách hàng </span>
+                                    <span className="ms-1 d-none d-sm-inline">Xuất hàng </span>
                                 </div>
                             </div>
                             <div>
@@ -237,26 +265,49 @@ const Sidebar = () => {
                         </Nav.Link>
                     </Nav.Item>
 
+                    {isExportOrderOpen && (
+                        <Nav className="flex-column pl-4">
+                            <Nav.Item className="mb-2">
+                                <Nav.Link as={Link} to="/cac-lo-hang-xuat-khach-hang"
+                                    className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                                    style={{ width: 180 }}
+                                >
+                                    <div className="d-flex">
+                                        <div style={{ width: 30 }}>
+                                            <i className="fa-duotone fa-file-export fa-xl"></i>
+                                        </div>
+                                        <div>
+                                            <span className="ms-1 d-none d-sm-inline">Xuất hàng cho khách hàng </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {/* <i className="fa-solid fa-angle-right"></i> */}
+                                    </div>
+                                </Nav.Link>
+                            </Nav.Item>
 
-                    <Nav.Item className="mb-2">
-                        <Nav.Link as={Link} to="/cac-lo-hang-xuat-noi"
-                            className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
-                            style={{ width: 180 }}
-                        >
-                            <div className="d-flex">
-                                <div style={{ width: 30 }}>
-                                    <i className="fa-duotone fa-file-export fa-xl"></i>
-                                </div>
-                                <div>
-                                    <span className="ms-1 d-none d-sm-inline">Xuất hàng giữa các kho </span>
-                                </div>
-                            </div>
-                            <div>
-                                <i className="fa-solid fa-angle-right"></i>
-                            </div>
-                        </Nav.Link>
-                    </Nav.Item>
 
+                            <Nav.Item className="mb-2">
+                                <Nav.Link as={Link} to="/cac-lo-hang-xuat-noi"
+                                    className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"
+                                    style={{ width: 180 }}
+                                >
+                                    <div className="d-flex">
+                                        <div style={{ width: 30 }}>
+                                            <i className="fa-duotone fa-file-export fa-xl"></i>
+                                        </div>
+                                        <div>
+                                            <span className="ms-1 d-none d-sm-inline">Xuất hàng giữa các kho </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {/* <i className="fa-solid fa-angle-right"></i> */}
+                                    </div>
+                                </Nav.Link>
+                            </Nav.Item>
+
+                        </Nav>
+                    )}
                     <Nav.Item className="mb-2">
                         <Nav.Link as={Link} to="/tra-lai-don-hang"
                             className="align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between"

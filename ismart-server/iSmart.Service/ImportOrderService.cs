@@ -48,6 +48,7 @@ namespace iSmart.Service
             try
             {
                 var importOrder = _context.ImportOrders
+                    .OrderByDescending(g => g.ImportedDate)
                     .Select(i => new ImportOrderDTO
                     {
                         ImportId = i.ImportId,
@@ -122,7 +123,7 @@ namespace iSmart.Service
 
                 if (sortDate != null)
                 {
-                    importOrders = importOrders.OrderBy(s => s.ImportedDate);
+                    importOrders = importOrders.OrderByDescending(s => s.ImportedDate);
                 }
 
                 var count = importOrders.Count();

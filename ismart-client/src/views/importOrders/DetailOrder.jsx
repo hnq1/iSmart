@@ -4,7 +4,7 @@ import { Modal, Button, Col, Row } from "react-bootstrap";
 import { addSuccessFullImportOrder } from "~/services/ImportOrderServices";
 import { fetchGoodById } from "~/services/GoodServices";
 import { getImportOrderDetailByImportId } from "~/services/ImportOrderDetailServices";
-import { formattedAmount } from "~/validate";
+import { formatDate, formattedAmount } from '~/validate';
 import { toast } from 'react-toastify';
 
 const ModalDetailOrder = ({ isShow, handleClose, detailOrder }) => {
@@ -14,7 +14,7 @@ const ModalDetailOrder = ({ isShow, handleClose, detailOrder }) => {
         if (detailOrder.importId) {
             getTotalOrderDetail(detailOrder.importId);
         }
-        console.log(detailOrder);
+        
 
     }, [detailOrder])
 
@@ -24,7 +24,7 @@ const ModalDetailOrder = ({ isShow, handleClose, detailOrder }) => {
 
     const getTotalOrderDetail = async (importId) => {
         let res = await getImportOrderDetailByImportId(importId);
-        console.log("getTotalOrderDetail: ", res);
+        // console.log("getTotalOrderDetail: ", res);
         setTotalOrderDetail(res);
     }
     return (<>
@@ -49,12 +49,12 @@ const ModalDetailOrder = ({ isShow, handleClose, detailOrder }) => {
                             </div>
                         </Col>
 
-                        <Col md={3}>
+                        {/* <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Tổng giá trị đơn hàng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{formattedAmount(detailOrder.totalCost)}</button>
                             </div>
-                        </Col>
+                        </Col> */}
                         <Col md={2}>
                             <div className="form-group mb-3">
                                 <label >Tình trạng</label>
@@ -80,31 +80,18 @@ const ModalDetailOrder = ({ isShow, handleClose, detailOrder }) => {
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
-                                <Col >
-
-                                    <label >Giá tiền</label>
-                                    <input type="number" className="form-control inputCSS" value={o.costPrice} readOnly />
-
-                                </Col>
-
-                                <Col >
-
-                                    <label >Tổng giá tiền</label>
-                                    <input type="number" className="form-control inputCSS" value={o.quantity * o.costPrice} readOnly />
-
-                                </Col>
 
                                 <Col > <label >Mã đơn hàng</label>
                                     <input type="text" className="form-control inputCSS" value={o.batchCode} readOnly />
                                 </Col>
 
                                 <Col> <label >Ngày sản xuất</label>
-                                    <input type="text" className="form-control inputCSS" value={o.manufactureDate} readOnly />
+                                    <input type="text" className="form-control inputCSS" value={formatDate(o.manufactureDate)} readOnly />
                                 </Col>
 
 
                                 <Col > <label >Ngày hết hạn </label>
-                                    <input type="text" className="form-control inputCSS" value={o.expiryDate} readOnly />
+                                    <input type="text" className="form-control inputCSS" value={formatDate(o.expiryDate)} readOnly />
                                 </Col>
                             </Row>
                         ))

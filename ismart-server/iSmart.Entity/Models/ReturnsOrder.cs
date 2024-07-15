@@ -10,26 +10,21 @@ namespace iSmart.Entity.Models
             ReturnsOrderDetails = new HashSet<ReturnsOrderDetail>();
         }
 
-        public int ReturnsId { get; set; }
-        public int? ImportId { get; set; }
-        public int? ExportId { get; set; }
-        public int? SupplierId { get; set; }
-        public int UserId { get; set; }
-        public string? Note { get; set; }
-        public string? Image { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string ReturnsCode { get; set; }
-        public int WarehouseId { get; set; }
-        public float TotalPrice { get; set; }
-        public int StatusId { get; set; }
-        public DateTime? ImportedDate { get; set; }
+            public int ReturnOrderId { get; set; }
+            public string ReturnOrderCode { get; set; }
+            public DateTime ReturnedDate { get; set; }
+            public int WarehouseId { get; set; }
+            public Warehouse Warehouse { get; set; }
+            public int SupplierId { get; set; }
+            public Supplier Supplier { get; set; }
+            public int StatusId { get; set; }
+            public Status Status { get; set; }
+            // Thêm thông tin người tạo và người xác nhận
+            public int CreatedBy { get; set; }
+            public int? ApprovedBy { get; set; }
+        public virtual User User { get; set; } // Người tạo đơn
+        public virtual User ApprovedByUser { get; set; } // Người duyệt đơn (Optional)
 
-        public virtual ExportOrder Export { get; set; }
-        public virtual ImportOrder Import { get; set; }
-        public virtual Status Status { get; set; }
-        public virtual Supplier Supplier { get; set; }
-        public virtual User User { get; set; }
-        public virtual Warehouse Warehouse { get; set; }
         public virtual ICollection<ReturnsOrderDetail> ReturnsOrderDetails { get; set; }
     }
 }

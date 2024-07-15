@@ -55,12 +55,7 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
                     <input type="number" className="form-control" defaultValue={quantity} disabled />
                 </div>
             </Col>
-            <Col md={2}>
-                <div className="form-group mb-3">
-                    <label >Giá tiền</label>
-                    <input type="number" className="form-control" defaultValue={costPrice} disabled />
-                </div>
-            </Col>
+            
 
             {/* <Col md={2}>
             <div className="form-group mb-3">

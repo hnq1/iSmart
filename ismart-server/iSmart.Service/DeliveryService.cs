@@ -13,6 +13,7 @@ namespace iSmart.Service
     {
         DeliveryFilterPaging GetDeliveryByKeyWord(int page, string? keyword = "");
         List<Delivery> GetAllDelivery();
+        List<Delivery> GetAllActiveDelivery();
         Delivery GetDeliveryById(int id);
         CreateDeliveryResponse AddDelivery(CreateDeliveryRequest delivery);
         UpdateDeliveryResponse UpdateDelivery(UpdateDeliveryRequest delivery);
@@ -92,6 +93,19 @@ namespace iSmart.Service
             try
             {
                 var deliveries = _context.Deliveries.ToList();
+                return deliveries;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public List<Delivery> GetAllActiveDelivery()
+        {
+            try
+            {
+                var deliveries = _context.Deliveries.Where(d => d.StatusId == 1).ToList();
                 return deliveries;
             }
             catch (Exception e)
