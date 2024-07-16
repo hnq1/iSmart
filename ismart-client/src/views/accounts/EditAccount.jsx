@@ -59,13 +59,26 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
         let res = await uploadImage(file);
         const urlImage = res.url;
         setImage(urlImage);
-
-        console.log("upload image: ", res);
-
     }
 
 
     const handleSave = async () => {
+        if (!userName.trim()) {
+            toast.error("Tên đăng nhập không được để trống");
+
+        } else if (!userCode.trim()) {
+            toast.error("Mã người dùng không được để trống");
+        } else if (!fullName.trim()) {
+            toast.error("Tên không được để trống");
+        } else if (!phone.trim()) {
+            toast.error("Số điện thoại không được để trống");
+        } else if (!email.trim()) {
+            toast.error("Email không được để trống");
+        } else if (!address.trim()) {
+            toast.error("Địa chỉ không được để trống");
+        } else if (!image) {
+            toast.error("Hình ảnh không được để trống");
+        }
         let res = await updateUser(
             dataUserEdit.userId,
             email,

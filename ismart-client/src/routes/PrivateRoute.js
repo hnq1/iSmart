@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 const PrivateRoute = (props) => {
     const { user } = useContext(UserContext);
     const [show, setShow] = useState(true);
-    if (user && !user.auth) {
+    if (!user || !user.auth) {
         return <>
             <div
                 className="access-denied "
