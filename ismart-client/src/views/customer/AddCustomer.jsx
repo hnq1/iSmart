@@ -13,16 +13,16 @@ const ModelAddCustomer = ({ isShow, handleClose, updateTableCustomer }) => {
 
 
     const handleSave = async () => {
-        if (!validateTextRequired.test(nameCustomer)) {
+        if (!nameCustomer.trim() || !validateTextRequired.test(nameCustomer)) {
             toast.error("Tên khách hàng không được để trống hoặc chứa ký tự đặc biệt");
-        } else if (!validatePhone.test(phoneCustomer)) {
+        } else if (!phoneCustomer.trim() || !validatePhone.test(phoneCustomer)) {
             toast.error("Sai định dạng số điện thoại");
-        } else if (!validateEmail.test(emailCustomer)) {
+        } else if (!emailCustomer.trim() || !validateEmail.test(emailCustomer)) {
             toast.error("Sai định dạng email");
-        } else if (!validateText.test(addressCustomer)) {
+        } else if (!addressCustomer.trim() || !validateText.test(addressCustomer)) {
             toast.error("Địa chỉ không được chứa ký tự đặc biệt");
         } else {
-            let res = await createNewCustomer(nameCustomer, addressCustomer, phoneCustomer, emailCustomer);
+            let res = await createNewCustomer(nameCustomer.trim(), addressCustomer.trim(), phoneCustomer.trim(), emailCustomer.trim());
             toast.success("Thêm khách hàng thành công", {
                 className: 'toast-success',
             });

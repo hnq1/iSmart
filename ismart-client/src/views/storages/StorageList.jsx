@@ -47,13 +47,13 @@ function StorageList() {
         let res;
         if (roleId === 1) {
             res = await fetchAllStorages(res)
-            // console.log(res);
+            
             setListStorage(res);
         }
         if (roleId === 4 || roleId === 3 || roleId === 2) {
             // Nhân viên: lấy danh sách kho cụ thể mà họ quản lý
             let res = await getUserIdWarehouse(userId);
-            console.log(res);
+            
             setListStorage(res);
 
         } else {

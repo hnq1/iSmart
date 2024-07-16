@@ -22,7 +22,7 @@ const Login = () => {
     useEffect(() => {
         let token = localStorage.getItem('token');
         if (token) {
-            navigate('/thong-ke');
+            navigate('/dang-nhap');
         }
     });
     const handleLogin = async () => {
@@ -31,15 +31,7 @@ const Login = () => {
             toast.error('Vui lòng nhập tài khoản và mật khẩu');
             return;
         }
-        // console.log('Attempting login with username:', username, 'and password:', password);
-
         let res = await loginApi(username, password);
-        // console.log('Response from loginApi:', res);
-        // console.log('Response from loginApi:', res.token);
-        // console.log('Response from loginApi:', res.roleId);
-        // console.log('Response from loginApi:', res.token.accessToken);
-
-
 
         try {
             if (res && res.status === 400) {
@@ -49,11 +41,6 @@ const Login = () => {
 
             } else if (res.token) {
                 setShowWarning(false);
-
-                // console.log('Response from loginApi:', res);
-                // console.log('Login successful:', res);
-
-
                 loginContext(username, res.token.accessToken, res.userId, res.roleId);
                 if (res.roleId === 1 || res.roleId === 2 || res.roleId === 4) {
                     navigate("/thong-ke");

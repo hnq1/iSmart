@@ -8,20 +8,22 @@ const ModelAddDelivery = ({ isShow, handleClose, updateTableSupplier }) => {
     const [nameSupplier, setNameSupplier] = useState("");
 
     const handleSave = async () => {
-        if (!validateTextRequired.test(nameSupplier)) {
-            toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
+        // Sử dụng trim() để loại bỏ dấu cách ở đầu và cuối của chuỗi
+        const trimmedNameSupplier = nameSupplier.trim();
 
+        if (!validateTextRequired.test(trimmedNameSupplier)) {
+            toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
+        } else if (trimmedNameSupplier === "") {
+            // Kiểm tra sau khi loại bỏ dấu cách, chuỗi có phải là rỗng không
+            toast.error("Tên nhà cung cấp không được để trống");
         } else {
-            let res = await createNewDelivery(nameSupplier);
+            let res = await createNewDelivery(trimmedNameSupplier);
             toast.success("Thêm bên vận chuyển thành công", {
                 className: 'toast-success',
-
             });
             updateTableSupplier();
             handleCloseModal();
         }
-
-
     };
 
     const handleCloseModal = () => {
