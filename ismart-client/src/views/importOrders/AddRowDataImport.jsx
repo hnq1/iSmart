@@ -87,7 +87,13 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
     }
 
     const handleChangeQuantity = (event) => {
-        setQuantity(event.target.value);
+        const inputValue = parseInt(event.target.value, 10);
+        if (inputValue >= 1) {
+            setQuantity(inputValue);
+        } else {
+            // Optionally, you can set it to 0 or leave the value unchanged
+            setQuantity(1);
+        }
     }
 
 
@@ -100,7 +106,7 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
     const handleReset = () => {
         setSelectedGoodCode(null);
         setQuantity(0);
-        
+
         setSelectedbatchCode(null);
         setManufactureDate(null);
         setExpiryDate(null);
@@ -147,7 +153,7 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
                             <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                         </div>
                     </Col>
-                    
+
 
                     <Col md={2}>
                         <div className="form-group mb-3">

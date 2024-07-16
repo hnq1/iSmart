@@ -97,39 +97,40 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     }
     // Điều kiện login
     const handleSave = async () => {
-        if (!email && !validateEmail.test(email)) {
+        if (!email.trim() || !validateEmail.test(email.trim())) {
             toast.warning("Email không hợp lệ");
-        }
-        //  if (!isStrongPassword.test(password)) {
-        //     toast.warning("Mật khẩu phải có ít nhất 6 chữ số và 1 chữ cái");
-        // } 
-        else if (!userName) {
+        } else if (!userName.trim()) {
             toast.warning("Tên đăng nhập không được để trống");
-        }
-        else if (!selectedWarehouseId) {
+        } else if (!selectedWarehouseId) {
             toast.warning("Vui lòng chọn kho");
-        }
-        else {
+        } else if (!password.trim()) {
+            toast.warning("Mật khẩu không được để trống");
+        } else if (!phone.trim() || !validatePhone.test(phone.trim())) {
+            toast.warning("Số điện thoại không hợp lệ");
+        } else if (!address.trim()) {
+            toast.warning("Địa chỉ không được để trống");
+        } else if (!fullName.trim()) {
+            toast.warning("Họ và tên không được để trống");
+        } else if (!userCode.trim()) {
+            toast.warning("Mã nhân viên không được để trống");
+        } else {
             let res = await addUser(selectedWarehouseId,
-                email, password,
-                phone, selectedOptionRole,
+                email.trim(), password.trim(),
+                phone.trim(), selectedOptionRole,
                 1,
-                userName,
-                userCode,
-                address,
+                userName.trim(),
+                userCode.trim(),
+                address.trim(),
                 image,
-                fullName);
-            // console.log("res: ", image);
+                fullName.trim());
             if (res.isSuccess) {
                 toast.success("Thêm mới tài khoản thành công");
                 updateTable();
                 handleClose();
             } else {
                 toast.warning("Người dùng đã tồn tại");
-
             }
         }
-
     }
 
     const handleCloseModal = () => {

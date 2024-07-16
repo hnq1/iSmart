@@ -22,25 +22,28 @@ const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
     };
 
     const handleSave = async () => {
-        if (!validateTextRequired.test(nameSupplier)) {
+        // Sử dụng trim() để loại bỏ khoảng trắng ở đầu và cuối chuỗi
+        const trimmedNameSupplier = nameSupplier.trim();
+        const trimmedPhoneSupplier = phoneSupplier.trim();
+        const trimmedEmailSupplier = emailSupplier.trim();
+        const trimmedNoteSupplier = noteSupplier.trim();
+    
+        if (!validateTextRequired.test(trimmedNameSupplier)) {
             toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
-        } else if (!validatePhone.test(phoneSupplier)) {
+        } else if (!validatePhone.test(trimmedPhoneSupplier)) {
             toast.error("Sai định dạng số điện thoại");
-        } else if (!validateEmail.test(emailSupplier)) {
+        } else if (!validateEmail.test(trimmedEmailSupplier)) {
             toast.error("Sai định dạng email");
-        } else if (!validateText.test(noteSupplier)) {
+        } else if (!validateText.test(trimmedNoteSupplier)) {
             toast.error("Lưu ý không được chứa ký tự đặc biệt");
         } else {
-            let res = await createNewSupplier(nameSupplier, phoneSupplier, 1, emailSupplier, noteSupplier);
+            let res = await createNewSupplier(trimmedNameSupplier, trimmedPhoneSupplier, 1, trimmedEmailSupplier, trimmedNoteSupplier);
             toast.success("Thêm nhà cung cấp thành công", {
                 className: 'toast-success',
-
             });
             updateTableSupplier();
             handleCloseModal();
         }
-
-
     };
 
 

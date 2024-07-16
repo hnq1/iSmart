@@ -20,22 +20,30 @@ const ModelEditSupplier = ({ isShow, handleClose, dataUpdateSupplier, updateTabl
     }, [dataUpdateSupplier])
 
     const handleSave = async () => {
-        if (!validateTextRequired.test(nameSupplier)) {
+        // Loại bỏ khoảng trắng ở đầu và cuối chuỗi
+        const trimmedNameSupplier = nameSupplier.trim();
+        const trimmedPhoneSupplier = phoneSupplier.trim();
+        const trimmedEmailSupplier = emailSupplier.trim();
+        const trimmedNoteSupplier = noteSupplier.trim();
+
+        // Kiểm tra các giá trị sau khi trim
+        if (!validateTextRequired.test(trimmedNameSupplier)) {
             toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
-        } else if (!validatePhone.test(phoneSupplier)) {
+        } else if (!validatePhone.test(trimmedPhoneSupplier)) {
             toast.error("Sai định dạng số điện thoại");
-        } else if (!validateEmail.test(emailSupplier)) {
+        } else if (!validateEmail.test(trimmedEmailSupplier)) {
             toast.error("Sai định dạng email");
-        } else if (!validateText.test(noteSupplier)) {
+        } else if (!validateText.test(trimmedNoteSupplier)) {
             toast.error("Lưu ý không được chứa ký tự đặc biệt");
         } else {
+            // Sử dụng các giá trị đã trim để cập nhật thông tin nhà cung cấp
             let res = await updateSupplier(
                 dataUpdateSupplier.supplierId,
-                removeWhiteSpace(nameSupplier),
-                phoneSupplier,
+                trimmedNameSupplier,
+                trimmedPhoneSupplier,
                 dataUpdateSupplier.statusId,
-                removeWhiteSpace(emailSupplier),
-                removeWhiteSpace(noteSupplier));
+                trimmedEmailSupplier,
+                trimmedNoteSupplier);
             console.log(res);
             if (res) {
                 toast.success("Sửa thông tin nhà cung cấp thành công", {
@@ -45,7 +53,7 @@ const ModelEditSupplier = ({ isShow, handleClose, dataUpdateSupplier, updateTabl
             updateTableSupplier();
             handleCloseModal();
         }
-    }
+    };
 
     const handleCloseModal = () => {
         handleReset();

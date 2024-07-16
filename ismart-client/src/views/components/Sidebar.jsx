@@ -464,7 +464,7 @@ const Sidebar = () => {
                         // : ''
                     }
 
-                    {
+                    {/* {
                         (roleId == 1) ?
                             <Nav.Item className="mb-2">
                                 <Nav.Link as={Link} to="/du-an"
@@ -485,7 +485,7 @@ const Sidebar = () => {
                                 </Nav.Link>
                             </Nav.Item>
                             : ''
-                    }
+                    } */}
 
 
                     {

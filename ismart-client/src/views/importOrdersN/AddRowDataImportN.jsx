@@ -87,7 +87,13 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
     }
 
     const handleChangeQuantity = (event) => {
-        setQuantity(event.target.value);
+        const inputValue = parseInt(event.target.value, 10);
+        if (inputValue >= 1) {
+            setQuantity(inputValue);
+        } else {
+            // Optionally, you can set it to 0 or leave the value unchanged
+            setQuantity(1);
+        }
     }
 
     const handleChangePrice = (event) => {

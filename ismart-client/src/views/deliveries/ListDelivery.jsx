@@ -39,7 +39,7 @@ function DeliveryList() {
 
         let res = await fetchDeliveriesWithKeyword(page, removeWhiteSpace(keyword ? keyword : ""));
         if (res) {
-            console.log("res.data: ", res.data);
+            // console.log("res.data: ", res.data);
             setListDeliveries(res.data);
             setTotalPages(res.totalPages);
         }
@@ -90,7 +90,7 @@ function DeliveryList() {
         setcurrentPage(0);
         const fetchData = async () => {
             let res = await getDeliveries(1, keywordSearch);
-            console.log("res: ", res);
+            // console.log("res: ", res);
 
             if (res.data.length == 0) {
                 toast.warning("Vui lòng nhập từ khóa tìm kiếm khác");
