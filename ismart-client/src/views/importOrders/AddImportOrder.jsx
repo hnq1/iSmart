@@ -289,7 +289,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>Thêm lô hàng nhập</Modal.Title>
+                <Modal.Title>Thêm đơn hàng nhập</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
@@ -397,7 +397,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                                     onClick={handleAddRowDataImport}
                                 ><i className="fa-solid fa-plus"></i>
                                     &nbsp;
-                                    Thêm sản phẩm
+                                    Thêm lô hàng
                                 </button>
                             </div>
                         </Col>

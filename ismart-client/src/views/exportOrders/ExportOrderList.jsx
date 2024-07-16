@@ -158,7 +158,7 @@ const ExportOrderList = () => {
 
     const ShowModelConfirm = (i) => {
         console.log("ShowModelConfirm", i);
-        if (currentDate = formatDate(i.exportedDate)) {
+        if (currentDate === formatDate(i.exportedDate)) {
             // Điều kiện này kiểm tra nếu ngày hiện tại nhỏ hơn hoặc bằng ngày xuất hàng
             // Nếu đúng, cho phép thực hiện hành động xuất hàng
             setIsShowModelConfirm(true);
@@ -408,9 +408,9 @@ const ExportOrderList = () => {
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
             <ConfirmExportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
             <ModelAddExportOrderAuto isShow={isShowExportModelAddAuto} handleClose={() => setIsShowExportModelAddAuto(false)} updateTable={updateTable} />
-            <ModelAddExportOrderManual isShow={isShowExportModelAddManual} 
-            handleClose={() => setIsShowExportModelAddManual(false)} 
-            updateTable={updateTable} />
+            <ModelAddExportOrderManual isShow={isShowExportModelAddManual}
+                handleClose={() => setIsShowExportModelAddManual(false)}
+                updateTable={updateTable} />
         </>
     )
 }
