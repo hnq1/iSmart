@@ -77,9 +77,9 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const handleEditRowData = () => {
         if (quantity <= 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        } else if (costPrice <= 0) {
-            toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
-        } else {
+        // } else if (costPrice <= 0) {
+        //     toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
+        // } else {
             dataAfterEdit({
                 // ...data,
                 batchCode: batchCode,
