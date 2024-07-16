@@ -155,7 +155,14 @@ function MyTable() {
     }
 
     const handlePageSizeChange = (event) => {
-        setPageSize(Number(event.target.value));
+        const newSize = Number(event.target.value);
+        // Kiểm tra nếu newSize là số âm, đặt pageSize là 1
+        if (newSize > 0) {
+            setPageSize(newSize);
+        } else {
+            // Có thể hiển thị thông báo lỗi hoặc đặt một giá trị mặc định
+            setPageSize(1);
+        }
     }
 
     const getAllCategories = async () => {
@@ -185,15 +192,20 @@ function MyTable() {
     const handleSupplierClick = (supplier) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
-        const res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch);
-        setListGoods(res);
-    }
+        // Gọi getGoods với nhà cung cấp mới được chọn
+        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch).then(res => {
+            setListGoods(res); // Cập nhật danh sách hàng hóa với dữ liệu mới
+        });
+    };
 
-    const handleSupplierClickTotal = async () => {
+    const handleSupplierClickTotal = () => {
         setSelectedSupplier("Nhà cung cấp");
         setSelectedSupplierId(null);
-        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch);
-    }
+        // Gọi getGoods mà không có nhà cung cấp cụ thể
+        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch).then(res => {
+            setListGoods(res); // Cập nhật danh sách hàng hóa
+        });
+    };
 
     const handleCategoryClickTotal = async () => {
         setSelectedCategory("Các danh mục");

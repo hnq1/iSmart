@@ -65,14 +65,32 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
         setTotalPrice(detailOrderEdit.totalCost);
     }
 
-    const takeRowDataImportOrder = (importData) => {
-        const updateDataImport = [...rowsData, importData];
-        // updateDataImport[rowsData.length - 1] = importData;
-        setRowsData(updateDataImport);
+    // const takeRowDataImportOrder = (importData) => {
+    //     importData.supplierId = selectedSupplierId;
+    //     importData.supplierName = selectedSupplier;
 
-        // setTotalPrice(x => x + importData.totalOneGoodPrice);
+    //     // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
+    //     const existingProductIndex = rowsData.findIndex(row => row.goodsId === importData.goodsId);
 
-    }
+    //     if (existingProductIndex !== -1) {
+    //         // Nếu sản phẩm đã tồn tại, cập nhật số lượng và các giá trị mới
+    //         const updatedRowsData = [...rowsData];
+
+    //         updatedRowsData[existingProductIndex].quantity += importData.quantity; // Cập nhật số lượng
+    //         updatedRowsData[existingProductIndex] = { ...updatedRowsData[existingProductIndex], ...importData }; // Cập nhật các giá trị mới
+
+    //         setRowsData(updatedRowsData);
+
+    //         //setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice); // Cập nhật tổng chi phí
+    //         toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
+    //     } else {
+    //         // Nếu sản phẩm chưa tồn tại, thêm vào danh sách và cập nhật tổng chi phí
+    //         const updateDataImport = [...rowsData, importData];
+    //         setRowsData(updateDataImport);
+
+    //     }
+
+    // }
 
 
     // render rowsData
@@ -103,27 +121,41 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
     }
 
     const handleUpdateImportOrder = async () => {
-        if (totalPrice === 0) {
-            toast.warning("Vui lòng nhập mặt hàng nhập");
-        } else {
-            console.log(detailOrderEdit.importId);
-            let res = await updateImportOrder(detailOrderEdit.importId, userId, selectedSupplierId, totalPrice, "", detailOrderEdit.createdDate, detailOrderEdit.importedDate, 3, importCode, selectedStorageId, selectedDeliveryId, detailOrderEdit.image, null);
-            console.log(res);
-            if (rowsData && rowsData.length > 0) {
-                await Promise.all(rowsData.map(async (data, index) => {
-                    await updateImportOrderDetail(
-                        detailOrderEdit.importId,
-                        data.costPrice,
-                        data.detailId,
-                        data.goodsId,
-                        data.quantity);
-                }));
-            }
-            toast.success("Thêm lô hàng nhập thành công");
-            updateTable();
-            handleCloseModal();
-        }
 
+        // console.log("detailOrderEdit.importId:", detailOrderEdit.importId);
+        let res = await updateImportOrder(detailOrderEdit.importId,
+            userId,
+            selectedSupplierId,
+            totalPrice,
+            "",
+            detailOrderEdit.createdDate,
+            detailOrderEdit.importedDate,
+            3,
+            importCode,
+            selectedStorageId,
+            selectedDeliveryId,
+            detailOrderEdit.image,
+            null);
+        
+        if (rowsData && rowsData.length > 0) {
+            await Promise.all(rowsData.map(async (data, index) => {
+                await updateImportOrderDetail(
+                    
+                    detailOrderEdit.importId,
+                    data.costPrice,
+                    data.detailId,
+                    data.goodsId,
+                    data.quantity
+                );
+                console.log("udata:", data);
+            }));
+            
+        }
+        toast.success("Thêm lô hàng nhập thành công");
+        updateTable();
+        handleCloseModal();
+
+        console.log("ressss:",res);
     }
     const handleCloseModal = () => {
         handleReset();
@@ -193,16 +225,7 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                         {renderImportData()}
 
                     </Row>
-                    <div className="">
-                        <button
-                            className="btn rounded ButtonRed"
-                            type="button"
 
-                        >
-                            Tổng giá tiền: {formattedAmount(totalPrice)}
-                        </button>
-
-                    </div>
 
                 </div>
             </Modal.Body>

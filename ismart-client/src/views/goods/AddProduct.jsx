@@ -171,13 +171,14 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const handleReset = () => {
         setSelectedCategoryId(null);
         setSelectedCategory(null);
-
+        setMeasuredUnit(null);
         setSelectedWarehouse(null);
         setSelectedWarehouseId(null);
-
+        setCreatedDate(null);
         setSelectedSupplier(null);
         setSelectedSupplierId(null);
-
+        setMaxStock(0);
+        setMinStock(0);
         setBarCode(null);
         setGoodCode(null);
         setGoodName(null);
@@ -214,9 +215,11 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
         }
         else if (maxStock <= 0) {///////
-            toast.warning("Vui lòng nhập maxstock lớn hơn 0");
+            toast.warning("Vui lòng nhập số lượng tối đa lớn hơn 0");
         } else if (minStock <= 0) {/////////
-            toast.warning("Vui lòng nhập minstock lớn hơn 0");
+            toast.warning("Vui lòng nhập số lượng tối thiểu lớn hơn 0");
+        } else if (!description.trim()) {
+            toast.warning("Vui lòng nhập mô tả chi tiết không được để trống");
         } else {
             let res;
             if (roleId === 1) {
@@ -401,11 +404,11 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
-                            <label >MaxStock </label>
+                            <label >Số lượng tối đa </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
                         </Col>
                         <Col md={5}>
-                            <label >MinStock </label>
+                            <label > Số lượng tối thiểu </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
                         </Col>
                     </Row>

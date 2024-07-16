@@ -195,7 +195,11 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
                         data.forEach(item => {
-                            createNewExportOrderDetail(resExportId, item.costPrice, item.goodsId, item.quantity, item.importOrderDetailId);
+                            createNewExportOrderDetail(resExportId,
+                                item.costPrice,
+                                item.goodsId,
+                                item.quantity,
+                                item.importOrderDetailId);
                         })
                     }))
 
