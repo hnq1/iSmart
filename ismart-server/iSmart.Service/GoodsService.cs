@@ -45,36 +45,34 @@ namespace iSmart.Service
         {
             try
             {
-                // Tạo hàng hóa mới
-                var newGood = new Good
-                {
-                    GoodsName = goods.GoodsName,
-                    GoodsCode = goods.GoodsCode,
-                    CategoryId = goods.CategoryId,
-                    Description = goods.Description,
-                    SupplierId = goods.SupplierId,
-                    MeasuredUnit = goods.MeasuredUnit,
-                    Image = goods.Image,
-                    StatusId = goods.StatusId,
-                    StockPrice = goods.StockPrice,
-                    CreatedDate = DateTime.Now,
-                    WarrantyTime = goods.WarrantyTime,
-                    Barcode = goods.Barcode,
-                    MaxStock = goods.MaxStock,
-                    MinStock = goods.MinStock
-                };
-
-                // Kiểm tra xem hàng hóa đã tồn tại trong cùng kho hàng chưa
+                // Kiểm tra xem hàng hóa đã tồn tại chưa
                 var existingGood = _context.Goods
                     .SingleOrDefault(i => i.GoodsCode == goods.GoodsCode);
 
                 if (existingGood == null)
                 {
-                    // Thêm hàng hóa mới vào bảng Goods
+                    // Tạo hàng hóa mới
+                    var newGood = new Good
+                    {
+                        GoodsName = goods.GoodsName,
+                        GoodsCode = goods.GoodsCode,
+                        CategoryId = goods.CategoryId,
+                        Description = goods.Description,
+                        SupplierId = goods.SupplierId,
+                        MeasuredUnit = goods.MeasuredUnit,
+                        Image = goods.Image,
+                        StatusId = goods.StatusId,
+                        StockPrice = goods.StockPrice,
+                        CreatedDate = DateTime.Now,
+                        WarrantyTime = goods.WarrantyTime,
+                        Barcode = goods.Barcode,
+                        MaxStock = goods.MaxStock,
+                        MinStock = goods.MinStock
+                    };
+
                     _context.Goods.Add(newGood);
                     _context.SaveChanges();
 
-                    // Tạo bản ghi trong bảng GoodsWarehouse để thiết lập mối quan hệ
                     var goodsWarehouse = new GoodsWarehouse
                     {
                         GoodsId = newGood.GoodsId,
@@ -89,7 +87,27 @@ namespace iSmart.Service
                 }
                 else
                 {
-                    return new CreateGoodsResponse { IsSuccess = false, Message = "Hàng đã tồn tại" };
+                    var existingGoodsWarehouse = _context.GoodsWarehouses
+                        .SingleOrDefault(gw => gw.GoodsId == existingGood.GoodsId && gw.WarehouseId == warehouseId);
+
+                    if (existingGoodsWarehouse == null)
+                    {
+                        var goodsWarehouse = new GoodsWarehouse
+                        {
+                            GoodsId = existingGood.GoodsId,
+                            WarehouseId = warehouseId,
+                            Quantity = 0
+                        };
+
+                        _context.GoodsWarehouses.Add(goodsWarehouse);
+                        _context.SaveChanges();
+
+                        return new CreateGoodsResponse { IsSuccess = true, Message = "Thêm hàng hóa vào kho hàng thành công" };
+                    }
+                    else
+                    {
+                        return new CreateGoodsResponse { IsSuccess = false, Message = "Hàng đã tồn tại trong kho hàng này" };
+                    }
                 }
             }
             catch (Exception ex)
