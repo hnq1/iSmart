@@ -72,7 +72,7 @@ const updateGood = (goodsId, goodsName, goodsCode,
 
 
 const fetchHistoryGood = (id) => {
-    return axios.get(`api/Dashboard/get-data-by-goods-id?id=${id}`);
+    return axios.get(`api/goods/get-good-by-id?id=${id}`);
 }
 
 const fetchAllGoodsInWarehouse = (id) => {
@@ -83,12 +83,11 @@ const fetchGoodinWarehouseById = (warehouseId, goodId) => {
     return axios.get(`api/goods/get-good-in-warehouse-by-id?warehouseId=${warehouseId}&goodId=${goodId}`)
 }
 
-<<<<<<< HEAD
-export { updateGood, addGood, addGoodinAdmin, fetchGoodsWithFilter, fetchGoodsWithSupplier, fetchAllGoods, fetchGoodsWithStorageAndSupplier, fetchGoodById, fetchHistoryGood, fetchAllGoodsInWarehouse }
-=======
+const fetchAlertsinGoods = (warehouseId) => {
+    return axios.get(`api/goods/alerts?warehouseId=${warehouseId}`)
+}
 export {
     updateGood, addGood, addGoodinAdmin, fetchGoodsWithFilter, fetchGoodsWithSupplier,
     fetchAllGoods, fetchGoodsWithStorageAndSupplier, fetchGoodById,
-    fetchHistoryGood, fetchAllGoodsInWarehouse, fetchGoodinWarehouseById
+    fetchHistoryGood, fetchAllGoodsInWarehouse, fetchGoodinWarehouseById, fetchAlertsinGoods
 }
->>>>>>> main

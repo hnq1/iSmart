@@ -102,13 +102,6 @@ function ImportOrderListN() {
             getImportOrders(1, pageSize);
         }
     }, [sortedByStatusId, pageSize]);
-<<<<<<< HEAD
-
-    useEffect(() => {
-        getImportOrders(1, pageSize);
-    }, [pageSize]);
-=======
->>>>>>> main
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
@@ -119,14 +112,7 @@ function ImportOrderListN() {
     const getImportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
         let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-<<<<<<< HEAD
-
-        // console.log("pageSize:", pageSize);
-        console.log("sortedByStatusId:", sortedByStatusId);
-
-=======
-        console.log("sortedByStatusId:", sortedByStatusId);
->>>>>>> main
+        // console.log("sortedByStatusId:", sortedByStatusId);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
 
@@ -265,40 +251,7 @@ function ImportOrderListN() {
                                             aria-describedby="emailHelp" value={selectedWarehouse} disabled />
                                     </Col>
                                 }
-                                <Col md={2}>
-                                    <div className="input-group mb-3">
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            placeholder="Nhập pageSize"
-                                            value={pageSize}
-                                            onChange={handlePageSizeChange}
-                                        />
-                                    </div>
-                                </Col>
-                                <Col md={2}>
-                                    <div className="input-group mb-3">
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            placeholder="Nhập pageSize"
-                                            value={pageSize}
-                                            onChange={handlePageSizeChange}
-                                        />
-                                    </div>
-                                </Col>
-                                <Col md={2}>
-                                    <div className="input-group mb-3">
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            placeholder="Nhập pageSize"
-                                            value={pageSize}
-                                            onChange={handlePageSizeChange}
-                                        />
-                                    </div>
-                                </Col>
-                                {/* lọc tình trạng và sắp xếp theo ngày */}
+
                                 <Col md={2}>
                                     <div className="input-group mb-3">
                                         <input
@@ -326,7 +279,7 @@ function ImportOrderListN() {
                                     </DropdownButton>
                                 </Col>
 
-                                <Col md={4}>
+                                <Col md={3}>
                                     <div className="input-group">
                                         <input
                                             className="form-control border-secondary inputCSS"
@@ -415,12 +368,6 @@ function ImportOrderListN() {
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
                                                 <td className="align-middle">{i.storageName}</td>
-<<<<<<< HEAD
-
-                                                <td className="align-middle">{i.exportStorageName}</td>
-
-=======
->>>>>>> main
                                                 <td className="align-middle">{i.warehouseDestinationName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>

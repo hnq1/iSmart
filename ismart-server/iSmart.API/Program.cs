@@ -86,6 +86,10 @@ internal class Program
     });
 
         builder.Services.AddControllers();
+
+        var openAiApiKey = builder.Configuration["OpenAI:ApiKey"];
+        
+        
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", builder =>
@@ -110,14 +114,19 @@ internal class Program
         builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
         builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
         builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
-<<<<<<< HEAD
 
-=======
->>>>>>> main
         builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
         builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddSingleton<WebSocketService>();
+
+        builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
+        builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
+        builder.Services.AddScoped<ICustomerService, CustomerService>();
+        builder.Services.AddScoped<IReportService, ReportService>();
+        builder.Services.AddSingleton<WebSocketService>();
+        builder.Services.AddSingleton(new OpenAIService(openAiApiKey));
+
 
         // Đăng ký các dịch vụ
         // builder.Services.AddScoped<ICategoryService, CategoryService>();

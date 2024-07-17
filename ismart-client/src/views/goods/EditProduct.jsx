@@ -7,7 +7,7 @@ import { fetchAllCategories } from '~/services/CategoryServices';
 import { fetchAllStorages } from '~/services/StorageServices';
 import uploadImage from '~/services/ImageServices';
 import { toast } from 'react-toastify';
-import currency from 'currency.js';
+
 import { updateGood } from '~/services/GoodServices';
 import { set } from 'lodash';
 
@@ -33,7 +33,6 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const [warrantyTime, setwarrantyTime] = useState(0);
     const [description, setDescription] = useState(null);
     const [stockPrice, setStockPrice] = useState(0);
-    const [insertStockPrice, setInsertStockPrice] = useState(0);
     const [maxStock, setMaxStock] = useState(0);
     const [minStock, setMinStock] = useState(0);
     const [imageGood, setImageGood] = useState(null);
@@ -112,45 +111,13 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
     const handleChooseFile = async (event) => { //validate file ảnh and size ảnh
         const file = event.target.files[0];
-
-        // Check if file is selected
-        if (!file) {
-            setImageGood(null);
-            return;
-        }
-
-        // Check if file type is image
-        if (!file.type.startsWith('image')) {
-            toast.warning("Vui lòng chọn một file ảnh.");
-            setImageGood(null);
-            return;
-        }
-
-        // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            toast.warning("File ảnh quá lớn, vui lòng chọn file dưới 5MB.");
-            setImageGood(null);
-            return;
-        }
-
-        let res = await uploadImage(file);
+        let res = await uploadImage(file)
         const urlImage = res.url;
         setImageGood(urlImage);
-<<<<<<< HEAD
-    };
-    const handleStockPriceChange = (event) => {
-        const value = event.target.value;
-        const formattedValue = currency(value, { symbol: '', separator: '.', decimal: ',', precision: 0 }).format();
-        setStockPrice(formattedValue);
-    };
-
-    
-=======
     }
 
 
 
->>>>>>> main
 
 
     const handleGoodName = (event) => {
@@ -178,11 +145,8 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const handleCloseModal = () => {
         handleClose();
     }
-    const handleSave = async () => {
-<<<<<<< HEAD
 
-=======
->>>>>>> main
+    const handleSave = async () => {
         if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }
@@ -208,8 +172,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 0,
                 imageGood,
                 1,
-                //stockPrice,
-                currency(stockPrice, { separator: '.', decimal: ',', precision: 0 }).value,
+                stockPrice,
                 warrantyTime,
                 barCode,
                 selectedWarehouseId,
@@ -225,7 +188,6 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const handleReset = () => {
 
     }
-
     return (
         <Modal show={isShow} onHide={handleCloseModal} size="xs">
             <Modal.Header closeButton>
@@ -233,11 +195,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-<<<<<<< HEAD
-                    {
-=======
                     {/* {
->>>>>>> main
                         roleId === 1 ?
                             <Row>
                                 <label >Kho</label>
@@ -261,11 +219,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                                 </DropdownButton>
                             </Row>
                             : ''
-<<<<<<< HEAD
-                    }
-=======
                     } */}
->>>>>>> main
                     <Col md={2}>
                         <label >Đơn vị </label>
                         <DropdownButton
@@ -338,7 +292,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
                         <Col md={5}>
                             <label >Hạn bảo hành </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} min={0} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} />
                         </Col>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
@@ -353,18 +307,17 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                     <row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >Giá nhập </label>
-                            {/* <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} /> */}
-                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={handleStockPriceChange} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
                         </Col>
                     </row>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
                             <label >MaxStock </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} min={0} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
                         </Col>
                         <Col md={5}>
                             <label >MinStock </label>
-                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} min={0} />
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
                         </Col>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
@@ -381,7 +334,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
 
 
-                    <Button className="ButtonRed" onClick={handleReset} style={{ marginTop: '15px' }} >
+                    <Button className="ButtonRed" onClick={handleReset} style={{ marginTop: '15px' }}>
                         Xóa thông tin thay đổi
                     </Button>
                 </div>
@@ -391,11 +344,12 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 <Button variant="secondary" onClick={handleCloseModal}>
                     Đóng
                 </Button>
-                <Button variant="primary" className="ButtonCSS" onClick={handleSave} >
+                <Button variant="primary" className="ButtonCSS" onClick={handleSave}>
                     Lưu thay đổi
                 </Button>
             </Modal.Footer>
         </Modal >
     );
 }
+
 export default ModalEditGood;

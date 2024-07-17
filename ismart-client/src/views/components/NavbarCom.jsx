@@ -6,10 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context/UserContext'
 import ProfileDetail from '../profiles/ProfileDetail';
 import ConfirmImportOrderN from '../importOrdersN/ConfirmImportOrderN';
-<<<<<<< HEAD
-=======
 
->>>>>>> main
 
 function NavbarCom() {
 
@@ -21,15 +18,6 @@ function NavbarCom() {
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
     const [showNotifications, setShowNotifications] = useState(false);
-<<<<<<< HEAD
-
-    const [isShowModelConfirm, setIsShowModelConfirm] = useState(false); // State để điều khiển hiển thị modal
-    const [dataImportOrder, setDataImportOrder] = useState(null); // Dữ liệu đơn hàng cần nhập
-    const [updateTable, setUpdateTable] = useState(false); // State để cập nhật bảng sau khi nhập đơn hàng
-
-    const [webSocketMessages, setWebSocketMessages] = useState([]);
-
-=======
     const [readNotifications, setReadNotifications] = useState(new Set());
     const [isShowModelConfirm, setIsShowModelConfirm] = useState(false); // State để điều khiển hiển thị modal
     const [dataImportOrder, setDataImportOrder] = useState(null); // Dữ liệu đơn hàng cần nhập
@@ -37,18 +25,13 @@ function NavbarCom() {
 
     const [webSocketMessages, setWebSocketMessages] = useState([]);
 
->>>>>>> main
     const navigate = useNavigate();
     useEffect(() => {
         if (window.location.pathname === '/dang-nhap' || window.location.pathname === '/') {
             setHideHeader(true);
         }
     }, []);
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> main
     useEffect(() => {
 
         const roleId = parseInt(localStorage.getItem('roleId'), 10); // Lấy roleId từ localStorage
@@ -61,10 +44,7 @@ function NavbarCom() {
 
             socket.onmessage = (event) => {
                 const message = event.data;
-<<<<<<< HEAD
-=======
 
->>>>>>> main
                 console.log('Received message from server:', message);
                 setWebSocketMessages(prevMessages => [...prevMessages, message]);
 
@@ -76,19 +56,6 @@ function NavbarCom() {
         }
 
     }, []);
-<<<<<<< HEAD
-
-    const handleNotificationClick = (index) => {
-        // Xử lý khi người dùng nhấp vào thông báo ở vị trí index
-        const updatedMessages = [...webSocketMessages];
-        updatedMessages.splice(index, 1); // Xóa thông báo khỏi danh sách
-        const selectedMessage = updatedMessages[index];
-        setWebSocketMessages(updatedMessages);
-
-
-        setIsShowModelConfirm(true);
-        setDataImportOrder(selectedMessage);
-=======
     // cũ
     // const handleNotificationClick = (index) => {
     //     setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
@@ -111,7 +78,6 @@ function NavbarCom() {
         navigate(`/confirm-import-order/${importId}`);
         setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
         setWebSocketMessages(prevMessages => prevMessages.filter((_, i) => i !== index));
->>>>>>> main
     };
 
     const handleLogout = () => {
@@ -162,12 +128,8 @@ function NavbarCom() {
                                         <NavDropdown.Item>Không có thông báo mới</NavDropdown.Item>
                                     ) : (
                                         webSocketMessages.map((message, index) => (
-<<<<<<< HEAD
-                                            <NavDropdown.Item key={index} onClick={() => handleNotificationClick(index)}>{message}</NavDropdown.Item>
-=======
                                             <NavDropdown.Item key={index}
                                                 onClick={() => handleNotificationClick(index)}>{message}</NavDropdown.Item>
->>>>>>> main
                                         ))
                                     )}
                                     {/* Thêm nút để xem tất cả thông báo */}

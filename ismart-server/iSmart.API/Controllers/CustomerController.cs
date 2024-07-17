@@ -1,4 +1,7 @@
 ﻿using iSmart.Entity.DTOs.CustomerDTOs;
+
+using iSmart.Entity.DTOs.ExportOrderDTO;
+
 using iSmart.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -81,5 +84,19 @@ namespace iSmart.API.Controllers
             }
             return BadRequest(response);
         }
+
+
+
+        [HttpGet("get-customer-transaction")]
+        public ActionResult<List<ExportOrderDTO>>  GetAllHistoryCustomerOrder(int customerId)
+        {
+            var result = _customerService.GetAllHistoryCustomerOrder(customerId);
+            if (result == null || result.Count == 0)
+            {
+                return NoContent();
+            }
+            return Ok(result);
+        }
+
     }
 }

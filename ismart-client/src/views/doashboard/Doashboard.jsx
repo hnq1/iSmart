@@ -11,10 +11,15 @@ import { formatDateImport, formattedAmount, formatDate } from '~/validate';
 import ChartComponent from '../components/others/Chart';
 import { fetchHistoryGood } from '~/services/GoodServices';
 import { useNavigate } from 'react-router-dom';
+import { Button, Modal } from 'react-bootstrap';
+import { fetchAlertsinGoods } from '~/services/GoodServices';
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 
 const Doashboard = () => {
-    const roleId = parseInt(localStorage.getItem('roleId'), 10);;
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const navigate = useNavigate();
@@ -26,6 +31,9 @@ const Doashboard = () => {
         }
 
     }, [roleId, navigate]);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [alerts, setAlerts] = useState([]);
 
     const [totalStorages, setTotalStorages] = useState([]);
     const [selectedStorage, setSelectedStorage] = useState(null);
@@ -70,6 +78,26 @@ const Doashboard = () => {
     const [selectedYear, setSelectedYear] = useState(null);
 
 
+    useEffect(() => {
+        fetchAlerts();
+    }, []);
+
+
+
+    //Fetch alerts khi trang được tải
+    const fetchAlerts = async () => {
+        let u = await getUserIdWarehouse(userId);
+        // console.log("res: ", u);
+        const a = await fetchAlertsinGoods(u[0].warehouseId);
+        // console.log("whId: ", u.warehouseId);
+        setAlerts(a);
+        setIsOpen(true); // Mở popup sau khi lấy dữ liệu
+    };
+
+
+    const closePopup = () => {
+        setIsOpen(false);
+    };
     useEffect(() => {
         getAllStorages();
         getAllSuppliers();
@@ -559,6 +587,32 @@ const Doashboard = () => {
                 </Col>
 
             </Row>
+
+            <Modal show={isOpen} onHide={closePopup} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Cảnh báo kho hàng</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {alerts.map((alert, index) => (
+                        <li key={index}
+                            style={{ listStyleType: '" ________________________________________________________________________________ "' }}>
+                            <p></p>
+                            {/* <p>Mã hàng: {alert.goodCode}</p>
+                            <p>Tên hàng: {alert.goodName}</p>
+                            <p>Số lượng: {alert.quantity}</p> */}
+                            <p> <FontAwesomeIcon icon={faExclamationTriangle}
+                                style={{ color: 'red', fontSize: '24px' }}
+                            />Cảnh báo: {alert.alertType}</p>
+                            <p>Thông báo: {alert.message}</p>
+                        </li>
+                    ))}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={closePopup}>
+                        Đóng
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div >
     </>)
 }

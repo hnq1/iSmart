@@ -15,11 +15,11 @@ namespace iSmart.Service
 {
     public interface IExportOrderService
     {
-<<<<<<< HEAD
+
         CreateExportOrderResponse CreateExportOrder(CreateExportOrderRequest i, int staffId);
-=======
+
         CreateExportOrderResponse CreateExportOrder(bool isInternalTransfer, CreateExportOrderRequest i, int staffId);
->>>>>>> main
+
         List<ExportOrderDTO> GetAllExportOrder();
         int GetExportOrderNewest();
         ExportOrderFilterPaging ExportOrderFilterPaging(int pageSize, int page, int? warehouseId, int? userId, int? managerId, int? status, int? sortDate, string? keyword = "");
@@ -42,19 +42,13 @@ namespace iSmart.Service
             _webSocketService = webSocketService;
         }
 
-<<<<<<< HEAD
-        public CreateExportOrderResponse CreateExportOrder(CreateExportOrderRequest i, int staffId)
-        {
-            try
-            {
-                var exportOrder = new ExportOrder
-=======
+
         public CreateExportOrderResponse CreateExportOrder(bool isInternalTransfer, CreateExportOrderRequest i, int staffId)
         {
             try
             {
                 var exportOrder = isInternalTransfer == false ? new ExportOrder
->>>>>>> main
+
                 {
                     ExportCode = "XH" + i.ExportCode,
                     UserId = staffId,
@@ -69,8 +63,7 @@ namespace iSmart.Service
                     Image = i.Image,
                     StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
                     CustomerId = i.CustomerId,
-<<<<<<< HEAD
-=======
+
                 } : new ExportOrder
                 {
                     ExportCode = "XH" + i.ExportCode,
@@ -87,7 +80,7 @@ namespace iSmart.Service
                     StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
                     CustomerId = 0,
                     WarehouseDestinationId = i.WarehouseDestinationId
->>>>>>> main
+
                 };
                 if (_context.ExportOrders.SingleOrDefault(z => exportOrder.ExportCode.ToLower() == z.ExportCode.ToLower()) == null)
                 {
@@ -268,6 +261,11 @@ namespace iSmart.Service
             }
         }
 
+        public CreateExportOrderResponse CreateExportOrder(CreateExportOrderRequest i, int staffId)
+        {
+            throw new NotImplementedException();
+        }
+
         //    public ExportOrder? GetExportOrderById(int id)
         //    {
         //        try
@@ -301,8 +299,8 @@ namespace iSmart.Service
 
 
     }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> main
+
+
+

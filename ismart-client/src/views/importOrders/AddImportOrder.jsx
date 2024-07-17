@@ -243,11 +243,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                 imageImportOrder,
 
             );
-<<<<<<< HEAD
-            console.log("isInternalTransfer: ", isInternalTransfer);
-=======
             // console.log("isInternalTransfer: ", isInternalTransfer);
->>>>>>> main
             if (res.isSuccess == true) {
                 let resImportId = await fetchImportOrderNewest();
                 console.log("ResImportID :", resImportId);
@@ -384,7 +380,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                             </div>
                         </Col>
                         <Col md={7}></Col>
-                        <Col md={3}>
+                        <Col md={3} className="mt-3">
                             <div className="ButtonCSSDropdown">
                                 <button
                                     className="btn btn-success border-left-0 rounded"
@@ -405,7 +401,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                         {renderImportData()}
 
                     </Row>
-                    <div className="">
+                    {/* <div className="">
                         <button
                             className="btn rounded ButtonRed"
                             type="button"
@@ -414,7 +410,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                             Tổng giá tiền: {formattedAmount(totalCost)}
                         </button>
 
-                    </div>
+                    </div> */}
 
                 </div>
             </Modal.Body>

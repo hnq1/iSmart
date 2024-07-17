@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 import { fetchExportOrdersWithFilter } from "~/services/ExportOrderService";
 import { formatDate, formattedAmount } from '~/validate';
 import ReactPaginate from 'react-paginate';
-import { Table, Form } from 'react-bootstrap';
-import ModelAddExportOrder from "./AddExportOrder";
+import { Table, Form, Modal, Button } from 'react-bootstrap';
+import ModelAddExportOrderAuto from "./AddExportOrderAuto";
+import ModelAddExportOrderManual from "./AddExportOrderManual";
 import ConfirmExportOrder from "./ConfirmExportOrder";
 import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 import ModalDetailExportOrder from "./DetailExportOrder";
@@ -16,6 +17,7 @@ import { Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
 import { toast } from "react-toastify";
 
 import { format } from 'date-fns';
+import { get } from "lodash";
 
 
 
@@ -33,7 +35,8 @@ const ExportOrderList = () => {
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
-    const [isShowExportModelAdd, setIsShowExportModelAdd] = useState(false);
+    const [isShowExportModelAddAuto, setIsShowExportModelAddAuto] = useState(false);
+    const [isShowExportModelAddManual, setIsShowExportModelAddManual] = useState(false);
     const [isShowModelConfirm, setIsShowModelConfirm] = useState(false);
     const [dataImportOrder, setDataImportOrder] = useState({});
 
@@ -61,8 +64,9 @@ const ExportOrderList = () => {
     const [currentDate, setCurrentDate] = useState();
 
     const [pageSize, setPageSize] = useState(15);
-    const [selectManagerId, setSelectManagerId] = useState(null);
-    const [selectUserId, setSelectUserId] = useState(null);
+    const [showDropdown, setShowDropdown] = useState(false);
+
+    const handleShowDropdown = () => setShowDropdown(!showDropdown);
 
     useEffect(() => {
         getExportOrders(1);
@@ -84,10 +88,8 @@ const ExportOrderList = () => {
 
     useEffect(() => {
         // Đảm bảo rằng getExportOrders được gọi mỗi khi có sự thay đổi cần thiết
-        if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
-            getExportOrders(1, pageSize);
-        }
-    }, [pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId ]);
+        getExportOrders(1, pageSize, sortedByStatusId, sortedByDateId, keywordSearch);
+    }, [pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch]);
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
@@ -103,6 +105,7 @@ const ExportOrderList = () => {
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
+        getExportOrders(1, pageSize, warehouse.warehouseId, sortedByStatusId, sortedByDateId);
     }
 
 
@@ -113,16 +116,17 @@ const ExportOrderList = () => {
         setSelectedWarehouse(res.warehouseName);
     }
 
-    const getExportOrders = async (page, pageSize = 15) => {
+    const getExportOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
         setcurrentPage(page - 1);
         let res = await fetchExportOrdersWithFilter(
             pageSize, page, selectedWarehouseId,
-            "", "", "",
+            "", "",
+            sortedByStatusId,
             sortedByDateId, keywordSearch);
 
         setTotalExportOrder(res.data);
         setTotalPages(res.totalPages);
-        console.log("fetchExportOrdersWithFilter: ", res.data);
+        // console.log("fetchExportOrdersWithFilter: ", res.data);
     }
 
     const handlePageSizeChange = (event) => {
@@ -137,27 +141,31 @@ const ExportOrderList = () => {
     const handleSortDateClick = (sort) => {
         setSortedByDateId(sort.idSort);
         setSortedByDateName(sort.nameSort);
+
     }
 
     const handlePageClick = (event) => {
-        getExportOrders(+event.selected + 1);
+        getExportOrders(+event.selected + 1, pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId);
     }
 
     const handleSearch = () => {
-        getExportOrders(1);
+        getExportOrders(1, pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
     }
 
     const updateTable = () => {
-        getExportOrders(currentPage + 1);
+        getExportOrders(currentPage + 1, pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId);
     }
 
     const ShowModelConfirm = (i) => {
-        if (currentDate !== formatDate(i.exportedDate)) {
-            toast.warning("Chưa đến ngày nhập hàng trong hợp đồng bàn giao");
-        } else {
-            console.log(i);
+        console.log("ShowModelConfirm", i);
+        if (currentDate <= formatDate(i.exportedDate)) {
+            // Điều kiện này kiểm tra nếu ngày hiện tại nhỏ hơn hoặc bằng ngày xuất hàng
+            // Nếu đúng, cho phép thực hiện hành động xuất hàng
             setIsShowModelConfirm(true);
             setDataImportOrder(i);
+        } else {
+            // Nếu ngày hiện tại lớn hơn ngày xuất hàng, hiển thị cảnh báo
+            toast.warning("Chưa đến ngày xuất hàng trong hợp đồng bàn giao");
         }
     }
 
@@ -173,7 +181,7 @@ const ExportOrderList = () => {
 
     const ShowEditDetailOrder = (order) => {
         setIsShowEditOrder(true);
-        console.log(order);
+        // console.log(order);
         setDataEditOrder(order);
     }
 
@@ -185,7 +193,7 @@ const ExportOrderList = () => {
     const ConfirmCancelExport = async (confirm) => {
         if (confirm) {
             await cancelExportOrder(dataCancelExport.exportId);
-            getExportOrders(currentPage + 1);
+            getExportOrders(currentPage + 1, pageSize);
         }
     }
 
@@ -225,7 +233,7 @@ const ExportOrderList = () => {
                                         aria-describedby="emailHelp" value={selectedWarehouse} disabled />
                                 </Col>
                             }
-                            <Col md={2}>
+                            <Col md={1}>
                                 <div className="input-group mb-3">
                                     <input
                                         type="number"
@@ -250,7 +258,7 @@ const ExportOrderList = () => {
                                     ))}
                                 </DropdownButton>
                             </Col>
-                            <div className="col-3">
+                            <div className="col-2">
                                 <div className="input-group">
                                     <input
                                         className="form-control border-secondary inputCSS"
@@ -271,17 +279,32 @@ const ExportOrderList = () => {
                                     </div>
                                 </div>
                             </div>
-                            {roleId === 2 || roleId === 1 ? <div className="col-auto ButtonCSSDropdown">
-                                <button
-                                    className="btn btn-success border-left-0 rounded"
-                                    type="button"
-                                    onClick={() => setIsShowExportModelAdd(true)}
-                                ><i className="fa-solid fa-plus"></i>
-                                    &nbsp;
-                                    Thêm lô hàng xuất
+                            {roleId === 3 || roleId === 1 ?
 
-                                </button>
-                            </div> : ''}
+                                <div className="col-auto ButtonCSSDropdown">
+                                    <DropdownButton
+                                        id="dropdown-basic-button"
+                                        title={
+                                            <><i>
+                                            </i> &nbsp; Thêm lô hàng xuất</>
+                                        }
+                                        show={showDropdown}
+                                        onClick={handleShowDropdown}
+                                        className="DropdownButtonCSS ButtonCSSDropdown"
+                                        variant="success"
+                                        style={{ zIndex: 999 }}
+                                    >
+                                        <Dropdown.Item
+                                            onClick={() => setIsShowExportModelAddManual(true)}
+                                        >Thủ công</Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => setIsShowExportModelAddAuto(true)}
+                                        >Tự động</Dropdown.Item>
+                                    </DropdownButton>
+                                </div>
+                                : ''}
+
+
 
                         </div>
                         <div className=" table-responsive" style={{ overflowY: 'auto', overflowX: 'auto' }}>
@@ -291,7 +314,7 @@ const ExportOrderList = () => {
                                         <th className="align-middle  text-nowrap position-sticky" style={{ left: 0 }}>STT</th>
                                         <th className="align-middle  text-nowrap">Mã <br />Đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Người tạo<br />đơn hàng</th>
-                                        <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th>
+                                        {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />xuất hàng</th>
                                         <th className="align-middle  text-nowrap">Kho<br /> xuất hàng</th>
@@ -300,9 +323,9 @@ const ExportOrderList = () => {
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
                                         <th className="align-middle  text-nowrap">Người <br />nhận hàng</th>
                                         <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
-                                        <th className="align-middle  text-nowrap">Hủy bỏ<br />đơn hàng</th>
-                                        <th className="align-middle  text-nowrap">Chỉnh sửa</th>
-                                        <th className="align-middle  text-nowrap position-sticky" style={{ right: 0, minWidth: '150px' }}>Hành động</th>
+                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy bỏ<br />đơn hàng</th> : ''}
+                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Chỉnh sửa</th> : ''}
+                                        {roleId === 2 ? <th className="align-middle  text-nowrap position-sticky" style={{ right: 0, minWidth: '150px' }}>Hành động</th> : ''}
 
                                     </tr>
                                 </thead>
@@ -314,9 +337,9 @@ const ExportOrderList = () => {
                                                 <td className="align-middle position-sticky" style={{ left: 0 }}>{index + 1}</td>
                                                 <td className="align-middle">{i.exportCode}</td>
                                                 <td className="align-middle">{i.userName}</td>
-                                                <td className="align-middle">{formattedAmount(i.totalPrice)}</td>
+                                                {/* <td className="align-middle">{formattedAmount(i.totalPrice)}</td> */}
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
-                                                <td className="align-middle">{i.exportedDate ? formatDate(i.exportedDate) : ""}</td>
+                                                <td className="align-middle">{formatDate(i.exportedDate)}</td>
                                                 <td className="align-middle">{i.warehouseName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
 
@@ -336,13 +359,13 @@ const ExportOrderList = () => {
 
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : <td></td>}
-                                                <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
+                                                {roleId === 2 ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 3}
-                                                >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Tiến hành xuất hàng" : "Đã hủy"}
-                                                </button></td>
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
+                                                >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Tiến hành xuất hàng" : "Nhập hàng"}
+                                                </button></td> : ''}
 
 
 
@@ -384,7 +407,10 @@ const ExportOrderList = () => {
             <ModalDetailExportOrder isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={dataDetailOrder} />
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
             <ConfirmExportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
-            <ModelAddExportOrder isShow={isShowExportModelAdd} handleClose={() => setIsShowExportModelAdd(false)} updateTable={updateTable} />
+            <ModelAddExportOrderAuto isShow={isShowExportModelAddAuto} handleClose={() => setIsShowExportModelAddAuto(false)} updateTable={updateTable} />
+            <ModelAddExportOrderManual isShow={isShowExportModelAddManual} 
+            handleClose={() => setIsShowExportModelAddManual(false)} 
+            updateTable={updateTable} />
         </>
     )
 }

@@ -26,13 +26,26 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
 
     const getTotalOrderDetail = async (exportId) => {
         let res = await getExportOrderDetailByExportId(exportId);
-        console.log(exportId);
-        console.log(res);
+        console.log("exportId:", exportId);
+        console.log("getTotalOrderDetail: ", res);
         setTotalOrderDetail(res);
     }
 
     const SaveAddImportOrder = async () => {
-        let resSuccessImportOrder = await updateExportOrder(dataImportOrder.exportId, dataImportOrder.userId, dataImportOrder.projectId, dataImportOrder.totalPrice, "", dataImportOrder.createdDate, dataImportOrder.exportedDate, 3, dataImportOrder.exportCode, dataImportOrder.storageId, dataImportOrder.deliveryId, dataImportOrder.image, userId)
+        let s = await updateExportOrder(
+            dataImportOrder.exportId,
+            dataImportOrder.userId,
+            dataImportOrder.projectId,
+            dataImportOrder.totalPrice,
+            "",
+            dataImportOrder.createdDate,
+            dataImportOrder.exportedDate,
+            3,
+            dataImportOrder.exportCode,
+            dataImportOrder.storageId,
+            dataImportOrder.deliveryId,
+            dataImportOrder.image,
+            userId)
         let res = await addSuccessFullExportOrder(dataImportOrder.exportId);
         console.log(res);
         if (res.status === 400) {

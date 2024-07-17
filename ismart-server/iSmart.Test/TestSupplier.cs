@@ -46,7 +46,7 @@ namespace iSmart.Test
         //    if (supplierResponse.IsSuccess == true) result = true;
         //    Assert.That(result, Is.EqualTo(true));
         //}
-<<<<<<< HEAD
+
 
 
         [Test]
@@ -65,8 +65,6 @@ namespace iSmart.Test
             if (supplierResponse.IsSuccess == true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
-=======
->>>>>>> main
 
         [Test]
         public void GetAllActiveSupplier_Test()

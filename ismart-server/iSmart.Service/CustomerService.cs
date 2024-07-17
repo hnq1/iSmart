@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using iSmart.Entity.DTOs.CustomerDTOs;
+
+using iSmart.Entity.DTOs.ExportOrderDTO;
+
 using iSmart.Entity.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +18,9 @@ namespace iSmart.Service
         Customer? GetCustomerById(int id);
         CreateCustomerResponse AddCustomer(CreateCustomerRequest customer);
         UpdateCustomerResponse UpdateCustomer(UpdateCustomerRequest customer);
+
+        List<ExportOrderDTO> GetAllHistoryCustomerOrder(int customerId);
+
     }
 
     public class CustomerService : ICustomerService
@@ -179,5 +185,55 @@ namespace iSmart.Service
                 return new UpdateCustomerResponse { IsSuccess = false, Message = "Cập nhật khách hàng thất bại" };
             }
         }
+
+
+        public List<ExportOrderDTO> GetAllHistoryCustomerOrder(int customerId)
+        {
+            try
+            {
+                var exportOrder = _context.ExportOrders.Where(e => e.CustomerId == customerId && e.StatusId == 4)
+                    .Select(i => new ExportOrderDTO
+                    {
+                        ExportId = i.ExportId,
+                        ExportCode = i.ExportCode,
+                        UserId = i.UserId,
+                        UserName = i.User.FullName,
+                        TotalPrice = i.TotalPrice,
+                        Note = i.Note,
+                        StatusId = i.StatusId,
+                        StatusType = i.Status.StatusType,
+                        CreatedDate = i.CreatedDate,
+                        ExportedDate = i.ExportedDate,
+                        WarehouseId = i.WarehouseId,
+                        WarehouseName = i.Warehouse.WarehouseName,
+                        CancelDate = i.CancelDate,
+                        DeliveryId = i.DeliveryId,
+                        DeliveryName = i.Delivery.DeliveryName,
+                        Image = i.Image,
+                        ManagerId = i.StaffId,
+                        ManagerName = _context.Users.FirstOrDefault(u => u.UserId == i.StaffId).UserName,
+                        CustomerName = i.Customer.CustomerName,
+                        ExportOrderDetails = (List<ExportDetailDTO>)i.ExportOrderDetails.
+                        Select(
+                            i => new ExportDetailDTO
+                            {
+                                DetailId = i.DetailId,
+                                ExportId = i.ExportId,
+                                GoodsId = i.GoodsId,
+                                Price = i.Price,
+                                Quantity = i.Quantity,
+                                GoodsCode = i.Goods.GoodsCode,
+                                ImportOrderDetailId = i.ImportOrderDetailId
+                            })
+                    })
+                    .ToList();
+                return exportOrder;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
     }
 }

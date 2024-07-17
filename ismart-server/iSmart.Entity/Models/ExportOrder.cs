@@ -26,10 +26,10 @@ namespace iSmart.Entity.Models
         public string? Image { get; set; }
         public int? StaffId { get; set; }
         public int? CustomerId { get; set; }
-<<<<<<< HEAD
-=======
+
+
         public int? WarehouseDestinationId { get; set; }
->>>>>>> main
+
         public virtual Delivery Delivery { get; set; }
         public virtual Customer Customer { get; set; }
         public virtual Status Status { get; set; }

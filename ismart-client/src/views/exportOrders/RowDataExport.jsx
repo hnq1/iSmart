@@ -11,6 +11,28 @@ const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
     const [quantity, setQuantity] = useState();
     const [costPrice, setCostPrice] = useState();
 
+    // useEffect(() => {
+    //     // Tính tổng số lượng
+    //     const totalQuantity = data.reduce((total, item) => total + item.quantity, 0);
+
+    //     // Thiết lập tổng số lượng
+    //     setQuantity(totalQuantity);
+    //     data.forEach(item => {
+
+    //         console.log("item: ", item);
+    //         setGoodsCode(item.goodsCode);
+    //         setGoodsId(item.goodsId);
+    //         setCostPrice(item.costPrice);
+
+
+    //     });
+
+
+
+
+    //     // console.log("dataRowDataExportOrder: ", data[0].goodsId);
+    // }, [data])
+
     useEffect(() => {
         setGoodsId(data.goodsId);
         setGoodsCode(data.goodsCode);
@@ -18,8 +40,7 @@ const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
         setCostPrice(data.costPrice);
         // console.log("dataRowDataExportOrder: ", data.quantity);
     }, [data])
-
-
+    
     const handleEditRowData = () => {
         setIsShowEditRowData(true);
     }

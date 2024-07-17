@@ -109,7 +109,7 @@ function ImportOrderList() {
     const getImportOrders = async (page, pageSize = 15) => {
         setcurrentPage(page - 1);
         let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-        console.log("pageSize:", selectedWarehouseId);
+        // console.log("pageSize:", selectedWarehouseId);
         setTotalImportOrder(res.data);
         setTotalPages(res.totalPages);
 
@@ -122,7 +122,6 @@ function ImportOrderList() {
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
-        // console.log("totalWarehouse:", res);
     }
 
     const handleStorageClickTotal = () => {
@@ -219,7 +218,7 @@ function ImportOrderList() {
                     <div className="col-sm-12">
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập từ nhà cung cấp</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                            <Row>
+                        <Row>
                                 {roleId == 1 ?
                                     <Col md={2}>
                                         <DropdownButton
@@ -274,7 +273,7 @@ function ImportOrderList() {
                                     </DropdownButton>
                                 </Col>
 
-                                <Col md={4}>
+                                <Col md={2}>
                                     <div className="input-group">
                                         <input
                                             className="form-control border-secondary inputCSS"
@@ -328,11 +327,7 @@ function ImportOrderList() {
                                         <th className="align-middle  text-nowrap">Mã<br />đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Người <br />tạo đơn hàng</th>
                                         <th className="align-middle  text-nowrap"   >Nhà <br />cung cấp</th>
-<<<<<<< HEAD
-                                        <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th>
-=======
                                         {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
->>>>>>> main
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />nhập hàng</th>
                                         <th className="align-middle  text-nowrap">Kho <br />nhập hàng</th>
@@ -362,11 +357,7 @@ function ImportOrderList() {
                                                 <td className="align-middle">{i.importCode}</td>
                                                 <td className="align-middle">{i.userName}</td>
                                                 <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{i.supplierName}</td>
-<<<<<<< HEAD
-                                                <td className="align-middle text-right" style={{ paddingLeft: '30px' }} >{formattedAmount(i.totalCost)}</td>
-=======
                                                 {/* <td className="align-middle text-right" style={{ paddingLeft: '30px' }} >{formattedAmount(i.totalCost)}</td> */}
->>>>>>> main
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
                                                 <td className="align-middle">{i.storageName}</td>
@@ -394,7 +385,7 @@ function ImportOrderList() {
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 3}
                                                 >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
                                             </tr>

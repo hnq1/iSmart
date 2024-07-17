@@ -85,13 +85,12 @@ namespace iSmart.Service
             try
             {
                 var details = _context.ExportOrderDetails.Where(i => i.ExportId == oid)
-<<<<<<< HEAD
-                    .Select( i => new ExportDetailDTO
-                {
-=======
+
+                   
+
                     .Select(i => new ExportDetailDTO
                     {
->>>>>>> main
+
                         DetailId = i.DetailId,
                         ExportId = i.ExportId,
                         GoodsId = i.GoodsId,
@@ -99,11 +98,11 @@ namespace iSmart.Service
                         Quantity = i.Quantity,
                         GoodsCode = i.Goods.GoodsCode,
                         ImportOrderDetailId = i.ImportOrderDetailId
-<<<<<<< HEAD
-                    })      
-=======
+
+
+
                     })
->>>>>>> main
+
                      .ToList();
                 return details;
 
@@ -113,11 +112,7 @@ namespace iSmart.Service
                 throw new Exception(e.Message);
             }
         }
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> main
 
         public UpdateExportOrderDetailResponse UpdateOrderDetail(UpdateExportOrderDetailRequest detail)
         {

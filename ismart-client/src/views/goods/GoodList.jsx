@@ -216,17 +216,14 @@ function MyTable() {
         // console.log("selectedWarehouseId:", res);
     }
 
-    // const handlePageClick = (event) => {
-    //     setcurrentPage(+event.selected);
-    //     getGoods(+event.selected + 1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
-    // }
+
     const handlePageClick = (event) => {
         const newPage = +event.selected;
         setcurrentPage(newPage);
         getGoods(newPage + 1, pageSize); // Gọi getGoods với trang mới và pageSize
     }
 
-    
+
 
     const handleSearch = () => {
         getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
@@ -241,7 +238,7 @@ function MyTable() {
     const handleShowGoodHistory = (good) => {
         setIsShowGoodHistory(true);
         setDataGood(good);
-        // console.log(good);
+
     }
 
     const handleZoomImage = (image) => {
@@ -494,7 +491,8 @@ function MyTable() {
                 </div>
             </div>
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
-            <ModalGoodHistory isShow={isShowGoodHistory} handleClose={() => setIsShowGoodHistory(false)}
+            <ModalGoodHistory isShow={isShowGoodHistory}
+                handleClose={() => setIsShowGoodHistory(false)}
                 dataGood={dataGood} />
             <ModalEditGood isShow={isShowModelEditGood}
                 handleClose={() => setIsShowModelEditGood(false)}

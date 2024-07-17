@@ -4,33 +4,21 @@ import { addSuccessFullImportOrder } from "~/services/ImportOrderServices";
 import { updateImportOrder } from "~/services/ImportOrderServices";
 import { getImportOrderDetailByImportId } from "~/services/ImportOrderDetailServices";
 import { toast } from 'react-toastify';
-<<<<<<< HEAD
-=======
 import { useParams } from 'react-router-dom';
 
->>>>>>> main
 
 const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
     const [totalOrderDetail, setTotalOrderDetail] = useState([]);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-<<<<<<< HEAD
-
-    useEffect(() => {
-        if (dataImportOrder.importId) {
-            console.log(dataImportOrder);
-=======
     const { importId } = useParams();
 
     useEffect(() => {
         if (dataImportOrder.importId) {
             console.log("dataImportOrder.importId:", dataImportOrder.importId);
->>>>>>> main
             getTotalOrderDetail(dataImportOrder.importId);
         }
     }, [dataImportOrder])
 
-<<<<<<< HEAD
-=======
     useEffect(() => {
         if (importId) {
             console.log("useEffectimportId:", importId);
@@ -38,20 +26,14 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
         }
     }, [importId])
 
->>>>>>> main
     const handleCloseModal = () => {
         handleClose();
     }
 
     const getTotalOrderDetail = async (importId) => {
-<<<<<<< HEAD
-        let res = await getImportOrderDetailByImportId(importId);
-        // console.log(res);
-=======
 
         let res = await getImportOrderDetailByImportId(importId);
         console.log("r: ", res);
->>>>>>> main
         setTotalOrderDetail(res);
     }
 
