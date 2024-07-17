@@ -198,7 +198,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         else if (!imageGood) {/////
             toast.warning("Vui lòng chọn file ảnh");
         }
-        else if (maxStock < minStock) {/////
+        else if (maxStock > minStock) {/////
             toast.warning("Vui lòng nhập lại, MaxStock lớn hơn minStock");
         }
         else if (warrantyTime <= 0) {

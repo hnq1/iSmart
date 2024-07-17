@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Modal, Button } from "react-bootstrap"
 import { toast } from 'react-toastify';
 import { createNewDelivery } from "~/services/DeliveryServices";
-import { validateEmail, validatePhone, validateText, validateTextRequired } from "~/validate";
+import { validateEmail, validatePhone, validateText, validateTextRequired, removeWhiteSpace } from "~/validate";
 
 const ModelAddDelivery = ({ isShow, handleClose, updateTableSupplier }) => {
     const [nameSupplier, setNameSupplier] = useState("");
@@ -10,9 +10,11 @@ const ModelAddDelivery = ({ isShow, handleClose, updateTableSupplier }) => {
     const handleSave = async () => {
         if (!validateTextRequired.test(nameSupplier)) {
             toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
-
+        }
+        else if (nameSupplier.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
         } else {
-            let res = await createNewDelivery(nameSupplier);
+            let res = await createNewDelivery(removeWhiteSpace(nameSupplier));
             toast.success("Thêm bên vận chuyển thành công", {
                 className: 'toast-success',
 

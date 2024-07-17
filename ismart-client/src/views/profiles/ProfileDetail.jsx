@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { Form, Button, Modal, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap';
-import { validatePhone, validateEmail } from '~/validate';
+import { validatePhone, validateEmail, removeWhiteSpace } from '~/validate';
 import uploadImage from '~/services/ImageServices';
 import { fetchUserByUserId } from '~/services/UserServices';
 import { updateUser } from '~/services/UserServices';
@@ -36,6 +36,7 @@ const ProfileDetail = ({ isShow, handleClose, userId }) => {
         setEmail(dataUser.email);
         setAddress(dataUser.address);
         setFullName(dataUser.fullName);
+        setImage(dataUser.image);
     }, [dataUser])
 
 
@@ -57,13 +58,21 @@ const ProfileDetail = ({ isShow, handleClose, userId }) => {
     }
 
     const handleSave = async () => {
-        if (!validatePhone.test(phone)) {
-            toast.warning("Số điện thoại không đúng định dạng");
+        if (!image) {
+            toast.warning("Vui lòng chọn hình ảnh");
+        }
+        else if (address.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        } else if (fullName.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        }
+        else if (!validatePhone.test(phone)) {
+            toast.error("Sai định dạng số điện thoại");
         } else if (!validateEmail.test(email)) {
-            toast.warning("Email không đúng định dạng");
+            toast.error("Sai định dạng email");
         } else {
             let res = await updateUser(dataUser.userId, email, dataUser.password, phone,
-                dataUser.roleId, dataUser.statusId, dataUser.userName, dataUser.storageId, dataUser.userCode, address, image, fullName);
+                dataUser.roleId, dataUser.statusId, dataUser.userName, dataUser.storageId, dataUser.userCode, removeWhiteSpace(address), image, removeWhiteSpace(fullName));
 
             toast.success("Cập nhật hồ sơ thành công");
             setIsEditProfile(false);

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Modal, Button, Row, Col, Form, DropdownButton, Dropdown, DropdownItem } from "react-bootstrap"
 import { toast } from 'react-toastify';
-import { validateEmail, validatePhone, validateText, validateTextRequired, isStrongPassword } from "~/validate";
+import { validateEmail, validatePhone, validateText, validateTextRequired, isStrongPassword, removeWhiteSpace } from "~/validate";
 import { fetchAllStorages } from "~/services/StorageServices";
 import uploadImage from "~/services/ImageServices";
 import { addUser } from "~/services/UserServices";
@@ -86,10 +86,10 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const handleReset = () => {
         setSelectedWarehouse(null);
         setSelectedWarehouseId(null);
-
+        setFullName(null);
         setUserCode(null);
         setUserName(null);
-
+        setPhone(null);
         setPassword(null);
         setEmail(null);
 
@@ -97,28 +97,53 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     }
     // Điều kiện login
     const handleSave = async () => {
-        if (!email && !validateEmail.test(email)) {
-            toast.warning("Email không hợp lệ");
-        }
-        //  if (!isStrongPassword.test(password)) {
-        //     toast.warning("Mật khẩu phải có ít nhất 6 chữ số và 1 chữ cái");
-        // } 
-        else if (!userName) {
-            toast.warning("Tên đăng nhập không được để trống");
+        // if (!email && !validateEmail.test(email)) {
+        //     toast.warning("Email không hợp lệ");
+        // }
+        // //  if (!isStrongPassword.test(password)) {
+        // //     toast.warning("Mật khẩu phải có ít nhất 6 chữ số và 1 chữ cái");
+        // // } 
+        // else if (!userName) {
+        //     toast.warning("Tên đăng nhập không được để trống");
+        // }
+        // else if (!selectedWarehouseId) {
+        //     toast.warning("Vui lòng chọn kho");
+        // }
+        if (!image) {
+            toast.warning("Vui lòng chọn hình ảnh");
         }
         else if (!selectedWarehouseId) {
-            toast.warning("Vui lòng chọn kho");
+            toast.error("vui lòng chọn kho");
+        }
+        else if (!validateTextRequired.test(userName)) {
+            toast.error("Tên đăng nhập không được để trống hoặc chứa ký tự đặc biệt");
+        }
+        else if (!selectedOptionRole) {
+            toast.error('vui lòng chọn role cho người dùng.');
+        }
+        else if (userName.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        }
+        else if (address.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        } else if (fullName.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        }
+        else if (!validatePhone.test(phone)) {
+            toast.error("Sai định dạng số điện thoại");
+        } else if (!validateEmail.test(email)) {
+            toast.error("Sai định dạng email");
         }
         else {
             let res = await addUser(selectedWarehouseId,
                 email, password,
                 phone, selectedOptionRole,
                 1,
-                userName,
+                removeWhiteSpace(userName),
                 userCode,
-                address,
+                removeWhiteSpace(address),
                 image,
-                fullName);
+                removeWhiteSpace(fullName));
             // console.log("res: ", image);
             if (res.isSuccess) {
                 toast.success("Thêm mới tài khoản thành công");
@@ -144,21 +169,18 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
             <Modal.Body>
                 <div className="body-add-new">
                     <Row>
-                        <Col md={5}>
-                            <label >Mã nhân viên</label>
+                        <Col md={6}>
+                            <label>Mã nhân viên</label>
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} />
                         </Col>
-
-                    </Row>
-                    <Row>
-                        <Col md={5}>
-                            <label >Họ và tên</label>
+                        <Col md={6}>
+                            <label>Họ và tên</label>
                             <input type="text" className="form-control inputCSS" value={fullName} onChange={handleChangeFullName} />
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={7}>
-                            <label >Vai trò</label>
+                        <Col md={6}>
+                            <label>Vai trò</label>
                             <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
                                 <option value="">Vai trò</option>
                                 <option value="2">WarehouseManager</option>
@@ -166,8 +188,8 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                                 <option value="4">Accountant</option>
                             </Form.Select>
                         </Col>
-
-                        <Col md={2}>
+                        <Col md={6}>
+                            <label>Tất cả Kho</label>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
                                 title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
@@ -188,52 +210,36 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={5}>
-                            <label >Tên Đăng Nhập</label>
+                        <Col md={6}>
+                            <label>Tên Đăng Nhập</label>
                             <input type="text" className="form-control inputCSS" value={userName} onChange={handleChangeUserName} />
                         </Col>
-                        {/* <Col md={5}>
-                            <label >Mật khẩu</label>
-                            <input type="password" className="form-control inputCSS" value={password} onChange={handleChangePassword} />
-                        </Col> */}
-                    </Row>
-                    <Row>
-                        <Col md={5}>
-                            <label >Email</label>
+                        <Col md={6}>
+                            <label>Email</label>
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={email} onChange={handleChangeEmail} />
                         </Col>
                     </Row>
-
                     <Row>
-                        <Col md={5}>
-                            <label >Số điện thoại</label>
+                        <Col md={6}>
+                            <label>Số điện thoại</label>
                             <input type="number" className="form-control inputCSS" value={phone} onChange={handleChangePhone} />
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col md={5}>
-                            <label >Địa chỉ</label>
+                        <Col md={6}>
+                            <label>Địa chỉ</label>
                             <input type="text" className="form-control inputCSS" value={address} onChange={handleChangeAddress} />
                         </Col>
                     </Row>
                     <Row style={{ marginTop: '15px' }}>
-                        <label >Hình ảnh </label>
-
-                        <Col md={2}>
+                        <Col md={12}>
+                            <label>Hình ảnh</label>
                             <div>
-                                <input
-                                    type="file"
-                                    accept="image/*" // Chỉ chấp nhận các loại file ảnh
-                                    onChange={handleChangeImage} // Hàm xử lý sự kiện khi người dùng chọn file
-                                />
+                                <input type="file" accept="image/*" onChange={handleChangeImage} />
                             </div>
                         </Col>
                     </Row>
                 </div>
-
             </Modal.Body>
             <Modal.Footer>
-
                 <Button variant="secondary" onClick={handleCloseModal}>
                     Đóng
                 </Button>

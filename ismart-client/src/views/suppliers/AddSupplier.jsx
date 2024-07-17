@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Modal, Button } from "react-bootstrap"
 import { toast } from 'react-toastify';
 import { createNewSupplier } from "~/services/SupplierServices";
-import { validateEmail, validatePhone, validateText, validateTextRequired } from "~/validate";
+import { validateEmail, validatePhone, validateText, validateTextRequired, removeWhiteSpace } from "~/validate";
 
 
 const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
@@ -24,6 +24,8 @@ const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
     const handleSave = async () => {
         if (!validateTextRequired.test(nameSupplier)) {
             toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
+        } else if (nameSupplier.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
         } else if (!validatePhone.test(phoneSupplier)) {
             toast.error("Sai định dạng số điện thoại");
         } else if (!validateEmail.test(emailSupplier)) {
@@ -31,7 +33,7 @@ const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
         } else if (!validateText.test(noteSupplier)) {
             toast.error("Lưu ý không được chứa ký tự đặc biệt");
         } else {
-            let res = await createNewSupplier(nameSupplier, phoneSupplier, 1, emailSupplier, noteSupplier);
+            let res = await createNewSupplier(removeWhiteSpace(nameSupplier), removeWhiteSpace(phoneSupplier), 1, removeWhiteSpace(emailSupplier), removeWhiteSpace(noteSupplier));
             toast.success("Thêm nhà cung cấp thành công", {
                 className: 'toast-success',
 

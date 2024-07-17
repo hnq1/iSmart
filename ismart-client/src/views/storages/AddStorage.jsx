@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap"
 import { toast } from 'react-toastify';
 import { createNewStorage } from "~/services/StorageServices";
-import { validatePhone, validateText, validateTextRequired } from "~/validate";
+import { validatePhone, validateText, validateTextRequired, removeWhiteSpace } from "~/validate";
 
 const ModelAddStorage = ({ isShow, handleClose, updateTableStorage }) => {
     const [storageName, setStorageName] = useState("");
@@ -15,11 +15,14 @@ const ModelAddStorage = ({ isShow, handleClose, updateTableStorage }) => {
             toast.error("Định dạng số điện thoại sai");
         } else if (!validateTextRequired.test(storageName)) {
             toast.error("Tên khống được trống và chứa ký tự đặc biệt");
+        }
+        else if (storageName.trim() === '') {
+            toast.error('Không được để khoảng trắng');
         } else if (!validateText.test(storageAddress)) {
             toast.error("Địa chỉ không được chứa ký tự đặc biệt");
         }
         else {
-            let res = await createNewStorage(storageName, storageAddress, storagePhone);
+            let res = await createNewStorage(removeWhiteSpace(storageName), removeWhiteSpace(storageAddress), removeWhiteSpace(storagePhone));
             toast.success("Thêm kho hàng", {
                 className: 'toast-success',
 

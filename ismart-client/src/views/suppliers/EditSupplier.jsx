@@ -22,6 +22,9 @@ const ModelEditSupplier = ({ isShow, handleClose, dataUpdateSupplier, updateTabl
     const handleSave = async () => {
         if (!validateTextRequired.test(nameSupplier)) {
             toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
+        }
+        else if (nameSupplier.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
         } else if (!validatePhone.test(phoneSupplier)) {
             toast.error("Sai định dạng số điện thoại");
         } else if (!validateEmail.test(emailSupplier)) {
