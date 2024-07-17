@@ -117,7 +117,7 @@ function ImportOrderList() {
             let wh = await getUserIdWarehouse(userId);
             setcurrentPage(page - 1);
             let res = await fetchImportOrdersWithfilter(pageSize, page, wh[0].warehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-            
+
             setTotalImportOrder(res.data);
             setTotalPages(res.totalPages);
         }
@@ -387,8 +387,16 @@ function ImportOrderList() {
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => EditDetailOrder(i)}></i>
                                                 </td> : ''}
 
-                                                {roleId === 2 ? <td className="align-middle"> <i className="fa-solid fa-ban actionButtonCSS" onClick={() => ShowModalCancelImport(i)}></i></td> : ''}
-                                                {roleId === 3 ? <td className="align-middle"> {i.statusType === "Completed" ? <i className="fa-solid fa-barcode actionButtonCSS" onClick={() => ShowBarCode(i)}></i> : ''}</td> : ''}
+                                                {roleId === 2 ? <td className="align-middle">
+                                                    <i className="fa-solid fa-ban actionButtonCSS"
+                                                        onClick={() => ShowModalCancelImport(i)}></i></td> : ''}
+                                                {roleId === 3 ?
+                                                    <td className="align-middle">
+                                                        {i.statusType === "Completed" ?
+                                                            <i className="fa-solid fa-barcode actionButtonCSS"
+                                                                onClick={() => ShowBarCode(i)}></i> : ''}
+                                                    </td>
+                                                    : ''}
 
                                                 {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
                                                     className="btn btn-success border-left-0 rounded "

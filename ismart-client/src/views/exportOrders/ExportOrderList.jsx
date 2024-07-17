@@ -323,9 +323,9 @@ const ExportOrderList = () => {
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
                                         <th className="align-middle  text-nowrap">Người <br />nhận hàng</th>
                                         <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
-                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy bỏ<br />đơn hàng</th> : ''}
-                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Chỉnh sửa</th> : ''}
-                                        {roleId === 2 ? <th className="align-middle  text-nowrap position-sticky" style={{ right: 0, minWidth: '150px' }}>Hành động</th> : ''}
+                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Hủy bỏ<br />đơn hàng</th> : ''}
+                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa</th> : ''}
+                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap position-sticky" style={{ right: 0, minWidth: '150px' }}>Hành động</th> : ''}
 
                                     </tr>
                                 </thead>
@@ -354,16 +354,32 @@ const ExportOrderList = () => {
 
                                                     <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
                                                 </td>
-                                                {roleId === 2 && i.statusType === "On Progress" ? <td className="align-middle"> <i className="fa-solid fa-ban actionButtonCSS" onClick={() => ShowModalCancelExport(i)}></i></td> : <td></td>}
-                                                {roleId === 2 && i.statusType === "On Progress" ? <td className="align-middle " style={{ padding: '10px' }}>
+                                                {/* {roleId === 2 && i.statusType === "On Progress" ?
+                                                    <td className="align-middle"> <i className="fa-solid fa-ban actionButtonCSS"
+                                                        onClick={() => ShowModalCancelExport(i)}></i></td>
+                                                    : ''
+                                                } */}
+
+                                                {/* {roleId === 2 && i.statusType === "On Progress" ? <td className="align-middle " style={{ padding: '10px' }}>
 
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
-                                                </td> : <td></td>}
-                                                {roleId === 2 ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
+                                                </td> : <td></td>} */}
+                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle">
+                                                    <i className="fa-solid fa-ban actionButtonCSS"
+                                                        onClick={() => ShowModalCancelExport(i)}
+                                                    ></i></td> : ''}
+                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle " style={{ padding: '10px' }}>
+
+                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
+                                                </td> : ''}
+
+
+
+                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}
                                                 >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Tiến hành xuất hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
 
