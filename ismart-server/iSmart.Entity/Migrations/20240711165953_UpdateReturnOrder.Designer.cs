@@ -12,18 +12,8 @@ using iSmart.Entity.Models;
 namespace iSmart.Entity.Migrations
 {
     [DbContext(typeof(iSmartContext))]
-<<<<<<<< HEAD:ismart-server/iSmart.Entity/Migrations/20240711165953_UpdateReturnOrder.Designer.cs
     [Migration("20240711165953_UpdateReturnOrder")]
     partial class UpdateReturnOrder
-========
-<<<<<<<< HEAD:ismart-server/iSmart.Entity/Migrations/20240622190226_UpdateNullforSupplierToImportOrder.Designer.cs
-    [Migration("20240622190226_UpdateNullforSupplierToImportOrder")]
-    partial class UpdateNullforSupplierToImportOrder
-========
-    [Migration("20240627133002_AddActualQuantity")]
-    partial class AddActualQuantity
->>>>>>>> main:ismart-server/iSmart.Entity/Migrations/20240627133002_AddActualQuantity.Designer.cs
->>>>>>>> origin/tungvthe150237:ismart-server/iSmart.Entity/Migrations/20240622190226_UpdateNullforSupplierToImportOrder.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

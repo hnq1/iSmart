@@ -114,12 +114,6 @@ internal class Program
         builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
         builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
         builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
-
-        builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
-        builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
-        builder.Services.AddScoped<ICustomerService, CustomerService>();
-        builder.Services.AddSingleton<WebSocketService>();
-
         builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
         builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
@@ -128,7 +122,6 @@ internal class Program
         builder.Services.AddScoped<IReturnOrderDetailService, ReturnOrderDetailService>();
         builder.Services.AddSingleton<WebSocketService>();
         builder.Services.AddSingleton(new OpenAIService(openAiApiKey));
-
 
         // Đăng ký các dịch vụ
         // builder.Services.AddScoped<ICategoryService, CategoryService>();

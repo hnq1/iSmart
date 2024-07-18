@@ -213,12 +213,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         else if (!imageGood) {/////
             toast.warning("Vui lòng chọn file ảnh");
         }
-<<<<<<< HEAD
-=======
-        else if (maxStock > minStock) {/////
-            toast.warning("Vui lòng nhập lại, MaxStock lớn hơn minStock");
-        }
->>>>>>> origin/tungvthe150237
         else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }

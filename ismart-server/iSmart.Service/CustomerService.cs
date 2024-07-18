@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using iSmart.Entity.DTOs.CustomerDTOs;
-
 using iSmart.Entity.DTOs.ExportOrderDTO;
-
 using iSmart.Entity.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,9 +16,7 @@ namespace iSmart.Service
         Customer? GetCustomerById(int id);
         CreateCustomerResponse AddCustomer(CreateCustomerRequest customer);
         UpdateCustomerResponse UpdateCustomer(UpdateCustomerRequest customer);
-
         List<ExportOrderDTO> GetAllHistoryCustomerOrder(int customerId);
-
     }
 
     public class CustomerService : ICustomerService
@@ -186,7 +182,6 @@ namespace iSmart.Service
             }
         }
 
-
         public List<ExportOrderDTO> GetAllHistoryCustomerOrder(int customerId)
         {
             try
@@ -234,6 +229,5 @@ namespace iSmart.Service
                 throw new Exception(e.Message);
             }
         }
-
     }
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image } from 'react-bootstrap';
-import logo from '../../assets/images/logo4.png';
+import logo from '../../assets/images/logo.png';
 import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
@@ -31,9 +31,9 @@ const Sidebar = () => {
                 >
                     {/* Logo */}
                     {/* cần thay đổi logo */}
-                    <Navbar.Brand href="#" className="p-1">
+                    {/* <Navbar.Brand href="#" className="p-1">
                         <img src={logo} className="px-2 ms-2" height="40" alt="MDB Logo" loading="lazy" />
-                    </Navbar.Brand>
+                    </Navbar.Brand> */}
 
                     <span className="fs-5 d-none d-sm-inline fw-bold ">ISM</span>
                 </div>

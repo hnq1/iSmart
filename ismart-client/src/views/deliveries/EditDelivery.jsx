@@ -17,11 +17,7 @@ const ModelEditDelivery = ({ isShow, handleClose, dataUpdateSupplier, updateTabl
     const handleSave = async () => {
         if (!validateTextRequired.test(nameSupplier)) {
             toast.error("Tên bên vận chuyển không được để trống hoặc chứa ký tự đặc biệt");
-        }
-        else if (nameSupplier.trim() === '') {
-            toast.error('Không được để khoảng trắng.');
-        }
-        else {
+        } else {
             let res = await updateDelivery(dataUpdateSupplier.deliveyId, removeWhiteSpace(nameSupplier));
             console.log(res);
             if (res) {

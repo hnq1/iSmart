@@ -28,9 +28,7 @@ namespace iSmart.Service
         bool UpdateStatusGoods(int id, int StatusId);
         Task<List<GoodsDTO>?> GetGoodsInWarehouse(int warehouseId);
         GoodsDTO GetGoodsInWarehouseById(int warehouseId, int goodId);
-
         List<GoodAlert> Alert(int warehouseId);
-
     }
     public class GoodsService : IGoodsService
     {

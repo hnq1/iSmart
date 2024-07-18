@@ -2,13 +2,12 @@ import { useState } from "react";
 import { Modal, Button } from "react-bootstrap"
 import { toast } from 'react-toastify';
 import { createNewDelivery } from "~/services/DeliveryServices";
-import { validateEmail, validatePhone, validateText, validateTextRequired, removeWhiteSpace } from "~/validate";
+import { validateEmail, validatePhone, validateText, validateTextRequired } from "~/validate";
 
 const ModelAddDelivery = ({ isShow, handleClose, updateTableSupplier }) => {
     const [nameSupplier, setNameSupplier] = useState("");
 
     const handleSave = async () => {
-<<<<<<< HEAD
         // Sử dụng trim() để loại bỏ dấu cách ở đầu và cuối của chuỗi
         const trimmedNameSupplier = nameSupplier.trim();
 
@@ -19,15 +18,6 @@ const ModelAddDelivery = ({ isShow, handleClose, updateTableSupplier }) => {
             toast.error("Tên nhà cung cấp không được để trống");
         } else {
             let res = await createNewDelivery(trimmedNameSupplier);
-=======
-        if (!validateTextRequired.test(nameSupplier)) {
-            toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
-        }
-        else if (nameSupplier.trim() === '') {
-            toast.error('Không được để khoảng trắng.');
-        } else {
-            let res = await createNewDelivery(removeWhiteSpace(nameSupplier));
->>>>>>> origin/tungvthe150237
             toast.success("Thêm bên vận chuyển thành công", {
                 className: 'toast-success',
             });

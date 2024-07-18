@@ -17,10 +17,6 @@ const ModelEditCategory = ({ isShow, handleClose, dataUpdateCategory, updateTabl
     const handleSave = async () => {
         if (!validateTextRequired.test(categoryName)) {
             toast.error("Tên không được trống và chứa ký tự đặc biệt");
-        }
-        else if (categoryName.trim() === '') {
-            toast.error('Không được để khoảng trắng');
-
         } else if (!validateText.test(categoryDescription)) {
             toast.error("Thông tin chi tiết không được chứa ký tự đặc biệt");
         }

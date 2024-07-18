@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap"
 import { toast } from 'react-toastify';
 import { createNewCategory } from "~/services/CategoryServices";
-import { validateText, validateTextRequired, removeWhiteSpace } from "~/validate";
+import { validateText, validateTextRequired } from "~/validate";
 
 const ModelAddCategory = ({ isShow, handleClose, updateTableCategory }) => {
     const [categoryName, setCategoryName] = useState("");
@@ -12,15 +12,11 @@ const ModelAddCategory = ({ isShow, handleClose, updateTableCategory }) => {
     const handleSave = async () => {
         if (!validateTextRequired.test(categoryName)) {
             toast.error("Tên khống được trống và chứa ký tự đặc biệt");
-        }
-        else if (categoryName.trim() === '') {
-            toast.error('Không được để khoảng trắng.');
-        }
-        else if (!validateText.test(categoryDescription)) {
+        } else if (!validateText.test(categoryDescription)) {
             toast.error("Thông tin miêu tả không được chứa ký tự đặc biệt");
         }
         else {
-            let res = await createNewCategory(removeWhiteSpace(categoryName), removeWhiteSpace(categoryDescription));
+            let res = await createNewCategory(categoryName, categoryDescription);
             toast.success("Thêm danh mục thành công", {
                 className: 'toast-success',
 

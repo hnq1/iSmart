@@ -75,7 +75,7 @@ namespace iSmart.Test
         {
             var result = false;
             var deliveryEntry =new UpdateDeliveryRequest{
-                DeliveryId = 2,
+                DeliveyId = 2,
                 DeliveryName = "test",
             };
             var deliveries = _deliveryService.UpdateDelivery(deliveryEntry);

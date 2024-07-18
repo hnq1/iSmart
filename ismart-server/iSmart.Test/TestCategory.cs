@@ -56,8 +56,8 @@ namespace iSmart.Test
             var result = false;
             var categoryEntry = new CreateCategoryRequest
             {
-                CategoryName = " ",
-                Description = " ",
+                CategoryName = "Test3",
+                Description = "Test3",
             };
             var categoryResponse = _categoryService.AddCategory(categoryEntry);
             if(categoryResponse.IsSuccess == true) result = true;
@@ -71,8 +71,8 @@ namespace iSmart.Test
             var categoryEntry = new UpdateCategoryRequest
             {
                 CategoryId = 11,
-                CategoryName = " ",
-                Description = " "
+                CategoryName = "TestUpdate",
+                Description = "TestUpdate"
             };
             var categoryResponse = _categoryService.UpdateCaregory(categoryEntry);
             if (categoryResponse.IsSuccess is true) result = true;
