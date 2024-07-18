@@ -17,6 +17,7 @@ import ModalZoomImage from "../components/others/Image/ModalZoomImage";
 import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 import InportGoodsListModal from './inputExport/InPort';
 import ExportGoodsListModal from './inputExport/Export';
+import { TorusGeometry } from 'three';
 
 
 function MyTable() {
@@ -78,6 +79,7 @@ function MyTable() {
 
     const [startIndexOfPage, setStartIndexOfPage] = useState(1);
 
+    const [showNoDataMessage, setShowNoDataMessage] = useState(false);
     useEffect(() => {
         let res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
         getAllCategories();
@@ -181,22 +183,31 @@ function MyTable() {
         // console.log("totalWarehouse", res);
     }
 
-    const handleCategoryClick = (category) => {
+    function handleCategoryClick(category) {
         setSelectedCategory(category.categoryName);
-        setSelectedCategoryId(category.categoryId)
-        const res = getGoods(1, pageSize, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
-        setListGoods(res);
-
+        setSelectedCategoryId(category.categoryId);
+        getGoods(1, pageSize, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch).then(res => {
+            if (!res || res.length === 0) {
+                setShowNoDataMessage(true);
+            } else {
+                setShowNoDataMessage(false); // Đảm bảo ẩn thông báo khi có dữ liệu
+                setListGoods(res);
+            }
+        });
     }
 
-    const handleSupplierClick = (supplier) => {
+    function handleSupplierClick(supplier) {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
-        // Gọi getGoods với nhà cung cấp mới được chọn
         getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch).then(res => {
-            setListGoods(res); // Cập nhật danh sách hàng hóa với dữ liệu mới
+            if (!res || res.length === 0) {
+                setShowNoDataMessage(true);
+            } else {
+                setShowNoDataMessage(false); // Đảm bảo ẩn thông báo khi có dữ liệu
+                setListGoods(res);
+            }
         });
-    };
+    }
 
     const handleSupplierClickTotal = () => {
         setSelectedSupplier("Nhà cung cấp");
@@ -471,8 +482,9 @@ function MyTable() {
                                     ))
 
                                 }
-
                             </tbody>
+                            {showNoDataMessage && <div style={{ fontSize: '24px', textAlign: 'center' }}>Không có dữ liệu</div>}
+
                         </Table>
 
 

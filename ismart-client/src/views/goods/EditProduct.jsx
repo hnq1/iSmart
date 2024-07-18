@@ -149,9 +149,22 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const handleSave = async () => {
         if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
-        }
-        else if (!imageGood) {
-            toast.warning("Vui lòng nhập file ảnh");
+        } else if (!goodName) {
+            toast.warning("Vui lòng nhập tên sản phẩm");
+        } else if (!goodCode) {
+            toast.warning("Vui lòng nhập mã sản phẩm");
+        } else if (!selectedCategoryId) {
+            toast.warning("Vui lòng chọn danh mục cho sản phẩm");
+        } else if (!selectedSupplierId) {
+            toast.warning("Vui lòng chọn nhà cung cấp cho sản phẩm");
+        } else if (!measuredUnit) {
+            toast.warning("Vui lòng chọn đơn vị cho sản phẩm");
+        } else if (!barCode) {
+            toast.warning("Vui lòng nhập mã vạch cho sản phẩm");
+        } else if (!description) {
+            toast.warning("Vui lòng nhập thông tin chi tiết cho sản phẩm");
+        }else if (!imageGood && !dataGoodEdit.image) {
+            toast.warning("Vui lòng chọn một file ảnh cho sản phẩm");
         }
         else if (maxStock <= 0) {
             toast.warning("Vui lòng nhập maxstock lớn hơn 0");
@@ -159,6 +172,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             toast.warning("Vui lòng nhập minstock lớn hơn 0");
         }
         else {
+            let finalImage = imageGood || dataGoodEdit.image;
             let res = await updateGood(dataGoodEdit.goodsId,
                 goodName,
                 goodCode,
@@ -167,7 +181,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 selectedSupplierId,
                 measuredUnit,
                 0,
-                imageGood,
+                finalImage,
                 1,
                 0,
                 warrantyTime,
@@ -175,7 +189,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 selectedWarehouseId,
                 maxStock,
                 minStock);
-            console.log("RES UPDATE", selectedWarehouseId);
+            // console.log("RES UPDATE", selectedWarehouseId);
             updateTable();
             toast.success("Sửa mặt hàng thành công");
             handleCloseModal();

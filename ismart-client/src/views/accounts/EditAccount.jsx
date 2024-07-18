@@ -65,7 +65,6 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
     const handleSave = async () => {
         if (!userName.trim()) {
             toast.error("Tên đăng nhập không được để trống");
-
         } else if (!userCode.trim()) {
             toast.error("Mã người dùng không được để trống");
         } else if (!fullName.trim()) {
@@ -76,27 +75,28 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
             toast.error("Email không được để trống");
         } else if (!address.trim()) {
             toast.error("Địa chỉ không được để trống");
-        } else if (!image) {
+        } else if (!image && !dataUserEdit.image) { // Kiểm tra nếu không có hình ảnh mới và không có hình ảnh hiện tại
             toast.error("Hình ảnh không được để trống");
-        }
-        let res = await updateUser(
-            dataUserEdit.userId,
-            email,
-            phone,
-            dataUserEdit.roleId,
-            1,
-            userName,
-            userCode,
-            address,
-            image,
-            fullName);
-        // console.log("check res image: ", image);
-        if (res) { // Check if the update was successful
-            toast.success("Cập nhật thông tin người dùng thành công");
-            updateTable(); // Update the user list
-            handleCloseModal(); // Close the modal
         } else {
-            toast.error("Có lỗi xảy ra khi cập nhật thông tin người dùng");
+            let finalImage = image || dataUserEdit.image; // Sử dụng hình ảnh mới nếu có, nếu không sử dụng hình ảnh hiện tại
+            let res = await updateUser(
+                dataUserEdit.userId,
+                email,
+                phone,
+                dataUserEdit.roleId,
+                1,
+                userName,
+                userCode,
+                address,
+                finalImage, // Sử dụng biến finalImage ở đây
+                fullName);
+            if (res) { // Check if the update was successful
+                toast.success("Cập nhật thông tin người dùng thành công");
+                updateTable(); // Update the user list
+                handleCloseModal(); // Close the modal
+            } else {
+                toast.error("Có lỗi xảy ra khi cập nhật thông tin người dùng");
+            }
         }
     }
     const handleCloseModal = () => {
