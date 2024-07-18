@@ -183,32 +183,21 @@ function MyTable() {
         // console.log("totalWarehouse", res);
     }
 
-    function handleCategoryClick(category) {
+    const handleCategoryClick = (category) => {
         setSelectedCategory(category.categoryName);
-        setListGoods(res);
         setSelectedCategoryId(category.categoryId);
-        getGoods(1, pageSize, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch).then(res => {
-            if (!res || res.length === 0) {
-                setShowNoDataMessage(true);
-            } else {
-                setShowNoDataMessage(false); // Đảm bảo ẩn thông báo khi có dữ liệu
-                setListGoods(res);
-            }
-        });
+        const res = getGoods(1, pageSize, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        setListGoods(res);
     }
 
-    function handleSupplierClick(supplier) {
+    const handleSupplierClick = (supplier) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
         getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch).then(res => {
-            if (!res || res.length === 0) {
-                setShowNoDataMessage(true);
-            } else {
-                setShowNoDataMessage(false); // Đảm bảo ẩn thông báo khi có dữ liệu
-                setListGoods(res);
-            }
+            setListGoods(res); // Cập nhật danh sách hàng hóa với dữ liệu mới
         });
     }
+
 
     const handleSupplierClickTotal = () => {
         setSelectedSupplier("Nhà cung cấp");
