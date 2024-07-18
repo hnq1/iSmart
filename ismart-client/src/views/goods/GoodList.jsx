@@ -185,6 +185,7 @@ function MyTable() {
 
     function handleCategoryClick(category) {
         setSelectedCategory(category.categoryName);
+        setListGoods(res);
         setSelectedCategoryId(category.categoryId);
         getGoods(1, pageSize, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch).then(res => {
             if (!res || res.length === 0) {
@@ -483,7 +484,10 @@ function MyTable() {
 
                                 }
                             </tbody>
-                            {showNoDataMessage && <div style={{ fontSize: '24px', textAlign: 'center' }}>Không có dữ liệu</div>}
+
+                            {/* {showNoDataMessage && 
+                            <div style={{ fontSize: '24px', textAlign: 'center' }}
+                            >Không có dữ liệu</div>} */}
 
                         </Table>
 
