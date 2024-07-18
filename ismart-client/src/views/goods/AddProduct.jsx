@@ -45,7 +45,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const [stockPrice, setStockPrice] = useState(0);
     const [maxStock, setMaxStock] = useState(0);
     const [minStock, setMinStock] = useState(0);
-    const [createdDate, setCreatedDate] = useState(null);
+    const [createdDate, setCreatedDate] = useState(new Date().toISOString().split('T')[0]);
 
 
     const [barCode, setBarCode] = useState(null);

@@ -58,25 +58,31 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
     }
 
     const handleConfirmRowData = () => {
+        const currentDate = new Date().toISOString().slice(0, 10); // Lấy ngày hiện tại với định dạng YYYY-MM-DD
         if (!selectedGoodCode) {
-            toast.warning("Vui lòng chọn sản phẩm")
+            toast.warning("Vui lòng chọn sản phẩm");
         } else if (quantity <= 0 || !quantity) {
-            toast.warning("Vui lòng nhập số lượng lớn hơn 0")
+            toast.warning("Vui lòng nhập số lượng lớn hơn 0");
+        } else if (!manufactureDate || !expiryDate) {
+            toast.warning("Vui lòng nhập đầy đủ ngày sản xuất và ngày hết hạn");
+        } else if (manufactureDate >= expiryDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
+        } else if (manufactureDate <= currentDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hiện tại");
         } else {
             onChange({
                 batchCode: selectedBatchCode,
-                costPrice: costPrice,
+                costPrice: 0,
                 expiryDate: expiryDate,
                 goodsCode: selectedGoodCode,
                 goodsId: selectedGoodId,
                 importId: selectedImportId,
                 manufactureDate: manufactureDate,
                 quantity: quantity,
-                totalOneGoodPrice: costPrice * quantity
+                totalOneGoodPrice: 0
             });
             handleCloseModal();
         }
-
     }
 
 

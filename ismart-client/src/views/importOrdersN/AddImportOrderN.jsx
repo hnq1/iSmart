@@ -50,7 +50,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
 
     const [totalCost, setTotalCost] = useState(0);
 
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
     const [isShowRowDataImport, setIsShowRowDataImport] = useState(false);
 

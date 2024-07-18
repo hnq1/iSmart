@@ -32,7 +32,7 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
     const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
     const [minDate, setMinDate] = useState();
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
     const [isShowRowDataExport, setIsShowRowDataExport] = useState(false);
 

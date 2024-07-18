@@ -358,7 +358,7 @@ function ImportOrderListN() {
                                         {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
 
                                         {roleId === 3 ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''}
-                                        {roleId === 2 ?
+                                        {(roleId === 1 || roleId === 2) ?
                                             <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>
                                             : ''}
 
@@ -399,11 +399,11 @@ function ImportOrderListN() {
                                                 {roleId === 2 ? <td className="align-middle"> <i className="fa-solid fa-ban actionButtonCSS" onClick={() => ShowModalCancelImport(i)}></i></td> : ''}
                                                 {roleId === 3 ? <td className="align-middle"> {i.statusType === "Completed" ? <i className="fa-solid fa-barcode actionButtonCSS" onClick={() => ShowBarCode(i)}></i> : ''}</td> : ''}
 
-                                                {roleId === 2 ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
+                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || roleId !== 2}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}
                                                 >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
                                             </tr>

@@ -103,23 +103,21 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Tên đăng nhập không được để trống");
         } else if (!selectedWarehouseId) {
             toast.warning("Vui lòng chọn kho");
-        } else if (!password.trim()) {
-            toast.warning("Mật khẩu không được để trống");
         } else if (!phone.trim() || !validatePhone.test(phone.trim())) {
             toast.warning("Số điện thoại không hợp lệ");
         } else if (!address.trim()) {
             toast.warning("Địa chỉ không được để trống");
         } else if (!fullName.trim()) {
             toast.warning("Họ và tên không được để trống");
-        } else if (!userCode.trim()) {
+        } else if (!userCode) {
             toast.warning("Mã nhân viên không được để trống");
         } else {
             let res = await addUser(selectedWarehouseId,
-                email.trim(), password.trim(),
+                email.trim(), password,
                 phone.trim(), selectedOptionRole,
                 1,
                 userName.trim(),
-                userCode.trim(),
+                userCode,
                 address.trim(),
                 image,
                 fullName.trim());
@@ -144,31 +142,8 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    <Row>
+                <Row >
                         <Col md={5}>
-                            <label >Mã nhân viên</label>
-                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} />
-                        </Col>
-
-                    </Row>
-                    <Row>
-                        <Col md={5}>
-                            <label >Họ và tên</label>
-                            <input type="text" className="form-control inputCSS" value={fullName} onChange={handleChangeFullName} />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={7}>
-                            <label >Vai trò</label>
-                            <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
-                                <option value="">Vai trò</option>
-                                <option value="2">WarehouseManager</option>
-                                <option value="3">WarehouseStaff</option>
-                                <option value="4">Accountant</option>
-                            </Form.Select>
-                        </Col>
-
-                        <Col md={2}>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
                                 title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
@@ -189,7 +164,39 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={5}>
+                        <Col md={6}>
+                            <label >Mã nhân viên</label>
+                            {/* <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} /> */}
+                            <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleChangeUserCode}>
+                                <option value="">Mã nhân viên</option>
+                                <option value="WarehouseManager">WarehouseManager</option>
+                                <option value="WarehouseStaff">WarehouseStaff</option>
+                                <option value="Accountant">Accountant</option>
+                            </Form.Select>
+                        </Col>
+                        <Col md={6}>
+                            <label >Vai trò</label>
+                            <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
+                                <option value="">Vai trò</option>
+                                <option value="2">WarehouseManager</option>
+                                <option value="3">WarehouseStaff</option>
+                                <option value="4">Accountant</option>
+                            </Form.Select>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={6}>
+                            <label >Họ và tên</label>
+                            <input type="text" className="form-control inputCSS" value={fullName} onChange={handleChangeFullName} />
+                        </Col>
+                        <Col md={6}>
+                            <label >Số điện thoại</label>
+                            <input type="number" className="form-control inputCSS" value={phone} onChange={handleChangePhone} />
+                        </Col>
+                    </Row>
+                    
+                    <Row>
+                        <Col md={6}>
                             <label >Tên Đăng Nhập</label>
                             <input type="text" className="form-control inputCSS" value={userName} onChange={handleChangeUserName} />
                         </Col>
@@ -197,22 +204,13 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             <label >Mật khẩu</label>
                             <input type="password" className="form-control inputCSS" value={password} onChange={handleChangePassword} />
                         </Col> */}
-                    </Row>
-                    <Row>
-                        <Col md={5}>
+                        <Col md={6}>
                             <label >Email</label>
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={email} onChange={handleChangeEmail} />
                         </Col>
                     </Row>
-
                     <Row>
-                        <Col md={5}>
-                            <label >Số điện thoại</label>
-                            <input type="number" className="form-control inputCSS" value={phone} onChange={handleChangePhone} />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={5}>
+                        <Col md={12}>
                             <label >Địa chỉ</label>
                             <input type="text" className="form-control inputCSS" value={address} onChange={handleChangeAddress} />
                         </Col>

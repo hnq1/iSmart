@@ -88,8 +88,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                 totalOneGoodPrice: 0,
                 importOrderDetailId: selectImportOrderDetailId
             });
-            console.log("selectedGoodId: ", selectImportOrderDetailId);
-            handleCloseModal();
+            
         }
 
     }
