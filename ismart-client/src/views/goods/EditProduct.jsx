@@ -158,6 +158,9 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         } else if (minStock <= 0) {
             toast.warning("Vui lòng nhập minstock lớn hơn 0");
         }
+        else if (maxStock > minStock) {
+            toast.warning("Vui lòng nhập lại, MaxStock lớn hơn minStock");
+        }
         else {
             let res = await updateGood(dataGoodEdit.goodsId,
                 goodName,

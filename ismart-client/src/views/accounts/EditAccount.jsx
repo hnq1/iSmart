@@ -4,6 +4,7 @@ import { updateUser, fetchAllRole } from "~/services/UserServices";
 import { toast } from 'react-toastify';
 import uploadImage from '~/services/ImageServices';
 import { set } from 'lodash';
+import { validatePhone, validateEmail, validateTextRequired, removeWhiteSpace } from "~/validate";
 
 const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) => {
     const [selectedOptionRole, setSelectedOption] = useState('3');
@@ -27,7 +28,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
             setPhone(dataUserEdit.phone);
             setEmail(dataUserEdit.email);
             setAddress(dataUserEdit.address);
-
+            setImage(dataUserEdit.image); // Set image if it exists
         }
     }, [dataUserEdit])
 
@@ -63,6 +64,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
 
 
     const handleSave = async () => {
+<<<<<<< HEAD
         if (!userName.trim()) {
             toast.error("Tên đăng nhập không được để trống");
 
@@ -95,8 +97,46 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
             toast.success("Cập nhật thông tin người dùng thành công");
             updateTable(); // Update the user list
             handleCloseModal(); // Close the modal
+=======
+        if (!image) {
+            toast.warning("Vui lòng chọn hình ảnh");
+        }
+        else if (!validateTextRequired.test(userName)) {
+            toast.error("Tên đăng nhập không được để trống hoặc chứa ký tự đặc biệt");
+        }
+        else if (userName.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        }
+        else if (address.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        } else if (fullName.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        }
+        else if (!validatePhone.test(phone)) {
+            toast.error("Sai định dạng số điện thoại");
+        } else if (!validateEmail.test(email)) {
+            toast.error("Sai định dạng email");
+>>>>>>> origin/tungvthe150237
         } else {
-            toast.error("Có lỗi xảy ra khi cập nhật thông tin người dùng");
+            let res = await updateUser(
+                dataUserEdit.userId,
+                email,
+                phone,
+                dataUserEdit.roleId,
+                1,
+                removeWhiteSpace(userName),
+                userCode,
+                removeWhiteSpace(address),
+                image,
+                removeWhiteSpace(fullName));
+            // console.log("check res image: ", image);
+            if (res) { // Check if the update was successful
+                toast.success("Cập nhật thông tin người dùng thành công");
+                updateTable(); // Update the user list
+                handleCloseModal(); // Close the modal
+            } else {
+                toast.error("Có lỗi xảy ra khi cập nhật thông tin người dùng");
+            }
         }
     }
     const handleCloseModal = () => {

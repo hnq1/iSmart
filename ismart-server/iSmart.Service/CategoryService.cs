@@ -102,7 +102,10 @@ namespace iSmart.Service
             try
             {
                 var pageSize = 12;
-
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    keyword = string.Empty;
+                }
                 var category = _context.Categories.Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower())
                                                         || c.Description.ToLower().Contains(keyword.ToLower()))
                                                 .OrderBy(c => c.CategoryId).ToList();
@@ -125,16 +128,35 @@ namespace iSmart.Service
         {
             try
             {
-                var requestCategory = new Category
+                // Kiểm tra nếu CategoryName là null hoặc là một chuỗi khoảng trắng
+                if (string.IsNullOrWhiteSpace(category.CategoryName))
                 {
-                    CategoryId = category.CategoryId,
-                    CategoryName = category.CategoryName,
-                    Description = category.Description
-                };
-                _context.Categories.Update(requestCategory);
-                _context.SaveChanges();
-                return new UpdateCategoryResponse { IsSuccess = true, Message = "Update category successfully" };
+                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Category name không được để trống hoặc là khoảng trắng!" };
+                }
 
+                var existingCategory = _context.Categories.SingleOrDefault(c => c.CategoryId == category.CategoryId);
+
+                if (existingCategory == null)
+                {
+                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Category không tồn tại!" };
+                }
+
+                // Kiểm tra nếu CategoryName đã tồn tại (trừ danh mục hiện tại)
+                var duplicateCategory = _context.Categories
+                    .SingleOrDefault(c => c.CategoryName.ToLower() == category.CategoryName.ToLower() && c.CategoryId != category.CategoryId);
+
+                if (duplicateCategory != null)
+                {
+                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Category name đã tồn tại!" };
+                }
+
+                existingCategory.CategoryName = category.CategoryName;
+                existingCategory.Description = category.Description;
+
+                _context.Categories.Update(existingCategory);
+                _context.SaveChanges();
+
+                return new UpdateCategoryResponse { IsSuccess = true, Message = "Update category successfully" };
             }
             catch (Exception e)
             {

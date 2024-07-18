@@ -24,8 +24,9 @@ namespace iSmart.Service
 
         CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
 
-        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
 
+
+        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
 
         Task<string> Import(int importid);
     }
@@ -198,6 +199,13 @@ namespace iSmart.Service
                     Note = i.Note,
                     CreatedDate = DateTime.Now,
                     ImportedDate = i.ImportedDate,
+
+
+
+                  //  StatusId = i.StatusId,
+
+
+
                     StatusId = 3,
                     WarehouseId = i.WarehouseId,
                     DeliveryId = i.DeliveryId,
@@ -226,6 +234,9 @@ namespace iSmart.Service
                     _context.Add(importOrder);
                     _context.SaveChanges();
                     // Gửi thông điệp qua WebSocket
+
+                  //  Task.Run(() => _webSocketService.SendMessageAsync("Đơn hàng có mã " + importOrder.ImportCode +" cần được xác nhận"));
+
                     Task.Run(() => _webSocketService.SendMessageAsync("Đơn hàng nhập kho có mã " + importOrder.ImportCode +" cần được xác nhận"));
                     return new CreateImportOrderResponse { IsSuccess = true, Message = "Tạo đơn hàng nhập kho thành công" };
                 }

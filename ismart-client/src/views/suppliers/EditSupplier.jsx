@@ -29,7 +29,14 @@ const ModelEditSupplier = ({ isShow, handleClose, dataUpdateSupplier, updateTabl
         // Kiểm tra các giá trị sau khi trim
         if (!validateTextRequired.test(trimmedNameSupplier)) {
             toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
+<<<<<<< HEAD
         } else if (!validatePhone.test(trimmedPhoneSupplier)) {
+=======
+        }
+        else if (nameSupplier.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        } else if (!validatePhone.test(phoneSupplier)) {
+>>>>>>> origin/tungvthe150237
             toast.error("Sai định dạng số điện thoại");
         } else if (!validateEmail.test(trimmedEmailSupplier)) {
             toast.error("Sai định dạng email");

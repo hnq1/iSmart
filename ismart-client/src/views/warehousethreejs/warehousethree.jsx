@@ -211,4 +211,8 @@ const styles = {
     },
 };
 
+<<<<<<< HEAD
 export default Warehouse3D;
+=======
+export default Warehouse3D;
+>>>>>>> origin/tungvthe150237

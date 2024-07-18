@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap"
 import { toast } from 'react-toastify';
 import { createNewStorage } from "~/services/StorageServices";
-import { validatePhone, validateText, validateTextRequired } from "~/validate";
+import { validatePhone, validateText, validateTextRequired, removeWhiteSpace } from "~/validate";
 
 const ModelAddStorage = ({ isShow, handleClose, updateTableStorage }) => {
     const [storageName, setStorageName] = useState("");
@@ -13,6 +13,7 @@ const ModelAddStorage = ({ isShow, handleClose, updateTableStorage }) => {
     const handleSave = async () => {
         if (!validatePhone.test(storagePhone.trim())) {
             toast.error("Định dạng số điện thoại sai");
+<<<<<<< HEAD
         } else if (!validateTextRequired.test(storageName.trim())) {
             toast.error("Tên kho hàng không được trống và không chứa ký tự đặc biệt");
         } else if (!validateText.test(storageAddress.trim())) {
@@ -22,6 +23,19 @@ const ModelAddStorage = ({ isShow, handleClose, updateTableStorage }) => {
         } else {
             let res = await createNewStorage(storageName.trim(), storageAddress.trim(), storagePhone.trim());
             toast.success("Thêm kho hàng thành công", {
+=======
+        } else if (!validateTextRequired.test(storageName)) {
+            toast.error("Tên khống được trống và chứa ký tự đặc biệt");
+        }
+        else if (storageName.trim() === '') {
+            toast.error('Không được để khoảng trắng');
+        } else if (!validateText.test(storageAddress)) {
+            toast.error("Địa chỉ không được chứa ký tự đặc biệt");
+        }
+        else {
+            let res = await createNewStorage(removeWhiteSpace(storageName), removeWhiteSpace(storageAddress), removeWhiteSpace(storagePhone));
+            toast.success("Thêm kho hàng", {
+>>>>>>> origin/tungvthe150237
                 className: 'toast-success',
             });
             handleReset();

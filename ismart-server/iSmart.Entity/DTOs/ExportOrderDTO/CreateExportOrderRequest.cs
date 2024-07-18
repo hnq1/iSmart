@@ -25,7 +25,9 @@ namespace iSmart.Entity.DTOs.ExportOrderDTO
         public string? Image { get; set; }
 
         public int? CustomerId { get; set; }
+
         public int? WarehouseDestinationId { get; set; }
+
         //public List<ExportDetailDTO> ExportOrderDetails { get; set; }
     }
 }

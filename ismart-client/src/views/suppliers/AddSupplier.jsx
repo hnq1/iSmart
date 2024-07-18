@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Modal, Button } from "react-bootstrap"
 import { toast } from 'react-toastify';
 import { createNewSupplier } from "~/services/SupplierServices";
-import { validateEmail, validatePhone, validateText, validateTextRequired } from "~/validate";
+import { validateEmail, validatePhone, validateText, validateTextRequired, removeWhiteSpace } from "~/validate";
 
 
 const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
@@ -30,14 +30,24 @@ const ModelAddSupplier = ({ isShow, handleClose, updateTableSupplier }) => {
     
         if (!validateTextRequired.test(trimmedNameSupplier)) {
             toast.error("Tên nhà cung cấp không được để trống hoặc chứa ký tự đặc biệt");
+<<<<<<< HEAD
         } else if (!validatePhone.test(trimmedPhoneSupplier)) {
+=======
+        } else if (nameSupplier.trim() === '') {
+            toast.error('Không được để khoảng trắng.');
+        } else if (!validatePhone.test(phoneSupplier)) {
+>>>>>>> origin/tungvthe150237
             toast.error("Sai định dạng số điện thoại");
         } else if (!validateEmail.test(trimmedEmailSupplier)) {
             toast.error("Sai định dạng email");
         } else if (!validateText.test(trimmedNoteSupplier)) {
             toast.error("Lưu ý không được chứa ký tự đặc biệt");
         } else {
+<<<<<<< HEAD
             let res = await createNewSupplier(trimmedNameSupplier, trimmedPhoneSupplier, 1, trimmedEmailSupplier, trimmedNoteSupplier);
+=======
+            let res = await createNewSupplier(removeWhiteSpace(nameSupplier), removeWhiteSpace(phoneSupplier), 1, removeWhiteSpace(emailSupplier), removeWhiteSpace(noteSupplier));
+>>>>>>> origin/tungvthe150237
             toast.success("Thêm nhà cung cấp thành công", {
                 className: 'toast-success',
             });
