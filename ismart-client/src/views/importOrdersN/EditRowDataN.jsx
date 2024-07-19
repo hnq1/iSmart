@@ -75,11 +75,17 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     }
 
     const handleEditRowData = () => {
-        if (quantity <= 0) {
+        const currentDate = new Date().toISOString().slice(0, 10);
+        if (quantity <= 0 || !quantity) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        // } else if (costPrice <= 0) {
-        //     toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
-        // } else {
+        } else if (!manufactureDate || !expiryDate) {
+            toast.warning("Vui lòng nhập đầy đủ ngày sản xuất và ngày hết hạn");
+        } else if (manufactureDate > expiryDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
+        } else if (manufactureDate > currentDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hiện tại");
+        }
+        else {
             dataAfterEdit({
                 // ...data,
                 batchCode: batchCode,

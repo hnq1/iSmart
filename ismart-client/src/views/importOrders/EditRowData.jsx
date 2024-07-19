@@ -75,27 +75,35 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     }
 
     const handleEditRowData = () => {
-        // if (quantity <= 0) {
-        //     toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        // } else {
-        dataAfterEdit({
-            // ...data,
-            batchCode: batchCode,
-            costPrice: 0,
-            expiryDate: expiryDate,
-            goodsCode: goodsCode,
-            goodsId: goodsId,
-            importId: selectedImportId,
-            manufactureDate: manufactureDate,
-            quantity: quantity,
-            supplierId: supplierId,
-            supplierName: supplierName,
-            totalOneGoodPrice: totalOneGoodPrice
+        const currentDate = new Date().toISOString().slice(0, 10);
+        if (quantity <= 0 || !quantity) {
+            toast.warning("Vui lòng nhập số lượng lớn hơn 0");
+        } else if (!manufactureDate || !expiryDate) {
+            toast.warning("Vui lòng nhập đầy đủ ngày sản xuất và ngày hết hạn");
+        } else if (manufactureDate > expiryDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
+        } else if (manufactureDate > currentDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hiện tại");
+        }
+        else {
+            dataAfterEdit({
+                // ...data,
+                batchCode: batchCode,
+                costPrice: 0,
+                expiryDate: expiryDate,
+                goodsCode: goodsCode,
+                goodsId: goodsId,
+                importId: selectedImportId,
+                manufactureDate: manufactureDate,
+                quantity: quantity,
+                supplierId: supplierId,
+                supplierName: supplierName,
+                totalOneGoodPrice: totalOneGoodPrice
 
-        });
-        console.log("dataAfterEdit: ", quantity);
-        handleClose();
-        // };
+            });
+            console.log("dataAfterEdit: ", quantity);
+            handleClose();
+        };
     }
 
     return (
