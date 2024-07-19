@@ -19,7 +19,6 @@ const ModelAddCategory = ({ isShow, handleClose, updateTableCategory }) => {
             let res = await createNewCategory(categoryName, categoryDescription);
             toast.success("Thêm danh mục thành công", {
                 className: 'toast-success',
-
             });
             handleReset();
             updateTableCategory();

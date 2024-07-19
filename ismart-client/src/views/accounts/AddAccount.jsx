@@ -142,7 +142,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                <Row >
+                    <Row >
                         <Col md={5}>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
@@ -175,9 +175,9 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             </Form.Select>
                         </Col>
                         <Col md={6}>
-                            <label >Vai trò</label>
+                            <label >Chức Vụ</label>
                             <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
-                                <option value="">Vai trò</option>
+                                <option value="">Chức vụ</option>
                                 <option value="2">WarehouseManager</option>
                                 <option value="3">WarehouseStaff</option>
                                 <option value="4">Accountant</option>
@@ -194,7 +194,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             <input type="number" className="form-control inputCSS" value={phone} onChange={handleChangePhone} />
                         </Col>
                     </Row>
-                    
+
                     <Row>
                         <Col md={6}>
                             <label >Tên Đăng Nhập</label>

@@ -195,7 +195,11 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         const trimmedDescription = description ? description.trim() : '';
         if (!trimmedGoodName) {
             toast.warning("Vui lòng nhập tên mặt hàng");
-        } else if (!trimmedGoodCode) {
+        }
+        else if (!selectedWarehouseId) {
+            toast.warning("Chưa chọn kho!");
+        }
+        else if (!trimmedGoodCode) {
             toast.warning("Vui lòng nhập mã mặt hàng");
         } else if (!selectedCategoryId) {
             toast.warning("Vui lòng chọn danh mục");

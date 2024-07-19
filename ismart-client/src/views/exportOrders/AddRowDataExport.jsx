@@ -88,7 +88,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                 totalOneGoodPrice: 0,
                 importOrderDetailId: selectImportOrderDetailId
             });
-            
+            handleCloseModal();
         }
 
     }
@@ -191,11 +191,11 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
             <Table >
                 <thead>
                     <tr>
-                        <th>Batch Code</th>
-                        <th>Manufacture Date</th>
-                        <th>Expiry Date</th>
-                        <th>Quantity</th>
-                        <th>Location</th>
+                        <th>Mã Lô Hàng</th>
+                        <th>Ngày Sản Xuất</th>
+                        <th>Ngày Hết Hạn</th>
+                        <th>Số Lượng</th>
+                        <th>Vị Trí Trong Kho</th>
                     </tr>
                 </thead>
                 <tbody>

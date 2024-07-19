@@ -80,49 +80,25 @@ function InportGoodsListModal({ isShow, handleClose, updateTable }) {
             res = await uploadExcel(file, selectedWarehouseId);
 
 
-            if (Array.isArray(res.results)) {
-                res.results.forEach(result => {
-                    // Hiển thị thông báo lỗi nếu có từ "Lỗi" trong thông báo
-                    if (result.includes("Lỗi")) {
-                        toast.error(result);
-                    } else {
-                        // Hiển thị thông báo thành công nếu không có từ "Lỗi"
-                        toast.success(result);
-                    }
-                });
-            } else {
-                // Nếu res.results không phải là mảng, hiển thị thông báo lỗi
-                console.error('Unexpected format for res.results:', res.results);
-                toast.error("Đã xảy ra lỗi không xác định.");
-            }
-
-
-
-
+            res.results.forEach(result => {
+                if (result.includes("Lỗi")) {
+                    toast.error(result);
+                } else {
+                    toast.success(result);
+                }
+            });
         }
         else {
             res = await uploadExcel(file, userId);
 
 
-            if (Array.isArray(res.results)) {
-                res.results.forEach(result => {
-                    // Hiển thị thông báo lỗi nếu có từ "Lỗi" trong thông báo
-                    if (result.includes("Lỗi")) {
-                        toast.error(result);
-                    } else {
-                        // Hiển thị thông báo thành công nếu không có từ "Lỗi"
-                        toast.success(result);
-                    }
-                });
-            } else {
-                // Nếu res.results không phải là mảng, hiển thị thông báo lỗi
-                console.error('Unexpected format for res.results:', res.results);
-                toast.error("Đã xảy ra lỗi không xác định.");
-            }
-
-
-
-
+            res.results.forEach(result => {
+                if (result.includes("Lỗi")) {
+                    toast.error(result);
+                } else {
+                    toast.success(result);
+                }
+            });
         }
         updateTable();
         handleClose();
