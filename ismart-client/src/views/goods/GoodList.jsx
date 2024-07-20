@@ -235,9 +235,6 @@ function MyTable() {
         });
     }
 
-
-
-
     const handleSupplierClickTotal = () => {
         setSelectedSupplier("Nhà cung cấp");
         setSelectedSupplierId(null);
@@ -559,11 +556,9 @@ function MyTable() {
                                 }
                             </tbody>
 
-
-                            {/* {showNoDataMessage &&
+                            {/* {showNoDataMessage && 
                             <div style={{ fontSize: '24px', textAlign: 'center' }}
                             >Không có dữ liệu</div>} */}
-
 
                         </Table>
 
