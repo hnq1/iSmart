@@ -168,9 +168,13 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
+
         } else if (!selectedCustomer) {
             toast.warning("Vui lòng chọn khách hàng");
-        } else {
+        } else if (rowsData.length === 0) {
+            toast.warning("Hãy thêm lô hàng");
+        }
+        else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             console.log("userId", userId);
             let isInternalTransfer = false;

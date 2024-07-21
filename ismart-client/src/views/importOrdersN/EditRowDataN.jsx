@@ -3,7 +3,7 @@ import { Row, Col, Dropdown, Modal, Button } from "react-bootstrap";
 import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
-
+import { validateEmail, validatePhone, validateText, validateTextRequired } from "~/validate";
 const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const [goodsId, setGoodsId] = useState();
     const [goodsCode, setGoodsCode] = useState();
@@ -84,6 +84,9 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
             toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
         } else if (manufactureDate > currentDate) {
             toast.warning("Ngày sản xuất phải nhỏ hơn ngày hiện tại");
+        }
+        else if (!batchCode || !batchCode.trim() || !validateTextRequired.test(batchCode)) {
+            toast.warning("Mã lô hàng không được để trống");
         }
         else {
             dataAfterEdit({
