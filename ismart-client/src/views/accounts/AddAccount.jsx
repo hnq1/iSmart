@@ -13,9 +13,8 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
-    const [userCode, setUserCode] = useState("");
+
     const [userName, setUserName] = useState();
-    const [password, setPassword] = useState();
     const [email, setEmail] = useState();
     const [phone, setPhone] = useState();
     const [address, setAddress] = useState();
@@ -49,17 +48,11 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
         // getUsers(1);
     }
 
-    const handleChangeUserCode = (event) => {
-        setUserCode(event.target.value);
-    }
 
     const handleChangeUserName = (event) => {
         setUserName(event.target.value);
     }
 
-    const handleChangePassword = (event) => {
-        setPassword(event.target.value);
-    }
 
     const handleChangeEmail = (event) => {
         setEmail(event.target.value);
@@ -86,14 +79,12 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const handleReset = () => {
         setSelectedWarehouse(null);
         setSelectedWarehouseId(null);
-
-        setUserCode(null);
         setUserName(null);
-
-        setPassword(null);
         setEmail(null);
-
-
+        setPhone(null);
+        setAddress(null);
+        setImage(null);
+        setFullName(null);
     }
     // Điều kiện login
     const handleSave = async () => {
@@ -109,15 +100,14 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Địa chỉ không được để trống");
         } else if (!fullName.trim()) {
             toast.warning("Họ và tên không được để trống");
-        } else if (!userCode) {
-            toast.warning("Mã nhân viên không được để trống");
+        } else if (!image) {
+            toast.warning("Hình ảnh không được để trống");
         } else {
             let res = await addUser(selectedWarehouseId,
-                email.trim(), password,
-                phone.trim(), selectedOptionRole,
-                1,
+                email.trim(),
+                phone.trim(),
+                selectedOptionRole,
                 userName.trim(),
-                userCode,
                 address.trim(),
                 image,
                 fullName.trim());
@@ -126,7 +116,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                 updateTable();
                 handleClose();
             } else {
-                toast.warning("Người dùng đã tồn tại");
+                toast.warning("Tên đăng nhập đã tồn tại");
             }
         }
     }
@@ -142,7 +132,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                <Row >
+                    <Row >
                         <Col md={5}>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
@@ -165,16 +155,6 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                     </Row>
                     <Row>
                         <Col md={6}>
-                            <label >Mã nhân viên</label>
-                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} />
-                            {/* <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleChangeUserCode}>
-                                <option value="">Mã nhân viên</option>
-                                <option value="WarehouseManager">WarehouseManager</option>
-                                <option value="WarehouseStaff">WarehouseStaff</option>
-                                <option value="Accountant">Accountant</option>
-                            </Form.Select> */}
-                        </Col>
-                        <Col md={6}>
                             <label >Vai trò</label>
                             <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
                                 <option value="">Vai trò</option>
@@ -194,7 +174,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             <input type="number" className="form-control inputCSS" value={phone} onChange={handleChangePhone} />
                         </Col>
                     </Row>
-                    
+
                     <Row>
                         <Col md={6}>
                             <label >Tên Đăng Nhập</label>

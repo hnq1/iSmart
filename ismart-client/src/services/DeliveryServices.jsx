@@ -7,6 +7,9 @@ const fetchDeliveriesWithKeyword = (page, keyword) => {
     return axios.get(`api/delivery/get-delivery-with-filter?page=${page}${keyword ? `&keyword=${keyword}` : ``}`)
 }
 
+const fetchDeliveryActive = () => {
+    return axios.get(`api/delivery/get-all-active-delivery`);
+}
 const createNewDelivery = (deliveryName) => {
     return axios.post(`api/delivery/add-delivery`, { deliveryName })
 }
@@ -19,4 +22,4 @@ const updateStatusDelivery = (deliveyId) => {
     return axios.put(`api/delivery/update-delivery-status?id=${deliveyId}`);
 }
 
-export { fetchAllDelivery, fetchDeliveriesWithKeyword, createNewDelivery, updateDelivery, updateStatusDelivery }
+export { fetchAllDelivery, fetchDeliveriesWithKeyword, createNewDelivery, updateDelivery, updateStatusDelivery,fetchDeliveryActive }

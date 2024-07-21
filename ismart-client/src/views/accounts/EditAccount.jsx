@@ -16,6 +16,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
     const [email, setEmail] = useState();
     const [address, setAddress] = useState();
     const [image, setImage] = useState();
+    const [status, setStatus] = useState();
 
 
     useEffect(() => {
@@ -27,8 +28,8 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
             setPhone(dataUserEdit.phone);
             setEmail(dataUserEdit.email);
             setAddress(dataUserEdit.address);
-
-        }
+            setStatus(dataUserEdit.statusId);
+        } 
     }, [dataUserEdit])
 
 
@@ -84,7 +85,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
                 email,
                 phone,
                 dataUserEdit.roleId,
-                1,
+                status,
                 userName,
                 userCode,
                 address,
@@ -110,7 +111,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
         <>
             <Modal show={isShow} onHide={handleCloseModal} >
                 <Modal.Header closeButton>
-                    <Modal.Title>Chỉnh sửa tài khoản &nbsp;    
+                    <Modal.Title>Chỉnh sửa tài khoản: &nbsp;
                         {dataUserEdit.fullName}
                     </Modal.Title>
                 </Modal.Header>
@@ -118,19 +119,19 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
                     <Row>
                         <Col md={7}>
                             <label >Mã nhân viên</label>
-                            <input type="text" className="form-control inputCSS" value={userCode} onChange={handleUserCode} disabled/>
+                            <input type="text" className="form-control inputCSS" value={userCode} onChange={handleUserCode} disabled />
                         </Col>
                     </Row>
                     <Row>
                         <Col md={7}>
-                            <label >FullName</label>
+                            <label >Họ và tên</label>
                             <input type="text" className="form-control inputCSS" value={fullName} onChange={handleFullName} />
                         </Col>
                     </Row>
                     <Row>
                         <Col md={7}>
                             <label >Tên Đăng Nhập</label>
-                            <input type="text" className="form-control inputCSS" value={userName} onChange={handleUserName} disabled/>
+                            <input type="text" className="form-control inputCSS" value={userName} onChange={handleUserName} disabled />
                         </Col>
                     </Row>
                     <Row>
@@ -170,7 +171,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
                     <Button variant="secondary" onClick={handleCloseModal}>
                         Đóng
                     </Button>
-                    <Button variant="primary"  className="ButtonCSS" onClick={handleSave}>
+                    <Button variant="primary" className="ButtonCSS" onClick={handleSave}>
                         Cập nhật tài khoản
                     </Button>
                 </Modal.Footer>

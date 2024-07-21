@@ -3,7 +3,7 @@ import React from 'react';
 import { Modal, Button, Row, Col, DropdownButton, Dropdown } from "react-bootstrap"
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { fetchAllStorages } from '~/services/StorageServices';
-import { fetchAllDelivery } from "~/services/DeliveryServices";
+import { fetchDeliveryActive } from "~/services/DeliveryServices";
 // import { fetchAllCustomer } from "~/services/CustomerServices";
 import { addNewExportOrder, fetchExportOrderNewest } from "~/services/ExportOrderService";
 import { createNewExportOrderDetail } from "~/services/ExportOrderDetailService";
@@ -73,7 +73,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
     }, [userId]);
 
     const getAllDelivery = async () => {
-        let res = await fetchAllDelivery();
+        let res = await fetchDeliveryActive();
         setTotalDelivery(res);
     }
 
