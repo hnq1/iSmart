@@ -54,6 +54,17 @@ namespace iSmart.API.Controllers
             return Ok(order);
         }
 
+        [HttpGet("get-batch-for-return")]
+        public IActionResult GetBatchForReturn(int warehouseId)
+        {
+            var order = _orderDetailService.GetBatchForReturn(warehouseId);
+            if (order == null)
+            {
+                return NotFound("Don't have batch in warehouse");
+            }
+            return Ok(order);
+        }
+
         [HttpPost("add-order-detail")]
         public IActionResult AddImportOrderDetail([FromBody] CreateImportOrderDetailRequest detail)
         {

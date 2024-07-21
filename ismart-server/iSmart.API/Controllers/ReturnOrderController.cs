@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using iSmart.Entity.DTOs.ReturnOrderDTO;
 using iSmart.Service;
+using iSmart.Entity.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace iSmart.API.Controllers
 {
@@ -10,10 +12,12 @@ namespace iSmart.API.Controllers
     public class ReturnOrderController : ControllerBase
     {
         private readonly IReturnOrderService _returnOrderService;
+        private readonly iSmartContext _context;
 
-        public ReturnOrderController(IReturnOrderService returnOrderService)
+        public ReturnOrderController(IReturnOrderService returnOrderService, iSmartContext context)
         {
             _returnOrderService = returnOrderService;
+            _context = context;
         }
 
         [HttpPost("create-return-order")]
@@ -57,6 +61,64 @@ namespace iSmart.API.Controllers
                 return Ok(response);
             }
             return BadRequest(response);
+        }
+
+        [HttpPost("confirm-return")]
+        public async Task<IActionResult> ConfirmReturnOrder(int returnOrderId)
+        {
+            try
+            {
+                var result = await _context.ReturnsOrders
+                                           .Include(r => r.ReturnsOrderDetails)
+                                           .FirstOrDefaultAsync(r => r.ReturnOrderId == returnOrderId);
+
+                if (result != null && result.StatusId == 3)
+                {
+                    result.StatusId = 4;
+                    result.ReturnedDate = DateTime.Now;
+
+                    foreach (var detail in result.ReturnsOrderDetails)
+                    {
+                        var product = detail.Goods;
+
+                        var goodWarehouse = _context.GoodsWarehouses
+                                                    .FirstOrDefault(p => p.GoodsId == product.GoodsId && p.WarehouseId == result.WarehouseId);
+
+                        if (goodWarehouse == null)
+                        {
+                            return BadRequest("Sản phẩm không tồn tại trong kho.");
+                        }
+                        int total = (int)detail.Quantity;
+
+                         if (total > goodWarehouse.Quantity)
+                        {
+                            return BadRequest("Số lượng trả lại lớn hơn tồn kho.");
+                        }
+                        goodWarehouse.Quantity -= total;
+
+                        var importDetail = await _context.ImportOrderDetails
+                                                         .FirstOrDefaultAsync(i => i.BatchCode == detail.BatchCode);
+
+                        if (importDetail == null)
+                        {
+                            return BadRequest("Chi tiết nhập hàng không tồn tại.");
+                        }
+
+                        importDetail.ActualQuantity -= total;
+                    }
+
+                    await _context.SaveChangesAsync();
+                    return Ok("Đơn hàng trả lại đã được xác nhận thành công.");
+                }
+                else
+                {
+                    return BadRequest("Không có dữ liệu hoặc đơn hàng không ở trạng thái chờ xác nhận.");
+                }
+            }
+            catch (Exception ex)        
+            {
+                return StatusCode(500, "Đã xảy ra lỗi hệ thống.");
+            }
         }
     }
 }

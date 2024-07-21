@@ -188,7 +188,7 @@ namespace iSmart.Service
                 {
                     ImportCode = "IMP" + i.ImportCode,
                     UserId = staffId,
-                    SupplierId = 69,
+                    SupplierId = 1,
                     TotalCost = 0,
                     Note = i.Note,
                     CreatedDate = DateTime.Now,

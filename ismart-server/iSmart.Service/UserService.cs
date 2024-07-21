@@ -59,7 +59,7 @@ namespace iSmart.Service
                         Phone = user.Phone,
                         RoleId = user.RoleId,
                         Password = password,
-                        StatusId = user.StatusId,
+                        StatusId = 1,
                         Image = user.Image,
                         //Status = _context.Statuses.FirstOrDefault(s => s.StatusId == user.StatusId)
                     };
