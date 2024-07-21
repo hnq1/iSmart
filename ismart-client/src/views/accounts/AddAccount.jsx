@@ -166,13 +166,13 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                     <Row>
                         <Col md={6}>
                             <label >Mã nhân viên</label>
-                            {/* <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} /> */}
-                            <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleChangeUserCode}>
+                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} />
+                            {/* <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleChangeUserCode}>
                                 <option value="">Mã nhân viên</option>
                                 <option value="WarehouseManager">WarehouseManager</option>
                                 <option value="WarehouseStaff">WarehouseStaff</option>
                                 <option value="Accountant">Accountant</option>
-                            </Form.Select>
+                            </Form.Select> */}
                         </Col>
                         <Col md={6}>
                             <label >Vai trò</label>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Row, Col, Dropdown } from "react-bootstrap";
-import EditRowDataOrderN from "./EditRowData";
+import EditRowDataOrder from "./EditRowData";
+import { formatDate } from "date-fns";
 
 const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) => {
 
@@ -17,16 +18,25 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
     const [manufactureDate, setManufactureDate] = useState();
 
     useEffect(() => {
-        console.log("RowDataEditImportOrder", data);
+        // console.log("RowDataEditImportOrder", data.expiryDate);
         setGoodsId(data.goodsId);
         setGoodsCode(data.goodsCode);
         setQuantity(data.quantity);
-        // setCostPrice(data.costPrice);
+        setCostPrice(data.costPrice);
         setDetailId(data.detailId);
         setImportId(data.importId);
         setBatchCode(data.batchCode);
         setExpiryDate(data.expiryDate);
         setManufactureDate(data.manufactureDate);
+        if (data.expiryDate) {
+            const formattedExpiryDate = formatDate(new Date(data.expiryDate), 'yyyy-MM-dd');
+            setExpiryDate(formattedExpiryDate);
+        }
+        if (data.manufactureDate) {
+            const formattedManufactureDate = formatDate(new Date(data.manufactureDate), 'yyyy-MM-dd');
+            setManufactureDate(formattedManufactureDate);
+        }
+        console.log("detailId: ", data.detailId);
     }, [data])
 
     const handleEditRowData = () => {
@@ -38,29 +48,31 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
     }
 
     const dataAfterEdit = (newData) => {
-        setGoodsId(newData.goodsId);
-        setGoodsCode(newData.goodsCode);
-        setQuantity(newData.quantity);
-        setCostPrice(newData.costPrice);
+        console.log("dataAfterEdit: ", newData.batchCode,
+            newData.costPrice, newData.expiryDate, newData.goodsCode,
+            newData.goodsId, newData.manufactureDate, newData.quantity);
+
         setBatchCode(newData.batchCode);
+        setCostPrice(0);
         setExpiryDate(newData.expiryDate);
+        setGoodsCode(newData.goodsCode);
+        setGoodsId(newData.goodsId);
+        setQuantity(newData.quantity);
         setManufactureDate(newData.manufactureDate);
-        // setTotalOneGoodPrice(newData.quantity * newData.costPrice);
 
-
-        // setTotalOneGoodPrice(data.totalOneGoodPrice);
         updateRowData(index, {
-
-            batchCode: newData.batchCode,
             costPrice: newData.costPrice,
-            expiryDate: newData.expiryDate,
-            goodsCode: newData.goodsCode,
+
             goodsId: newData.goodsId,
-            manufactureDate: newData.manufactureDate,
+            goodsCode: newData.goodsCode,
             quantity: newData.quantity,
-            totalOneGoodPrice: newData.quantity * newData.costPrice
+            manufactureDate: newData.manufactureDate,
+            expiryDate: newData.expiryDate,
+            batchCode: newData.batchCode,
         })
-        // console.log("dataAfterEdit: ", SelecttotalOneGoodPrice);
+        console.log("dataAfterEdit: ", newData.costPrice, newData.goodsId,
+            newData.goodsCode, newData.quantity,
+            newData.manufactureDate, newData.expiryDate, newData.batchCode);
     }
 
 
@@ -119,23 +131,23 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
                 </div>
             </Col>
 
-            {/* <Col md={1}>
-            <div className="form-group mb-3 ButtonCSSDropdown red">
-                <button
-                    className="btn btn-success border-left-0 rounded  mt-4 "
-                    type="button"
-                    onClick={() => handleDeleteRowData(data)}
-                >
-                    Xóa
-                </button>
-            </div>
-        </Col> */}
+            <Col md={1}>
+                <div className="form-group mb-3 ButtonCSSDropdown red">
+                    <button
+                        className="btn btn-success border-left-0 rounded  mt-4 "
+                        type="button"
+                        onClick={() => handleDeleteRowData(data)}
+                    >
+                        Xóa
+                    </button>
+                </div>
+            </Col>
 
 
 
         </Row>
 
-        <EditRowDataOrderN isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
+        <EditRowDataOrder isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
     </>)
 }
 

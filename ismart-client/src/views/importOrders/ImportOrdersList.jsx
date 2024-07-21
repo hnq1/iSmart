@@ -177,7 +177,7 @@ function ImportOrderList() {
         } else {
             console.log(i);
             setIsShowModelConfirm(true);
-            setDataImportOrder(i);
+            setDataImportOrder(i);//
         }
 
     }
@@ -305,7 +305,7 @@ function ImportOrderList() {
                                     </div>
 
                                 </Col>
-                                {(roleId === 3 || roleId === 1) ?
+                                
 
                                     <Col md={2}>
                                         <div className="col-auto ButtonCSSDropdown">
@@ -321,8 +321,8 @@ function ImportOrderList() {
                                         </div>
 
                                     </Col>
-                                    : ''
-                                }
+                                    
+                                
                             </Row>
 
 
@@ -346,10 +346,10 @@ function ImportOrderList() {
 
                                         <th className="align-middle  text-nowrap">Người <br />xác nhận</th>
                                         <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
-                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
-                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
+                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
+                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
 
-                                        {roleId === 3 ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''}
+                                        {(roleId === 1 || roleId === 3) ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''}
                                         {(roleId === 1 || roleId === 2) ?
                                             <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>
                                             : ''}
@@ -382,15 +382,15 @@ function ImportOrderList() {
 
                                                     <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
                                                 </td>
-                                                {roleId === 2 ? <td className="align-middle " style={{ padding: '10px' }}>
+                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle " style={{ padding: '10px' }}>
 
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => EditDetailOrder(i)}></i>
                                                 </td> : ''}
 
-                                                {roleId === 2 ? <td className="align-middle">
+                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle">
                                                     <i className="fa-solid fa-ban actionButtonCSS"
                                                         onClick={() => ShowModalCancelImport(i)}></i></td> : ''}
-                                                {roleId === 3 ?
+                                                {(roleId === 1 || roleId === 3) ?
                                                     <td className="align-middle">
                                                         {i.statusType === "Completed" ?
                                                             <i className="fa-solid fa-barcode actionButtonCSS"

@@ -35,11 +35,11 @@ function NavbarCom() {
     useEffect(() => {
 
         const roleId = parseInt(localStorage.getItem('roleId'), 10); // Lấy roleId từ localStorage
-        if (roleId === 2) { // Chỉ thiết lập WebSocket nếu roleId là 2
+        // if (roleId === 2) { // Chỉ thiết lập WebSocket nếu roleId là 2
             const socket = new WebSocket('wss://localhost:7033/ws'); // Thay đổi URL và port tương ứng với server của bạn
 
             socket.onopen = () => {
-                // console.log('WebSocket connected');
+                console.log('WebSocket connected');
             };
 
             socket.onmessage = (event) => {
@@ -53,7 +53,7 @@ function NavbarCom() {
             return () => {
                 socket.close();
             };
-        }
+        // }
 
     }, []);
     // cũ
