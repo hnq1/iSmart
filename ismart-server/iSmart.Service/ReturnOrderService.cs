@@ -42,7 +42,7 @@ namespace iSmart.Service
                     WarehouseId = request.WarehouseId,
                     SupplierId = request.SupplierId,
                     StatusId = 1, // Default status
-                    ApprovedBy = request.ApprovedBy,
+                    ApprovedBy = _userWarehouseService.GetManagerIdByStaffId(staffId),
                 };
 
                 if (_context.ReturnsOrders.SingleOrDefault(z => returnOrder.ReturnOrderCode.ToLower() == z.ReturnOrderCode.ToLower()) == null)
@@ -183,26 +183,46 @@ namespace iSmart.Service
         {
             try
             {
-                var returnOrder = new ReturnsOrder
-                {
-                    ReturnOrderId = request.ReturnOrderId,
-                    ReturnOrderCode = request.ReturnOrderCode,
-                    CreatedBy = request.CreatedBy,
-                    ReturnedDate = request.ReturnedDate,
-                    WarehouseId = request.WarehouseId,
-                    SupplierId = request.SupplierId,
-                    StatusId = request.StatusId,
-                    ApprovedBy = request.ApprovedBy
-                };
+                // Tìm đối tượng ReturnOrder hiện có trong cơ sở dữ liệu dựa trên ReturnOrderId
+                var returnOrder = _context.ReturnsOrders.Find(request.ReturnOrderId);
 
+                if (returnOrder == null)
+                {
+                    return new UpdateReturnOrderResponse
+                    {
+                        IsSuccess = false,
+                        Message = "Return order not found"
+                    };
+                }
+
+                // Cập nhật các thuộc tính của đối tượng ReturnOrder
+                returnOrder.ReturnOrderCode = request.ReturnOrderCode;
+                returnOrder.ReturnedDate = request.ReturnedDate;
+                returnOrder.WarehouseId = request.WarehouseId;
+                returnOrder.SupplierId = request.SupplierId;
+                returnOrder.StatusId = request.StatusId;
+                returnOrder.ApprovedBy = request.ApprovedBy;
+                returnOrder.ConfirmedDate = returnOrder.ConfirmedDate; // Cập nhật trường ConfirmedDate
+
+                // Lưu thay đổi vào cơ sở dữ liệu
                 _context.Update(returnOrder);
                 _context.SaveChanges();
-                return new UpdateReturnOrderResponse { IsSuccess = true, Message = "Update return order successfully" };
+
+                return new UpdateReturnOrderResponse
+                {
+                    IsSuccess = true,
+                    Message = "Update return order successfully"
+                };
             }
             catch (Exception e)
             {
-                return new UpdateReturnOrderResponse { IsSuccess = false, Message = $"Failed to update return order: {e.Message}" };
+                return new UpdateReturnOrderResponse
+                {
+                    IsSuccess = false,
+                    Message = $"Failed to update return order: {e.Message}"
+                };
             }
         }
+
     }
 }

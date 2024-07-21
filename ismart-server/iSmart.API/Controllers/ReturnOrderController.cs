@@ -76,7 +76,7 @@ namespace iSmart.API.Controllers
                 if (result != null && result.StatusId == 3)
                 {
                     result.StatusId = 4;
-                    result.ReturnedDate = DateTime.Now;
+                    result.ConfirmedDate = DateTime.Now;
 
                     foreach (var detail in result.ReturnsOrderDetails)
                     {

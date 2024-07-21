@@ -111,25 +111,44 @@ namespace iSmart.Service
         {
             try
             {
-                var requestOrderDetail = new ReturnsOrderDetail
-                {
-                    ReturnOrderDetailId = detail.ReturnOrderDetailId,
-                    ReturnOrderId = detail.ReturnOrderId,
-                    GoodsId = detail.GoodsId,
-                    Quantity = detail.Quantity,
-                    Reason = detail.Reason,
-                    BatchCode = detail.BatchCode
-                };
+                // Tìm đối tượng ReturnsOrderDetail hiện có trong cơ sở dữ liệu dựa trên ReturnOrderDetailId
+                var existingDetail = _context.ReturnsOrderDetails.Find(detail.ReturnOrderDetailId);
 
-                _context.Update(requestOrderDetail);
+                if (existingDetail == null)
+                {
+                    return new UpdateReturnOrderDetailResponse
+                    {
+                        IsSuccess = false,
+                        Message = "Return order detail not found"
+                    };
+                }
+
+                // Cập nhật các thuộc tính của đối tượng ReturnsOrderDetail
+                existingDetail.ReturnOrderId = detail.ReturnOrderId;
+                existingDetail.GoodsId = detail.GoodsId;
+                existingDetail.Quantity = detail.Quantity;
+                existingDetail.Reason = detail.Reason;
+                existingDetail.BatchCode = detail.BatchCode;
+
+                // Lưu thay đổi vào cơ sở dữ liệu
+                _context.Update(existingDetail);
                 _context.SaveChanges();
 
-                return new UpdateReturnOrderDetailResponse { IsSuccess = true, Message = "Update return order detail complete" };
+                return new UpdateReturnOrderDetailResponse
+                {
+                    IsSuccess = true,
+                    Message = "Update return order detail complete"
+                };
             }
             catch (Exception e)
             {
-                return new UpdateReturnOrderDetailResponse { IsSuccess = false, Message = $"Update return order detail failed: {e.Message}" };
+                return new UpdateReturnOrderDetailResponse
+                {
+                    IsSuccess = false,
+                    Message = $"Update return order detail failed: {e.Message}"
+                };
             }
         }
+
     }
 }
