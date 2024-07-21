@@ -70,6 +70,7 @@ namespace iSmart.API.Controllers
             {
                 var result = await _context.ReturnsOrders
                                            .Include(r => r.ReturnsOrderDetails)
+                                           .ThenInclude(d => d.Goods)
                                            .FirstOrDefaultAsync(r => r.ReturnOrderId == returnOrderId);
 
                 if (result != null && result.StatusId == 3)
@@ -81,19 +82,21 @@ namespace iSmart.API.Controllers
                     {
                         var product = detail.Goods;
 
-                        var goodWarehouse = _context.GoodsWarehouses
-                                                    .FirstOrDefault(p => p.GoodsId == product.GoodsId && p.WarehouseId == result.WarehouseId);
+                        var goodWarehouse = await _context.GoodsWarehouses
+                                                          .FirstOrDefaultAsync(p => p.GoodsId == product.GoodsId && p.WarehouseId == result.WarehouseId);
 
                         if (goodWarehouse == null)
                         {
                             return BadRequest("Sản phẩm không tồn tại trong kho.");
                         }
+
                         int total = (int)detail.Quantity;
 
-                         if (total > goodWarehouse.Quantity)
+                        if (total > goodWarehouse.Quantity)
                         {
                             return BadRequest("Số lượng trả lại lớn hơn tồn kho.");
                         }
+
                         goodWarehouse.Quantity -= total;
 
                         var importDetail = await _context.ImportOrderDetails
@@ -115,9 +118,13 @@ namespace iSmart.API.Controllers
                     return BadRequest("Không có dữ liệu hoặc đơn hàng không ở trạng thái chờ xác nhận.");
                 }
             }
-            catch (Exception ex)        
+            catch (InvalidOperationException ex)
             {
-                return StatusCode(500, "Đã xảy ra lỗi hệ thống.");
+                return StatusCode(500, $"Đã xảy ra lỗi hệ thống: {ex.InnerException?.Message ?? ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Đã xảy ra lỗi hệ thống: {ex.Message}");
             }
         }
     }
