@@ -21,6 +21,7 @@ namespace iSmart.Service
         List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid);
         List<BatchInventoryDTO> SelectBatchesForExport(int warehouseId, int goodId, int quantity, string method);
         List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int warehouseId, int goodId);
+        List<BatchInventoryDTO> GetBatchForReturn(int warehouseId);
     }
     public class ImportOrderDetailService : IImportOrderDetailService
     {
@@ -228,6 +229,29 @@ namespace iSmart.Service
             catch (Exception e)
             {
                 return new UpdateImportOrderDetailResponse { IsSuccess = false, Message = $"Update order detail failed {e.Message}" };
+            }
+        }
+
+        public List<BatchInventoryDTO> GetBatchForReturn(int warehouseId)
+        {
+            try
+            {
+                var batchGoods = (List<BatchInventoryDTO>)_context.ImportOrderDetails.Include(i => i.Import).Include(i => i.Goods).Where(i => i.Import.StatusId == 4 && i.Import.WarehouseId == warehouseId && i.Import.SupplierId != 1)
+                    .Select(s => new BatchInventoryDTO
+                    {
+                        ImportOrderDetailId = s.DetailId,
+                        BatchCode = s.BatchCode,
+                        Quantity = s.ActualQuantity,
+                        CostPrice = s.CostPrice,
+                        ManufactureDate = s.ManufactureDate,
+                        ExpiryDate = s.ExpiryDate
+                    }).ToList();
+                return batchGoods;
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

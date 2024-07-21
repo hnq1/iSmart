@@ -110,15 +110,15 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
         <>
             <Modal show={isShow} onHide={handleCloseModal} >
                 <Modal.Header closeButton>
-                    <Modal.Title>Chỉnh sửa tài khoản
+                    <Modal.Title>Chỉnh sửa tài khoản &nbsp;    
                         {dataUserEdit.fullName}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Row>
                         <Col md={7}>
-                            <label >UseCode</label>
-                            <input type="text" className="form-control inputCSS" value={userCode} onChange={handleUserCode} />
+                            <label >Mã nhân viên</label>
+                            <input type="text" className="form-control inputCSS" value={userCode} onChange={handleUserCode} disabled/>
                         </Col>
                     </Row>
                     <Row>
@@ -130,7 +130,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
                     <Row>
                         <Col md={7}>
                             <label >Tên Đăng Nhập</label>
-                            <input type="text" className="form-control inputCSS" value={userName} onChange={handleUserName} />
+                            <input type="text" className="form-control inputCSS" value={userName} onChange={handleUserName} disabled/>
                         </Col>
                     </Row>
                     <Row>
@@ -170,7 +170,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
                     <Button variant="secondary" onClick={handleCloseModal}>
                         Đóng
                     </Button>
-                    <Button variant="primary" onClick={handleSave}>
+                    <Button variant="primary"  className="ButtonCSS" onClick={handleSave}>
                         Cập nhật tài khoản
                     </Button>
                 </Modal.Footer>

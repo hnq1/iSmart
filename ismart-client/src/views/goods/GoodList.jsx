@@ -20,13 +20,10 @@ import ExportGoodsListModal from './inputExport/Export';
 import { TorusGeometry } from 'three';
 
 
-
-
 function MyTable() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
     const navigate = useNavigate();
-
 
     useEffect(() => {
         if (![1, 2, 4].includes(roleId)) {
@@ -34,26 +31,20 @@ function MyTable() {
         }
     }, [roleId, navigate]);
 
-
     const [pageSize, setPageSize] = useState(15);
-
 
     const [listGoods, setListGoods] = useState({});
     const [totalCategories, setTotalCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
-
     const [totalSuppliers, setTotalSuppliers] = useState([]);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
-
     // const [totalStorages, setTotalStorages] = useState([]);
     // const [selectedStorage, setSelectedStorage] = useState(null);
     // const [selectedStorageId, setSelectedStorageId] = useState(null);
-
-
 
 
     const [totalWarehouse, setTotalWarehouse] = useState([]);
@@ -61,44 +52,32 @@ function MyTable() {
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
 
-
-
     const [totalPages, setTotalPages] = useState(5);
     const [currentPage, setcurrentPage] = useState(0);
 
-
     const [keywordSearch, setKeywordSearch] = useState("");
-
 
     const [sortedByPriceId, setSortedByPriceId] = useState();
     const [sortedByPriceName, setSortedByPriceName] = useState("");
     const [sortOptions, setSortOptions] = useState([]);
 
-
     const [isShowGoodHistory, setIsShowGoodHistory] = useState(false);
     const [dataGood, setDataGood] = useState({});
-
 
     const [isShowModalZoomImage, setIsShowModalZoomImage] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
 
-
     const [isShowModelEditGood, setIsShowModelEditGood] = useState(false);
     const [dataGoodEdit, setDataGoodEdit] = useState([]);
 
-
     const [isShowModelAddGood, setIsShowModelAddGood] = useState(false);
 
-
     const [showInStock, setShowInStock] = useState(true);
-
 
     const [isShowModalInputExcel, setIsShowModalInputExcel] = useState(false);
     const [isShowModalExportExcel, setIsShowModalExportExcel] = useState(false);
 
-
     const [startIndexOfPage, setStartIndexOfPage] = useState(1);
-
 
     const [showNoDataMessage, setShowNoDataMessage] = useState(false);
     useEffect(() => {
@@ -110,10 +89,8 @@ function MyTable() {
         { idSort: 1, nameSort: "Giá Từ bé đến lớn" },
         { idSort: 2, nameSort: "Giá Từ lớn đến bé" }]);
 
-
         if (roleId === 1) {
             getStorageIdByUser();
-
 
         }
         else if (roleId === 2) {
@@ -122,8 +99,6 @@ function MyTable() {
             setShowInStock(true);// Show inStock for role 2
         }
     }, [])
-
-
 
 
     useEffect(() => {
@@ -136,8 +111,6 @@ function MyTable() {
     }, [pageSize])
 
 
-
-
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
         setSelectedWarehouseId(res.warehouseId);
@@ -146,12 +119,10 @@ function MyTable() {
         // console.log("getStorageIdByUser:", res);
     }
 
-
     const getWarehouseById = async (userId) => {
         let res = await getUserIdWarehouse(userId);
         return res[0];
     }
-
 
     const getGoods = async (
         page = 1, pageSize = 15,
@@ -163,7 +134,6 @@ function MyTable() {
     ) => {
         setStartIndexOfPage((page - 1) * pageSize + 1);
         if (roleId === 1) {
-
 
             let res = await fetchGoodsWithFilter(pageSize,
                 page, warehouseId,
@@ -182,11 +152,9 @@ function MyTable() {
             setTotalPages(goods.totalPages);
             setcurrentPage(page - 1);
 
-
             // console.log("goodList2:  ", goods);
         }
     }
-
 
     const handlePageSizeChange = (event) => {
         const newSize = Number(event.target.value);
@@ -199,25 +167,21 @@ function MyTable() {
         }
     }
 
-
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
         setTotalCategories(res);
     }
-
 
     const getAllSuppliers = async () => {
         let res = await fetchAllSuppliers();
         setTotalSuppliers(res);
     }
 
-
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
         // console.log("totalWarehouse", res);
     }
-
 
     const handleCategoryClick = (category) => {
         setSelectedCategory(category.categoryName);
@@ -226,7 +190,6 @@ function MyTable() {
         setListGoods(res);
     }
 
-
     const handleSupplierClick = (supplier) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
@@ -234,6 +197,7 @@ function MyTable() {
             setListGoods(res); // Cập nhật danh sách hàng hóa với dữ liệu mới
         });
     }
+
 
     const handleSupplierClickTotal = () => {
         setSelectedSupplier("Nhà cung cấp");
@@ -244,13 +208,11 @@ function MyTable() {
         });
     };
 
-
     const handleCategoryClickTotal = async () => {
         setSelectedCategory("Các danh mục");
         setSelectedCategoryId(null);
         getGoods(1, pageSize, selectedWarehouseId, null, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
-
 
     const handleStorageClickTotal = async () => {
         setSelectedWarehouse("Tất cả kho");
@@ -258,12 +220,9 @@ function MyTable() {
         setShowInStock(false);
         await getGoods(1, pageSize, null, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
 
-
     }
 
-
     const handleStorageClick = async (warehouse) => {
-
 
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
@@ -275,8 +234,6 @@ function MyTable() {
     }
 
 
-
-
     const handlePageClick = (event) => {
         const newPage = +event.selected;
         setcurrentPage(newPage);
@@ -285,44 +242,33 @@ function MyTable() {
 
 
 
-
-
-
     const handleSearch = () => {
         getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
     }
-
 
     const handleShowGoodHistory = (good) => {
         setIsShowGoodHistory(true);
         setDataGood(good);
 
-
     }
-
 
     const handleZoomImage = (image) => {
         setIsShowModalZoomImage(true);
         setImageUrl(image);
     }
 
-
     const showModelEditGood = (good) => {
         setIsShowModelEditGood(true);
         setDataGoodEdit(good);
     }
 
-
     const updateTable = () => {
         getGoods(currentPage + 1, pageSize);
     }
 
-
     const handleImportClick = () => {
         setIsShowModalInputExcel(true);
     }
-
-
 
 
     return (
@@ -342,10 +288,8 @@ function MyTable() {
                                             style={{ zIndex: 999 }}
                                         >
 
-
                                             <Dropdown.Item eventKey=""
                                                 onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-
 
                                             {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                                 <Dropdown.Item
@@ -360,9 +304,6 @@ function MyTable() {
 
 
 
-
-
-
                                     </div>
                                     :
                                     <Col md={2}>
@@ -371,13 +312,11 @@ function MyTable() {
                                             value={selectedWarehouse} disabled />
                                     </Col>
 
-
                                 }
                             </Col>
                             <Col md={2}>
                                 <h8>Nhập số bản ghi</h8>
                                 <div className="input-group mb-3">
-
 
                                     <input
                                         type="number"
@@ -386,24 +325,19 @@ function MyTable() {
                                         value={pageSize}
                                         onChange={handlePageSizeChange}
 
-
                                     />
                                 </div>
                             </Col>
                             <div className="col-2">
 
-
                             </div>
 
-
                             <div className="col">
-
 
                                 <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập"
                                     variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()}>
                                 </DropdownButton>
-
-
+ 
                             </div>
                             <div className="col">
                                 <div className="input-group">
@@ -413,7 +347,6 @@ function MyTable() {
                                         placeholder='Tìm kiếm...'
                                         id="example-search-input4"
                                         onChange={(event) => setKeywordSearch(event.target.value)}
-
 
                                         readOnly={false}
                                     />
@@ -432,7 +365,6 @@ function MyTable() {
                                 (roleId == 1 || roleId == 2) ?
                                     <div className="col-auto">
 
-
                                         <button
                                             className="btn btn-success border-left-0 rounded ButtonCSS"
                                             type="button"
@@ -441,17 +373,14 @@ function MyTable() {
                                             &nbsp;Thêm hàng hóa
                                         </button>
 
-
                                     </div>
                                     : ''
                             }
                         </div>
                     </Row>
 
-
                     <div className=" table-responsive" style={{ overflowY: 'auto', overflowX: 'auto', zIndex: 3 }}>
                         <Table className="table text-center table-border table-hover  border-primary table-sm " >
-
 
                             <thead className='sticky-top' style={{ zIndex: 5 }}>
                                 <tr>
@@ -460,13 +389,11 @@ function MyTable() {
                                     <th className="align-middle textColor text-nowrap">TÊN SẢN PHẨM</th>
                                     <th className="align-middle text-nowrap">HÌNH ẢNH</th>
 
-
                                     <th className="align-middle text-nowrap " style={{ overflow: 'visible' }}>
                                         <Dropdown style={{ position: 'relative' }}>
                                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                                 <span style={{ color: 'white' }}>{selectedSupplier !== null ? selectedSupplier : "Nhà cung cấp"}</span>
                                             </Dropdown.Toggle>
-
 
                                             <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
                                                 <Dropdown.Item onClick={handleSupplierClickTotal}>
@@ -482,13 +409,11 @@ function MyTable() {
                                         </Dropdown>
                                     </th>
 
-
                                     <th className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                         <Dropdown style={{ position: 'relative' }}>
                                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                                 <span style={{ color: 'white' }}>{selectedCategory !== null ? selectedCategory : "Danh mục"}</span>
                                             </Dropdown.Toggle>
-
 
                                             <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
                                                 <Dropdown.Item onClick={handleCategoryClickTotal}>
@@ -504,8 +429,6 @@ function MyTable() {
                                     </th>
 
 
-
-
                                     {showInStock && <th className="align-middle text-nowrap">TỒN KHO</th>}
                                     <th className="align-middle text-nowrap">ĐƠN VỊ</th>
                                     <th className="align-middle text-nowrap">NGÀY NHẬP</th>
@@ -515,17 +438,13 @@ function MyTable() {
                                     <th className="align-middle text-nowrap">LỊCH SỬ<br />HÀNG HÓA</th>
 
 
-
-
                                 </tr>
                             </thead>
-
 
                             <tbody >
                                 {listGoods && listGoods.length > 0 &&
                                     listGoods.map((g, index) => (
                                         <tr key={`goods${index}`}>
-
 
                                             <td className="align-middle text-color-primary">{startIndexOfPage + index}</td>
                                             <td className="align-middle text-color-primary">{g.goodsCode}</td>
@@ -552,7 +471,6 @@ function MyTable() {
                                         </tr>
                                     ))
 
-
                                 }
                             </tbody>
 
@@ -561,8 +479,6 @@ function MyTable() {
                             >Không có dữ liệu</div>} */}
 
                         </Table>
-
-
 
 
                     </div>
@@ -597,16 +513,10 @@ function MyTable() {
                 handleClose={() => setIsShowModelEditGood(false)}
                 dataGoodEdit={dataGoodEdit} updateTable={updateTable} />
             <ModalAddGood isShow={isShowModelAddGood} handleClose={() => setIsShowModelAddGood(false)} updateTable={updateTable} />
-            <InportGoodsListModal isShow={isShowModalInputExcel} handleClose={() => setIsShowModalInputExcel(false)} updateTable={updateTable} />
+            <InportGoodsListModal isShow={isShowModalInputExcel} handleClose={() => setIsShowModalInputExcel(false)} />
             <ExportGoodsListModal isShow={isShowModalExportExcel} handleClose={() => setIsShowModalExportExcel(false)} />
         </div >
     );
 }
 
-
 export default MyTable;
-
-
-
-
-

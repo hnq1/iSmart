@@ -53,14 +53,14 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
 
             setSelectedDate(formatDateImport(detailOrderEdit.importedDate));
         }
-        console.log(rowsData);
-        console.log(detailOrderEdit);
+        // console.log("rowsData: ",rowsData);
+        console.log("detailOrderEdit: ", detailOrderEdit);
 
     }, [detailOrderEdit])
 
     const getTotalOrderDetail = async (importId) => {
         let res = await getImportOrderDetailByImportId(importId);
-        console.log(res);
+        // console.log(res);
         setRowsData(res);
         setTotalPrice(detailOrderEdit.totalCost);
     }
@@ -113,20 +113,22 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
 
     // update 1 row data từ RowDataImport
     const updateRowData = (rowUpdate, updateData) => {
-        console.log(updateData);
+        // console.log(updateData);
         const updateDataImport = [...rowsData];
         updateDataImport[rowUpdate] = updateData;
-        setTotalPrice(x => x - rowsData[rowUpdate].costPrice * rowsData[rowUpdate].quantity + updateData.costPrice * updateData.quantity);
+        // setTotalPrice(x => x - rowsData[rowUpdate].costPrice * rowsData[rowUpdate].quantity + updateData.costPrice * updateData.quantity);
         setRowsData(updateDataImport);
     }
 
     const handleUpdateImportOrder = async () => {
-
-        // console.log("detailOrderEdit.importId:", detailOrderEdit.importId);
+        // if (totalPrice === 0) {
+        //     toast.warning("Vui lòng nhập mặt hàng nhập");
+        // } else {
+        console.log(detailOrderEdit.importId);
         let res = await updateImportOrder(detailOrderEdit.importId,
             userId,
             selectedSupplierId,
-            totalPrice,
+            0,
             "",
             detailOrderEdit.createdDate,
             detailOrderEdit.importedDate,
@@ -136,26 +138,34 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
             selectedDeliveryId,
             detailOrderEdit.image,
             null);
-        
+        console.log("handleUpdateImportOrder: ", res);
         if (rowsData && rowsData.length > 0) {
             await Promise.all(rowsData.map(async (data, index) => {
                 await updateImportOrderDetail(
-                    
                     detailOrderEdit.importId,
+                    data.costPrice,
+                    data.detailId,// chưa lấy được
+                    data.goodsId,
+                    data.quantity,
+                    data.manufactureDate,
+                    data.expiryDate,
+                    data.batchCode
+                );
+                console.log("data: ", detailOrderEdit.importId,
                     data.costPrice,
                     data.detailId,
                     data.goodsId,
-                    data.quantity
-                );
-                console.log("udata:", data);
+                    data.quantity,
+                    data.manufactureDate,
+                    data.expiryDate,
+                    data.batchCode);
             }));
-            
         }
         toast.success("Thêm lô hàng nhập thành công");
         updateTable();
         handleCloseModal();
+        // }
 
-        console.log("ressss:",res);
     }
     const handleCloseModal = () => {
         handleReset();

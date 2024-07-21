@@ -424,6 +424,7 @@ namespace iSmart.Service
             }
         }
 
+
         public bool UpdateStatusGoods(int id, int StatusId)
         {
             try

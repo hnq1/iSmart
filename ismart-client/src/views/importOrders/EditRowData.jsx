@@ -3,6 +3,7 @@ import { Row, Col, Dropdown, Modal, Button } from "react-bootstrap";
 import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
+import { formatDate } from "date-fns";
 
 const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const [goodsId, setGoodsId] = useState();
@@ -29,9 +30,16 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
         setSupplierId(data.supplierId);
         setSupplierName(data.supplierName);
         setTotalOneGoodPrice(data.totalOneGoodPrice);
-
+        if (data.expiryDate) {
+            const formattedExpiryDate = formatDate(new Date(data.expiryDate), 'yyyy-MM-dd');
+            setExpiryDate(formattedExpiryDate);
+        }
+        if (data.manufactureDate) {
+            const formattedManufactureDate = formatDate(new Date(data.manufactureDate), 'yyyy-MM-dd');
+            setManufactureDate(formattedManufactureDate);
+        }
     }, [data])
-    // console.log("dataEditRowDataOrder: ", data);
+    // console.log("EditRowDataOrder: ", data);
 
     useEffect(() => {
         setTotalOneGoodPrice(quantity * costPrice);
@@ -98,10 +106,10 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
                 quantity: quantity,
                 supplierId: supplierId,
                 supplierName: supplierName,
-                totalOneGoodPrice: totalOneGoodPrice
+                totalOneGoodPrice: 0
 
             });
-            console.log("dataAfterEdit: ", quantity);
+            // console.log("dataAfterEdit: ", quantity);
             handleClose();
         };
     }
