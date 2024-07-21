@@ -47,22 +47,24 @@ namespace iSmart.Service
                         password = HashHelper.Encrypt(user.Password, _configuration);
                     }
 
+                    var userCode = GenerateUserCode(user.RoleId);
+
                     var requestUser = new User
                     {
                         UserName = user.UserName,
-                        UserCode = user.UserCode,
+                        UserCode = userCode,
                         FullName = user.FullName,
                         Email = user.Email,
                         Address = user.Address,
                         Phone = user.Phone,
                         RoleId = user.RoleId,
                         Password = password,
-                        StatusId = user.StatusId,
+                        StatusId = 1,
                         Image = user.Image,
                         //Status = _context.Statuses.FirstOrDefault(s => s.StatusId == user.StatusId)
                     };
 
-                    if (_context.Users.Any(u => u.UserName.ToLower() == user.UserName.ToLower()) || _context.Users.Any(u => u.UserCode.ToLower() == user.UserCode.ToLower()))
+                    if (_context.Users.Any(u => u.UserName.ToLower() == user.UserName.ToLower()) || _context.Users.Any(u => u.UserCode.ToLower() == userCode.ToLower()))
                     {
                         return new CreateUserResponse { IsSuccess = false, Message = "User existed" };
                     }
@@ -92,7 +94,34 @@ namespace iSmart.Service
             }
         }
 
+        private string GenerateUserCode(int roleId)
+        {
+            string prefix = roleId switch
+            {
+                1 => "ADM",  
+                2 => "WHM",  
+                3 => "STF", 
+                4 => "ACC"   
+            };
 
+            var lastUserCode = _context.Users
+                                       .Where(u => u.RoleId == roleId)
+                                       .OrderByDescending(u => u.UserId)
+                                       .Select(u => u.UserCode)
+                                       .FirstOrDefault();
+
+            int nextNumber = 1;
+            if (!string.IsNullOrEmpty(lastUserCode))
+            {
+                string numberPart = lastUserCode.Substring(prefix.Length);
+                if (int.TryParse(numberPart, out int lastNumber))
+                {
+                    nextNumber = lastNumber + 1;
+                }
+            }
+
+            return $"{prefix}{nextNumber:D4}";
+        }
         public List<UserDTO>? GetAllUser()
         {
             try

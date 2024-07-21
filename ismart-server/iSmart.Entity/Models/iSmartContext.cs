@@ -42,7 +42,6 @@ namespace iSmart.Entity.Models
         public virtual DbSet<UserWarehouse> UserWarehouses { get; set; }
         public virtual DbSet<Warehouse> Warehouses { get; set; }
         public virtual DbSet<GoodsWarehouse> GoodsWarehouses { get; set; }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

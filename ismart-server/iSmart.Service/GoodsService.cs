@@ -383,35 +383,44 @@ namespace iSmart.Service
         {
             try
             {
-                var requestGoods = new Good
-
+                var existingGood = _context.Goods.FirstOrDefault(g => g.GoodsId == goods.GoodsId);
+                if (existingGood == null)
                 {
-                    GoodsId = goods.GoodsId,
-                    GoodsName = goods.GoodsName,
-                    GoodsCode = goods.GoodsCode,
-                    CategoryId = goods.CategoryId,
-                    Description = goods.Description,
-                    SupplierId = goods.SupplierId,
-                    StockPrice = goods.StockPrice,
-                    MeasuredUnit = goods.MeasuredUnit,
-                    //InStock = goods.InStock,
-                    Image = goods.Image,
-                    StatusId = goods.StatusId,
-                    WarrantyTime = goods.WarrantyTime,
-                    Barcode = goods.Barcode,
-                    MaxStock = goods.MaxStock,
-                    MinStock = goods.MinStock
-                };
-                _context.Goods.Update(requestGoods);
-                _context.SaveChanges();
-                return new UpdateGoodsResponse { IsSuccess = true, Message = $"Cập nhật hàng hóa thành công" };
+                    return new UpdateGoodsResponse { IsSuccess = false, Message = "Hàng hóa không tồn tại" };
+                }
+                var duplicateGood = _context.Goods.FirstOrDefault(g => g.GoodsCode == goods.GoodsCode && g.GoodsId != goods.GoodsId);
+                if (duplicateGood != null)
+                {
+                    return new UpdateGoodsResponse
+                    {
+                        IsSuccess = false,
+                        Message = "GoodsCode đã tồn tại",
+                    };
+                }
+                existingGood.GoodsName = goods.GoodsName;
+                existingGood.GoodsCode = goods.GoodsCode;
+                existingGood.CategoryId = goods.CategoryId;
+                existingGood.Description = goods.Description;
+                existingGood.SupplierId = goods.SupplierId;
+                existingGood.StockPrice = goods.StockPrice;
+                existingGood.MeasuredUnit = goods.MeasuredUnit;
+                existingGood.Image = goods.Image;
+                existingGood.StatusId = goods.StatusId;
+                existingGood.WarrantyTime = goods.WarrantyTime;
+                existingGood.Barcode = goods.Barcode;
+                existingGood.MaxStock = goods.MaxStock;
+                existingGood.MinStock = goods.MinStock;
 
+                _context.Goods.Update(existingGood);
+                _context.SaveChanges();
+                return new UpdateGoodsResponse { IsSuccess = true, Message = "Cập nhật hàng hóa thành công" };
             }
             catch (Exception ex)
             {
-                return new UpdateGoodsResponse { IsSuccess = false, Message = $"Cập nhật hàng hóa thất bại" };
+                return new UpdateGoodsResponse { IsSuccess = false, Message = $"Cập nhật hàng hóa thất bại: {ex.Message}" };
             }
         }
+
 
         public bool UpdateStatusGoods(int id, int StatusId)
         {
