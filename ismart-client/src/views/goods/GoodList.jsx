@@ -315,7 +315,6 @@ function MyTable() {
                                 }
                             </Col>
                             <Col md={2}>
-                                <h8>Nhập số bản ghi</h8>
                                 <div className="input-group mb-3">
 
                                     <input
@@ -334,10 +333,10 @@ function MyTable() {
 
                             <div className="col">
 
-                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập"
-                                    variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()}>
-                                </DropdownButton>
- 
+                                <button className="btn btn-success border-left-0 rounded ButtonCSS" title="Nhập"
+                                    variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()} > Nhập
+                                </button>
+
                             </div>
                             <div className="col">
                                 <div className="input-group">
@@ -431,12 +430,15 @@ function MyTable() {
 
                                     {showInStock && <th className="align-middle text-nowrap">TỒN KHO</th>}
                                     <th className="align-middle text-nowrap">ĐƠN VỊ</th>
-                                    <th className="align-middle text-nowrap">NGÀY NHẬP</th>
+                                    <th className="align-middle text-nowrap">TỒN KHO<br />TỐI THIỂU</th>
+                                    <th className="align-middle text-nowrap">TỒN KHO<br />TỐI ĐA</th>
+                                    <th className="align-middle text-nowrap">NGÀY KHỞI TẠO</th>
                                     {/* <th className='align-middle text-nowrap'>GIÁ NHẬP</th> */}
                                     <th className="align-middle text-nowrap">HẠN<br />BẢO HÀNH</th>
+
                                     <th className="align-middle text-nowrap">BARCODE</th>
                                     <th className="align-middle text-nowrap">LỊCH SỬ<br />HÀNG HÓA</th>
-
+                                    <th className="align-middle text-nowrap">TUỲ CHỌN</th>
 
                                 </tr>
                             </thead>
@@ -456,6 +458,8 @@ function MyTable() {
                                             <td className="align-middle">{g.categoryName}</td>
                                             {showInStock && <td className="align-middle">{g.inStock}</td>}
                                             <td className="align-middle">{g.measuredUnit}</td>
+                                            <td className="align-middle">{g.minStock}</td>
+                                            <td className="align-middle">{g.maxStock}</td>
                                             <td className="align-middle">{formatDate(g.createdDate ? g.createdDate : "2024-03-18T04:10:59.041Z")}</td>
                                             {/* <td className='align-middle'>{formattedAmount(g.stockPrice)}</td> */}
                                             <td className="align-middle">{g.warrantyTime + " Tháng "}</td>
@@ -513,7 +517,7 @@ function MyTable() {
                 handleClose={() => setIsShowModelEditGood(false)}
                 dataGoodEdit={dataGoodEdit} updateTable={updateTable} />
             <ModalAddGood isShow={isShowModelAddGood} handleClose={() => setIsShowModelAddGood(false)} updateTable={updateTable} />
-            <InportGoodsListModal isShow={isShowModalInputExcel} handleClose={() => setIsShowModalInputExcel(false)} />
+            <InportGoodsListModal isShow={isShowModalInputExcel} handleClose={() => setIsShowModalInputExcel(false)} updateTable={updateTable} />
             <ExportGoodsListModal isShow={isShowModalExportExcel} handleClose={() => setIsShowModalExportExcel(false)} />
         </div >
     );

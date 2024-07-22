@@ -222,7 +222,10 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             toast.warning("Vui lòng nhập số lượng tối thiểu lớn hơn 0");
         } else if (!trimmedDescription.trim()) {
             toast.warning("Vui lòng nhập mô tả chi tiết không được để trống");
-        } else {
+        } else if (maxStock <= minStock) {///////
+            toast.warning("Vui lòng nhập số lượng tối đa lớn hơn số lượng tối thiểu");
+        }
+        else {
             let res;
             if (roleId === 1) {
                 res = await addGoodinAdmin(selectedWarehouseId,
@@ -255,11 +258,17 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     minStock
                 );
             }
-            // console.log("resAddProduct: ", res);
+
+            console.log("resAddProduct: ", res);
             // console.log("stockPrice: ", stockPrice);
-            toast.success("Thêm mặt hàng mới thành công");
-            handleCloseModal();
-            updateTable();
+            if (res.isSuccess) {
+                toast.success("Thêm mặt hàng mới thành công");
+                handleCloseModal();
+                updateTable();
+            } else {
+                toast.error(res.message || "Mã hàng đã tồn tại");
+            }
+
             // console.log("resAddProduct: ", res);
         }
 
@@ -380,7 +389,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                         </Col>
 
                         <Col md={5}>
-                            <label >Hạn bảo hành </label>
+                            <label >Hạn bảo hành (tháng) </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} />
                         </Col>
                     </Row>
@@ -406,11 +415,11 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
-                            <label >Số lượng tối đa </label>
+                            <label >Tồn kho tối đa </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
                         </Col>
                         <Col md={5}>
-                            <label > Số lượng tối thiểu </label>
+                            <label > Tồn kho tối thiểu </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
                         </Col>
                     </Row>

@@ -16,8 +16,13 @@ import { fetchUserByUserId } from "~/services/UserServices";
 import { Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
 import { toast } from "react-toastify";
 
+
 import { format } from 'date-fns';
 import { get } from "lodash";
+
+
+
+
 
 
 
@@ -27,46 +32,60 @@ const ExportOrderList = () => {
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
 
+
+
     const [totalExportOrder, setTotalExportOrder] = useState([]);
     const [currentPage, setcurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(5);
 
+
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
+
 
     const [isShowExportModelAddAuto, setIsShowExportModelAddAuto] = useState(false);
     const [isShowExportModelAddManual, setIsShowExportModelAddManual] = useState(false);
     const [isShowModelConfirm, setIsShowModelConfirm] = useState(false);
     const [dataImportOrder, setDataImportOrder] = useState({});
 
+
     const [isShowModalZoomImage, setIsShowModalZoomImage] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
+
 
     const [isShowDetailOrder, setIsShowDetailOrder] = useState(false);
     const [dataDetailOrder, setDataDetailOrder] = useState([]);
 
+
     const [isShowEditOrder, setIsShowEditOrder] = useState(false);
     const [dataEditOrder, setDataEditOrder] = useState([]);
 
+
     const [isShowModalCancelExport, setIsShowModalCancelExport] = useState(false);
     const [dataCancelExport, setDataCancelExport] = useState([]);
+
 
     const [sortedByStatusId, setSortedByStatusId] = useState();
     const [sortedByStatusName, setSortedByStatusName] = useState("");
     const [sortStatusOptions, setSortStatusOptions] = useState([]);
 
+
     const [sortedByDateId, setSortedByDateId] = useState();
     const [sortedByDateName, setSortedByDateName] = useState("");
     const [sortDateOptions, setSortDateOptions] = useState([]);
 
+
     const [keywordSearch, setKeywordSearch] = useState("");
     const [currentDate, setCurrentDate] = useState();
+
 
     const [pageSize, setPageSize] = useState(15);
     const [showDropdown, setShowDropdown] = useState(false);
 
+
     const handleShowDropdown = () => setShowDropdown(!showDropdown);
+
 
     useEffect(() => {
         getExportOrders(1);
@@ -78,18 +97,22 @@ const ExportOrderList = () => {
         { idSort: 4, nameSort: "Đã hoàn thành" },
         { idSort: 5, nameSort: "Đã hủy" }]);
 
+
         setSortDateOptions([{ idSort: null, nameSort: "Tất cả ngày" },
         { idSort: 1, nameSort: "Gần nhất" },
         ]);
         getAllStorages();
         setCurrentDate(format(new Date(), 'dd/MM/yyyy'));
 
+
     }, [])
+
 
     useEffect(() => {
         // Đảm bảo rằng getExportOrders được gọi mỗi khi có sự thay đổi cần thiết
         getExportOrders(1, pageSize, sortedByStatusId, sortedByDateId, keywordSearch);
     }, [pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch]);
+
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
@@ -97,16 +120,20 @@ const ExportOrderList = () => {
         // console.log("fetchAllStorages: ", res);
     }
 
+
     const handleStorageClickTotal = () => {
         setSelectedWarehouse("Tất cả kho");
         setSelectedWarehouseId(null);
     }
+
 
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
         getExportOrders(1, pageSize, warehouse.warehouseId, sortedByStatusId, sortedByDateId);
     }
+
+
 
 
     const getStorageIdByUser = async () => {
@@ -116,6 +143,7 @@ const ExportOrderList = () => {
         setSelectedWarehouse(res.warehouseName);
     }
 
+
     const getExportOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
         setcurrentPage(page - 1);
         let res = await fetchExportOrdersWithFilter(
@@ -124,10 +152,12 @@ const ExportOrderList = () => {
             sortedByStatusId,
             sortedByDateId, keywordSearch);
 
+
         setTotalExportOrder(res.data);
         setTotalPages(res.totalPages);
         // console.log("fetchExportOrdersWithFilter: ", res.data);
     }
+
 
     const handlePageSizeChange = (event) => {
         setPageSize(Number(event.target.value));
@@ -136,25 +166,32 @@ const ExportOrderList = () => {
         setSortedByStatusId(sort.idSort);
         setSortedByStatusName(sort.nameSort);
 
+
     }
+
 
     const handleSortDateClick = (sort) => {
         setSortedByDateId(sort.idSort);
         setSortedByDateName(sort.nameSort);
 
+
     }
+
 
     const handlePageClick = (event) => {
         getExportOrders(+event.selected + 1, pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId);
     }
 
+
     const handleSearch = () => {
         getExportOrders(1, pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
     }
 
+
     const updateTable = () => {
         getExportOrders(currentPage + 1, pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId);
     }
+
 
     const ShowModelConfirm = (i) => {
         console.log("ShowModelConfirm", i);
@@ -169,15 +206,18 @@ const ExportOrderList = () => {
         }
     }
 
+
     const handleZoomImage = (image) => {
         setIsShowModalZoomImage(true);
         setImageUrl(image);
     }
 
+
     const ShowDetailOrder = (order) => {
         setDataDetailOrder(order);
         setIsShowDetailOrder(true);
     }
+
 
     const ShowEditDetailOrder = (order) => {
         setIsShowEditOrder(true);
@@ -185,10 +225,12 @@ const ExportOrderList = () => {
         setDataEditOrder(order);
     }
 
+
     const ShowModalCancelExport = (data) => {
         setIsShowModalCancelExport(true);
         setDataCancelExport(data);
     }
+
 
     const ConfirmCancelExport = async (confirm) => {
         if (confirm) {
@@ -196,6 +238,8 @@ const ExportOrderList = () => {
             getExportOrders(currentPage + 1, pageSize);
         }
     }
+
+
 
 
     return (
@@ -214,8 +258,10 @@ const ExportOrderList = () => {
                                         style={{ zIndex: 999 }}
                                     >
 
+
                                         <Dropdown.Item eventKey=""
                                             onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
 
                                         {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                             <Dropdown.Item
@@ -281,6 +327,7 @@ const ExportOrderList = () => {
                             </div>
                             {roleId === 3 || roleId === 1 ?
 
+
                                 <div className="col-auto ButtonCSSDropdown">
                                     <DropdownButton
                                         id="dropdown-basic-button"
@@ -306,6 +353,9 @@ const ExportOrderList = () => {
 
 
 
+
+
+
                         </div>
                         <div className=" table-responsive" style={{ overflowY: 'auto', overflowX: 'auto' }}>
                             <Table className="table text-center table-border table-hover  border-primary table-sm">
@@ -324,12 +374,14 @@ const ExportOrderList = () => {
                                         <th className="align-middle  text-nowrap">Người <br />nhận hàng</th>
                                         <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
                                         {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Hủy bỏ<br />đơn hàng</th> : ''}
-                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa</th> : ''}
+                                        {/* {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa</th> : ''} */}
                                         {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap position-sticky" style={{ right: 0, minWidth: '150px' }}>Hành động</th> : ''}
+
 
                                     </tr>
                                 </thead>
                                 <tbody>
+
 
                                     {totalExportOrder && totalExportOrder.length > 0
                                         && totalExportOrder.map((i, index) => (
@@ -343,6 +395,7 @@ const ExportOrderList = () => {
                                                 <td className="align-middle">{i.warehouseName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
 
+
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
@@ -351,7 +404,6 @@ const ExportOrderList = () => {
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>
-
                                                     <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
                                                 </td>
                                                 {/* {roleId === 2 && i.statusType === "On Progress" ?
@@ -360,21 +412,34 @@ const ExportOrderList = () => {
                                                     : ''
                                                 } */}
 
+
                                                 {/* {roleId === 2 && i.statusType === "On Progress" ? <td className="align-middle " style={{ padding: '10px' }}>
+
 
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : <td></td>} */}
-                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle">
-                                                    <i className="fa-solid fa-ban actionButtonCSS"
-                                                        onClick={() => ShowModalCancelExport(i)}
-                                                    ></i></td> : ''}
-                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle " style={{ padding: '10px' }}>
+                                                {(roleId === 1 || roleId === 2) ? (
+                                                    i.statusType !== "On Progress" ? (
+                                                        <td className="align-middle">
+                                                            <i
+                                                                className="fa-solid fa-ban "
+                                                                style={{ color: 'red' }}
+                                                            ></i>
+                                                        </td>
+                                                    ) : (
+                                                        <td className="align-middle">
+                                                            <i
+                                                                className="fa-solid fa-ban actionButtonCSS"
+                                                                onClick={() => ShowModalCancelExport(i)}
+                                                            ></i>
+                                                        </td>
+                                                    )
+                                                ) : ''}
+                                                {/* {(roleId === 1 || roleId === 2) ? <td className="align-middle " style={{ padding: '10px' }}>
+
 
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
-                                                </td> : ''}
-
-
-
+                                                </td> : ''} */}
                                                 {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
                                                     className="btn btn-success border-left-0 rounded "
                                                     type="button"
@@ -386,8 +451,13 @@ const ExportOrderList = () => {
 
 
 
+
+
+
+
                                             </tr>
                                         ))}
+
 
                                 </tbody>
                             </Table>
@@ -395,6 +465,7 @@ const ExportOrderList = () => {
                     </div>
                 </div>
             </div>
+
 
             <div className="d-flex justify-content-center  mt-3">
                 <ReactPaginate
@@ -431,4 +502,8 @@ const ExportOrderList = () => {
     )
 }
 
+
 export default ExportOrderList
+
+
+

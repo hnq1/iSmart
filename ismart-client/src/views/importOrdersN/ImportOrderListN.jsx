@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 
+
 import ModelAddImportOrderN from '../importOrdersN/AddImportOrderN';
 import ConfirmImportOrderN from './ConfirmImportOrderN';
 import { fetchImportOrdersWithfilter } from '~/services/ImportOrderServices';
@@ -20,57 +21,76 @@ import { fetchUserByUserId } from '~/services/UserServices';
 import { get } from 'lodash';
 import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 
+
 function ImportOrderListN() {
+
 
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
+
     const [pageSize, setPageSize] = useState(15);
+
 
     const [totalImportOrder, setTotalImportOrder] = useState([]);
     const [totalPages, setTotalPages] = useState(5);
     const [currentPage, setcurrentPage] = useState(0);
 
+
     const [isShowImportModelAdd, setIsShowImportModelAdd] = useState(false);
     const [isShowModelConfirm, setIsShowModelConfirm] = useState(false);
     const [dataImportOrder, setDataImportOrder] = useState({});
 
+
     const [isShowModalZoomImage, setIsShowModalZoomImage] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
 
+
     const [isShowDetailOrder, setIsShowDetailOrder] = useState(false);
 
+
     const [isShowEditOrder, setIsShowEditOrder] = useState(false);
+
 
     const [detailOrder, setDetailOrder] = useState([]);
     const [detailOrderEdit, setDetailOrderEdit] = useState([]);
 
+
     // const [totalStorages, setTotalStorages] = useState([]);
     // const [selectedStorage, setSelectedStorage] = useState(null);
     // const [selectedStorageId, setSelectedStorageId] = useState(null);
+
 
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
 
+
+
     const [sortedByStatusId, setSortedByStatusId] = useState();
     const [sortedByStatusName, setSortedByStatusName] = useState("");
     const [sortStatusOptions, setSortStatusOptions] = useState([]);
+
 
     const [sortedByDateId, setSortedByDateId] = useState();
     const [sortedByDateName, setSortedByDateName] = useState("");
     const [sortDateOptions, setSortDateOptions] = useState([]);
 
+
     const [isShowBarCode, setIsShowBarCode] = useState(false);
     const [barCodeDetail, setBarCodeDetail] = useState([]);
+
 
     const [isShowModalCancelImport, setIsShowModalCancelImport] = useState(false);
     const [dataCancelImport, setDataCancelImport] = useState([]);
 
+
     const [keywordSearch, setKeywordSearch] = useState("");
 
+
     const [currentDate, setCurrentDate] = useState();
+
 
     useEffect(() => {
         getImportOrders(1);
@@ -83,26 +103,35 @@ function ImportOrderListN() {
         { idSort: 4, nameSort: "Đã hoàn thành" },
         { idSort: 5, nameSort: "Đã huỷ" }]);
 
+
         setSortDateOptions([{ idSort: null, nameSort: "Tất cả ngày" },
         { idSort: 1, nameSort: "Gần nhất" },
         ]);
         setCurrentDate(format(new Date(), 'dd/MM/yyyy'));
     }, [])
 
-    // Mỗi khi selectedWarehouseId, sortedByStatusId hoặc sortedByDateId thay đổi, gọi lại getImportOrders
-    useEffect(() => {
-        // Đảm bảo rằng getImportOrders được gọi mỗi khi có sự thay đổi cần thiết
-        if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
-            getImportOrders(1, pageSize);
-        }
-    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId, pageSize]);
 
-    // Khi pageSize thay đổi, gọi lại getImportOrders
+    // Mỗi khi selectedWarehouseId, sortedByStatusId hoặc sortedByDateId thay đổi, gọi lại getImportOrders
+    // useEffect(() => {
+    //     // Đảm bảo rằng getImportOrders được gọi mỗi khi có sự thay đổi cần thiết
+    //     if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
+    //         getImportOrders(1, pageSize);
+    //     }
+    // }, [selectedWarehouseId, sortedByStatusId, sortedByDateId, pageSize]);
+
+
+    // // Khi pageSize thay đổi, gọi lại getImportOrders
+    // useEffect(() => {
+    //     if (sortedByStatusId !== undefined) {
+    //         getImportOrders(1, pageSize);
+    //     }
+    // }, [sortedByStatusId, pageSize]);
+
+    //QH
     useEffect(() => {
-        if (sortedByStatusId !== undefined) {
-            getImportOrders(1, pageSize);
-        }
-    }, [sortedByStatusId, pageSize]);
+        getImportOrders(1, pageSize);
+    }, [selectedWarehouseId, sortedByStatusId, sortedByDateId, pageSize])
+
 
     const getStorageIdByUser = async () => {
         let res = await fetchUserByUserId(userId);
@@ -126,35 +155,44 @@ function ImportOrderListN() {
             setTotalPages(res.totalPages);
         }
 
+
     }
+
 
     const handlePageSizeChange = (event) => {
         setPageSize(Number(event.target.value));
     }
+
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
     }
 
+
     const handleStorageClickTotal = () => {
         setSelectedWarehouse("Tất cả kho");
         setSelectedWarehouseId(null);
     }
 
+
     const handleStorageClick = async (warehouse) => {
+
 
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
         getImportOrders(1, pageSize);
     }
 
+
     const handleSortStatusClick = (sort) => {
         setSortedByStatusId(sort.idSort);
         setSortedByStatusName(sort.nameSort);
         getImportOrders(1, pageSize);
 
+
     }
+
 
     const handleSortDateClick = (sort) => {
         setSortedByDateId(sort.idSort);
@@ -162,18 +200,22 @@ function ImportOrderListN() {
         getImportOrders(1, pageSize);
     }
 
+
     const handlePageClick = (event) => {
         setcurrentPage(+event.selected);
         getImportOrders(+event.selected + 1, pageSize);
     }
 
+
     const handleSearch = () => {
         getImportOrders(1, pageSize);
     }
 
+
     const updateTable = () => {
         getImportOrders(currentPage + 1, pageSize);
     }
+
 
     // Check chưa đến ngày nhập hàng trong hợp đồng bàn giao
     const ShowModelConfirm = (i) => {
@@ -185,22 +227,27 @@ function ImportOrderListN() {
             setDataImportOrder(i);
         }
 
+
     }
+
 
     const handleZoomImage = (image) => {
         setIsShowModalZoomImage(true);
         setImageUrl(image);
     }
 
+
     const ShowDetailOrder = (order) => {
         setIsShowDetailOrder(true);
         setDetailOrder(order);
     }
 
+
     const EditDetailOrder = (order) => {
         setIsShowEditOrder(true);
         setDetailOrderEdit(order);
     }
+
 
     const ShowBarCode = (order) => {
         setIsShowBarCode(true);
@@ -214,7 +261,9 @@ function ImportOrderListN() {
             setDataCancelImport(data);
         }
 
+
     }
+
 
     const ConfirmCancelImport = async (confirm) => {
         if (confirm) {
@@ -223,6 +272,8 @@ function ImportOrderListN() {
             getImportOrders(currentPage + 1);
         }
     }
+
+
 
 
     return (
@@ -242,8 +293,10 @@ function ImportOrderListN() {
                                             style={{ zIndex: 999 }}
                                         >
 
+
                                             <Dropdown.Item eventKey=""
                                                 onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
 
                                             {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                                 <Dropdown.Item
@@ -261,6 +314,7 @@ function ImportOrderListN() {
                                             aria-describedby="emailHelp" value={selectedWarehouse} disabled />
                                     </Col>
                                 }
+
 
                                 <Col md={2}>
                                     <div className="input-group mb-3">
@@ -289,6 +343,7 @@ function ImportOrderListN() {
                                     </DropdownButton>
                                 </Col>
 
+
                                 <Col md={2}>
                                     <div className="input-group">
                                         <input
@@ -298,6 +353,7 @@ function ImportOrderListN() {
                                             id="example-search-input4"
                                             readOnly={false}
                                             onChange={(event) => setKeywordSearch(event.target.value)}
+
 
                                         />
                                         <div className="input-group-append">
@@ -311,8 +367,10 @@ function ImportOrderListN() {
                                         </div>
                                     </div>
 
+
                                 </Col>
                                 {(roleId === 3 || roleId === 1) ?
+
 
                                     <Col md={2}>
                                         <div className="col-auto ButtonCSSDropdown">
@@ -324,13 +382,18 @@ function ImportOrderListN() {
                                                 &nbsp;
                                                 Thêm lô hàng nhập
 
+
                                             </button>
                                         </div>
+
 
                                     </Col>
                                     : ''
                                 }
                             </Row>
+
+
+
 
 
 
@@ -352,20 +415,30 @@ function ImportOrderListN() {
                                         <th className="align-middle  text-nowrap">Hình ảnh</th>
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
 
+
                                         <th className="align-middle  text-nowrap">Người <br />xác nhận</th>
                                         <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
+<<<<<<< HEAD
                                         {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
                                         {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
+=======
+                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
+                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
+>>>>>>> origin/thanhdthe150750
 
-                                        {(roleId === 1 || roleId === 3) ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''}
+
+                                        {roleId === 3 ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''}
                                         {(roleId === 1 || roleId === 2) ?
                                             <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>
                                             : ''}
 
 
+
+
                                     </tr>
                                 </thead>
                                 <tbody>
+
 
                                     {totalImportOrder && totalImportOrder.length > 0
                                         && totalImportOrder.map((i, index) => (
@@ -389,15 +462,19 @@ function ImportOrderListN() {
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>
 
+
                                                     <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
                                                 </td>
                                                 {roleId === 2 ? <td className="align-middle " style={{ padding: '10px' }}>
 
+
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => EditDetailOrder(i)}></i>
                                                 </td> : ''}
 
+
                                                 {roleId === 2 ? <td className="align-middle"> <i className="fa-solid fa-ban actionButtonCSS" onClick={() => ShowModalCancelImport(i)}></i></td> : ''}
                                                 {roleId === 3 ? <td className="align-middle"> {i.statusType === "Completed" ? <i className="fa-solid fa-barcode actionButtonCSS" onClick={() => ShowBarCode(i)}></i> : ''}</td> : ''}
+
 
                                                 {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
                                                     className="btn btn-success border-left-0 rounded "
@@ -409,12 +486,14 @@ function ImportOrderListN() {
                                             </tr>
                                         ))}
 
+
                                 </tbody>
                             </Table>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <div className="d-flex justify-content-center  mt-3">
                 <ReactPaginate
@@ -448,7 +527,14 @@ function ImportOrderListN() {
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
         </>
 
+
     );
 }
 
+
 export default ImportOrderListN;
+
+
+
+
+

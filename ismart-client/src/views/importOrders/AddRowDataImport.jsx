@@ -65,11 +65,21 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
         } else if (!manufactureDate || !expiryDate) {
             toast.warning("Vui lòng nhập đầy đủ ngày sản xuất và ngày hết hạn");
+<<<<<<< HEAD
             // } else if (manufactureDate >= expiryDate) {
             //     toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
             // } else if (manufactureDate <= currentDate) {
             //     toast.warning("Ngày sản xuất phải nhỏ hơn ngày hiện tại");
         } else {
+=======
+        } else if (manufactureDate >= expiryDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
+        } else if (manufactureDate >= currentDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày tạo đơn");
+        }
+
+        else {
+>>>>>>> origin/thanhdthe150750
             onChange({
                 batchCode: selectedBatchCode,
                 costPrice: 0,

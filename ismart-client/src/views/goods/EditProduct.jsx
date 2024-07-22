@@ -170,6 +170,8 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             toast.warning("Vui lòng nhập maxstock lớn hơn 0");
         } else if (minStock <= 0) {
             toast.warning("Vui lòng nhập minstock lớn hơn 0");
+        } else if (maxStock <= minStock) {///////
+            toast.warning("Vui lòng nhập tồn kho tối đa lớn hơn tồn kho tối thiểu");
         }
         else {
             let finalImage = imageGood || dataGoodEdit.image;
@@ -190,9 +192,14 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 maxStock,
                 minStock);
             // console.log("RES UPDATE", selectedWarehouseId);
-            updateTable();
-            toast.success("Sửa mặt hàng thành công");
-            handleCloseModal();
+            if (res.IsSuccess) {
+                updateTable();
+                toast.success("Sửa mặt hàng thành công");
+                handleCloseModal();
+            } else {
+                toast.error(res.Message || "Mã hàng đã tồn tại");
+            }
+
         }
     }
 
@@ -302,7 +309,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                         </Col>
 
                         <Col md={5}>
-                            <label >Hạn bảo hành </label>
+                            <label >Hạn bảo hành (tháng) </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} />
                         </Col>
                     </Row>
@@ -323,11 +330,11 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                     </row>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
-                            <label >MaxStock </label>
+                            <label >Tồn kho tối đa </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
                         </Col>
                         <Col md={5}>
-                            <label >MinStock </label>
+                            <label >Tồn kho tối thiểu </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
                         </Col>
                     </Row>
