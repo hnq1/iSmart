@@ -100,24 +100,34 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
             setTotalWarehouse2(allwh); // Giả sử setTotalWarehouse là hàm setState đã được định nghĩa ở nơi khác
         };
     }
-    const handleStorageClickImport = (warehouse) => {
+    // Xử lý chọn "Tất cả kho Nhập"
+    const handleStorageClickTotalImport = async () => {
+        await getAllStorages2(); //QH
+        setSelectedWarehouseImportId("");
+        setSelectedWarehouseImport("Nhập Vào Kho");
+    }
+
+
+    const handleStorageClickImport = async (warehouse) => {
+        await getAllStorages2(); //QH
         setSelectedWarehouseImport(warehouse.warehouseName);
         setSelectedWarehouseImportId(warehouse.warehouseId);
+        setTotalWarehouse2(x => x.filter(w => w.warehouseId !== warehouse.warehouseId)); //QH
     }
 
-    const handleStorageClickExport = (warehouse) => {
+    // Xử lý chọn "Tất cả kho Xuất"
+    const handleStorageClickTotalExport = async () => {
+        await getAllStorages1(); //QH
+        setSelectedWarehouseExportId("");
+        setSelectedWarehouseExport("Xuất Từ Kho");
+    }
+
+
+    const handleStorageClickExport = async (warehouse) => {
+        await getAllStorages1(); //QH
         setSelectedWarehouseExport(warehouse.warehouseName);
         setSelectedWarehouseExportId(warehouse.warehouseId);
-    }
-
-    const handleStorageClickTotalImport = () => {
-        setSelectedWarehouseImport(null);
-        setSelectedWarehouseImportId(null);
-    }
-
-    const handleStorageClickTotalExport = () => {
-        setSelectedWarehouseExport(null);
-        setSelectedWarehouseExportId(null);
+        setTotalWarehouse1(x => x.filter(w => w.warehouseId !== warehouse.warehouseId)); //QH
     }
 
 
@@ -347,42 +357,39 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                                 <Col md={2}>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"
-                                        title={selectedWarehouseImport || "Nhập Vào Kho"}
+                                        title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Nhập Vào Kho"}
                                         variant="success"
                                         style={{ zIndex: 999 }}
                                     >
-                                        <Dropdown.Item eventKey="" onClick={handleStorageClickTotalImport}>
-                                            Nhập Vào Kho
-                                        </Dropdown.Item>
-                                        {totalWarehouse1.map((c, index) => (
+                                        <Dropdown.Item eventKey=""
+                                            onClick={() => handleStorageClickTotalImport()}>Nhập Vào Kho</Dropdown.Item>
+
+                                        {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
                                             <Dropdown.Item
-                                                key={`warehouse-import-${index}`}
+                                                key={`warehouse ${index}`}
                                                 eventKey={c.warehouseName}
-                                                onClick={() => handleStorageClickImport(c)}
+                                                onClick={(e) => handleStorageClickImport(c, e)}
                                             >
                                                 {c.warehouseName}
                                             </Dropdown.Item>
                                         ))}
                                     </DropdownButton>
                                 </Col>
-
                                 : ''
                         }
                         <Col md={2}>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouseExport || "Xuất Từ Kho"}
+                                title={selectedWarehouseExport !== null ? selectedWarehouseExport : "Xuất Từ Kho"}
                                 variant="success"
                                 style={{ zIndex: 999 }}
                             >
-                                <Dropdown.Item eventKey="" onClick={handleStorageClickTotalExport}>
-                                    Xuất Từ Kho
-                                </Dropdown.Item>
-                                {totalWarehouse2.map((c, index) => (
+                                <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotalExport()}>Xuất Từ Kho</Dropdown.Item>
+                                {totalWarehouse2 && totalWarehouse2.length > 0 && totalWarehouse2.map((c, index) => (
                                     <Dropdown.Item
-                                        key={`warehouse-export-${index}`}
+                                        key={`warehouse ${index}`}
                                         eventKey={c.warehouseName}
-                                        onClick={() => handleStorageClickExport(c)}
+                                        onClick={(e) => handleStorageClickExport(c, e)}
                                     >
                                         {c.warehouseName}
                                     </Dropdown.Item>

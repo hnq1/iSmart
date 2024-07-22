@@ -337,7 +337,7 @@ function MyTable() {
                                 <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title="Nhập"
                                     variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()}>
                                 </DropdownButton>
- 
+
                             </div>
                             <div className="col">
                                 <div className="input-group">
@@ -431,7 +431,7 @@ function MyTable() {
 
                                     {showInStock && <th className="align-middle text-nowrap">TỒN KHO</th>}
                                     <th className="align-middle text-nowrap">ĐƠN VỊ</th>
-                                    <th className="align-middle text-nowrap">NGÀY NHẬP</th>
+                                    <th className="align-middle text-nowrap">NGÀY KHỞI TẠO</th>
                                     {/* <th className='align-middle text-nowrap'>GIÁ NHẬP</th> */}
                                     <th className="align-middle text-nowrap">HẠN<br />BẢO HÀNH</th>
                                     <th className="align-middle text-nowrap">BARCODE</th>

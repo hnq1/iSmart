@@ -172,27 +172,33 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
     }
 
     // Xử lý chọn "Tất cả kho Nhập"
-    const handleStorageClickTotalImport = () => {
+    const handleStorageClickTotalImport = async () => {
+        await getAllStorages2(); //QH
         setSelectedWarehouseImportId("");
         setSelectedWarehouseImport("Tất cả kho Nhập");
     }
 
 
     const handleStorageClickImport = async (warehouse) => {
+        await getAllStorages2(); //QH
         setSelectedWarehouseImport(warehouse.warehouseName);
         setSelectedWarehouseImportId(warehouse.warehouseId);
+        setTotalWarehouse2(x => x.filter(w => w.warehouseId !== warehouse.warehouseId)); //QH
     }
 
     // Xử lý chọn "Tất cả kho Xuất"
-    const handleStorageClickTotalExport = () => {
+    const handleStorageClickTotalExport = async () => {
+        await getAllStorages1(); //QH
         setSelectedWarehouseExportId("");
         setSelectedWarehouseExport("Tất cả kho Xuất");
     }
 
 
     const handleStorageClickExport = async (warehouse) => {
+        await getAllStorages1(); //QH
         setSelectedWarehouseExport(warehouse.warehouseName);
         setSelectedWarehouseExportId(warehouse.warehouseId);
+        setTotalWarehouse1(x => x.filter(w => w.warehouseId !== warehouse.warehouseId)); //QH
     }
     const getWarehouseById = async (userId) => {
         let res = await getUserIdWarehouse(userId);

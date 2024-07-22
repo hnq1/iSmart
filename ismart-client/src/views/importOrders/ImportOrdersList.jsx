@@ -305,24 +305,24 @@ function ImportOrderList() {
                                     </div>
 
                                 </Col>
-                                
 
-                                    <Col md={2}>
-                                        <div className="col-auto ButtonCSSDropdown">
-                                            <button
-                                                className="btn btn-success border-left-0 rounded"
-                                                type="button"
-                                                onClick={() => setIsShowImportModelAdd(true)}
-                                            ><i className="fa-solid fa-plus"></i>
-                                                &nbsp;
-                                                Thêm lô hàng nhập
 
-                                            </button>
-                                        </div>
+                                <Col md={2}>
+                                    <div className="col-auto ButtonCSSDropdown">
+                                        <button
+                                            className="btn btn-success border-left-0 rounded"
+                                            type="button"
+                                            onClick={() => setIsShowImportModelAdd(true)}
+                                        ><i className="fa-solid fa-plus"></i>
+                                            &nbsp;
+                                            Thêm lô hàng nhập
 
-                                    </Col>
-                                    
-                                
+                                        </button>
+                                    </div>
+
+                                </Col>
+
+
                             </Row>
 
 
