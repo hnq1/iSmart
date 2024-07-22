@@ -35,7 +35,7 @@ namespace iSmart.API.Controllers
         {
             try
             {
-                User user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == model.UserName);
+                User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == model.UserName);
                 if (user != null && HashHelper.Decrypt(user.Password, _configuration) == model.Password && user.StatusId == 1)
                 {
                     var tokenModel = GenerateToken(user);
