@@ -66,27 +66,24 @@ namespace iSmart.API.Controllers
             user.Password = TokenHelper.GenerateNumericToken(8);
             var password = user.Password;
             var result = _userService.AddUser(user, warehouseId);
-            if (result != null && result.IsSuccess)
-            {
-                MailMessage mm = new MailMessage("wmsystemsp24@gmail.com", user.Email);
-                mm.Subject = "Chào mừng đến với hệ thống WMS";
-                mm.Body = "Tài khoản đằng nhập của bạn" + "<br>" +
-                          "Tài khoản của bạn: " + username + "<br>" +
-                          "Mật khẩu của bạn: " + password + "<br>" +
-                          "Làm ơn không đưa người khác email này";
-                mm.IsBodyHtml = true;
-
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.EnableSsl = true;
-                NetworkCredential NetworkCred = new NetworkCredential();
-                NetworkCred.UserName = "wmsystemsp24@gmail.com";
-                NetworkCred.Password = "jxpd wccm kits gona";
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = NetworkCred;
-                smtp.Port = 587;
-                smtp.Send(mm);
-            }
+            MailMessage mm = new MailMessage("wmsystemsp24@gmail.com", user.Email);
+            mm.Subject = "Chào mừng đến với hệ thống WMS";
+            mm.Body = "Tài khoản đằng nhập của bạn" + "<br>" +
+                "Tài khoản của bạn: " + username + "<br>" +
+                "Mật khẩu của bạn: " + password + "<br>" +
+                "Làm ơn không đưa người khác email này";
+            mm.IsBodyHtml = true;
+            SmtpClient smtp = new SmtpClient();
+            smtp.Host = "smtp.gmail.com";
+            smtp.EnableSsl = true;
+            NetworkCredential NetworkCred = new NetworkCredential();
+            NetworkCred.UserName = "wmsystemsp24@gmail.com";
+            NetworkCred.Password = "jxpd wccm kits gona";
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = NetworkCred;
+            smtp.EnableSsl = true;
+            smtp.Port = 587;
+            smtp.Send(mm);          
             return Ok(result);
         }
 

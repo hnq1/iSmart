@@ -13,7 +13,6 @@ namespace iSmart.Entity.Models
             public int ReturnOrderId { get; set; }
             public string ReturnOrderCode { get; set; }
             public DateTime ReturnedDate { get; set; }
-            public DateTime? ConfirmedDate { get; set; }
             public int WarehouseId { get; set; }
             public Warehouse Warehouse { get; set; }
             public int SupplierId { get; set; }

@@ -238,12 +238,12 @@ namespace iSmart.API.Controllers
         }
 
         [HttpPost("reset-password-by-email")]
-        public async Task<IActionResult> ResetPasswordByEmail(string username)
+        public async Task<IActionResult> ResetPasswordByEmail(string email)
         {
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username && u.StatusId == 1);
-                var email = user.Email;
+                var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == email && u.StatusId == 1);
+                //  var emailToken = await _context.EmailTokens.SingleOrDefaultAsync(u => u.UserId == user.UserId && u.IsUsed == true);
                 if (user != null /*&& emailToken != null*/)
                 {
                     var password = TokenHelper.GenerateNumericToken(8);
