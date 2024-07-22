@@ -15,7 +15,7 @@ const ModelEditDelivery = ({ isShow, handleClose, dataUpdateSupplier, updateTabl
     }, [dataUpdateSupplier])
 
     const handleSave = async () => {
-        if (!validateTextRequired.test(nameSupplier)) {
+        if (!nameSupplier.trim() || !validateTextRequired.test(nameSupplier)) {
             toast.error("Tên bên vận chuyển không được để trống hoặc chứa ký tự đặc biệt");
         } else {
             let res = await updateDelivery(dataUpdateSupplier.deliveyId, removeWhiteSpace(nameSupplier));

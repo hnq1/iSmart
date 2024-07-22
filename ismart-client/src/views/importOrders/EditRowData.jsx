@@ -4,7 +4,7 @@ import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
 import { formatDate } from "date-fns";
-
+import { validateEmail, validatePhone, validateText, validateTextRequired } from "~/validate";
 const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const [goodsId, setGoodsId] = useState();
     const [goodsCode, setGoodsCode] = useState();
@@ -83,9 +83,20 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     }
 
     const handleEditRowData = () => {
-        if (quantity <= 0) {
+        const currentDate = new Date().toISOString().slice(0, 10);
+        if (quantity <= 0 || !quantity) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        } else {
+        } else if (!batchCode || !batchCode.trim() || !validateTextRequired.test(batchCode)) {
+            toast.warning("Mã lô hàng không được để trống");
+        }
+        else if (!manufactureDate || !expiryDate) {
+            toast.warning("Vui lòng nhập đầy đủ ngày sản xuất và ngày hết hạn");
+        } else if (manufactureDate > expiryDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
+        } else if (manufactureDate > currentDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hiện tại");
+        }
+        else {
             dataAfterEdit({
                 // ...data,
                 batchCode: batchCode,
@@ -124,10 +135,10 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
 
                     <div className="form-group mb-3">
                         <label >Số lượng</label>
-                        <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
+                        <input type="number" className="form-control inputCSS" min={1} value={quantity} onChange={handleChangeQuantity} />
                     </div>
                 </Col>
-                
+
                 <Col md={2}>
                     <div className="form-group mb-3">
                         <label >Mã lô hàng</label>
