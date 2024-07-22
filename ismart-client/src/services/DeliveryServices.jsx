@@ -14,8 +14,8 @@ const createNewDelivery = (deliveryName) => {
     return axios.post(`api/delivery/add-delivery`, { deliveryName })
 }
 
-const updateDelivery = (deliveyId, deliveryName) => {
-    return axios.put(`api/delivery/update-delivery`, { deliveyId, deliveryName })
+const updateDelivery = (deliveryId, deliveryName) => {
+    return axios.put(`api/delivery/update-delivery`, { deliveryId, deliveryName })
 }
 
 const updateStatusDelivery = (deliveyId) => {

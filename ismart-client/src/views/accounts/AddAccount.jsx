@@ -12,7 +12,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
-
+    const containsNumber = (str) => /\d/.test(str);
 
     const [userName, setUserName] = useState();
     const [email, setEmail] = useState();
@@ -71,7 +71,11 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
         setImage(urlImage);
     }
     const handleChangeFullName = (event) => {
-        setFullName(event.target.value);
+        if (!containsNumber(event.target.value)) {
+            setFullName(event.target.value);
+        } else {
+            toast.warning("Họ và tên không được chứa số.");
+        }
     }
 
 
@@ -99,6 +103,8 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
         } else if (!address.trim()) {
             toast.warning("Địa chỉ không được để trống");
         } else if (!fullName.trim()) {
+            toast.warning("Họ và tên không được để trống");
+        } else if (!fullName) {
             toast.warning("Họ và tên không được để trống");
         } else if (!image) {
             toast.warning("Hình ảnh không được để trống");
