@@ -58,6 +58,20 @@ namespace iSmart.Service
         {
             try
             {
+                // Check if the delivery name is null, empty or whitespace
+                if (string.IsNullOrWhiteSpace(delivery.DeliveryName))
+                {
+                    return new CreateDeliveryResponse { IsSuccess = false, Message = "Delivery name cannot be empty or whitespace." };
+                }
+                // Check if the delivery name already exists
+                var existingDelivery = _context.Deliveries
+                    .FirstOrDefault(d => d.DeliveryName == delivery.DeliveryName);
+
+                if (existingDelivery != null)
+                {
+                    return new CreateDeliveryResponse { IsSuccess = false, Message = "Delivery name already exists." };
+                }
+
                 var requestDelivery = new Delivery
                 {
                     DeliveryName = delivery.DeliveryName,
@@ -65,11 +79,12 @@ namespace iSmart.Service
                 };
                 _context.Deliveries.Add(requestDelivery);
                 _context.SaveChanges();
-                return new CreateDeliveryResponse { IsSuccess = true, Message = $"Thêm delivery thành công" };
+                return new CreateDeliveryResponse { IsSuccess = true, Message = "Thêm delivery thành công" };
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                return new CreateDeliveryResponse { IsSuccess = true, Message = $"Thêm delivery thất bại" };
+                return new CreateDeliveryResponse { IsSuccess = false, Message = "Thêm delivery thất bại" };
             }
         }
 

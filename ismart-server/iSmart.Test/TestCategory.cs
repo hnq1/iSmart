@@ -49,33 +49,96 @@ namespace iSmart.Test
             if (categories != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
-        //create new category
         [Test]
         public void CreateCategory_Test()
         {
             var result = false;
             var categoryEntry = new CreateCategoryRequest
             {
-                CategoryName = "Test3",
-                Description = "Test3",
+                CategoryName = "Máy lògfd",
+                Description = " ",
             };
             var categoryResponse = _categoryService.AddCategory(categoryEntry);
-            if(categoryResponse.IsSuccess == true) result = true;
+            if (categoryResponse.IsSuccess == true) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+        //create new category
+        [Test]
+        public void CreateCategory_TestBlank()
+        {
+            var result = false;
+            var categoryEntry = new CreateCategoryRequest
+            {
+                CategoryName = " ",
+                Description = " ",
+            };
+            var categoryResponse = _categoryService.AddCategory(categoryEntry);
+            if (categoryResponse.IsSuccess == false) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+        //create new category
+        [Test]
+        public void CreateCategory_TestRepeat()
+        {
+            var result = false;
+            var categoryEntry = new CreateCategoryRequest
+            {
+                CategoryName = "Tivi",
+                Description = " ",
+            };
+            var categoryResponse = _categoryService.AddCategory(categoryEntry);
+            if (categoryResponse.IsSuccess == false) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
         //update category
         [Test]
-        public void EditCategory_Test()
+        public void EditCategory_TestBlank()
         {
             var result = false;
             var categoryEntry = new UpdateCategoryRequest
             {
                 CategoryId = 11,
-                CategoryName = "TestUpdate",
-                Description = "TestUpdate"
+                CategoryName = " ",
+                Description = " "
             };
             var categoryResponse = _categoryService.UpdateCaregory(categoryEntry);
-            if (categoryResponse.IsSuccess is true) result = true;
+            if (categoryResponse.IsSuccess is false) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+        [Test]
+        public void EditCategory_TestRepeat()
+        {
+            var result = false;
+            var categoryEntry = new UpdateCategoryRequest
+            {
+                CategoryId = 11,
+                CategoryName = "Tivi",
+                Description = " "
+            };
+            var categoryResponse = _categoryService.UpdateCaregory(categoryEntry);
+            if (categoryResponse.IsSuccess is false) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+        [Test]
+        public void GetCategoryByKeyword_Test()
+        {
+            var result = false;
+
+            var categories = _categoryService.GetCategoryByKeyword(1, "t");
+
+            // Assert
+            if (categories != null) result = true;
+            Assert.That(result, Is.EqualTo(true));
+        }
+        [Test]
+        public void GetCategoryByKeyword_TestBlank()
+        {
+            var result = false;
+           
+            var categories = _categoryService.GetCategoryByKeyword(1," ");
+
+            // Assert
+            if (categories != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
     }

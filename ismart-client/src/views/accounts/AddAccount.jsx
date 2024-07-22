@@ -161,9 +161,8 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                     </Row>
                     <Row>
                         <Col md={6}>
-                            <label >Vai trò</label>
                             <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
-                                <option value="">Vai trò</option>
+                                <option value="">Chức vụ</option>
                                 <option value="2">WarehouseManager</option>
                                 <option value="3">WarehouseStaff</option>
                                 <option value="4">Accountant</option>

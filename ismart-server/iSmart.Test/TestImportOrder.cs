@@ -15,13 +15,18 @@ namespace iSmart.Test
     {
         private ImportOrderService importOrderService { get; set; } = null;
         private iSmartContext _context;
-
+        private IUserWarehouseService _userWarehouseService;
+        private  WebSocketService _webSocketService;
         [SetUp]
         public void Setup()
         {
             var context = new iSmartContext();
+            var userWarehouseService = new UserWarehouseService(context);
+            var webSocketService = new WebSocketService();
+            _webSocketService = webSocketService;
+            _userWarehouseService = userWarehouseService;
             _context = context;
-            importOrderService = new ImportOrderService(context);
+            importOrderService = new ImportOrderService(context,userWarehouseService,webSocketService);
         }
 
         [Test]
@@ -46,7 +51,7 @@ namespace iSmart.Test
         public void ImportOrderFilterPaging_Test()
         {
             var result = false;
-            var importOrders = importOrderService.ImportOrderFilterPaging(1, 1, 1, 1, "1");
+            var importOrders = importOrderService.ImportOrderFilterPaging(1, 1, 1, 1,1, "1");
             if (importOrders != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
@@ -67,9 +72,9 @@ namespace iSmart.Test
                 WarehouseId = 1,
                 DeliveryId = 1,
                 Image = "test",
-                StokekeeperId = 1
+                //StokekeeperId = 1
             };
-            var importOrders = importOrderService.CreateImportOrder(importOrderEntry);
+            var importOrders = importOrderService.CreateImportOrder(true,importOrderEntry,3);
             if (importOrders != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
