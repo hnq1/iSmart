@@ -226,10 +226,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Vui lòng nhập mã đơn hàng");
         }
         else if (!selectedDate) {
-<<<<<<< HEAD
-            toast.warning("Vui lòng nhập ngày nhập hàng");
-        } else {
-=======
             toast.warning("Vui lòng nhập ngày nhập hàng!");
         }
         else if (!selectedWarehouseId) {
@@ -248,7 +244,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Hãy thêm lô hàng");
         }
         else {
->>>>>>> origin/thanhdthe150750
 
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
