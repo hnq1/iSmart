@@ -419,11 +419,11 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
-                            <label >Số lượng tối đa </label>
+                            <label >Tồn kho tối đa </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
                         </Col>
                         <Col md={5}>
-                            <label > Số lượng tối thiểu </label>
+                            <label > Tồn kho tối thiểu </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
                         </Col>
                     </Row>

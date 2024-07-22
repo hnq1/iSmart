@@ -35,7 +35,7 @@ const Sidebar = () => {
                         <img src={logo} className="px-2 ms-2" height="40" alt="MDB Logo" loading="lazy" />
                     </Navbar.Brand> */}
 
-                    <span className="fs-5 d-none d-sm-inline fw-bold ">ISM</span>
+                    <img className="fs-5 d-none d-sm-inline fw-bold " width={"129px"} src={logo} />
                 </div>
                 <Nav
                     className="nav-pills flex-column  mb-sm-auto mb-0 align-items-center align-items-sm-start"

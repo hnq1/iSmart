@@ -4,27 +4,35 @@ import { fetchAllStorages } from '~/services/StorageServices';
 import { fetchInventoryAll } from '~/services/InventoryReport';
 import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 
+
 const InventoryAll = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
+
+
 
 
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
+
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [inventoryData, setInventoryData] = useState([]);
+
 
     const [showMode, setShowMode] = useState(null); // Quản lý chế độ hiển thị
     const [Month, setMonth] = useState('');
     const [year, setYear] = useState(new Date().getFullYear()); // Thêm state để lưu trữ năm
 
 
+
+
     useEffect(() => {
         getAllStorages();
     }, []);
+
 
     useEffect(() => {
         const checkRoleAndFetchData = async () => {
@@ -41,6 +49,7 @@ const InventoryAll = () => {
         checkRoleAndFetchData();
     }, [startDate, endDate, selectedWarehouseId]);
 
+
     const getWarehouseById = async (userId) => {
         let res = await getUserIdWarehouse(userId);
         return res[0];
@@ -49,6 +58,7 @@ const InventoryAll = () => {
         setStartDate(e.target.value);
     }
 
+
     const hanldEndDate = (e) => {
         setEndDate(e.target.value);
     }
@@ -56,12 +66,15 @@ const InventoryAll = () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
 
+
     }
+
 
     const handleStorageClickTotal = () => {
         setSelectedWarehouse("Tất cả kho");
         setSelectedWarehouseId(null);
     }
+
 
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
@@ -78,6 +91,7 @@ const InventoryAll = () => {
         }
     }
 
+
     const getTitle = () => {
         switch (showMode) {
             case 'date':
@@ -93,23 +107,29 @@ const InventoryAll = () => {
         }
     };
 
+
     const handlMonth = (e) => {
         const selectedMonth = e.target.value;
         const date = new Date(selectedMonth);
 
+
         // Tính ngày đầu tiên của tháng
         const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
 
+
         // Tính ngày cuối cùng của tháng
         const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
 
         // Cập nhật startDate và endDate với định dạng YYYY-MM-DD
         setStartDate(firstDayOfMonth.toLocaleDateString('en-CA')); // Định dạng YYYY-MM-DD
         setEndDate(lastDayOfMonth.toLocaleDateString('en-CA')); // Định dạng YYYY-MM-DD
 
+
         // Cập nhật Month state để hiển thị tháng được chọn
         setMonth(selectedMonth);
     }
+
 
     const setQuarter = (quarter, year) => {
         switch (quarter) {
@@ -134,12 +154,14 @@ const InventoryAll = () => {
         }
     }
 
+
     const handleYearChange = (e) => {
         const selectedYear = e.target.value;
         setYear(selectedYear);
         setStartDate(`${selectedYear}-01-01`);
         setEndDate(`${selectedYear}-12-31`);
     }
+
 
     return (
         <>
@@ -158,8 +180,10 @@ const InventoryAll = () => {
                                             style={{ zIndex: 999 }}
                                         >
 
+
                                             <Dropdown.Item eventKey=""
                                                 onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+
 
                                             {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                                 <Dropdown.Item
@@ -174,6 +198,8 @@ const InventoryAll = () => {
                                     </Col>
                                     : ''
                                 }
+
+
 
 
                                 <Col md={2} className="px-md-1 d-flex align-items-center">
@@ -198,6 +224,7 @@ const InventoryAll = () => {
                                     </DropdownButton>
                                 </Col>
 
+
                                 {showMode === 'date' && (
                                     <>
                                         <Col md={2} className="px-md-1 d-flex align-items-center">
@@ -207,6 +234,7 @@ const InventoryAll = () => {
                                             </div>
                                         </Col>
 
+
                                         <Col md={2} className="px-md-1">
                                             <div className="input-group mb-3">
                                                 <h6>Ngày kết thúc</h6>
@@ -215,6 +243,7 @@ const InventoryAll = () => {
                                         </Col>
                                     </>
                                 )}
+
 
                                 {showMode === 'month' && (
                                     <>
@@ -226,6 +255,7 @@ const InventoryAll = () => {
                                         </Col>
                                     </>
                                 )}
+
 
                                 {showMode === 'quarter' && (
                                     <>
@@ -253,6 +283,7 @@ const InventoryAll = () => {
                                     </>
                                 )}
 
+
                                 {showMode === 'year' && (
                                     <>
                                         <Col md={2} className="px-md-1 d-flex align-items-center">
@@ -264,8 +295,11 @@ const InventoryAll = () => {
                                     </>
                                 )}
 
+
                             </Row>
                         </div>
+
+
 
 
                         <div className="table-responsive" style={{ overflowY: 'auto', overflowX: 'auto' }}>
@@ -275,12 +309,14 @@ const InventoryAll = () => {
                                         <th className="align-middle  text-nowrap position-sticky" style={{ left: 0 }}>STT</th>
                                         <th className="align-middle  text-nowrap">Tên sản phẩm</th>
                                         <th className="align-middle  text-nowrap">Đơn vị tính</th>
-                                        <th className="align-middle  text-nowrap">Nhập</th>
-                                        <th className="align-middle  text-nowrap">Xuất</th>
+                                        <th className="align-middle  text-nowrap">Tồn đầu kì</th>
+                                        <th className="align-middle  text-nowrap">Nhập trong kì</th>
+                                        <th className="align-middle  text-nowrap">Xuất trong kì</th>
                                         <th className="align-middle  text-nowrap">Tồn kho cuối kì</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+
 
                                     {inventoryData && inventoryData.length > 0
                                         && inventoryData.map((i, index) => (
@@ -288,9 +324,12 @@ const InventoryAll = () => {
                                                 <td className="align-middle position-sticky" style={{ left: 0 }}>{index + 1}</td>
                                                 <td className="align-middle">{i.productName}</td>
                                                 <td className="align-middle">{i.measureUnit}</td>
+                                                <td className="align-middle">{i.initialBalance}</td>
                                                 <td className="align-middle">{i.imports}</td>
                                                 <td className="align-middle">{i.exports}</td>
                                                 <td className="align-middle">{i.balance}</td>
+
+
 
 
                                             </tr>
@@ -305,4 +344,8 @@ const InventoryAll = () => {
     );
 };
 
+
 export default InventoryAll;
+
+
+

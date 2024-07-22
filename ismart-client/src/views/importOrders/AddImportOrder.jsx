@@ -239,9 +239,9 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         else if (!selectedDeliveryId) {
             toast.warning("Vui lòng chọn nhà vận chuyển!");
         }
-        else if (selectedDate < currentDate) {
-            toast.warning("Ngày nhập hàng phải lớn hơn ngày hiện tại!");
-        }
+        // else if (selectedDate > currentDate) {
+        //     toast.warning("Ngày nhập hàng phải lớn hơn ngày hiện tại!");
+        // }
         else if (rowsData.length === 0) {
             toast.warning("Hãy thêm lô hàng");
         }

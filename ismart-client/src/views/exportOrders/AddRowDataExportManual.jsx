@@ -89,8 +89,6 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     const handleConfirmRowData = () => {
         if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm");
-        } else if (!selectedStorageId) {
-            toast.warning("Vui lòng chọn lô hàng");
         } else {
             // Tạo mảng từ inputQuantities để gửi đi
             const inputQuantitiesArray = Object.keys(inputQuantities).map(key => ({

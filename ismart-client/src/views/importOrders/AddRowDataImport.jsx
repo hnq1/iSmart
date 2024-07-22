@@ -72,8 +72,10 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
         } else if (manufactureDate >= expiryDate) {
             toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
         } else if (manufactureDate >= currentDate) {
-            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hiện tại");
-        } else {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày tạo đơn");
+        }
+
+        else {
             onChange({
                 batchCode: selectedBatchCode,
                 costPrice: 0,

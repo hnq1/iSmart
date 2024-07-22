@@ -171,7 +171,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         } else if (minStock <= 0) {
             toast.warning("Vui lòng nhập minstock lớn hơn 0");
         } else if (maxStock <= minStock) {///////
-            toast.warning("Vui lòng nhập số lượng tối đa lớn hơn số lượng tối thiểu");
+            toast.warning("Vui lòng nhập tồn kho tối đa lớn hơn tồn kho tối thiểu");
         }
         else {
             let finalImage = imageGood || dataGoodEdit.image;
@@ -330,11 +330,11 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                     </row>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
-                            <label >MaxStock </label>
+                            <label >Tồn kho tối đa </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
                         </Col>
                         <Col md={5}>
-                            <label >MinStock </label>
+                            <label >Tồn kho tối thiểu </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
                         </Col>
                     </Row>
