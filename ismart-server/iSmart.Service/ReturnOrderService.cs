@@ -41,7 +41,7 @@ namespace iSmart.Service
                     ReturnedDate = request.ReturnedDate,
                     WarehouseId = request.WarehouseId,
                     SupplierId = request.SupplierId,
-                    StatusId = 1, // Default status
+                    StatusId = 3, // Default status
                     ApprovedBy = _userWarehouseService.GetManagerIdByStaffId(staffId),
                 };
 
