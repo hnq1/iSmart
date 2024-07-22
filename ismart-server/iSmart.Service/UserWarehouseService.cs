@@ -136,9 +136,18 @@ namespace iSmart.Service
             }
 
             var managerId = await _context.UserWarehouses
-                .Where(uw => warehouseIds.Contains(uw.WarehouseId) && uw.User.RoleId == 2)
-                .Select(uw => uw.UserId)
-                .FirstOrDefaultAsync();
+            .Where(uw => warehouseIds.Contains(uw.WarehouseId) && uw.User.RoleId == 2)
+            .Select(uw => uw.UserId)
+            .FirstOrDefaultAsync();
+
+            // Nếu không tìm thấy, tìm quản lý với vai trò 1
+            if (managerId == 0)
+            {
+                managerId = await _context.UserWarehouses
+                    .Where(uw => warehouseIds.Contains(uw.WarehouseId) && uw.User.RoleId == 1)
+                    .Select(uw => uw.UserId)
+                    .FirstOrDefaultAsync();
+            }
 
             return managerId != 0 ? managerId : (int?)null;
         }

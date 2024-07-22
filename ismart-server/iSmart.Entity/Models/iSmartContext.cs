@@ -463,6 +463,7 @@ namespace iSmart.Entity.Models
                     .HasMaxLength(50);
 
                 entity.Property(e => e.ReturnedDate).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
+                entity.Property(e => e.ConfirmedDate).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
 
                 entity.HasOne(d => d.Warehouse)
                     .WithMany(p => p.ReturnsOrders)

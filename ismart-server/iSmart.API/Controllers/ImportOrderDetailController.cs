@@ -55,9 +55,9 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-batch-for-return")]
-        public IActionResult GetBatchForReturn(int warehouseId)
+        public IActionResult GetBatchForReturn(int warehouseId, int goodId)
         {
-            var order = _orderDetailService.GetBatchForReturn(warehouseId);
+            var order = _orderDetailService.GetBatchForReturn(warehouseId, goodId);
             if (order == null)
             {
                 return NotFound("Don't have batch in warehouse");
