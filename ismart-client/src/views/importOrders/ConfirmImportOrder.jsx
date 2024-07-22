@@ -63,12 +63,12 @@ const ConfirmImportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
                             </div>
                         </Col>
 
-                        {/* <Col md={3}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Tổng giá trị đơn hàng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.totalCost}</button>
                             </div>
-                        </Col> */}
+                        </Col>
                     </Row>
 
 
@@ -88,7 +88,7 @@ const ConfirmImportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
-                                {/* <Col >
+                                <Col >
 
                                     <label >Giá tiền</label>
                                     <input type="number" className="form-control inputCSS" value={o.costPrice} readOnly />
@@ -100,7 +100,7 @@ const ConfirmImportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
                                     <label >Tổng giá tiền</label>
                                     <input type="number" className="form-control inputCSS" value={o.quantity * o.costPrice} readOnly />
 
-                                </Col> */}
+                                </Col>
                             </Row>
                         ))
                     }

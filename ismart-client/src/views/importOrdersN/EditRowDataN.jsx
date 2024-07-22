@@ -3,7 +3,7 @@ import { Row, Col, Dropdown, Modal, Button } from "react-bootstrap";
 import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
-import { validateEmail, validatePhone, validateText, validateTextRequired } from "~/validate";
+
 const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const [goodsId, setGoodsId] = useState();
     const [goodsCode, setGoodsCode] = useState();
@@ -75,20 +75,11 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     }
 
     const handleEditRowData = () => {
-        const currentDate = new Date().toISOString().slice(0, 10);
-        if (quantity <= 0 || !quantity) {
+        if (quantity <= 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        } else if (!manufactureDate || !expiryDate) {
-            toast.warning("Vui lòng nhập đầy đủ ngày sản xuất và ngày hết hạn");
-        } else if (manufactureDate > expiryDate) {
-            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
-        } else if (manufactureDate > currentDate) {
-            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hiện tại");
-        }
-        else if (!batchCode || !batchCode.trim() || !validateTextRequired.test(batchCode)) {
-            toast.warning("Mã lô hàng không được để trống");
-        }
-        else {
+        // } else if (costPrice <= 0) {
+        //     toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
+        // } else {
             dataAfterEdit({
                 // ...data,
                 batchCode: batchCode,

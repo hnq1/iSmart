@@ -454,7 +454,3 @@ fabric.properties
 
 # Built Visual Studio Code Extensions
 *.vsix
-ismart-server/.vs/ismart-server/v17/.suo
-ismart-server/.vs/ismart-server/v17/.suo
-ismart-server/.vs/ProjectEvaluation/ismart-server.metadata.v7.bin
-ismart-server/.vs/ProjectEvaluation/ismart-server.projects.v7.bin

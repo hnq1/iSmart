@@ -1,109 +1,41 @@
 import { set } from 'lodash';
-import React, { useEffect, useState } from 'react';
-import { fetchAllStorages } from '~/services/StorageServices';
-import { Modal, Button, Form, Col, DropdownButton, Dropdown } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
 import { uploadExcel } from '~/services/ExcelService';
-import { toast } from 'react-toastify';
 
-
-function InportGoodsListModal({ isShow, handleClose, updateTable }) {
-    const roleId = parseInt(localStorage.getItem('roleId'), 10);
-    const userId = parseInt(localStorage.getItem('userId'), 10);
+function InportGoodsListModal({ isShow, handleClose }) {
     const [file, setFile] = useState(null);
     const [overwriteProductInfo, setOverwriteProductInfo] = useState(false);
     const [overwriteQuantity, setOverwriteQuantity] = useState(false);
 
-
-    const [totalWarehouse, setTotalWarehouse] = useState([]);
-    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
-    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
-
-
-    useEffect(() => {
-        getAllStorages();
-    }, [])
-
-
-    const getAllStorages = async () => {
-        let res = await fetchAllStorages();
-        setTotalWarehouse(res);
-    }
-
-
-    const handleStorageTotalClick = () => {
-        setSelectedWarehouse("Tất cả Kho");
-        setSelectedWarehouseId("");
-    }
-
-
-    const handleStorageClick = (warehouse) => {
-        setSelectedWarehouse(warehouse.warehouseName);
-        setSelectedWarehouseId(warehouse.warehouseId);
-    }
-
-
     const handleFileChange = async (event) => {
-        setFile(event.target.files[0]);
-        console.log(file);
-        console.log(selectedWarehouseId);
-        console.log(roleId);
-        console.log(userId);
-
-
-
-
+        const file = event.target.files[0];
+        console.log("file: ", file);
+        let res = uploadExcel(file);
+        const urlExcel = res.url;
+        setFile(urlExcel);
+        console.log("urlExcel: ", urlExcel);
     };
-
 
     const handleOverwriteProductInfoChange = (event) => {
         setOverwriteProductInfo(event.target.checked);
     };
 
-
     const handleOverwriteQuantityChange = (event) => {
         setOverwriteQuantity(event.target.checked);
     };
 
-
-    const handleSave = async (event) => {
-        event.preventDefault();
-        if (!selectedWarehouseId) {
-            toast.warning("Chưa chọn kho!");
-            return;
-        }
+    const handleSave = () => {
         if (!file) {
-            toast.warning("Chưa có file nào được chọn!");
+            alert("Vui lòng chọn tệp tin");
             return;
         }
-        let res;
-        if (roleId === 1) {
-            res = await uploadExcel(file, selectedWarehouseId);
-
-
-            res.results.forEach(result => {
-                if (result.includes("Lỗi")) {
-                    toast.error(result);
-                } else {
-                    toast.success(result);
-                }
-            });
-        }
-        else {
-            res = await uploadExcel(file, userId);
-
-
-            res.results.forEach(result => {
-                if (result.includes("Lỗi")) {
-                    toast.error(result);
-                } else {
-                    toast.success(result);
-                }
-            });
-        }
-        updateTable();
+        // Handle file upload and options here
+        console.log("File:", file);
+        console.log("Overwrite Product Info:", overwriteProductInfo);
+        console.log("Overwrite Quantity:", overwriteQuantity);
         handleClose();
     };
-
 
     return (
         <Modal show={isShow} onHide={handleClose} size="md">
@@ -113,41 +45,12 @@ function InportGoodsListModal({ isShow, handleClose, updateTable }) {
             <Modal.Body>
                 <Form>
                     <Form.Group>
-                        <Form.Label>Tải file mẫu nhập danh sách sản phẩm <a href="https://localhost:7033/api/excel/download-template">tại đây</a></Form.Label>
-                        {
-                            roleId === 1 ?
-                                <Col md={2}>
-                                    <label >Kho</label>
-                                    <DropdownButton
-                                        className="DropdownButtonCSS ButtonCSSDropdown"
-                                        title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
-                                        variant="success"
-                                        style={{ zIndex: 999 }}
-                                    >
-                                        <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
-
-
-                                        {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
-                                            <Dropdown.Item
-                                                key={`warehouse ${index}`}
-                                                eventKey={c.warehouseName}
-                                                onClick={(e) => handleStorageClick(c, e)}
-                                            >
-                                                {c.warehouseName}
-                                            </Dropdown.Item>
-                                        ))}
-                                    </DropdownButton>
-                                </Col>
-                                : ''
-                        }
-                        <br />
+                        <Form.Label>Tải file mẫu nhập danh sách sản phẩm <a href="#">tại đây</a></Form.Label>
                         <Form.Control type="file" onChange={handleFileChange} />
                     </Form.Group>
 
-
                     <Form.Group controlId="formOverwriteProductInfo">
                         <a>Ghi đè thông tin các sản phẩm đã có</a>
-
 
                     </Form.Group>
                     <Form.Group controlId="formOverwriteQuantity">
@@ -159,7 +62,6 @@ function InportGoodsListModal({ isShow, handleClose, updateTable }) {
                             <p>- Tính năng này không dùng để cập nhật hàng loạt sản phẩm.</p>
                         </div>
                     </Form>
-
 
                 </Form>
             </Modal.Body>
@@ -175,10 +77,4 @@ function InportGoodsListModal({ isShow, handleClose, updateTable }) {
     );
 }
 
-
 export default InportGoodsListModal;
-
-
-
-
-

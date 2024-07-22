@@ -121,7 +121,7 @@ function ImportOrderListN() {
             let wh = await getUserIdWarehouse(userId);
             setcurrentPage(page - 1);
             let res = await fetchImportOrdersWithfilter(pageSize, page, wh[0].warehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-
+            
             setTotalImportOrder(res.data);
             setTotalPages(res.totalPages);
         }
@@ -354,7 +354,7 @@ function ImportOrderListN() {
 
                                         <th className="align-middle  text-nowrap">Người <br />xác nhận</th>
                                         <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
-                                        {/* {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''} */}
+                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
                                         {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
 
                                         {(roleId === 1 || roleId === 3) ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''}

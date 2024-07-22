@@ -158,14 +158,9 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
     }
 
     const handleAddExportOrder = async () => {
-
         if (!exportCode.trim()) {
             toast.warning("Vui lòng nhập mã đơn hàng");
         }
-        else if (rowsData.length === 0) {
-            toast.warning("Hãy thêm lô hàng");
-        }
-
         else if (!selectedWarehouse) {
             toast.warning("Vui lòng chọn kho xuất hàng");
         } else if (!selectedDate) {

@@ -15,7 +15,7 @@ const ModelEditCategory = ({ isShow, handleClose, dataUpdateCategory, updateTabl
         }
     }, [dataUpdateCategory])
     const handleSave = async () => {
-        if (!categoryName.trim() || !validateTextRequired.test(categoryName)) {
+        if (!validateTextRequired.test(categoryName)) {
             toast.error("Tên không được trống và chứa ký tự đặc biệt");
         } else if (!validateText.test(categoryDescription)) {
             toast.error("Thông tin chi tiết không được chứa ký tự đặc biệt");

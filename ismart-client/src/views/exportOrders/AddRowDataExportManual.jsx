@@ -89,8 +89,8 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     const handleConfirmRowData = () => {
         if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm");
-        } else if (!selectedStorageId) {
-            toast.warning("Vui lòng chọn lô hàng");
+            // } else if (quantity === 0) {
+            //     toast.warning("Vui lòng nhập số lượng lớn hơn 0");
         } else {
             // Tạo mảng từ inputQuantities để gửi đi
             const inputQuantitiesArray = Object.keys(inputQuantities).map(key => ({
@@ -206,12 +206,12 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             <Table >
                 <thead>
                     <tr>
-                        <th>Mã Lô Hàng</th>
-                        <th>Ngày Sản Xuất</th>
-                        <th>Ngày Hết Hạn</th>
-                        <th>Số Lượng</th>
-                        <th>Vị Trí Trong Kho</th>
-                        <th>Nhập Số Lượng</th>
+                        <th>Batch Code</th>
+                        <th>Manufacture Date</th>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th>Location</th>
+                        <th>Input Quantity</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -225,10 +225,8 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                             <td>
                                 <input
                                     type="number"
-                                    min={0}
-                                    max={d.quantity}
                                     className="form-control"
-                                    value={inputQuantities[index]?.quantity || '0'}
+                                    value={inputQuantities[index]?.quantity || ''}
                                     onChange={(e) => handleInputQuantityChange(index, e.target.value)}
                                 />
                             </td>

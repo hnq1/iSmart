@@ -100,24 +100,28 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
             setTotalWarehouse2(allwh); // Giả sử setTotalWarehouse là hàm setState đã được định nghĩa ở nơi khác
         };
     }
-    const handleStorageClickImport = (warehouse) => {
+    // Xử lý chọn "Tất cả kho Nhập"
+    const handleStorageClickTotalImport = () => {
+        setSelectedWarehouseImportId("");
+        setSelectedWarehouseImport("Tất cả kho Nhập");
+    }
+
+
+    const handleStorageClickImport = async (warehouse) => {
         setSelectedWarehouseImport(warehouse.warehouseName);
         setSelectedWarehouseImportId(warehouse.warehouseId);
     }
 
-    const handleStorageClickExport = (warehouse) => {
+    // Xử lý chọn "Tất cả kho Xuất"
+    const handleStorageClickTotalExport = () => {
+        setSelectedWarehouseExportId("");
+        setSelectedWarehouseExport("Tất cả kho Xuất");
+    }
+
+
+    const handleStorageClickExport = async (warehouse) => {
         setSelectedWarehouseExport(warehouse.warehouseName);
         setSelectedWarehouseExportId(warehouse.warehouseId);
-    }
-
-    const handleStorageClickTotalImport = () => {
-        setSelectedWarehouseImport(null);
-        setSelectedWarehouseImportId(null);
-    }
-
-    const handleStorageClickTotalExport = () => {
-        setSelectedWarehouseExport(null);
-        setSelectedWarehouseExportId(null);
     }
 
 
@@ -177,7 +181,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         const existingProductIndex = rowsData.findIndex(row => row.goodsId === importData.goodsId);
 
         if (existingProductIndex !== -1) {
-
+            
             // Nếu sản phẩm đã tồn tại, cập nhật số lượng và các giá trị mới
             const updatedRowsData = [...rowsData];
 
@@ -347,42 +351,39 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                                 <Col md={2}>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"
-                                        title={selectedWarehouseImport || "Nhập Vào Kho"}
+                                        title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
                                         variant="success"
                                         style={{ zIndex: 999 }}
                                     >
-                                        <Dropdown.Item eventKey="" onClick={handleStorageClickTotalImport}>
-                                            Nhập Vào Kho
-                                        </Dropdown.Item>
-                                        {totalWarehouse1.map((c, index) => (
+                                        <Dropdown.Item eventKey=""
+                                            onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
+
+                                        {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
                                             <Dropdown.Item
-                                                key={`warehouse-import-${index}`}
+                                                key={`warehouse ${index}`}
                                                 eventKey={c.warehouseName}
-                                                onClick={() => handleStorageClickImport(c)}
+                                                onClick={(e) => handleStorageClickImport(c, e)}
                                             >
                                                 {c.warehouseName}
                                             </Dropdown.Item>
                                         ))}
                                     </DropdownButton>
                                 </Col>
-
                                 : ''
                         }
                         <Col md={2}>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouseExport || "Xuất Từ Kho"}
+                                title={selectedWarehouseExport !== null ? selectedWarehouseExport : "Tất cả Kho Xuất"}
                                 variant="success"
                                 style={{ zIndex: 999 }}
                             >
-                                <Dropdown.Item eventKey="" onClick={handleStorageClickTotalExport}>
-                                    Xuất Từ Kho
-                                </Dropdown.Item>
-                                {totalWarehouse2.map((c, index) => (
+                                <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotalExport()}>Tất cả kho Xuất</Dropdown.Item>
+                                {totalWarehouse2 && totalWarehouse2.length > 0 && totalWarehouse2.map((c, index) => (
                                     <Dropdown.Item
-                                        key={`warehouse-export-${index}`}
+                                        key={`warehouse ${index}`}
                                         eventKey={c.warehouseName}
-                                        onClick={() => handleStorageClickExport(c)}
+                                        onClick={(e) => handleStorageClickExport(c, e)}
                                     >
                                         {c.warehouseName}
                                     </Dropdown.Item>

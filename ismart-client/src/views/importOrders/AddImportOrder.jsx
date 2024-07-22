@@ -148,12 +148,12 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         if (existingProductIndex !== -1) {
             // Nếu sản phẩm đã tồn tại, cập nhật số lượng và các giá trị mới
             const updatedRowsData = [...rowsData];
-
+            
             updatedRowsData[existingProductIndex].quantity += importData.quantity; // Cập nhật số lượng
             updatedRowsData[existingProductIndex] = { ...updatedRowsData[existingProductIndex], ...importData }; // Cập nhật các giá trị mới
 
             setRowsData(updatedRowsData);
-
+            
             //setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice); // Cập nhật tổng chi phí
             toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
         } else {
@@ -222,29 +222,12 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     }
     // Thêm 1 lô hàng 
     const handleAddImportOrder = async () => {
-        const currentDate = new Date().toISOString().slice(0, 10);
         if (!importCode.trim()) {
-            toast.warning("Vui lòng nhập mã đơn hàng!");
+            toast.warning("Vui lòng nhập mã đơn hàng");
         }
         else if (!selectedDate) {
-            toast.warning("Vui lòng nhập ngày nhập hàng!");
-        }
-        else if (!selectedWarehouseId) {
-            toast.warning("Vui lòng chọn kho hàng!");
-        }
-        else if (!selectedSupplier) {
-            toast.warning("Vui lòng chọn nhà cung cấp!");
-        }
-        else if (!selectedDeliveryId) {
-            toast.warning("Vui lòng chọn nhà vận chuyển!");
-        }
-        else if (selectedDate < currentDate) {
-            toast.warning("Ngày nhập hàng phải lớn hơn ngày hiện tại!");
-        }
-        else if (rowsData.length === 0) {
-            toast.warning("Hãy thêm lô hàng");
-        }
-        else {
+            toast.warning("Vui lòng nhập ngày nhập hàng");
+        } else {
 
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
@@ -281,7 +264,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                             data.expiryDate,
                             data.goodsId,
                             data.quantity
-
+                            
                         );
                         console.log("data1:", data);
                     }));
