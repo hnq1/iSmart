@@ -263,14 +263,14 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                 );
             }
 
-            // console.log("resAddProduct: ", res);
+            console.log("resAddProduct: ", res);
             // console.log("stockPrice: ", stockPrice);
             if (res.isSuccess) {
                 toast.success("Thêm mặt hàng mới thành công");
                 handleCloseModal();
                 updateTable();
             } else {
-                toast.error("Mã hàng đã tồn tại");
+                toast.error(res.message || "Mã hàng đã tồn tại");
             }
 
             // console.log("resAddProduct: ", res);
