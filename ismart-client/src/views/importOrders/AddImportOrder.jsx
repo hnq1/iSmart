@@ -5,7 +5,7 @@ import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { fetchAllSuppliers } from '~/services/SupplierServices';
 import { fetchAllSupplierActive } from "~/services/SupplierServices";
 import { fetchAllStorages } from '~/services/StorageServices';
-import { fetchAllDelivery } from "~/services/DeliveryServices";
+import { fetchDeliveryActive } from "~/services/DeliveryServices";
 import { addNewImportOrder, fetchImportOrderNewest } from "~/services/ImportOrderServices";
 import { createNewImportOrderDetail } from "~/services/ImportOrderDetailServices";
 import { formatDateImport, formattedAmount } from "~/validate";
@@ -90,7 +90,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const getAllSuppliers = async () => {
         let res = await fetchAllSupplierActive();
-        console.log("getAllSuppliers: ", res);
         setTotalSuppliers(res);
     }
 
@@ -100,7 +99,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     }
 
     const getAllDelivery = async () => {
-        let res = await fetchAllDelivery();
+        let res = await fetchDeliveryActive();
         setTotalDelivery(res);
     }
 
@@ -149,12 +148,12 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         if (existingProductIndex !== -1) {
             // Nếu sản phẩm đã tồn tại, cập nhật số lượng và các giá trị mới
             const updatedRowsData = [...rowsData];
-
+            
             updatedRowsData[existingProductIndex].quantity += importData.quantity; // Cập nhật số lượng
             updatedRowsData[existingProductIndex] = { ...updatedRowsData[existingProductIndex], ...importData }; // Cập nhật các giá trị mới
 
             setRowsData(updatedRowsData);
-
+            
             //setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice); // Cập nhật tổng chi phí
             toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
         } else {
@@ -223,9 +222,8 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     }
     // Thêm 1 lô hàng 
     const handleAddImportOrder = async () => {
-        const currentDate = new Date().toISOString().slice(0, 10);
         if (!importCode.trim()) {
-            toast.warning("Vui lòng nhập mã đơn hàng!");
+            toast.warning("Vui lòng nhập mã đơn hàng");
         }
         else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng!");
@@ -282,7 +280,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                             data.expiryDate,
                             data.goodsId,
                             data.quantity
-
+                            
                         );
                         console.log("data1:", data);
                     }));

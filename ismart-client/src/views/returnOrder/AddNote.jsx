@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Row, Col, DropdownButton, Dropdown } from "react-bootstrap"
+import { Modal, Button, Row } from "react-bootstrap"
 import { Form } from 'react-bootstrap';
 
-const ModelAddNote = ({ isShow, handleClose }) => {
-
+const ModelAddNote = ({ isShow, handleClose, onChange }) => {
+    const [isreason, setIsReason] = useState('');
 
     const handleReset = () => {
         // reset form
@@ -11,6 +11,16 @@ const ModelAddNote = ({ isShow, handleClose }) => {
     const handleCloseModal = () => {
         handleReset();
         handleClose();
+    }
+
+    const handleClick = () => {
+        onChange(isreason);
+        handleClose();
+    }
+
+    const handleChane = (event) => {
+
+        setIsReason(event.target.value)
     }
 
     return (
@@ -25,7 +35,7 @@ const ModelAddNote = ({ isShow, handleClose }) => {
                     <Row >
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <Form.Label>Lý do</Form.Label>
-                            <Form.Control as="textarea" rows={6} />
+                            <Form.Control as="textarea" rows={6} onChange={handleChane} />
                         </Form.Group>
                     </Row>
 
@@ -34,7 +44,7 @@ const ModelAddNote = ({ isShow, handleClose }) => {
 
                 <Modal.Footer>
                     <Button variant="primary" className="ButtonCSS"
-                    // onClick={handleAddReturnOrder}
+                        onClick={handleClick}
                     >
                         Lưu
                     </Button>

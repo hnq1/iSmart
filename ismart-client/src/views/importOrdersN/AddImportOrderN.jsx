@@ -5,7 +5,7 @@ import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { fetchAllSuppliers } from '~/services/SupplierServices';
 import { fetchAllSupplierActive } from "~/services/SupplierServices";
 import { fetchAllStorages } from '~/services/StorageServices';
-import { fetchAllDelivery } from "~/services/DeliveryServices";
+import { fetchDeliveryActive } from "~/services/DeliveryServices";
 import { addNewImportOrder, fetchImportOrderNewest } from "~/services/ImportOrderServices";
 import { createNewImportOrderDetail } from "~/services/ImportOrderDetailServices";
 import { formatDateImport, formattedAmount } from "~/validate";
@@ -132,7 +132,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
 
 
     const getAllDelivery = async () => {
-        let res = await fetchAllDelivery();
+        let res = await fetchDeliveryActive();
         setTotalDelivery(res);
     }
 
@@ -187,7 +187,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         const existingProductIndex = rowsData.findIndex(row => row.goodsId === importData.goodsId);
 
         if (existingProductIndex !== -1) {
-
+            
             // Nếu sản phẩm đã tồn tại, cập nhật số lượng và các giá trị mới
             const updatedRowsData = [...rowsData];
 

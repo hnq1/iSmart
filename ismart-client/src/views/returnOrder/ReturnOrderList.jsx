@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
+import { formatDate } from '~/validate';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
+import { fetchReturnOrdersWithFilter, confirmReturnOrder } from '~/services/ReturnOrderService';
 import { fetchAllStorages } from '~/services/StorageServices';
 import ModelAddReturnOrder from "./AddReturnOrder";
-import { update } from 'lodash';
+import ModalDetailReturnOrder from "./DetailReturnOrder";
+import ModalConfirm from "./ModalConfirm";
+import ModalEditReturnOrder from "./EditDataReturnOrder";
+
+import { data } from 'autoprefixer';
+import { toast } from 'react-toastify';
 
 
 function ReturnOrderList() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
-    const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
@@ -19,6 +25,7 @@ function ReturnOrderList() {
     const [totalPages, setTotalPages] = useState(5);
     const [currentPage, setcurrentPage] = useState(0);
 
+
     const [sortedByStatusId, setSortedByStatusId] = useState();
     const [sortedByStatusName, setSortedByStatusName] = useState("");
     const [sortStatusOptions, setSortStatusOptions] = useState([]);
@@ -26,14 +33,22 @@ function ReturnOrderList() {
     const [sortedByDateId, setSortedByDateId] = useState();
     const [sortedByDateName, setSortedByDateName] = useState("");
     const [sortDateOptions, setSortDateOptions] = useState([]);
+    const [listReturnOrder, setListReturnOrder] = useState([]);
 
     const [keywordSearch, setKeywordSearch] = useState("");
     const [currentDate, setCurrentDate] = useState();
+    const [isShowDetailOrder, setIsShowDetailOrder] = useState(false);
+    const [update, setUpdate] = useState(false);
+    const [dataDetailOrder, setDataDetailOrder] = useState([]);
 
     const [isShowReturnOrderModelAdd, setIsShowReturnOrderModelAdd] = useState(false);
+    const [isShowModalCancelImport, setIsShowModalCancelImport] = useState(false);
+    const [isShowEditOrder, setIsShowEditOrder] = useState(false);
+    const [dataEditOrder, setDataEditOrder] = useState([]);
+
+    const [completed, setCompleted] = useState();
     useEffect(() => {
         getAllStorages();
-
 
         setSortStatusOptions([{ idSort: null, nameSort: "Tình trạng" },
         { idSort: 3, nameSort: "Đang tiến hành" },
@@ -46,9 +61,51 @@ function ReturnOrderList() {
         setCurrentDate(format(new Date(), 'dd/MM/yyyy'));
     }, []);
 
+    useEffect(() => {
+        // Đảm bảo rằng getReturnOrders được gọi mỗi khi có sự thay đổi cần thiết
+        getReturnOrders(1, pageSize, sortedByStatusId, sortedByDateId, keywordSearch);
+    }, [pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch, update]);
+
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
+    }
+
+    const ShowModelConfirm = async (i) => {
+        setIsShowModalCancelImport(true);
+        setCompleted(i);
+    }
+
+    const ConfirmCancelImport = async () => {
+        if (completed) {
+            await confirmReturnOrder(completed.returnOrderId)
+                .then((data) => {
+                    toast.success(data.message);
+                    setUpdate(!update);
+                })
+                .catch((error) => {
+                    toast.error(data.message);
+                })
+                .finally(() => {
+                    setIsShowModalCancelImport(false);
+                })
+        }
+    }
+
+    const getReturnOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
+        setcurrentPage(page - 1);
+        let res = await fetchReturnOrdersWithFilter(
+            pageSize, page, selectedWarehouseId,
+            "",
+            sortedByStatusId,
+            sortedByDateId, keywordSearch);
+        setListReturnOrder(res.data);
+        setTotalPages(res.totalPages);
+    }
+
+    const ShowDetailOrder = (oid) => {
+        setDataDetailOrder(oid);
+        setIsShowDetailOrder(true);
     }
 
     const handleStorageClickTotal = () => {
@@ -74,28 +131,36 @@ function ReturnOrderList() {
 
     }
 
+    const ShowEditDetailOrder = (order) => {
+        setIsShowEditOrder(true);
+        // console.log(order);
+        setDataEditOrder(order);
+    }
+
     const handleSortDateClick = (sort) => {
         setSortedByDateId(sort.idSort);
         setSortedByDateName(sort.nameSort);
         // getImportOrders(1, pageSize, selectedWarehouseId, sortedByStatusId, sort.idSort); // Gọi lại hàm lấy dữ liệu với tham số mới
     }
-    const handleSearch = () => {
-        // getImportOrders(1, pageSize);
-    }
 
     const handlePageClick = (event) => {
-        setcurrentPage(+event.selected);
-        // getImportOrders(+event.selected + 1, pageSize);
+        getReturnOrders(+event.selected + 1, pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId);
     }
+
+    const handleSearch = () => {
+        getReturnOrders(1, pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
+    }
+
     const updateTable = () => {
-        // getImportOrders(currentPage + 1, pageSize);
+        getReturnOrders(currentPage + 1, pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId);
     }
+
     return (
         <>
             <div className="container" style={{ maxWidth: "1600px" }}>
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng nhập giữa các kho</h5>
+                        <h5 style={{ color: '#a5a2ad' }}>Quản lý đơn hàng trả lại</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <Row>
                                 {roleId == 1 ?
@@ -210,27 +275,77 @@ function ReturnOrderList() {
                                         <th className="align-middle  text-nowrap">Nhà <br />cung cấp</th>
                                         {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
-                                        <th className="align-middle  text-nowrap">Ngày <br />nhập hàng</th>
-                                        <th className="align-middle  text-nowrap">Kho <br />nhập hàng</th>
-                                        <th className="align-middle  text-nowrap">Kho <br />xuất hàng</th>
-                                        <th className="align-middle  text-nowrap">Bên <br />giao hàng</th>
-                                        <th className="align-middle  text-nowrap">Hình ảnh</th>
+                                        {/* <th className="align-middle  text-nowrap">Ngày <br />trả hàng</th> */}
+                                        {/* <th className="align-middle  text-nowrap">Kho <br />nhập hàng</th> */}
+                                        {/* <th className="align-middle  text-nowrap">Kho <br />xuất hàng</th> */}
+                                        {/* <th className="align-middle  text-nowrap">Bên <br />giao hàng</th> */}
+                                        {/* <th className="align-middle  text-nowrap">Hình ảnh</th> */}
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
 
                                         <th className="align-middle  text-nowrap">Người <br />xác nhận</th>
                                         <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
-                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
-                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
+                                        {roleId === 2 || roleId === 1 ? <th className="align-middle  text-nowrap">Hủy</th> : ''}
+                                        {roleId === 2 || roleId === 1 ? <th className="align-middle  text-nowrap">Chỉnh sửa</th> : ''}
+                                        {/* {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
 
-                                        {roleId === 3 ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''}
-                                        {roleId === 2 ?
-                                            <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>
-                                            : ''}
+                                        {roleId === 3 ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''} */}
 
-
+                                        <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>
                                     </tr>
                                 </thead>
+                                <tbody>
+                                    {listReturnOrder && listReturnOrder.length > 0
+                                        && listReturnOrder.map((i, index) => (
+                                            <tr key={`returnOrder${index}`}>
+                                                <td className="align-middle position-sticky" style={{ left: 0 }}>{index + 1}</td>
+                                                <td className="align-middle">{i.returnOrderCode}</td>
+                                                <td className="align-middle">{i.createdByName}</td>
+                                                {/* <td className="align-middle">{formattedAmount(i.totalPrice)}</td> */}
+                                                <td className="align-middle">{(i.supplierName)}</td>
+                                                <td className="align-middle">{formatDate(i.returnedDate)}</td>
+                                                {/* <td className="align-middle">{i.warehouseName}</td>
+                                                <td className="align-middle">{i.deliveryName}</td> */}
 
+
+                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
+                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã hủy"}
+                                                </td>
+                                                <td className="align-middle">{i.approvedByName}</td>
+                                                <td className="align-middle " style={{ padding: '10px' }}>
+
+                                                    <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
+                                                </td>
+                                                {/* {roleId === 2 && i.statusType === "On Progress" ?
+                                                    <td className="align-middle"> <i className="fa-solid fa-ban actionButtonCSS"
+                                                        onClick={() => ShowModalCancelExport(i)}></i></td>
+                                                    : ''
+                                                } */}
+
+                                                {/* {roleId === 2 && i.statusType === "On Progress" ? <td className="align-middle " style={{ padding: '10px' }}>
+
+                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
+                                                </td> : <td></td>} */}
+                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle">
+                                                    <i className="fa-solid fa-ban actionButtonCSS"
+                                                    ></i></td> : ''}
+
+                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle " style={{ padding: '10px' }}>
+                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)} ></i>
+                                                </td> : ''}
+
+
+
+                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
+                                                    className="btn btn-success border-left-0 rounded "
+                                                    type="button"
+                                                    onClick={() => ShowModelConfirm(i)}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}
+                                                >{i.statusType === "Completed" ? "Hoàn thành" : i.statusType === "On Progress" ? "Tiến hành xác nhận" : "Đã hủy"}
+                                                </button></td> : ''}
+
+                                            </tr>
+                                        ))}
+                                </tbody>
                             </Table>
                         </div>
                     </div>
@@ -262,12 +377,14 @@ function ReturnOrderList() {
                 />
             </div>
 
-
-
             < ModelAddReturnOrder isShow={isShowReturnOrderModelAdd}
                 handleClose={() => setIsShowReturnOrderModelAdd(false)}
-                // updateTable={updateTable}
+                updateTable={updateTable}
             />
+            <ModalConfirm isShow={isShowModalCancelImport} handleClose={() => setIsShowModalCancelImport(false)}
+                title="Hủy đơn hàng nhập" ConfirmCancel={ConfirmCancelImport} />
+            <ModalDetailReturnOrder isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={dataDetailOrder} />
+            <ModalEditReturnOrder isShow={isShowEditOrder} handleClose={() => setIsShowEditOrder(false)} detailOrderEdit={dataEditOrder} updateTable={updateTable} />
         </>
     )
 

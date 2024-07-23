@@ -7,7 +7,7 @@ import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 import { set } from "lodash";
 import { fetchGoodsWithSupplier } from "~/services/GoodServices";
 
-const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow, handleClose, onChange }) => {
+const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, handleClose, onChange }) => {
 
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
@@ -36,10 +36,10 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
         if (roleId === 1) {
             if (selectedStorageId && selectedSupplierId) {
                 let res = await fetchGoodsWithStorageAndSupplier(
-                    selectedStorageId, selectedSupplierId
-
+                    selectedStorageId,
+                    selectedSupplierId
                 );
-                // console.log("wh vs sup", selectedStorageId);
+
                 setTotalGoods(res);
             }
         } else if (roleId === 4 || roleId === 3 || roleId === 2) {
@@ -102,9 +102,6 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
         }
     }
 
-    const handleChangePrice = (event) => {
-        setCostPrice(event.target.value);
-    }
 
     const handleCloseModal = () => {
         handleReset();
@@ -115,7 +112,7 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
     const handleReset = () => {
         setSelectedGoodCode(null);
         setQuantity(0);
-        setCostPrice(0);
+
         setSelectedbatchCode(null);
         setManufactureDate(null);
         setExpiryDate(null);
@@ -199,4 +196,4 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
 }
 
 
-export default AddRowDataImportOrderN;
+export default AddRowDataImportOrder

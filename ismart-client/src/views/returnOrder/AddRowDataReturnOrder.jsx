@@ -5,9 +5,9 @@ import { toast } from "react-toastify";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
-import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
+import { getBatchByReturnOrder } from "~/services/ReturnOrderServices";
 
-const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, onChange }) => {
+const AddRowDataReturnOrderManual = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
@@ -33,7 +33,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     const getAllGoods = async () => {
         if (selectedStorageId !== null) {
             let res = await fetchAllGoodsInWarehouse(selectedStorageId);
-            // console.log("getAllGoods: ", res);
+            console.log("getAllGoods: ", res);
             setTotalGoods(res);
         }
     }
@@ -53,7 +53,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
 
     const handleManualClick = async () => {
-        let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
+        let m = await getBatchByReturnOrder(selectedStorageId, selectedGoodId);
         if (m.length === 0) {
             // Nếu không có lô hàng nào, hiển thị thông báo
             toast.warning("Không có lô hàng nào");
@@ -64,8 +64,10 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
         }
     }
     const handleInputQuantityChange = (index, value) => {
+
         // Lấy ra importOrderDetailId tương ứng với index của input
         const importOrderDetailId = selectImportOrderDetailId[index];
+        console.log(value);
         // console.log("importOrderDetailId: ", importOrderDetailId);
         // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
         const newInputQuantities = {
@@ -76,7 +78,6 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             }
         };
         setInputQuantities(newInputQuantities);
-        console.log("newInputQuantities: ", newInputQuantities);
         // Tính toán lại tổng số lượng từ các giá trị mới
         // const newTotalQuantity = Object.values(newInputQuantities).reduce((acc, curr) => acc + curr.quantity, 0);
         // setQuantity(newInputQuantities);
@@ -89,26 +90,30 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     const handleConfirmRowData = () => {
         if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm");
+            // } else if (quantity === 0) {
+            //     toast.warning("Vui lòng nhập số lượng lớn hơn 0");
         } else {
             // Tạo mảng từ inputQuantities để gửi đi
-            const inputQuantitiesArray = Object.keys(inputQuantities).map(key => ({
-                importOrderDetailId: inputQuantities[key].importOrderDetailId,
-                quantity: inputQuantities[key].quantity
-            }));
+            const inputQuantitiesArray = Object.keys(inputQuantities).map(key => {
+                const dataItem = dataMethod[key];
+                return {
+                    importOrderDetailId: inputQuantities[key].importOrderDetailId,
+                    quantity: inputQuantities[key].quantity,
+                    batchCode: dataItem.batchCode
+                };
+            });
 
             // Tạo mảng mới với thông tin sản phẩm cho mỗi importOrderDetailId
-            const exportDataArray = inputQuantitiesArray.map(item => ({
-                costPrice: 0,
+            const returnOrderDataArray = inputQuantitiesArray.map(item => ({
+                batchCode: item.batchCode,
                 goodsId: selectedGoodId,
                 goodsCode: selectedGoodCode,
                 quantity: item.quantity,
-                importOrderDetailId: item.importOrderDetailId,
-                totalOneGoodPrice: 0
-
+                importOrderDetailId: item.importOrderDetailId
             }));
 
 
-            onChange(exportDataArray);
+            onChange(returnOrderDataArray);
             // console.log("exportDataArray: ", exportDataArray);
             handleCloseModal();
         }
@@ -234,11 +239,11 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             </Table>
             <Modal.Footer>
                 <Button variant="primary" className="ButtonCSS" onClick={handleConfirmRowData}>
-                    Xác nhận xuất kho
+                    Xác nhận trả hàng
                 </Button>
             </Modal.Footer>
         </Modal >
     )
 }
 
-export default AddRowDataExportOrderManual
+export default AddRowDataReturnOrderManual

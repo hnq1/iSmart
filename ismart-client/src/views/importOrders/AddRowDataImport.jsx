@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 import { set } from "lodash";
 import { fetchGoodsWithSupplier } from "~/services/GoodServices";
-import { validateEmail, validatePhone, validateText, validateTextRequired } from "~/validate";
+
 const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, handleClose, onChange }) => {
 
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
@@ -63,11 +63,7 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
             toast.warning("Vui lòng chọn sản phẩm");
         } else if (quantity <= 0 || !quantity) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        }
-        else if (!selectedBatchCode || !selectedBatchCode.trim() || !validateTextRequired.test(selectedBatchCode)) {
-            toast.warning("Mã lô hàng không được để trống");
-        }
-        else if (!manufactureDate || !expiryDate) {
+        } else if (!manufactureDate || !expiryDate) {
             toast.warning("Vui lòng nhập đầy đủ ngày sản xuất và ngày hết hạn");
         } else if (manufactureDate >= expiryDate) {
             toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");

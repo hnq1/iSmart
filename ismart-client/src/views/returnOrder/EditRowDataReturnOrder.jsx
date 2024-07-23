@@ -4,70 +4,37 @@ import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
 
-const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
+const EditRowDataReturnOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const [goodsId, setGoodsId] = useState();
     const [goodsCode, setGoodsCode] = useState();
     const [quantity, setQuantity] = useState();
     const [costPrice, setCostPrice] = useState();
-    const [expiryDate, setExpiryDate] = useState();
-    const [manufactureDate, setManufactureDate] = useState();
     const [batchCode, setBatchCode] = useState();
-    const [selectedImportId, setSelectedImportId] = useState(null);
-    const [totalOneGoodPrice, setTotalOneGoodPrice] = useState(0);
-    const [supplierId, setSupplierId] = useState();
-    const [supplierName, setSupplierName] = useState();
+
 
     useEffect(() => {
-        setBatchCode(data.batchCode);
-        setCostPrice(data.costPrice);
-        setExpiryDate(data.expiryDate);
-        setGoodsCode(data.goodsCode);
-        setGoodsId(data.goodsId);
-        setSelectedImportId(data.importId);
-        setManufactureDate(data.manufactureDate);
-        setQuantity(data.quantity);
-        setSupplierId(data.supplierId);
-        setSupplierName(data.supplierName);
-        setTotalOneGoodPrice(data.totalOneGoodPrice);
+        setBatchCode(data[0].batchCode);
+        setGoodsCode(data[0].goodsCode);
+        setGoodsId(data[0].goodsId);
+        setQuantity(data[0].quantity);
 
-    }, [data])
-    // console.log("dataEditRowDataOrder: ", data);
+    }, [])
+    //console.log("dataEditRowDataOrder: ", data[0]);
 
     useEffect(() => {
-        setTotalOneGoodPrice(quantity * costPrice);
+        //setTotalOneGoodPrice(quantity * costPrice);
     }, [quantity, costPrice]);
     // console.log("dataEdit: ", data);
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
-        setTotalOneGoodPrice(event.target.value * costPrice);
+        //setTotalOneGoodPrice(event.target.value * costPrice);
     }
 
-    const handleChangePrice = (event) => {
-        setCostPrice(event.target.value);
-        setTotalOneGoodPrice(event.target.value * quantity);
-    }
-    const handleChangeBatchCode = (event) => {
-        setBatchCode(event.target.value);
-
-    }
-    const handleChangemMnufactureDate = (event) => {
-        setManufactureDate(event.target.value);
-    }
-    const handleChangeExpiryDate = (event) => {
-        setExpiryDate(event.target.value);
-    }
     const handleReset = () => {
         setBatchCode(data.batchCode);
-        setCostPrice(data.costPrice);
-        setExpiryDate(data.expiryDate);
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
-        setSelectedImportId(data.importId);
-        setManufactureDate(data.manufactureDate);
         setQuantity(data.quantity);
-        setSupplierId(data.supplierId);
-        setSupplierName(data.supplierName);
-        setTotalOneGoodPrice(data.totalOneGoodPrice);
     }
     const handleCloseModal = () => {
         handleReset();
@@ -77,23 +44,13 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const handleEditRowData = () => {
         if (quantity <= 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        // } else if (costPrice <= 0) {
-        //     toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
-        // } else {
+        } else {
             dataAfterEdit({
                 // ...data,
                 batchCode: batchCode,
-                costPrice: costPrice,
-                expiryDate: expiryDate,
                 goodsCode: goodsCode,
                 goodsId: goodsId,
-                importId: selectedImportId,
-                manufactureDate: manufactureDate,
                 quantity: quantity,
-                supplierId: supplierId,
-                supplierName: supplierName,
-                totalOneGoodPrice: totalOneGoodPrice
-
             });
             console.log("dataAfterEdit: ", quantity);
             handleClose();
@@ -103,7 +60,7 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     return (
         <Modal show={isShow} onHide={handleCloseModal} size="lg">
             <Modal.Header closeButton>
-                <Modal.Title>Xác nhận lô hàng nhập kho</Modal.Title>
+                <Modal.Title>Xác nhận lô hàng trả</Modal.Title>
             </Modal.Header>
             <Modal.Body><Row>
 
@@ -121,20 +78,33 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
                         <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                     </div>
                 </Col>
+                {/* <Col md={2}>
+                    <div className="form-group mb-3">
+                        <label >Giá tiền</label>
+                        <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
+                    </div>
+                </Col>
 
                 <Col md={2}>
+                    <div className="form-group mb-3">
+                        <label >Tổng giá tiền</label>
+                        <input type="text" className="form-control" value={totalOneGoodPrice} disabled />
+                    </div>
+                </Col> */}
+                {/* <Col md={2}>
                     <div className="form-group mb-3">
                         <label >Mã lô hàng</label>
                         <input type="text" className="form-control" value={batchCode} onChange={handleChangeBatchCode} />
                     </div>
-                </Col>
+                </Col> */}
                 {/* <Col md={3}>
                     <div className="form-group mb-3">
                         <label >Nhà cung cấp</label>
                         <input type="text" className="form-control" value={supplierName} disabled />
                     </div>
                 </Col> */}
-                <Col md={3}>
+
+                {/* <Col md={3}>
                     <div className="form-group mb-3">
                         <label >Ngày sản xuất</label>
                         <input type="date" className="form-control" value={manufactureDate} onChange={handleChangemMnufactureDate} />
@@ -145,14 +115,14 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
                         <label >Ngày hết hạn</label>
                         <input type="date" className="form-control" value={expiryDate} on onChange={handleChangeExpiryDate} />
                     </div>
-                </Col>
+                </Col> */}
 
 
             </Row>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="primary" className="ButtonCSS" onClick={handleEditRowData} >
-                    Xác nhận nhập kho
+                    Xác nhận
                 </Button>
             </Modal.Footer>
         </Modal >
@@ -160,4 +130,4 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
 }
 
 
-export default EditRowDataOrderN;
+export default EditRowDataReturnOrder;

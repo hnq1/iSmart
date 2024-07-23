@@ -152,7 +152,7 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
                             <Dropdown.Toggle as={CustomToggle}
                                 className="DropdownButtonCSS ButtonCSSDropdown">
                                 {/* <span style={{ color: 'white' }}>{selectedMethod || 'Chọn phương thức'}</span> */}
-                                <span style={{ color: 'white' }}>{selectedMethod ? selectedMethod : "Chọn phương thức"}</span>
+                                <span style={{ color: 'white' }}>{selectedMethod  ? selectedMethod : "Chọn phương thức"}</span>
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu style={{ position: 'absolute', zIndex: '9999' }}>
@@ -192,11 +192,11 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
             <Table >
                 <thead>
                     <tr>
-                        <th>Mã Lô Hàng</th>
-                        <th>Ngày Sản Xuất</th>
-                        <th>Ngày Hết Hạn</th>
-                        <th>Số Lượng</th>
-                        <th>Vị Trí Trong Kho</th>
+                        <th>Batch Code</th>
+                        <th>Manufacture Date</th>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th>Location</th>
                     </tr>
                 </thead>
                 <tbody>

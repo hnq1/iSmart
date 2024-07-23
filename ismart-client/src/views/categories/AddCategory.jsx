@@ -10,7 +10,7 @@ const ModelAddCategory = ({ isShow, handleClose, updateTableCategory }) => {
 
 
     const handleSave = async () => {
-        if (!categoryName.trim() || !validateTextRequired.test(categoryName)) {
+        if (!validateTextRequired.test(categoryName)) {
             toast.error("Tên khống được trống và chứa ký tự đặc biệt");
         } else if (!validateText.test(categoryDescription)) {
             toast.error("Thông tin miêu tả không được chứa ký tự đặc biệt");
@@ -19,6 +19,7 @@ const ModelAddCategory = ({ isShow, handleClose, updateTableCategory }) => {
             let res = await createNewCategory(categoryName, categoryDescription);
             toast.success("Thêm danh mục thành công", {
                 className: 'toast-success',
+
             });
             handleReset();
             updateTableCategory();

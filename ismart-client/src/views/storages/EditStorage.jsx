@@ -18,25 +18,35 @@ const ModelEditStorage = ({ isShow, handleClose, dataUpdateStorage, updateTableS
         }
     }, [dataUpdateStorage])
 
-    console.log(dataUpdateStorage);
 
 
     const handleSave = async () => {
-        let res = await EditStorage(dataUpdateStorage.warehouseId,
-            warehouseName,
-            warehouseAddress,
-            warehousePhone
-        );
-        // console.log(res);
-        if (res) {
-            toast.success("Sửa thông tin kho hàng thành công");
-            updateTableStorage();
-            handleClose();
-        }
-        else {
-            toast.error("Sửa thông tin kho hàng thất bại");
-        }
+        if (!validateTextRequired.test(warehouseName)) {
+            toast.error("Tên kho hàng không được để trống hoặc chứa ký tự đặc biệt");
+        } else if (!validatePhone.test(warehousePhone.trim())) {
+            toast.error("Định dạng số điện thoại sai");
+        } else if (!validateText.test(warehouseAddress.trim())) {
+            toast.error("Địa chỉ không được chứa ký tự đặc biệt");
+        } else if (warehouseName.trim() === "" || warehouseAddress.trim() === "" || warehousePhone.trim() === "") {
+            toast.error("Thông tin không được để trống hoặc chỉ chứa dấu cách");
+        } else {
+            let res = await EditStorage(dataUpdateStorage.warehouseId,
+                warehouseName,
+                warehouseAddress,
+                warehousePhone
+            );
+            // console.log(res);
+            if (res) {
+                toast.success("Sửa thông tin kho hàng thành công");
+                updateTableStorage();
+                handleClose();
+            }
 
+            else {
+                toast.error("Sửa thông tin kho hàng thất bại");
+            }
+
+        }
     }
 
     const handleReset = () => {

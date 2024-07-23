@@ -3,7 +3,7 @@ import React from 'react';
 import { Modal, Button, Row, Col, DropdownButton, Dropdown } from "react-bootstrap"
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { fetchAllStorages } from '~/services/StorageServices';
-import { fetchAllDelivery } from "~/services/DeliveryServices";
+import { fetchDeliveryActive } from "~/services/DeliveryServices";
 import { fetchAllCustomer } from "~/services/CustomerServices";
 import { addNewExportOrder, fetchExportOrderNewest } from "~/services/ExportOrderService";
 import { createNewExportOrderDetail } from "~/services/ExportOrderDetailService";
@@ -76,7 +76,7 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
     }
 
     const getAllDelivery = async () => {
-        let res = await fetchAllDelivery();
+        let res = await fetchDeliveryActive();
         setTotalDelivery(res);
     }
 
@@ -168,13 +168,9 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
-
         } else if (!selectedCustomer) {
             toast.warning("Vui lòng chọn khách hàng");
-        } else if (rowsData.length === 0) {
-            toast.warning("Hãy thêm lô hàng");
-        }
-        else {
+        } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             console.log("userId", userId);
             let isInternalTransfer = false;

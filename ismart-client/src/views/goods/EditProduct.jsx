@@ -149,9 +149,9 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const handleSave = async () => {
         if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
-        } else if (!goodName.trim()) {
+        } else if (!goodName) {
             toast.warning("Vui lòng nhập tên sản phẩm");
-        } else if (!goodCode.trim()) {
+        } else if (!goodCode) {
             toast.warning("Vui lòng nhập mã sản phẩm");
         } else if (!selectedCategoryId) {
             toast.warning("Vui lòng chọn danh mục cho sản phẩm");
@@ -159,11 +159,11 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             toast.warning("Vui lòng chọn nhà cung cấp cho sản phẩm");
         } else if (!measuredUnit) {
             toast.warning("Vui lòng chọn đơn vị cho sản phẩm");
-        } else if (!barCode.trim()) {
+        } else if (!barCode) {
             toast.warning("Vui lòng nhập mã vạch cho sản phẩm");
-        } else if (!description.trim()) {
+        } else if (!description) {
             toast.warning("Vui lòng nhập thông tin chi tiết cho sản phẩm");
-        } else if (!imageGood && !dataGoodEdit.image) {
+        }else if (!imageGood && !dataGoodEdit.image) {
             toast.warning("Vui lòng chọn một file ảnh cho sản phẩm");
         }
         else if (maxStock <= 0) {

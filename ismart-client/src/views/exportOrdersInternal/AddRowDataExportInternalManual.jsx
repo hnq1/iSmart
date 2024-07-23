@@ -204,12 +204,12 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
             <Table >
                 <thead>
                     <tr>
-                        <th>Mã Lô Hàng</th>
-                        <th>Ngày Sản Xuất</th>
-                        <th>Ngày Hết Hạn</th>
-                        <th>Số Lượng</th>
-                        <th>Vị Trí Trong Kho</th>
-                        <th>Nhập Số Lượng</th>
+                        <th>Batch Code</th>
+                        <th>Manufacture Date</th>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th>Location</th>
+                        <th>Input Quantity</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -223,11 +223,8 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
                             <td>
                                 <input
                                     type="number"
-                                    min={0}
-                                    max={d.quantity}
-
                                     className="form-control"
-                                    value={inputQuantities[index]?.quantity || '0'}
+                                    value={inputQuantities[index]?.quantity || ''}
                                     onChange={(e) => handleInputQuantityChange(index, e.target.value)}
                                 />
                             </td>

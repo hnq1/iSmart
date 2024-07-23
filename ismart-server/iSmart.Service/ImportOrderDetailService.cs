@@ -128,6 +128,17 @@ namespace iSmart.Service
         {
             try
             {
+                var existingDetail = _context.ImportOrderDetails
+                    .FirstOrDefault(d => d.BatchCode == detail.BatchCode);
+
+                if (existingDetail != null)
+                {
+                    return new CreateImportOrderDetailResponse
+                    {
+                        IsSuccess = false,
+                        Message = "BatchCode already exists for this import order."
+                    };
+                }
                 var requestOrder = new ImportOrderDetail
                 {
                     ImportId = detail.ImportId,
