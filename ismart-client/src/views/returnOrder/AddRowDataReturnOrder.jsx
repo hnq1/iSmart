@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
-import { getBatchByReturnOrder } from "~/services/ReturnOrderServices";
+// import { getBatchByReturnOrder } from "~/services/ReturnOrderServices";
 
 const AddRowDataReturnOrderManual = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
@@ -52,17 +52,17 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
 
 
-    const handleManualClick = async () => {
-        let m = await getBatchByReturnOrder(selectedStorageId, selectedGoodId);
-        if (m.length === 0) {
-            // Nếu không có lô hàng nào, hiển thị thông báo
-            toast.warning("Không có lô hàng nào");
-        } else {
-            setDataMethod(m);
-            const importOrderDetailIds = m.map(item => item.importOrderDetailId);
-            setSelectImportOrderDetailId(importOrderDetailIds);
-        }
-    }
+    // const handleManualClick = async () => {
+    //     let m = await getBatchByReturnOrder(selectedStorageId, selectedGoodId);
+    //     if (m.length === 0) {
+    //         // Nếu không có lô hàng nào, hiển thị thông báo
+    //         toast.warning("Không có lô hàng nào");
+    //     } else {
+    //         setDataMethod(m);
+    //         const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+    //         setSelectImportOrderDetailId(importOrderDetailIds);
+    //     }
+    // }
     const handleInputQuantityChange = (index, value) => {
 
         // Lấy ra importOrderDetailId tương ứng với index của input
@@ -176,7 +176,7 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, isShow, handleClose, o
                         <Dropdown style={{ position: 'relative' }}>
                             <Dropdown.Toggle as={CustomToggle}
                                 className="DropdownButtonCSS ButtonCSSDropdown"
-                                onClick={handleManualClick}
+                                // onClick={handleManualClick}
                             >
                                 <span style={{ color: 'white' }}>{"Chọn lô hàng"}</span>
                             </Dropdown.Toggle>
