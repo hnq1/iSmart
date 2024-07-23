@@ -4,6 +4,7 @@ import { fetchAllStorages } from '~/services/StorageServices';
 import { Modal, Button, Form, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 import { uploadExcel } from '~/services/ExcelService';
 import { toast } from 'react-toastify';
+import * as XLSX from "xlsx";
 
 function InportGoodsListModal({ isShow, handleClose, updateTable }) {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
@@ -57,24 +58,75 @@ function InportGoodsListModal({ isShow, handleClose, updateTable }) {
             toast.warning("Chưa có file nào được chọn!");
             return;
         }
-        let res;
-        if (roleId === 1) {
-            res = await uploadExcel(file, selectedWarehouseId, overwriteProductInfo, overwriteQuantity);
-        } else {
-            res = await uploadExcel(file, userId, overwriteProductInfo, overwriteQuantity);
-        }
 
-        res.results.forEach(result => {
-            if (result.includes("Lỗi")) {
-                toast.error(result);
-            } else {
-                toast.success(result);
+
+        // Đọc file và kiểm tra tiêu đề
+        const fileReader = new FileReader();
+        fileReader.onload = async (e) => {
+            const arrayBuffer = e.target.result;
+            const data = new Uint8Array(arrayBuffer);
+            const workbook = XLSX.read(data, { type: "array" });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const sheetData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+
+            if (!sheetData || sheetData.length === 0) {
+                toast.error("Chưa có tiêu đề");
+                return;
             }
-        });
 
-        updateTable();
-        handleClose();
+
+            const header = sheetData[0];
+            const dataRows = sheetData.slice(1);
+
+
+            if (header.length === 0) {
+                toast.error("Chưa có tiêu đề");
+                return;
+            }
+
+
+            if (dataRows.length === 0) {
+                toast.error("File chưa có dữ liệu");
+                return;
+            }
+
+
+            let res;
+            if (roleId === 1) {
+                res = await uploadExcel(file, selectedWarehouseId, overwriteProductInfo, overwriteQuantity);
+            } else {
+                res = await uploadExcel(file, userId, overwriteProductInfo, overwriteQuantity);
+            }
+
+
+            if (res && res.results) {
+                res.results.forEach(result => {
+                    if (result.includes("Lỗi")) {
+                        toast.error(result);
+                    } else {
+                        toast.success(result);
+                    }
+                });
+            } else {
+                toast.error("File lỗi! Hãy kiểm tra lại");
+            }
+
+
+            updateTable();
+            handleClose();
+        };
+
+
+        fileReader.readAsArrayBuffer(file);
     };
+
+
+
+
+
+
+
 
     return (
         <Modal show={isShow} onHide={handleClose} size="md">
