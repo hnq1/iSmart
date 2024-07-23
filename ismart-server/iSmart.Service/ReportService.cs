@@ -11,9 +11,9 @@ namespace iSmart.Service
 {
     public interface IReportService
     {
-        Task<IEnumerable<ImportReportDto>> GetImportReport(DateTime startDate, DateTime endDate, int warehouseId);
-        Task<IEnumerable<ExportReportDto>> GetExportReport(DateTime startDate, DateTime endDate, int warehouseId);
-        Task<IEnumerable<InventoryReportDto>> GetInventoryReport(DateTime startDate, DateTime endDate, int warehouseId);
+        Task<IEnumerable<ImportReportDto>> GetImportReport(DateTime? startDate, DateTime? endDate, int warehouseId);
+        Task<IEnumerable<ExportReportDto>> GetExportReport(DateTime? startDate, DateTime? endDate, int warehouseId);
+        Task<IEnumerable<InventoryReportDto>> GetInventoryReport(DateTime? startDate, DateTime? endDate, int warehouseId);
     }
     public class ReportService : IReportService
     {
@@ -24,16 +24,24 @@ namespace iSmart.Service
             _context = context;
         }
 
-        public async Task<IEnumerable<ExportReportDto>> GetExportReport(DateTime startDate, DateTime endDate, int warehouseId)
+        public async Task<IEnumerable<ExportReportDto>> GetExportReport(DateTime? startDate, DateTime? endDate, int warehouseId)
         {
             try
             {
-
-                var exportReports = await _context.ExportOrders
-                    .Where(e => e.ExportedDate >= startDate && e.ExportedDate <= endDate && e.WarehouseId == warehouseId && e.StatusId == 4)
+                var query = _context.ExportOrders
+                    .Where(e => e.WarehouseId == warehouseId && e.StatusId == 4)
                     .Include(e => e.Warehouse)
                     .Include(e => e.ExportOrderDetails)
                     .ThenInclude(eod => eod.Goods)
+                    .AsQueryable();
+
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    endDate = endDate.Value.AddDays(1);
+                    query = query.Where(e => e.ExportedDate >= startDate.Value && e.ExportedDate <= endDate.Value);
+                }
+
+                var exportReports = await query
                     .SelectMany(e => e.ExportOrderDetails.Select(eod => new ExportReportDto
                     {
                         TransactionCode = eod.Export.ExportCode,
@@ -53,13 +61,23 @@ namespace iSmart.Service
             }
         }
 
-        public async Task<IEnumerable<ImportReportDto>> GetImportReport(DateTime startDate, DateTime endDate, int warehouseId)
+
+        public async Task<IEnumerable<ImportReportDto>> GetImportReport(DateTime? startDate, DateTime? endDate, int warehouseId)
         {
-            var importReports = await _context.ImportOrders
-                .Where(io => io.ImportedDate >= startDate && io.ImportedDate <= endDate && io.WarehouseId == warehouseId && io.StatusId == 4)
+            var query = _context.ImportOrders
+                .Where(io => io.WarehouseId == warehouseId && io.StatusId == 4)
                 .Include(io => io.Warehouse)
                 .Include(io => io.ImportOrderDetails)
                 .ThenInclude(iod => iod.Goods)
+                .AsQueryable();
+
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                endDate = endDate.Value.AddDays(1);
+                query = query.Where(io => io.ImportedDate >= startDate.Value && io.ImportedDate <= endDate.Value);
+            }
+
+            var importReports = await query
                 .Select(io => new ImportReportDto
                 {
                     TransactionCode = io.ImportCode,
@@ -74,30 +92,24 @@ namespace iSmart.Service
             return importReports;
         }
 
-        public async Task<IEnumerable<InventoryReportDto>> GetInventoryReport(DateTime startDate, DateTime endDate, int warehouseId)
+
+        public async Task<IEnumerable<InventoryReportDto>> GetInventoryReport(DateTime? startDate, DateTime? endDate, int warehouseId)
         {
             try
             {
-                // Tính tồn đầu kỳ (trước ngày bắt đầu của khoảng thời gian báo cáo)
-                var initialBalances = await _context.ImportOrderDetails
-                    .Where(iod => iod.Import.ImportedDate < startDate && iod.Import.WarehouseId == warehouseId)
-                    .GroupBy(iod => new { iod.GoodsId, iod.Goods.GoodsCode, iod.Goods.MeasuredUnit })
-                    .Select(g => new
-                    {
-                        ProductId = g.Key.GoodsId,
-                        ProductName = g.Key.GoodsCode,
-                        MeasureUnit = g.Key.MeasuredUnit,
-                        InitialBalance = g.Sum(iod => iod.Quantity) -
-                                         _context.ExportOrderDetails
-                                         .Where(eod => eod.Export.ExportedDate < startDate && eod.Export.WarehouseId == warehouseId && eod.GoodsId == g.Key.GoodsId)
-                                         .Sum(eod => (int?)eod.Quantity) ?? 0
-                    })
-                    .ToListAsync();
-
-                var importReports = await _context.ImportOrders
-                    .Where(io => io.ImportedDate >= startDate && io.ImportedDate <= endDate && io.WarehouseId == warehouseId && io.StatusId == 4)
+                var query = _context.ImportOrders
+                    .Where(io => io.WarehouseId == warehouseId && io.StatusId == 4)
                     .Include(io => io.ImportOrderDetails)
                     .ThenInclude(iod => iod.Goods)
+                    .AsQueryable();
+
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    endDate = endDate.Value.AddDays(1);
+                    query = query.Where(io => io.ImportedDate >= startDate.Value && io.ImportedDate <= endDate.Value);
+                }
+
+                var importReports = await query
                     .SelectMany(io => io.ImportOrderDetails.Select(iod => new InventoryReportDto
                     {
                         TransactionCode = iod.Import.ImportCode,
@@ -109,10 +121,18 @@ namespace iSmart.Service
                     }))
                     .ToListAsync();
 
-                var exportReports = await _context.ExportOrders
-                    .Where(eo => eo.ExportedDate >= startDate && eo.ExportedDate <= endDate && eo.WarehouseId == warehouseId)
+                var exportReportsQuery = _context.ExportOrders
+                    .Where(eo => eo.WarehouseId == warehouseId)
                     .Include(eo => eo.ExportOrderDetails)
                     .ThenInclude(eod => eod.Goods)
+                    .AsQueryable();
+
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    exportReportsQuery = exportReportsQuery.Where(eo => eo.ExportedDate >= startDate.Value && eo.ExportedDate <= endDate.Value);
+                }
+
+                var exportReports = await exportReportsQuery
                     .SelectMany(eo => eo.ExportOrderDetails.Select(eod => new InventoryReportDto
                     {
                         TransactionCode = eod.Export.ExportCode,
@@ -137,31 +157,14 @@ namespace iSmart.Service
                        Balance = g.Sum(x => x.Imports) - g.Sum(x => x.Exports)
                    })
                    .ToList();
-                // Kết hợp tồn đầu kỳ và tồn trong kỳ để tính tồn cuối kỳ
-                var finalReports = inventoryReports
-                    .GroupJoin(initialBalances,
-                        ir => new { ir.ProductId, ir.ProductName, ir.MeasureUnit },
-                        ib => new { ib.ProductId, ib.ProductName, ib.MeasureUnit },
-                        (ir, ib) => new { InventoryReport = ir, InitialBalance = ib.FirstOrDefault() })
-                    .Select(result => new InventoryReportDto
-                    {
-                        ProductId = result.InventoryReport.ProductId,
-                        ProductName = result.InventoryReport.ProductName,
-                        MeasureUnit = result.InventoryReport.MeasureUnit,
-                        InitialBalance = result.InitialBalance?.InitialBalance ?? 0,
-                        Imports = result.InventoryReport.Imports,
-                        Exports = result.InventoryReport.Exports,
-                        Balance = (result.InitialBalance?.InitialBalance ?? 0) + result.InventoryReport.Imports - result.InventoryReport.Exports,
-                        TransactionDate = result.InventoryReport.TransactionDate
-                    })
-                    .ToList();
 
-                return finalReports;
+                return inventoryReports;
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
+
     }
 }
