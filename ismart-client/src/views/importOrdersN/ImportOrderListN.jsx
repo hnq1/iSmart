@@ -418,8 +418,8 @@ function ImportOrderListN() {
 
                                         <th className="align-middle  text-nowrap">Người <br />xác nhận</th>
                                         <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
-                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
-                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
+                                        {( roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
+                                        {(roleId === 2 ) ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
                                         {roleId === 2 ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
                                         {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
 

@@ -110,13 +110,13 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Hình ảnh không được để trống");
         } else {
             let res = await addUser(selectedWarehouseId,
-                email.trim(),
-                phone.trim(),
+                email,
+                phone,
                 selectedOptionRole,
-                userName.trim(),
-                address.trim(),
+                userName,
+                address,
                 image,
-                fullName.trim());
+                fullName);
             if (res.isSuccess) {
                 toast.success("Thêm mới tài khoản thành công");
                 updateTable();
