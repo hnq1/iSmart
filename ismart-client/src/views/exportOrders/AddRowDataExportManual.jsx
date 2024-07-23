@@ -63,6 +63,8 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             setSelectImportOrderDetailId(importOrderDetailIds);
         }
     }
+
+    
     const handleInputQuantityChange = (index, value) => {
         // Lấy ra importOrderDetailId tương ứng với index của input
         const importOrderDetailId = selectImportOrderDetailId[index];
