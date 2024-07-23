@@ -58,10 +58,18 @@ namespace iSmart.Service
         {
             try
             {
-                // Kiểm tra nếu DeliveryName là null hoặc là một chuỗi khoảng trắng
+                // Check if the delivery name is null, empty or whitespace
                 if (string.IsNullOrWhiteSpace(delivery.DeliveryName))
                 {
-                    return new CreateDeliveryResponse { IsSuccess = false, Message = "Tên delivery không được để trống hoặc là khoảng trắng!" };
+                    return new CreateDeliveryResponse { IsSuccess = false, Message = "Delivery name cannot be empty or whitespace." };
+                }
+                // Check if the delivery name already exists
+                var existingDelivery = _context.Deliveries
+                    .FirstOrDefault(d => d.DeliveryName == delivery.DeliveryName);
+
+                if (existingDelivery != null)
+                {
+                    return new CreateDeliveryResponse { IsSuccess = false, Message = "Delivery name already exists." };
                 }
 
                 var requestDelivery = new Delivery
@@ -69,23 +77,16 @@ namespace iSmart.Service
                     DeliveryName = delivery.DeliveryName,
                     StatusId = 1,               
                 };
-
-                // Kiểm tra nếu DeliveryName đã tồn tại trong cơ sở dữ liệu
-                if (_context.Deliveries.Any(d => d.DeliveryName.ToLower() == requestDelivery.DeliveryName.ToLower()))
-                {
-                    return new CreateDeliveryResponse { IsSuccess = false, Message = "Tên delivery đã tồn tại!" };
-                }
-
                 _context.Deliveries.Add(requestDelivery);
                 _context.SaveChanges();
                 return new CreateDeliveryResponse { IsSuccess = true, Message = "Thêm delivery thành công" };
+
             }
             catch (Exception ex)
             {
                 return new CreateDeliveryResponse { IsSuccess = false, Message = "Thêm delivery thất bại" };
             }
         }
-
 
         public List<Delivery> GetAllDelivery()
         {
@@ -131,7 +132,10 @@ namespace iSmart.Service
             try
             {
                 var pageSize = 12;
-                List<Delivery> deliveries;
+
+
+                var deliveries = _context.Deliveries.Where(d => d.DeliveryName.ToLower().Contains(keyword.ToLower()))
+                                                .OrderBy(d => d.DeliveyId).ToList();
 
                 // Kiểm tra nếu keyword là null hoặc là một chuỗi khoảng trắng
                 if (string.IsNullOrWhiteSpace(keyword))
@@ -149,23 +153,17 @@ namespace iSmart.Service
                                          .OrderBy(d => d.DeliveyId)
                                          .ToList();
                 }
+
                 var count = deliveries.Count();
                 var res = deliveries.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var totalPages = Math.Ceiling((double)count / pageSize);
-
-                return new DeliveryFilterPaging
-                {
-                    TotalPages = (int)totalPages,
-                    PageSize = pageSize,
-                    Data = res
-                };
+                return new DeliveryFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
-
 
 
 
@@ -208,7 +206,6 @@ namespace iSmart.Service
                 return new UpdateDeliveryResponse { IsSuccess = false, Message = "Cập nhật delivery thất bại" };
             }
         }
-
 
 
     }

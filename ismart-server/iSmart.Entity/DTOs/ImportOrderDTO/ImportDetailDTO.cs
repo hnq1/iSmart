@@ -10,7 +10,6 @@ namespace iSmart.Entity.DTOs.ImportOrderDTO
     {
         public int ImportId { get; set; }
 
-
         public float CostPrice { get; set; }
 
         public int DetailId { get; set; }

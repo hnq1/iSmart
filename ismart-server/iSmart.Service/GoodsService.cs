@@ -34,11 +34,20 @@ namespace iSmart.Service
     {
         private readonly iSmartContext _context;
         private readonly IUserWarehouseService _userWarehouseService;
+        private iSmartContext context;
 
         public GoodsService(iSmartContext context, IUserWarehouseService userWarehouseService)
         {
             _context = context;
             _userWarehouseService = userWarehouseService;
+        }
+
+
+
+
+        public GoodsService(iSmartContext context)
+        {
+            _context = context;
         }
 
         public CreateGoodsResponse AddGoodsByAdmin(CreateGoodsRequest goods, int warehouseId)
@@ -115,6 +124,10 @@ namespace iSmart.Service
                 return new CreateGoodsResponse { IsSuccess = false, Message = $"Thêm hàng hóa thất bại, {ex.Message}" };
             }
         }
+
+
+
+
 
         public CreateGoodsResponse AddGoods(CreateGoodsRequest goods, int userId)
         {
@@ -299,7 +312,7 @@ namespace iSmart.Service
                 .Include(g => g.Status)
                 .Include(g => g.Category)
                 .Include(g => g.Supplier)
-                .Include(g => g.GoodsWarehouses)
+                .Include(g =>g.GoodsWarehouses)
                 .Where(g => (!categoryId.HasValue || g.CategoryId == categoryId)
                     && (!supplierId.HasValue || g.SupplierId == supplierId) && (!warehouseId.HasValue || g.GoodsWarehouses.Any(gw => gw.WarehouseId == warehouseId)));
 

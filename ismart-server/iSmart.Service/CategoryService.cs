@@ -1,6 +1,5 @@
 ﻿using iSmart.Entity.DTOs.CategoryDTO;
 using iSmart.Entity.Models;
-using iSmart.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ namespace iSmart.Service
         Task<List<Category>?> GetAllCategory();
         Category? GetCategoryById(int id);
         CreateCategoryResponse AddCategory(CreateCategoryRequest category);
-        UpdateCategoryResponse UpdateCategory(UpdateCategoryRequest category);
+        UpdateCategoryResponse UpdateCaregory(UpdateCategoryRequest category);
 
     }
 
@@ -32,36 +31,24 @@ namespace iSmart.Service
         {
             try
             {
-                // Kiểm tra nếu CategoryName là null hoặc là một chuỗi khoảng trắng
-                if (string.IsNullOrWhiteSpace(category.CategoryName))
-                {
-                    return new CreateCategoryResponse { IsSuccess = false, Message = "Tên loại hàng hóa không được để trống hoặc là khoảng trắng!" };
-                }
-
-                var requestCategory = new Category
+                var requestCategorry = new Category
                 {
                     CategoryName = category.CategoryName,
                     Description = category.Description
                 };
-
-                // Kiểm tra nếu CategoryName đã tồn tại trong cơ sở dữ liệu
-                if (_context.Categories.SingleOrDefault(c => c.CategoryName.ToLower() == requestCategory.CategoryName.ToLower()) == null)
+                if (_context.Categories.SingleOrDefault(c => c.CategoryName.ToLower() == requestCategorry.CategoryName.ToLower()) == null)
                 {
-                    _context.Categories.Add(requestCategory);
+                    _context.Categories.Add(requestCategorry);
                     _context.SaveChanges();
-                    return new CreateCategoryResponse { IsSuccess = true, Message = "Thêm loại hàng thành công" };
+                    return new CreateCategoryResponse { IsSuccess = true, Message = $"Thêm loai hàng thành công" };
                 }
-                else
-                {
-                    return new CreateCategoryResponse { IsSuccess = false, Message = "Loại hàng hóa đã tồn tại!" };
-                }
+                else return new CreateCategoryResponse { IsSuccess = false, Message = "Loại hàng hóa đã tồn tại!" };
             }
             catch (Exception ex)
             {
-                return new CreateCategoryResponse { IsSuccess = false, Message = "Thêm loại hàng thất bại" };
+                return new CreateCategoryResponse { IsSuccess = false, Message = $"Thêm loai hàng thất bại" };
             }
         }
-
 
         public async Task<List<Category>?> GetAllCategory()
         {
@@ -80,7 +67,6 @@ namespace iSmart.Service
         {
             try
             {
-              
                 var category = _context.Categories.FirstOrDefault(c => c.CategoryId == id);
                 return category ?? null;
             }
@@ -90,42 +76,44 @@ namespace iSmart.Service
             }
         }
 
-       
+        //public CategoryFilterPaging GetCategoryByKeyword(int page, string? keyword = "")
+        //{
+        //    try
+        //    {
+        //        var pageSize = 6;
+
+        //        var category = _context.Categories.Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower())
+        //                                                || c.Description.ToLower().Contains(keyword.ToLower()))
+        //                                        .OrderBy(c => c.CategoryId).ToList();
+        //        var count = category.Count();
+        //        var res = category.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        //        var totalPages = Math.Ceiling((double)count / pageSize);
+        //        return new CategoryFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception(e.Message);
+        //    }
+        //}
 
         public CategoryFilterPaging GetCategoryByKeyword(int page, string? keyword = "")
         {
             try
             {
                 var pageSize = 12;
-                List<Category> category;
-
                 if (string.IsNullOrWhiteSpace(keyword))
                 {
-                    // Nếu keyword là null hoặc là một chuỗi khoảng trắng, lấy tất cả các danh mục
-                    category = _context.Categories
-                                       .OrderBy(c => c.CategoryId)
-                                       .ToList();
+                    keyword = string.Empty;
                 }
-                else
-                {
-                    // Nếu keyword không phải là null hoặc chuỗi khoảng trắng, thực hiện lọc theo keyword
-                    category = _context.Categories
-                                       .Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower()))
-                                       .OrderBy(c => c.CategoryId)
-                                       .ToList();
-                }
-
-
+                var category = _context.Categories.Where(c => c.CategoryName.ToLower().Contains(keyword.ToLower())
+                                                        || c.Description.ToLower().Contains(keyword.ToLower()))
+                                                .OrderBy(c => c.CategoryId).ToList();
                 var count = category.Count();
                 var res = category.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 var totalPages = Math.Ceiling((double)count / pageSize);
+                return new CategoryFilterPaging { TotalPages = (int)totalPages, PageSize = pageSize, Data = res };
 
-                return new CategoryFilterPaging
-                {
-                    TotalPages = (int)totalPages,
-                    PageSize = pageSize,
-                    Data = res
-                };
             }
             catch (Exception e)
             {
@@ -136,22 +124,21 @@ namespace iSmart.Service
 
 
 
-
-        public UpdateCategoryResponse UpdateCategory(UpdateCategoryRequest category)
+        public UpdateCategoryResponse UpdateCaregory(UpdateCategoryRequest category)
         {
             try
             {
                 // Kiểm tra nếu CategoryName là null hoặc là một chuỗi khoảng trắng
                 if (string.IsNullOrWhiteSpace(category.CategoryName))
                 {
-                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Tên loại hàng hóa không được để trống hoặc là khoảng trắng!" };
+                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Category name không được để trống hoặc là khoảng trắng!" };
                 }
 
                 var existingCategory = _context.Categories.SingleOrDefault(c => c.CategoryId == category.CategoryId);
 
                 if (existingCategory == null)
                 {
-                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Loại hàng hóa không tồn tại!" };
+                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Category không tồn tại!" };
                 }
 
                 // Kiểm tra nếu CategoryName đã tồn tại (trừ danh mục hiện tại)
@@ -160,7 +147,7 @@ namespace iSmart.Service
 
                 if (duplicateCategory != null)
                 {
-                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Tên loại hàng hóa đã tồn tại!" };
+                    return new UpdateCategoryResponse { IsSuccess = false, Message = "Category name đã tồn tại!" };
                 }
 
                 existingCategory.CategoryName = category.CategoryName;
@@ -169,14 +156,12 @@ namespace iSmart.Service
                 _context.Categories.Update(existingCategory);
                 _context.SaveChanges();
 
-                return new UpdateCategoryResponse { IsSuccess = true, Message = "Cập nhật loại hàng thành công" };
+                return new UpdateCategoryResponse { IsSuccess = true, Message = "Update category successfully" };
             }
             catch (Exception e)
             {
-                return new UpdateCategoryResponse { IsSuccess = false, Message = "Cập nhật loại hàng thất bại" };
+                return new UpdateCategoryResponse { IsSuccess = false, Message = "Update category failed" };
             }
         }
-
-
     }
 }

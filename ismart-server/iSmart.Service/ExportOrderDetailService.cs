@@ -85,8 +85,8 @@ namespace iSmart.Service
             try
             {
                 var details = _context.ExportOrderDetails.Where(i => i.ExportId == oid)
-                    .Select( i => new ExportDetailDTO
-                {
+                    .Select(i => new ExportDetailDTO
+                    {
                         DetailId = i.DetailId,
                         ExportId = i.ExportId,
                         GoodsId = i.GoodsId,
@@ -94,7 +94,7 @@ namespace iSmart.Service
                         Quantity = i.Quantity,
                         GoodsCode = i.Goods.GoodsCode,
                         ImportOrderDetailId = i.ImportOrderDetailId
-                    })      
+                    })
                      .ToList();
                 return details;
 
@@ -110,45 +110,23 @@ namespace iSmart.Service
         {
             try
             {
-                // Tìm đối tượng ExportOrderDetail hiện có trong cơ sở dữ liệu dựa trên DetailId
-                var existingDetail = _context.ExportOrderDetails.Find(detail.DetailId);
-
-                if (existingDetail == null)
+                var requestOrder = new ExportOrderDetail
                 {
-                    return new UpdateExportOrderDetailResponse
-                    {
-                        IsSuccess = false,
-                        Message = "Order detail not found"
-                    };
-                }
-
-                // Cập nhật các thuộc tính của đối tượng ExportOrderDetail
-                existingDetail.ExportId = detail.ExportId;
-                existingDetail.GoodsId = detail.GoodsId;
-                existingDetail.Quantity = detail.Quantity;
-                existingDetail.Price = detail.Price;
-                existingDetail.ImportOrderDetailId = detail.ImportOrderDetailId;
-
-                // Lưu thay đổi vào cơ sở dữ liệu
-                _context.Update(existingDetail);
-                _context.SaveChanges();
-
-                return new UpdateExportOrderDetailResponse
-                {
-                    IsSuccess = true,
-                    Message = "Update order detail complete"
+                    DetailId = detail.DetailId,
+                    ExportId = detail.ExportId,
+                    GoodsId = detail.GoodsId,
+                    Quantity = detail.Quantity,
+                    Price = detail.Price,
+                    ImportOrderDetailId = detail.ImportOrderDetailId
                 };
+                _context.Update(requestOrder);
+                _context.SaveChanges();
+                return new UpdateExportOrderDetailResponse { IsSuccess = true, Message = "Update order detail complete" };
             }
             catch (Exception e)
             {
-                return new UpdateExportOrderDetailResponse
-                {
-                    IsSuccess = false,
-                    Message = $"Update order detail failed: {e.Message}"
-                };
+                return new UpdateExportOrderDetailResponse { IsSuccess = false, Message = $"Update order detail failed {e.Message}" };
             }
         }
-
     }
 }
-

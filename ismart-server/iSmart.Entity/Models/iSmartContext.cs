@@ -42,8 +42,6 @@ namespace iSmart.Entity.Models
         public virtual DbSet<UserWarehouse> UserWarehouses { get; set; }
         public virtual DbSet<Warehouse> Warehouses { get; set; }
         public virtual DbSet<GoodsWarehouse> GoodsWarehouses { get; set; }
-        public virtual DbSet<InventoryCheck> InventoryChecks { get; set; }
-        public virtual DbSet<InventoryCheckDetail> InventoryCheckDetails { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -77,20 +75,6 @@ namespace iSmart.Entity.Models
                       .HasMaxLength(100);
 
             });
-            modelBuilder.Entity<InventoryCheck>()
-                .HasOne(ic => ic.Warehouse)
-                .WithMany(w => w.InventoryChecks)
-                .HasForeignKey(ic => ic.WarehouseId);
-
-            modelBuilder.Entity<InventoryCheckDetail>()
-                .HasOne(icd => icd.InventoryCheck)
-                .WithMany(ic => ic.InventoryCheckDetails)
-                .HasForeignKey(icd => icd.InventoryCheckId);
-
-            modelBuilder.Entity<InventoryCheckDetail>()
-                .HasOne(icd => icd.Good)
-                .WithMany(g => g.InventoryCheckDetails)
-                .HasForeignKey(icd => icd.GoodId);
 
             modelBuilder.Entity<GoodsWarehouse>(entity =>
             {
@@ -479,7 +463,6 @@ namespace iSmart.Entity.Models
                     .HasMaxLength(50);
 
                 entity.Property(e => e.ReturnedDate).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
-                entity.Property(e => e.ConfirmedDate).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
 
                 entity.HasOne(d => d.Warehouse)
                     .WithMany(p => p.ReturnsOrders)

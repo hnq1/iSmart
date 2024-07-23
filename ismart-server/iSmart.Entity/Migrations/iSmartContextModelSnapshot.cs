@@ -17,7 +17,7 @@ namespace iSmart.Entity.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.29")
+                .HasAnnotation("ProductVersion", "6.0.31")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -654,59 +654,6 @@ namespace iSmart.Entity.Migrations
                     b.ToTable("ImportOrderDetail", (string)null);
                 });
 
-            modelBuilder.Entity("iSmart.Entity.Models.InventoryCheck", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CheckDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.ToTable("InventoryChecks");
-                });
-
-            modelBuilder.Entity("iSmart.Entity.Models.InventoryCheckDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ActualQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ExpectedQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GoodId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InventoryCheckId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GoodId");
-
-                    b.HasIndex("InventoryCheckId");
-
-                    b.ToTable("InventoryCheckDetails");
-                });
-
             modelBuilder.Entity("iSmart.Entity.Models.MeasuredUnit", b =>
                 {
                     b.Property<int>("MeasuredUnitId")
@@ -775,11 +722,6 @@ namespace iSmart.Entity.Migrations
 
                     b.Property<int?>("ApprovedBy")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("ConfirmedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
@@ -1361,36 +1303,6 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("Import");
                 });
 
-            modelBuilder.Entity("iSmart.Entity.Models.InventoryCheck", b =>
-                {
-                    b.HasOne("iSmart.Entity.Models.Warehouse", "Warehouse")
-                        .WithMany("InventoryChecks")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Warehouse");
-                });
-
-            modelBuilder.Entity("iSmart.Entity.Models.InventoryCheckDetail", b =>
-                {
-                    b.HasOne("iSmart.Entity.Models.Good", "Good")
-                        .WithMany("InventoryCheckDetails")
-                        .HasForeignKey("GoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("iSmart.Entity.Models.InventoryCheck", "InventoryCheck")
-                        .WithMany("InventoryCheckDetails")
-                        .HasForeignKey("InventoryCheckId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Good");
-
-                    b.Navigation("InventoryCheck");
-                });
-
             modelBuilder.Entity("iSmart.Entity.Models.RefreshToken", b =>
                 {
                     b.HasOne("iSmart.Entity.Models.User", "User")
@@ -1581,8 +1493,6 @@ namespace iSmart.Entity.Migrations
 
                     b.Navigation("ImportOrderDetails");
 
-                    b.Navigation("InventoryCheckDetails");
-
                     b.Navigation("ReturnsOrderDetails");
                 });
 
@@ -1591,11 +1501,6 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("AvailableForReturns");
 
                     b.Navigation("ImportOrderDetails");
-                });
-
-            modelBuilder.Entity("iSmart.Entity.Models.InventoryCheck", b =>
-                {
-                    b.Navigation("InventoryCheckDetails");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.ReturnsOrder", b =>
@@ -1668,8 +1573,6 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("GoodsWarehouses");
 
                     b.Navigation("ImportOrders");
-
-                    b.Navigation("InventoryChecks");
 
                     b.Navigation("ReturnsOrders");
 

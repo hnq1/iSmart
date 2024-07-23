@@ -12,5 +12,6 @@ namespace iSmart.Entity.DTOs.ReturnOrderDTO
         public DateTime ReturnedDate { get; set; }
         public int WarehouseId { get; set; }
         public int SupplierId { get; set; }
+        public int? ApprovedBy { get; set; }
     }
 }

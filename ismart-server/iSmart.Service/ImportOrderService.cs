@@ -20,8 +20,13 @@ namespace iSmart.Service
         List<ImportOrderDTO> GetAllImportOrder();
         ImportOrder? GetImportOrderByOrderCode(string code);
 
+
+
         CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
-        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize, int page, int? storage, int? status, int? sortDate, string? keyword = "");
+
+        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
+
+
         Task<string> Import(int importid);
     }
 
@@ -213,6 +218,7 @@ namespace iSmart.Service
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
                     StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
+
                 };
 
                 if (_context.ImportOrders.SingleOrDefault(z => importOrder.ImportCode.ToLower() == z.ImportCode.ToLower()) == null)
@@ -378,3 +384,5 @@ namespace iSmart.Service
 
     }
 }
+
+

@@ -34,6 +34,9 @@ namespace iSmart.Service
         {
             try
             {
+
+                
+
                 if (string.IsNullOrWhiteSpace(supplier.SupplierName))
                 {
                     return new CreateSupplierResponse { IsSuccess = false, Message = "Tên nhà cung cấp không được để trống hoặc là khoảng trắng!" };
@@ -53,6 +56,7 @@ namespace iSmart.Service
                     SupplierEmail = supplier.SupplierEmail,
                     Note = "Kho nội bộ",
                 } : new Supplier
+
                 {
                     SupplierName = supplier.SupplierName,
                     SupplierPhone = supplier.SupplierPhone,
@@ -64,14 +68,13 @@ namespace iSmart.Service
                 _context.Suppliers.Add(newSupplier);
                 _context.SaveChanges();
 
-                return new CreateSupplierResponse { IsSuccess = true, Message = "Thêm nhà cung cấp thành công" };
+                return new CreateSupplierResponse { IsSuccess = true, Message = "Supplier added successfully" };
             }
             catch (Exception ex)
             {
-                return new CreateSupplierResponse { IsSuccess = false, Message = "Thêm nhà cung cấp thất bại" };
+                return new CreateSupplierResponse { IsSuccess = false, Message = "Failed to add supplier" };
             }
         }
-
 
         public async Task<List<SupplierDTO>?> GetAllSupplier()
         {
@@ -236,45 +239,26 @@ namespace iSmart.Service
         {
             try
             {
-                // Kiểm tra nếu SupplierName là null hoặc là một chuỗi khoảng trắng
-                if (string.IsNullOrWhiteSpace(supplier.SupplierName))
+                var updatedSupplier = new Supplier
                 {
-                    return new UpdateSupplierResponse { IsSuccess = false, Message = "Tên nhà cung cấp không được để trống hoặc là khoảng trắng!" };
-                }
+                    SupplierId = supplier.SupplierId,
+                    SupplierName = supplier.SupplierName,
+                    SupplierPhone = supplier.SupplierPhone,
+                    StatusId = supplier.StatusId,
+                    SupplierEmail = supplier.SupplierEmail,
+                    Note = supplier.Note,
+                };
 
-                var existingSupplier = _context.Suppliers.SingleOrDefault(s => s.SupplierId == supplier.SupplierId);
-
-                if (existingSupplier == null)
-                {
-                    return new UpdateSupplierResponse { IsSuccess = false, Message = "Nhà cung cấp không tồn tại!" };
-                }
-
-                // Kiểm tra nếu SupplierName đã tồn tại (trừ nhà cung cấp hiện tại)
-                var duplicateSupplier = _context.Suppliers
-                    .SingleOrDefault(s => s.SupplierName.ToLower() == supplier.SupplierName.ToLower() && s.SupplierId != supplier.SupplierId);
-
-                if (duplicateSupplier != null)
-                {
-                    return new UpdateSupplierResponse { IsSuccess = false, Message = "Tên nhà cung cấp đã tồn tại!" };
-                }
-
-                existingSupplier.SupplierName = supplier.SupplierName;
-                existingSupplier.SupplierPhone = supplier.SupplierPhone;
-                existingSupplier.StatusId = supplier.StatusId;
-                existingSupplier.SupplierEmail = supplier.SupplierEmail;
-                existingSupplier.Note = supplier.Note;
-
-                _context.Suppliers.Update(existingSupplier);
+                _context.Suppliers.Update(updatedSupplier);
                 _context.SaveChanges();
 
-                return new UpdateSupplierResponse { IsSuccess = true, Message = "Cập nhật nhà cung cấp thành công" };
+                return new UpdateSupplierResponse { IsSuccess = true, Message = "Supplier updated successfully" };
             }
             catch (Exception e)
             {
-                return new UpdateSupplierResponse { IsSuccess = false, Message = "Cập nhật nhà cung cấp thất bại" };
+                return new UpdateSupplierResponse { IsSuccess = false, Message = "Failed to update supplier" };
             }
         }
-
 
 
     }

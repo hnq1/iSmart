@@ -26,6 +26,5 @@ namespace iSmart.Entity.Models
         public virtual ICollection<ReturnsOrder> ReturnsOrders { get; set; }
         public virtual ICollection<UserWarehouse> UserWarehouses { get; set; }
         public virtual ICollection<GoodsWarehouse> GoodsWarehouses { get; set; }
-        public virtual ICollection<InventoryCheck> InventoryChecks { get; set; }
     }
 }
