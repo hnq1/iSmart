@@ -20,7 +20,7 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("import")]
-        public async Task<IActionResult> GetImportReport(DateTime startDate, DateTime endDate, int warehouseId)
+        public async Task<IActionResult> GetImportReport(DateTime? startDate, DateTime? endDate, int warehouseId)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("export")]
-        public async Task<IActionResult> GetExportReport(DateTime startDate, DateTime endDate, int warehouseId)
+        public async Task<IActionResult> GetExportReport(DateTime? startDate, DateTime? endDate, int warehouseId)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("inventory")]
-        public async Task<IActionResult> GetInventoryReport(DateTime startDate, DateTime endDate, int warehouseId)
+        public async Task<IActionResult> GetInventoryReport(DateTime? startDate, DateTime? endDate, int warehouseId)
         {
             try
             {
