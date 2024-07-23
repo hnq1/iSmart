@@ -42,5 +42,6 @@ namespace iSmart.Entity.Models
         public virtual ICollection<ImportOrderDetail> ImportOrderDetails { get; set; }
         public virtual ICollection<ReturnsOrderDetail> ReturnsOrderDetails { get; set; }
         public virtual ICollection<GoodsWarehouse> GoodsWarehouses { get; set; }
+        public virtual ICollection<InventoryCheckDetail> InventoryCheckDetails { get; set; }
     }
 }
