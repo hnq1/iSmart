@@ -75,6 +75,6 @@ namespace iSmart.API.Controllers
             }
             return Ok("Delete order detail complete");
         }
-
+        
     }
 }

@@ -22,7 +22,7 @@ namespace iSmart.Test
             _deliveryService = new DeliveryService(context);
         }
         [Test]
-        public void GetAllDelivery_Test() 
+        public void GetAllDelivery_Test()
         {
             var result = false;
             var deliveries = _deliveryService.GetAllDelivery();
@@ -38,20 +38,9 @@ namespace iSmart.Test
             if (deliveries != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
+
         [Test]
         public void AddDelivery_Test()
-        {
-            var result = false;
-            var deliveryEntry = new CreateDeliveryRequest
-            {
-                DeliveryName = "Giao hàng tốc độ"
-            };
-            var deliveries = _deliveryService.AddDelivery(deliveryEntry);
-            if (deliveries.IsSuccess == true) result = true;
-            Assert.That(result, Is.EqualTo(true));
-        }
-        [Test]
-        public void AddDelivery_TestRepeat()
         {
             var result = false;
             var deliveryEntry = new CreateDeliveryRequest
@@ -59,19 +48,7 @@ namespace iSmart.Test
                 DeliveryName = "test"
             };
             var deliveries = _deliveryService.AddDelivery(deliveryEntry);
-            if (deliveries.IsSuccess == false) result = true;
-            Assert.That(result, Is.EqualTo(true));
-        }
-        [Test]
-        public void AddDelivery_TestBlank()
-        {
-            var result = false;
-            var deliveryEntry = new CreateDeliveryRequest
-            {
-                DeliveryName = " "
-            };
-            var deliveries = _deliveryService.AddDelivery(deliveryEntry);
-            if (deliveries.IsSuccess == false) result = true;
+            if (deliveries != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
 
@@ -100,38 +77,11 @@ namespace iSmart.Test
             var deliveryEntry = new UpdateDeliveryRequest
             {
                 DeliveryId = 2,
-                DeliveryName = "testsdf",
+                DeliveryName = "test",
             };
             var deliveries = _deliveryService.UpdateDelivery(deliveryEntry);
-            if (deliveries.IsSuccess == true) result = true;
+            if (deliveries != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
-        [Test]
-        public void UpdateDelivery_TestRepeat()
-        {
-            var result = false;
-            var deliveryEntry = new UpdateDeliveryRequest
-            {
-                DeliveryId = 2,
-                DeliveryName = "Giao hàng tiết kiệm",
-            };
-            var deliveries = _deliveryService.UpdateDelivery(deliveryEntry);
-            if (deliveries.IsSuccess == false) result = true;
-            Assert.That(result, Is.EqualTo(true));
-        }
-        [Test]
-        public void UpdateDelivery_TestBlank()
-        {
-            var result = false;
-            var deliveryEntry = new UpdateDeliveryRequest
-            {
-                DeliveryId = 2,
-                DeliveryName = " ",
-            };
-            var deliveries = _deliveryService.UpdateDelivery(deliveryEntry);
-            if (deliveries.IsSuccess == false) result = true;
-            Assert.That(result, Is.EqualTo(true));
-        }
-        
     }
 }

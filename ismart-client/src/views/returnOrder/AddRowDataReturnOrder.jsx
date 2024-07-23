@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
-import { getBatchByReturnOrder } from "~/services/ReturnOrderServices";
+import { getBatchForReturn } from "~/services/ImportOrderDetailServices";
 
 const AddRowDataReturnOrderManual = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
@@ -53,7 +53,7 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
 
     const handleManualClick = async () => {
-        let m = await getBatchByReturnOrder(selectedStorageId, selectedGoodId);
+        let m = await getBatchForReturn(selectedStorageId, selectedGoodId);
         if (m.length === 0) {
             // Nếu không có lô hàng nào, hiển thị thông báo
             toast.warning("Không có lô hàng nào");

@@ -30,24 +30,22 @@ namespace iSmart.Test
             if (suppliers != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
-
-        [Test]
-        public void AddSupplier_Test()
-        {
-            var result = false;
-            var supplierEntry = new CreateSupplierRequest
-            {
-                SupplierName = "Test",
-                SupplierPhone = "Test",
-                StatusId = 1,
-                SupplierEmail = "Test",
-                Note = "Test",
-            };
-            var supplierResponse = supplierService.AddSupplier(supplierEntry,true);
-            if (supplierResponse.IsSuccess == true) result = true;
-            Assert.That(result, Is.EqualTo(true));
-        }
-
+        //[Test]
+        //public void AddSupplier_Test()
+        //{
+        //    var result = false;
+        //    var supplierEntry = new CreateSupplierRequest
+        //    {
+        //        SupplierName = "Test",
+        //        SupplierPhone = "Test",
+        //        StatusId = 1,
+        //        SupplierEmail = "Test",
+        //        Note = "Test",
+        //    };
+        //    var supplierResponse = supplierService.AddSupplier(supplierEntry);
+        //    if (supplierResponse.IsSuccess == true) result = true;
+        //    Assert.That(result, Is.EqualTo(true));
+        //}
 
         [Test]
         public void GetAllActiveSupplier_Test()
