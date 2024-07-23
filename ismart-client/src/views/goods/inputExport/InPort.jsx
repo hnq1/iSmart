@@ -1,20 +1,42 @@
 import { set } from 'lodash';
-import React, { useState } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { fetchAllStorages } from '~/services/StorageServices';
+import { Modal, Button, Form, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 import { uploadExcel } from '~/services/ExcelService';
+import { toast } from 'react-toastify';
 
-function InportGoodsListModal({ isShow, handleClose }) {
+function InportGoodsListModal({ isShow, handleClose, updateTable }) {
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
     const [file, setFile] = useState(null);
     const [overwriteProductInfo, setOverwriteProductInfo] = useState(false);
     const [overwriteQuantity, setOverwriteQuantity] = useState(false);
 
-    const handleFileChange = async (event) => {
-        const file = event.target.files[0];
-        console.log("file: ", file);
-        let res = uploadExcel(file);
-        const urlExcel = res.url;
-        setFile(urlExcel);
-        console.log("urlExcel: ", urlExcel);
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
+
+    useEffect(() => {
+        getAllStorages();
+    }, []);
+
+    const getAllStorages = async () => {
+        let res = await fetchAllStorages();
+        setTotalWarehouse(res);
+    }
+
+    const handleStorageTotalClick = () => {
+        setSelectedWarehouse("Tất cả Kho");
+        setSelectedWarehouseId("");
+    }
+
+    const handleStorageClick = (warehouse) => {
+        setSelectedWarehouse(warehouse.warehouseName);
+        setSelectedWarehouseId(warehouse.warehouseId);
+    }
+
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
     };
 
     const handleOverwriteProductInfoChange = (event) => {
@@ -25,15 +47,32 @@ function InportGoodsListModal({ isShow, handleClose }) {
         setOverwriteQuantity(event.target.checked);
     };
 
-    const handleSave = () => {
-        if (!file) {
-            alert("Vui lòng chọn tệp tin");
+    const handleSave = async (event) => {
+        event.preventDefault();
+        if (!selectedWarehouseId) {
+            toast.warning("Chưa chọn kho!");
             return;
         }
-        // Handle file upload and options here
-        console.log("File:", file);
-        console.log("Overwrite Product Info:", overwriteProductInfo);
-        console.log("Overwrite Quantity:", overwriteQuantity);
+        if (!file) {
+            toast.warning("Chưa có file nào được chọn!");
+            return;
+        }
+        let res;
+        if (roleId === 1) {
+            res = await uploadExcel(file, selectedWarehouseId, overwriteProductInfo, overwriteQuantity);
+        } else {
+            res = await uploadExcel(file, userId, overwriteProductInfo, overwriteQuantity);
+        }
+
+        res.results.forEach(result => {
+            if (result.includes("Lỗi")) {
+                toast.error(result);
+            } else {
+                toast.success(result);
+            }
+        });
+
+        updateTable();
         handleClose();
     };
 
@@ -45,13 +84,41 @@ function InportGoodsListModal({ isShow, handleClose }) {
             <Modal.Body>
                 <Form>
                     <Form.Group>
-                        <Form.Label>Tải file mẫu nhập danh sách sản phẩm <a href="#">tại đây</a></Form.Label>
-                        <Form.Control type="file" onChange={handleFileChange} />
+                        <Form.Label>Tải file mẫu nhập danh sách sản phẩm <a href="https://localhost:7033/api/excel/download-template">tại đây</a></Form.Label>
+                        {
+                            roleId === 1 &&
+                            <Col md={2}>
+                                <label>Kho</label>
+                                <DropdownButton
+                                    className="DropdownButtonCSS ButtonCSSDropdown"
+                                    title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                    variant="success"
+                                    style={{ zIndex: 999 }}
+                                >
+                                    <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
+                                    {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                        <Dropdown.Item
+                                            key={`warehouse ${index}`}
+                                            eventKey={c.warehouseName}
+                                            onClick={() => handleStorageClick(c)}
+                                        >
+                                            {c.warehouseName}
+                                        </Dropdown.Item>
+                                    ))}
+                                </DropdownButton>
+                            </Col>
+                        }
+                        <br />
+                        <Form.Control type="file" accept=".xlsx,.xls" onChange={handleFileChange} />
                     </Form.Group>
 
                     <Form.Group controlId="formOverwriteProductInfo">
-                        <a>Ghi đè thông tin các sản phẩm đã có</a>
-
+                        <Form.Check
+                            type="checkbox"
+                            label="Không ghi đè thông tin các sản phẩm đã có"
+                            checked={overwriteProductInfo}
+                            onChange={handleOverwriteProductInfoChange}
+                        />
                     </Form.Group>
                     <Form.Group controlId="formOverwriteQuantity">
                         <Form.Check
@@ -61,13 +128,10 @@ function InportGoodsListModal({ isShow, handleClose }) {
                             onChange={handleOverwriteQuantityChange}
                         />
                     </Form.Group>
-                    <Form>
-                        <div style={{ fontSize: '12px', color: '#888' }}>
-                            <p>- Việc ghi đè sẽ xóa hết các thông tin cũ của sản phẩm bị ghi đè để lưu thông tin mới.</p>
-                            <p>- Tính năng này không dùng để cập nhật hàng loạt sản phẩm.</p>
-                        </div>
-                    </Form>
-
+                    <Form.Text className="text-muted">
+                        {/* <p>- Việc ghi đè sẽ xóa hết các thông tin cũ của sản phẩm bị ghi đè để lưu thông tin mới.</p> */}
+                        <p>- Tính năng này không dùng để cập nhật hàng loạt sản phẩm.</p>
+                    </Form.Text>
                 </Form>
             </Modal.Body>
             <Modal.Footer>
