@@ -14,12 +14,12 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
     const containsNumber = (str) => /\d/.test(str);
 
-    const [userName, setUserName] = useState();
-    const [email, setEmail] = useState();
-    const [phone, setPhone] = useState();
-    const [address, setAddress] = useState();
-    const [image, setImage] = useState();
-    const [fullName, setFullName] = useState();
+    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [address, setAddress] = useState("");
+    const [image, setImage] = useState("");
+    const [fullName, setFullName] = useState("");
 
     useEffect(() => {
         getAllStorages();
@@ -92,21 +92,26 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     }
     // Điều kiện login
     const handleSave = async () => {
-        if (!email.trim() || !validateEmail.test(email.trim())) {
-            toast.warning("Email không hợp lệ");
-        } else if (!userName.trim()) {
-            toast.warning("Tên đăng nhập không được để trống");
-        } else if (!selectedWarehouseId) {
+         if (!selectedWarehouseId) {
             toast.warning("Vui lòng chọn kho");
-        } else if (!phone.trim() || !validatePhone.test(phone.trim())) {
-            toast.warning("Số điện thoại không hợp lệ");
-        } else if (!address.trim()) {
-            toast.warning("Địa chỉ không được để trống");
-        } else if (!fullName.trim()) {
+        }
+        else if (!selectedOptionRole) {
+            toast.warning("Vui lòng chọn chức vụ");
+        }else if (!fullName.trim()) {
             toast.warning("Họ và tên không được để trống");
         } else if (!fullName) {
             toast.warning("Họ và tên không được để trống");
-        } else if (!image) {
+        } else if (!phone.trim() || !validatePhone.test(phone.trim())) {
+            toast.warning("Số điện thoại không hợp lệ");
+        }else if (!userName.trim()) {
+            toast.warning("Tên đăng nhập không được để trống");
+        } 
+        else if (!email.trim() || !validateEmail.test(email.trim())) {
+            toast.warning("Email không hợp lệ");
+        }
+          else if (!address.trim()) {
+            toast.warning("Địa chỉ không được để trống");
+        }  else if (!image) {
             toast.warning("Hình ảnh không được để trống");
         } else {
             let res = await addUser(selectedWarehouseId,
@@ -117,6 +122,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                 address,
                 image,
                 fullName);
+                console.log(res);
             if (res.isSuccess) {
                 toast.success("Thêm mới tài khoản thành công");
                 updateTable();
@@ -159,8 +165,11 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             </DropdownButton>
                         </Col>
                     </Row>
+                    <br/>
                     <Row>
+                    
                         <Col md={6}>
+                                
                             <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
                                 <option value="">Chức vụ</option>
                                 <option value="2">WarehouseManager</option>
