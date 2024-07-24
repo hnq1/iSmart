@@ -4,7 +4,7 @@ import { updateUser, fetchAllRole } from "~/services/UserServices";
 import { toast } from 'react-toastify';
 import uploadImage from '~/services/ImageServices';
 import { set } from 'lodash';
-
+import { validateEmail, validatePhone, validateText, validateTextRequired, isStrongPassword } from "~/validate";
 const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) => {
     const [selectedOptionRole, setSelectedOption] = useState('3');
 
@@ -29,7 +29,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
             setEmail(dataUserEdit.email);
             setAddress(dataUserEdit.address);
             setStatus(dataUserEdit.statusId);
-        } 
+        }
     }, [dataUserEdit])
 
 
@@ -66,15 +66,15 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
     const handleSave = async () => {
         if (!userName.trim()) {
             toast.error("Tên đăng nhập không được để trống");
-        } else if (!userCode.trim()) {
-            toast.error("Mã người dùng không được để trống");
+            // } else if (!userCode.trim()) {
+            //     toast.error("Mã người dùng không được để trống");
         } else if (!fullName.trim()) {
             toast.error("Tên không được để trống");
-        } else if (!phone.trim()) {
-            toast.error("Số điện thoại không được để trống");
-        } else if (!email.trim()) {
-            toast.error("Email không được để trống");
-        } else if (!address.trim()) {
+        } else if (!(phone || "").trim() || !validatePhone.test((phone || "").trim())) {
+            toast.error("Số điện thoại không hợp lệ!");
+        } else if (!(email || "").trim() || !validateEmail.test((email || "").trim())) {
+            toast.error("Email không hợp lệ!");
+        } else if (!(address || "").trim()) {
             toast.error("Địa chỉ không được để trống");
         } else if (!image && !dataUserEdit.image) { // Kiểm tra nếu không có hình ảnh mới và không có hình ảnh hiện tại
             toast.error("Hình ảnh không được để trống");
