@@ -22,21 +22,16 @@ const ProfileDetail = ({ isShow, handleClose, userId }) => {
 
 
     useEffect(() => {
-
-        console.log(userId);
         getDataUser(userId);
-
-        console.log(dataUser);
-
     }, [userId])
 
     useEffect(() => {
-        setImage(dataUser.image);
-        setPhone(dataUser.phone);
-        setEmail(dataUser.email);
-        setAddress(dataUser.address);
-        setFullName(dataUser.fullName);
-    }, [dataUser])
+        setImage(dataUser.image || "");
+        setPhone(dataUser.phone || "");
+        setEmail(dataUser.email || "");
+        setAddress(dataUser.address || "");
+        setFullName(dataUser.fullName || "");
+    }, [isShow, dataUser])
 
 
 
