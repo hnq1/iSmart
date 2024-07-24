@@ -92,44 +92,45 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     }
     // Điều kiện login
     const handleSave = async () => {
-         if (!selectedWarehouseId) {
-            toast.warning("Vui lòng chọn kho");
-        }
-        else if (!selectedOptionRole) {
-            toast.warning("Vui lòng chọn chức vụ");
-        }else if (!fullName.trim()) {
-            toast.warning("Họ và tên không được để trống");
-        } else if (!fullName) {
-            toast.warning("Họ và tên không được để trống");
-        } else if (!phone.trim() || !validatePhone.test(phone.trim())) {
-            toast.warning("Số điện thoại không hợp lệ");
-        }else if (!userName.trim()) {
-            toast.warning("Tên đăng nhập không được để trống");
-        } 
-        else if (!email.trim() || !validateEmail.test(email.trim())) {
-            toast.warning("Email không hợp lệ");
-        }
-          else if (!address.trim()) {
-            toast.warning("Địa chỉ không được để trống");
-        }  else if (!image) {
-            toast.warning("Hình ảnh không được để trống");
-        } else {
-            let res = await addUser(selectedWarehouseId,
-                email,
-                phone,
-                selectedOptionRole,
-                userName,
-                address,
-                image,
-                fullName);
-                console.log(res);
-            if (res.isSuccess) {
-                toast.success("Thêm mới tài khoản thành công");
-                updateTable();
-                handleClose();
-            } else {
-                toast.warning("Tên đăng nhập đã tồn tại");
+        try {
+            if (!selectedWarehouseId) {
+                toast.warning("Vui lòng chọn kho");
             }
+            else if (!selectedOptionRole) {
+                toast.warning("Vui lòng chọn chức vụ");
+            } else if (!(fullName || "").trim()) {
+                toast.warning("Họ và tên không được để trống");
+            } else if (!(phone || "").trim() || !validatePhone.test((phone || "").trim())) {
+                toast.warning("Số điện thoại không hợp lệ");
+            } else if (!(userName || "").trim()) {
+                toast.warning("Tên đăng nhập không được để trống");
+            }
+            else if (!(email || "").trim() || !validateEmail.test((email || "").trim())) {
+                toast.warning("Email không hợp lệ");
+            }
+            else if (!(address || "").trim()) {
+                toast.warning("Địa chỉ không được để trống");
+            } else if (!image) {
+                toast.warning("Hình ảnh không được để trống");
+            } else {
+                let res = await addUser(selectedWarehouseId,
+                    email,
+                    phone,
+                    selectedOptionRole,
+                    userName,
+                    address,
+                    image,
+                    fullName);
+                if (res.isSuccess) {
+                    toast.success("Thêm mới tài khoản thành công");
+                    updateTable();
+                    handleClose();
+                } else {
+                    toast.warning("Tên đăng nhập đã tồn tại");
+                }
+            }
+        } catch (error) {
+            toast.warning("Thêm mới tài khoản không thành công");
         }
     }
 
@@ -165,11 +166,11 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             </DropdownButton>
                         </Col>
                     </Row>
-                    <br/>
+                    <br />
                     <Row>
-                    
+
                         <Col md={6}>
-                                
+
                             <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
                                 <option value="">Chức vụ</option>
                                 <option value="2">WarehouseManager</option>
