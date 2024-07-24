@@ -9,14 +9,15 @@ const ModelEditStorage = ({ isShow, handleClose, dataUpdateStorage, updateTableS
     const [warehouseName, setWarehouseName] = useState("");
     const [warehouseAddress, setWarehouseAddress] = useState("");
     const [warehousePhone, setWarehousePhone] = useState("");
+
     useEffect(() => {
         if (isShow) {
-
-            setWarehouseName(dataUpdateStorage.warehouseName);
-            setWarehouseAddress(dataUpdateStorage.warehouseAddress);
-            setWarehousePhone(dataUpdateStorage.warehousePhone);
+            // Cập nhật trạng thái của các trường nhập liệu với dữ liệu mới nhất từ dataUpdateStorage
+            setWarehouseName(dataUpdateStorage.warehouseName || "");
+            setWarehouseAddress(dataUpdateStorage.warehouseAddress || "");
+            setWarehousePhone(dataUpdateStorage.warehousePhone || "");
         }
-    }, [dataUpdateStorage])
+    }, [isShow, dataUpdateStorage]);
 
 
 
@@ -50,11 +51,9 @@ const ModelEditStorage = ({ isShow, handleClose, dataUpdateStorage, updateTableS
     }
 
     const handleReset = () => {
-
         setWarehouseName(dataUpdateStorage.storageName);
-        setWarehouseAddress(dataUpdateStorage.storageAddress ? dataUpdateStorage.storageAddress : "");
-        setWarehousePhone(dataUpdateStorage.storagePhone ? dataUpdateStorage.storagePhone : "");
-
+        setWarehouseAddress(dataUpdateStorage.storageAddress);
+        setWarehousePhone(dataUpdateStorage.storagePhone);
     }
 
     const handleCloseModal = () => {
@@ -84,9 +83,9 @@ const ModelEditStorage = ({ isShow, handleClose, dataUpdateStorage, updateTableS
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleReset}>
+                {/* <Button variant="secondary" onClick={handleReset}>
                     Xóa thông tin thay đổi
-                </Button>
+                </Button> */}
                 <Button variant="secondary" onClick={handleCloseModal}>
                     Đóng
                 </Button>
