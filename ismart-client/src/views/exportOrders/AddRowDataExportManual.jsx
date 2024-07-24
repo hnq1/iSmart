@@ -20,6 +20,8 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     const [selectedMethod, setSelectedMethod] = useState('');
     const [selectImportOrderDetailId, setSelectImportOrderDetailId] = useState(null);
     const [inputQuantities, setInputQuantities] = useState({});
+
+    const [isManualClick, setIsManualClick] = useState(false); // theo dõi chọn phương thức xuất kho
     useEffect(() => {
         getAllGoods();
     }, [selectedStorageId])
@@ -53,6 +55,8 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
 
     const handleManualClick = async () => {
+        setIsManualClick(true);
+
         let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
         if (m.length === 0) {
             // Nếu không có lô hàng nào, hiển thị thông báo
@@ -63,8 +67,6 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             setSelectImportOrderDetailId(importOrderDetailIds);
         }
     }
-
-    
     const handleInputQuantityChange = (index, value) => {
         // Lấy ra importOrderDetailId tương ứng với index của input
         const importOrderDetailId = selectImportOrderDetailId[index];
@@ -89,7 +91,10 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
     // mới
     const handleConfirmRowData = () => {
-        if (!selectedGoodCode) {
+        if (!isManualClick) {
+            toast.warning("Vui lòng chọn phương thức xuất kho");
+        }
+        else if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm");
         } else {
             // Tạo mảng từ inputQuantities để gửi đi
@@ -131,6 +136,8 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
         setQuantity(0);
         setCostPrice(0);
         setInputQuantities({});
+
+        setIsManualClick(false); // mặc định phương thức xuất kho
     }
 
     return (
@@ -206,12 +213,12 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             <Table >
                 <thead>
                     <tr>
-                        <th>Batch Code</th>
-                        <th>Manufacture Date</th>
-                        <th>Expiry Date</th>
-                        <th>Quantity</th>
-                        <th>Location</th>
-                        <th>Input Quantity</th>
+                        <th>Mã Lô Hàng</th>
+                        <th>Ngày Sản Xuất</th>
+                        <th>Ngày Hết Hạn</th>
+                        <th>Số Lượng</th>
+                        <th>Vị Trí Trong Kho</th>
+                        <th>Nhập Số Lượng</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -225,8 +232,10 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                             <td>
                                 <input
                                     type="number"
+                                    min={1}
+                                    max={d.quantity}
                                     className="form-control"
-                                    value={inputQuantities[index]?.quantity || ''}
+                                    value={inputQuantities[index]?.quantity || '0'}
                                     onChange={(e) => handleInputQuantityChange(index, e.target.value)}
                                 />
                             </td>
