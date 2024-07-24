@@ -17,7 +17,7 @@ namespace iSmart.Entity.Models
         public string? note { get; set; }
 
         // Navigation properties
-        public InventoryCheck InventoryCheck { get; set; }
-        public Good Good { get; set; }
+        public virtual InventoryCheck InventoryCheck { get; set; }
+        public virtual Good Good { get; set; }
     }
 }
