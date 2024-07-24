@@ -191,8 +191,8 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 selectedWarehouseId,
                 maxStock,
                 minStock);
-            //console.log("RES UPDATE", res);
-            if (res.IsSuccess) {
+            // console.log("RES UPDATE", res);
+            if (res.isSuccess) {
                 updateTable();
                 toast.success("Sửa mặt hàng thành công");
                 handleCloseModal();

@@ -50,13 +50,24 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
 
     const [totalCost, setTotalCost] = useState(0);
 
-    const [ selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
     const [isShowRowDataImport, setIsShowRowDataImport] = useState(false);
 
     const [minDate, setMinDate] = useState();
 
     const [imageImportOrder, setImageImportOrder] = useState(null);
+
+    const generateImportCode = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}${month}${day}${hours}${minutes}${seconds}`;
+    };
 
 
     useEffect(() => {
@@ -187,7 +198,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         const existingProductIndex = rowsData.findIndex(row => row.goodsId === importData.goodsId);
 
         if (existingProductIndex !== -1) {
-            
+
             // Nếu sản phẩm đã tồn tại, cập nhật số lượng và các giá trị mới
             const updatedRowsData = [...rowsData];
 
@@ -267,9 +278,10 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
     }
     // Thêm 1 lô hàng 
     const handleAddImportOrder = async () => {
-        if (!importCode.trim()) {
-            toast.warning("Vui lòng nhập mã đơn hàng");
-        } else if (!selectedDate) {
+        // if (!importCode.trim()) {
+        //     toast.warning("Vui lòng nhập mã đơn hàng");
+        // } else 
+        if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
         } else if (!selectedWarehouseImportId) {
             toast.warning("Vui lòng chọn kho nhập hàng");
@@ -282,6 +294,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         } else if (rowsData.length === 0) {
             toast.warning("Vui lòng thêm lô hàng");
         } else {
+            const newImportCode = generateImportCode();
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
@@ -298,7 +311,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                 "2024-06-20T16:10:19.498Z",
                 formatDateImport(selectedDate),
                 1,
-                importCode,
+                newImportCode,
                 warehouseIdToUse,
                 selectedDeliveryId,
                 imageImportOrder,
@@ -347,11 +360,11 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
             <Modal.Body>
                 <div className="body-add-new">
                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                        <Col md={2}>
+                        {/* <Col md={2}>
 
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" placeholder="Mã đơn hàng" value={importCode} onChange={(event) => setImportCode(event.target.value)} />
 
-                        </Col>
+                        </Col> */}
                         {
                             (roleId === 1) ?
                                 <Col md={2}>
