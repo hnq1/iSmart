@@ -10,7 +10,9 @@ const fetchGoodsWithFilter = (pageSize, page, warehouseId, categoryId, supplierI
     ${keyword ? `&keyword=${keyword}` : ''}`);
 }
 
-
+const fetchAllGoodsInWareAndSup = (warehouseId, supplierId) => {
+    return axios.get(`api/goods/get-goods-with-warehouse-supplier?warehouseId=${warehouseId}&supplierId=${supplierId}`)
+}
 const fetchGoodById = (id) => {
     return axios.get(`api/goods/get-good-by-id?id=${id}`)
 }
@@ -89,5 +91,5 @@ const fetchAlertsinGoods = (warehouseId) => {
 export {
     updateGood, addGood, addGoodinAdmin, fetchGoodsWithFilter, fetchGoodsWithSupplier,
     fetchAllGoods, fetchGoodsWithStorageAndSupplier, fetchGoodById,
-    fetchHistoryGood, fetchAllGoodsInWarehouse, fetchGoodinWarehouseById, fetchAlertsinGoods
+    fetchHistoryGood, fetchAllGoodsInWarehouse, fetchGoodinWarehouseById, fetchAlertsinGoods, fetchAllGoodsInWareAndSup
 }

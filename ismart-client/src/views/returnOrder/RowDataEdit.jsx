@@ -32,7 +32,7 @@ const RowDataEditReturnOrder = ({ data, index, deleteRowData, updateRowData }) =
 
     const dataAfterEdit = (data) => {
         setQuantity(data.quantity);
-        updateRowData(index, { goodsId: data.goodsId, quantity: data.quantity, reason: data.reason, batchCode: data.batchCode, returnOrderDetailId: data.returnOrderDetailId, returnOrderId: data.returnOrderId })
+        updateRowData(index, { goodsCode: data.goodsCode, goodsId: data.goodsId, quantity: data.quantity, reason: data.reason, batchCode: data.batchCode, returnOrderDetailId: data.returnOrderDetailId, returnOrderId: data.returnOrderId })
     }
 
     return (<>

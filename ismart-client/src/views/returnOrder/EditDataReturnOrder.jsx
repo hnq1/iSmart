@@ -132,7 +132,7 @@ const ModalEditReturnOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
 
                         <Col md={2}>
                             <div>
-                                <input type="date" className="datepickerCSS" id="datepicker" value={selectedDate} disabled />
+                                <input type="date" className="datepickerCSS ml-10" id="datepicker" value={selectedDate} disabled />
                             </div>
                         </Col>
 
