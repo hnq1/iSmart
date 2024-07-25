@@ -290,7 +290,7 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>Thêm lô hàng xuất</Modal.Title>
+                <Modal.Title>Thêm lô hàng xuất nội bộ thủ công</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
