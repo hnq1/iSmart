@@ -75,7 +75,19 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseName}</button>
                             </div>
                         </Col>
+                        <Col md={2}>
+                            <div className="form-group mb-3">
+                                <label >Khách hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.customerName}</button>
+                            </div>
+                        </Col>
+                        <Col md={2}>
+                            <div className="form-group mb-3">
 
+                                <label >Giao hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.deliveryName}</button>
+                            </div>
+                        </Col>
                         {/* <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Tổng giá trị đơn hàng</label>
