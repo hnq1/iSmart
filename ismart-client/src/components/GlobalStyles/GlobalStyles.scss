@@ -6,7 +6,7 @@
 /* Các kiểu CSS tùy chỉnh của bạn */
 
 :root {
-    --primary: #24cbc7;
+    // --primary: #24cbc7;
     --secondary: #5d586c;
     --toastify-icon-color-success: #23c2bf !important;
     --toastify-color-progress-success: #23c2bf !important;
@@ -196,6 +196,7 @@ body {
     padding: 5px;
     transition: 0.2s cubic-bezier(0.1, 0, 0.2, 1);
     border-radius: 5px;
+    cursor: pointer;
 }
 .actionButtonCSS:hover {
     background-color: rgba(36, 203, 199, 0.5);

@@ -58,27 +58,31 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
     }
 
     const handleConfirmRowData = () => {
+        const currentDate = new Date().toISOString().slice(0, 10); // Lấy ngày hiện tại với định dạng YYYY-MM-DD
         if (!selectedGoodCode) {
-            toast.warning("Vui lòng chọn sản phẩm")
+            toast.warning("Vui lòng chọn sản phẩm");
         } else if (quantity <= 0 || !quantity) {
-            toast.warning("Vui lòng nhập số lượng lớn hơn 0")
-        } else if (costPrice <= 0 || !costPrice) {
-            toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
+            toast.warning("Vui lòng nhập số lượng lớn hơn 0");
+        } else if (!manufactureDate || !expiryDate) {
+            toast.warning("Vui lòng nhập đầy đủ ngày sản xuất và ngày hết hạn");
+        } else if (manufactureDate >= expiryDate) {
+            toast.warning("Ngày sản xuất phải nhỏ hơn ngày hết hạn");
+        } else if (currentDate < manufactureDate) { // Sửa đổi tại đây
+            toast.warning("Ngày sản xuất phải nhỏ hơn hoặc bằng ngày hiện tại");
         } else {
             onChange({
                 batchCode: selectedBatchCode,
-                costPrice: costPrice,
+                costPrice: 0,
                 expiryDate: expiryDate,
                 goodsCode: selectedGoodCode,
                 goodsId: selectedGoodId,
                 importId: selectedImportId,
                 manufactureDate: manufactureDate,
                 quantity: quantity,
-                totalOneGoodPrice: costPrice * quantity
+                totalOneGoodPrice: 0
             });
             handleCloseModal();
         }
-
     }
 
 
@@ -89,7 +93,13 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
     }
 
     const handleChangeQuantity = (event) => {
-        setQuantity(event.target.value);
+        const inputValue = parseInt(event.target.value, 10);
+        if (inputValue >= 1) {
+            setQuantity(inputValue);
+        } else {
+            // Optionally, you can set it to 0 or leave the value unchanged
+            setQuantity(1);
+        }
     }
 
     const handleChangePrice = (event) => {
@@ -152,19 +162,7 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
                             <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                         </div>
                     </Col>
-                    <Col md={2}>
-                        <div className="form-group mb-3">
-                            <label >Giá tiền</label>
-                            <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
-                        </div>
-                    </Col>
 
-                    <Col md={2}>
-                        <div className="form-group mb-3">
-                            <label >Tổng giá tiền</label>
-                            <input type="number" className="form-control inputCSS" value={costPrice * quantity} disabled />
-                        </div>
-                    </Col>
 
                     <Col md={2}>
                         <div className="form-group mb-3">

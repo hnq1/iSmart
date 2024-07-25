@@ -75,18 +75,18 @@ namespace iSmart.Service
         }
 
         public async Task<List<Warehouse>> GetUserWarehousesAsync(int userId)
-        {
-            try
             {
-                var warehouseOfUser = await _context.UserWarehouses.Where(uw => uw.UserId == userId).Select(uw => uw.Warehouse).ToListAsync();
-                return warehouseOfUser;
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+                try
+                {
+                    var warehouseOfUser = await _context.UserWarehouses.Where(uw => uw.UserId == userId).Select(uw => uw.Warehouse).ToListAsync();
+                    return warehouseOfUser;
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
 
-        }
+            }
 
         public async Task<List<User>> GetWarehouseUsersAsync(int warehouseId)
         {
@@ -136,9 +136,18 @@ namespace iSmart.Service
             }
 
             var managerId = await _context.UserWarehouses
-                .Where(uw => warehouseIds.Contains(uw.WarehouseId) && uw.User.RoleId == 2)
-                .Select(uw => uw.UserId)
-                .FirstOrDefaultAsync();
+            .Where(uw => warehouseIds.Contains(uw.WarehouseId) && uw.User.RoleId == 2)
+            .Select(uw => uw.UserId)
+            .FirstOrDefaultAsync();
+
+            // Nếu không tìm thấy, tìm quản lý với vai trò 1
+            if (managerId == 0)
+            {
+                managerId = await _context.UserWarehouses
+                    .Where(uw => warehouseIds.Contains(uw.WarehouseId) && uw.User.RoleId == 1)
+                    .Select(uw => uw.UserId)
+                    .FirstOrDefaultAsync();
+            }
 
             return managerId != 0 ? managerId : (int?)null;
         }
@@ -155,7 +164,7 @@ namespace iSmart.Service
                 return null;
             }
 
-            var managerId = _context.UserWarehouses
+            var managerId =  _context.UserWarehouses
                 .Where(uw => warehouseIds.Contains(uw.WarehouseId) && uw.User.RoleId == 2)
                 .Select(uw => uw.UserId)
                 .FirstOrDefault();
@@ -165,6 +174,3 @@ namespace iSmart.Service
 
     }
 }
-
-
-

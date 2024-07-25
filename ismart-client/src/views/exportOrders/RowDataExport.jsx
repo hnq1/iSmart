@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Row, Col, Dropdown } from "react-bootstrap";
-import EditRowDataOrder from "../importOrders/EditRowData";
+import EditRowDataExportOrder from "./EditRowDataExportOrder";
 
 const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
 
@@ -11,13 +11,36 @@ const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
     const [quantity, setQuantity] = useState();
     const [costPrice, setCostPrice] = useState();
 
+    // useEffect(() => {
+    //     // Tính tổng số lượng
+    //     const totalQuantity = data.reduce((total, item) => total + item.quantity, 0);
+
+    //     // Thiết lập tổng số lượng
+    //     setQuantity(totalQuantity);
+    //     data.forEach(item => {
+
+    //         console.log("item: ", item);
+    //         setGoodsCode(item.goodsCode);
+    //         setGoodsId(item.goodsId);
+    //         setCostPrice(item.costPrice);
+
+
+    //     });
+
+
+
+
+    //     // console.log("dataRowDataExportOrder: ", data[0].goodsId);
+    // }, [data])
+
     useEffect(() => {
         setGoodsId(data.goodsId);
         setGoodsCode(data.goodsCode);
         setQuantity(data.quantity);
         setCostPrice(data.costPrice);
+        // console.log("dataRowDataExportOrder: ", data.quantity);
     }, [data])
-
+    
     const handleEditRowData = () => {
         setIsShowEditRowData(true);
     }
@@ -29,7 +52,7 @@ const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
     const dataAfterEdit = (data) => {
         setQuantity(data.quantity);
         setCostPrice(data.costPrice);
-        updateRowData(index, { costPrice: data.costPrice, quantity: data.quantity, goodsId: goodsId, goodsCode: goodsCode, totalOneGoodPrice: data.costPrice * data.quantity })
+        updateRowData(index, { costPrice: 0, quantity: data.quantity, goodsId: goodsId, goodsCode: goodsCode, totalOneGoodPrice: 0 })
     }
 
 
@@ -49,12 +72,12 @@ const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
                 <input type="number" className="form-control" defaultValue={quantity} disabled />
             </div>
         </Col>
-        <Col md={2}>
+        {/* <Col md={2}>
             <div className="form-group mb-3">
                 <label >Giá tiền</label>
                 <input type="number" className="form-control" defaultValue={costPrice} disabled />
             </div>
-        </Col>
+        </Col> */}
 
         {/* <Col md={2}>
             <div className="form-group mb-3">
@@ -91,7 +114,7 @@ const RowDataExportOrder = ({ data, index, deleteRowData, updateRowData }) => {
 
     </Row>
 
-        <EditRowDataOrder isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
+        <EditRowDataExportOrder isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
     </>)
 }
 

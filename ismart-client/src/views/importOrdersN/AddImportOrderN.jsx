@@ -5,7 +5,7 @@ import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import { fetchAllSuppliers } from '~/services/SupplierServices';
 import { fetchAllSupplierActive } from "~/services/SupplierServices";
 import { fetchAllStorages } from '~/services/StorageServices';
-import { fetchAllDelivery } from "~/services/DeliveryServices";
+import { fetchDeliveryActive } from "~/services/DeliveryServices";
 import { addNewImportOrder, fetchImportOrderNewest } from "~/services/ImportOrderServices";
 import { createNewImportOrderDetail } from "~/services/ImportOrderDetailServices";
 import { formatDateImport, formattedAmount } from "~/validate";
@@ -14,7 +14,6 @@ import { format, addDays } from 'date-fns';
 
 import RowDataImportOrderN from "./RowDataImportN";
 import { toast } from "react-toastify";
-import setupWebSocket from "~/services/NotifyServices";
 import uploadImage from "~/services/ImageServices";
 import { data } from "autoprefixer";
 import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
@@ -51,7 +50,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
 
     const [totalCost, setTotalCost] = useState(0);
 
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
     const [isShowRowDataImport, setIsShowRowDataImport] = useState(false);
 
@@ -59,13 +58,23 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
 
     const [imageImportOrder, setImageImportOrder] = useState(null);
 
+    const generateImportCode = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}${month}${day}${hours}${minutes}${seconds}`;
+    };
+
 
     useEffect(() => {
         getAllStorages1();
         getAllStorages2();
         getAllSuppliers();
         getAllDelivery();
-        setupWebSocket();
     }, [])
 
     useEffect(() => {
@@ -103,32 +112,38 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         };
     }
     // Xử lý chọn "Tất cả kho Nhập"
-    const handleStorageClickTotalImport = () => {
+    const handleStorageClickTotalImport = async () => {
+        await getAllStorages2(); //QH
         setSelectedWarehouseImportId("");
-        setSelectedWarehouseImport("Tất cả kho Nhập");
+        setSelectedWarehouseImport("Nhập Vào Kho");
     }
 
 
     const handleStorageClickImport = async (warehouse) => {
+        await getAllStorages2(); //QH
         setSelectedWarehouseImport(warehouse.warehouseName);
         setSelectedWarehouseImportId(warehouse.warehouseId);
+        setTotalWarehouse2(x => x.filter(w => w.warehouseId !== warehouse.warehouseId)); //QH
     }
 
     // Xử lý chọn "Tất cả kho Xuất"
-    const handleStorageClickTotalExport = () => {
+    const handleStorageClickTotalExport = async () => {
+        await getAllStorages1(); //QH
         setSelectedWarehouseExportId("");
-        setSelectedWarehouseExport("Tất cả kho Xuất");
+        setSelectedWarehouseExport("Xuất Từ Kho");
     }
 
 
     const handleStorageClickExport = async (warehouse) => {
+        await getAllStorages1(); //QH
         setSelectedWarehouseExport(warehouse.warehouseName);
         setSelectedWarehouseExportId(warehouse.warehouseId);
+        setTotalWarehouse1(x => x.filter(w => w.warehouseId !== warehouse.warehouseId)); //QH
     }
 
 
     const getAllDelivery = async () => {
-        let res = await fetchAllDelivery();
+        let res = await fetchDeliveryActive();
         setTotalDelivery(res);
     }
 
@@ -142,7 +157,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
     };
 
     const getAllSuppliers = async () => {
-        let res = await fetchAllSupplierActive();
+        let res = await fetchAllSuppliers();
         setTotalSuppliers(res);
     }
 
@@ -173,28 +188,35 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
 
     // nhận dữ liệu từ addRowDataImport
 
+
     const takeRowDataImportOrder = (importData) => {
+
         importData.supplierId = selectedSupplierId;
         importData.supplierName = selectedSupplier;
 
-
         // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
-        const res = rowsData.find(row => row.goodsId === importData.goodsId);
-        // console.log("res: ", res);
-        if (res) {
-            // Nếu sản phẩm đã tồn tại, hiển thị thông báo và không thêm vào danh sách
-            toast.warning("Sản phẩm đã tồn tại trong danh sách yêu cầu nhập lại");
+        const existingProductIndex = rowsData.findIndex(row => row.goodsId === importData.goodsId);
+
+        if (existingProductIndex !== -1) {
+
+            // Nếu sản phẩm đã tồn tại, cập nhật số lượng và các giá trị mới
+            const updatedRowsData = [...rowsData];
+
+            updatedRowsData[existingProductIndex].quantity += importData.quantity; // Cập nhật số lượng
+            updatedRowsData[existingProductIndex] = { ...updatedRowsData[existingProductIndex], ...importData }; // Cập nhật các giá trị mới
+
+            setRowsData(updatedRowsData);
+
+            //setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice); // Cập nhật tổng chi phí
+            toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
         } else {
             // Nếu sản phẩm chưa tồn tại, thêm vào danh sách và cập nhật tổng chi phí
             const updateDataImport = [...rowsData, importData];
-
-            // setSelectedSupplierId(importData.supplierId);
-            // console.log("selectedSupplierId: ", selectedSupplierId);
-
             setRowsData(updateDataImport);
-            setTotalCost(x => x + importData.totalOneGoodPrice);
+            setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice);
         }
     }
+
 
 
     // mở addRowDataImport
@@ -256,66 +278,75 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
     }
     // Thêm 1 lô hàng 
     const handleAddImportOrder = async () => {
-        if (!importCode.trim()) {
-            toast.warning("Vui lòng nhập mã đơn hàng");
-        }
-        else
-            if (!selectedDate) {
-                toast.warning("Vui lòng nhập ngày nhập hàng");
-            } else if (totalCost === 0) {
-                toast.warning("Vui lòng nhập mặt hàng nhập");
-            } else {
-                const userId = parseInt(localStorage.getItem('userId'), 10);
-                let warehouse = await getWarehouseById(userId);
-                const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
-                // console.log("warehouseIdToUse: ", warehouseIdToUse);
-                // const warehouseDestinationId = selectedWarehouseExportId;
-                let isInternalTransfer = true;
-                let res = await addNewImportOrder(
-                    isInternalTransfer,
-                    userId,
-                    1,
-                    selectedSupplierId,
-                    totalCost,
-                    "",
-                    "2024-06-20T16:10:19.498Z",
-                    formatDateImport(selectedDate),
-                    1,
-                    importCode,
-                    warehouseIdToUse,
-                    selectedDeliveryId,
-                    imageImportOrder,
-                    selectedWarehouseExportId
-                );
-                // console.log("res warehouseDestinationId: ", selectedWarehouseExportId);
-                console.log("res warehouseIdToUse: ", res);
-                if (res.isSuccess == true) {
-                    let resImportId = await fetchImportOrderNewest();
-                    // console.log("ResImportID :", resImportId);
+        // if (!importCode.trim()) {
+        //     toast.warning("Vui lòng nhập mã đơn hàng");
+        // } else 
+        if (!selectedDate) {
+            toast.warning("Vui lòng nhập ngày nhập hàng");
+        } else if (!selectedWarehouseImportId) {
+            toast.warning("Vui lòng chọn kho nhập hàng");
+        } else if (!selectedWarehouseExportId) {
+            toast.warning("Vui lòng chọn kho xuất hàng");
+        } else if (!selectedSupplierId) {
+            toast.warning("Vui lòng chọn nhà cung cấp");
+        } else if (!selectedDeliveryId) {
+            toast.warning("Vui lòng chọn nhà vận chuyển");
+        } else if (rowsData.length === 0) {
+            toast.warning("Vui lòng thêm lô hàng");
+        } else {
+            const newImportCode = generateImportCode();
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+            const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
+            console.log("warehouseIdToUse: ", warehouseIdToUse);
+            // const warehouseDestinationId = selectedWarehouseExportId;
+            let isInternalTransfer = true;
+            let r = await addNewImportOrder(
+                isInternalTransfer,
+                userId,
+                userId,
+                selectedSupplierId,
+                totalCost,
+                "",
+                "2024-06-20T16:10:19.498Z",
+                formatDateImport(selectedDate),
+                1,
+                newImportCode,
+                warehouseIdToUse,
+                selectedDeliveryId,
+                imageImportOrder,
+                selectedWarehouseExportId
+            );
+            // console.log("res warehouseDestinationId: ", selectedWarehouseExportId);
+            // console.log("res warehouseIdToUse: ", r);
+            if (r.isSuccess == true) {
+                let resImportId = await fetchImportOrderNewest();
+                // console.log("ResImportID :", resImportId);
 
-                    if (rowsData && rowsData.length > 0) {
-                        await Promise.all(rowsData.map(async (data, index) => {
-                            await createNewImportOrderDetail(
-                                resImportId,
-                                data.costPrice,
-                                data.batchCode,
-                                data.manufactureDate,
-                                data.expiryDate,
-                                data.goodsId,
-                                data.quantity
-                            );
-                        }));
-                    }
-                    toast.success("Thêm lô hàng nhập thành công");
-
-
-                    updateTable();
-                    handleCloseModal();
-                } else {
-                    toast.warning("Mã đơn hàng đã tồn tại");
+                if (rowsData && rowsData.length > 0) {
+                    await Promise.all(rowsData.map(async (data, index) => {
+                        await createNewImportOrderDetail(
+                            resImportId,
+                            data.costPrice,
+                            data.batchCode,
+                            data.manufactureDate,
+                            data.expiryDate,
+                            data.goodsId,
+                            data.quantity
+                        );
+                    }));
                 }
+                // console.log("rowsData: ", resImportId);
+                toast.success("Thêm lô hàng nhập thành công");
 
+
+                updateTable();
+                handleCloseModal();
+            } else {
+                toast.warning("Thêm lô hàng nhập thất bại");
             }
+
+        }
 
     }
 
@@ -324,27 +355,27 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>Thêm lô hàng nhập</Modal.Title>
+                <Modal.Title>Thêm đơn hàng nhập</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
                     <Row style={{ display: 'flex', alignItems: 'center' }} >
-                        <Col md={2}>
+                        {/* <Col md={2}>
 
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" placeholder="Mã đơn hàng" value={importCode} onChange={(event) => setImportCode(event.target.value)} />
 
-                        </Col>
+                        </Col> */}
                         {
                             (roleId === 1) ?
                                 <Col md={2}>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"
-                                        title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
+                                        title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Nhập Vào Kho"}
                                         variant="success"
                                         style={{ zIndex: 999 }}
                                     >
                                         <Dropdown.Item eventKey=""
-                                            onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
+                                            onClick={() => handleStorageClickTotalImport()}>Nhập Vào Kho</Dropdown.Item>
 
                                         {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
                                             <Dropdown.Item
@@ -362,11 +393,11 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                         <Col md={2}>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouseExport !== null ? selectedWarehouseExport : "Tất cả Kho Xuất"}
+                                title={selectedWarehouseExport !== null ? selectedWarehouseExport : "Xuất Từ Kho"}
                                 variant="success"
                                 style={{ zIndex: 999 }}
                             >
-                                <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotalExport()}>Tất cả kho Xuất</Dropdown.Item>
+                                <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotalExport()}>Xuất Từ Kho</Dropdown.Item>
                                 {totalWarehouse2 && totalWarehouse2.length > 0 && totalWarehouse2.map((c, index) => (
                                     <Dropdown.Item
                                         key={`warehouse ${index}`}
@@ -449,7 +480,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                                     onClick={handleAddRowDataImport}
                                 ><i className="fa-solid fa-plus"></i>
                                     &nbsp;
-                                    Thêm sản phẩm
+                                    Thêm lô hàng
                                 </button>
                             </div>
                         </Col>
@@ -462,7 +493,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                         {renderImportData()}
 
                     </Row>
-                    <div className="">
+                    {/* <div className="">
                         <button
                             className="btn rounded ButtonRed"
                             type="button"
@@ -471,7 +502,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                             Tổng giá tiền: {formattedAmount(totalCost)}
                         </button>
 
-                    </div>
+                    </div> */}
 
                 </div>
             </Modal.Body>

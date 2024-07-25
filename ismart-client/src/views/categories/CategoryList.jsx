@@ -56,7 +56,7 @@ function CategoryList() {
         setCurrentPage(0);
         const fetchData = async () => {
             let res = await getCategory(1, keywordSearch);
-            console.log(res);
+            // console.log(res);
             if (res.data.length == 0) {
                 toast.warning("Vui lòng nhập từ khóa tìm kiếm khác");
             }

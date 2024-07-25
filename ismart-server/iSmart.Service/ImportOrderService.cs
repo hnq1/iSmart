@@ -20,13 +20,8 @@ namespace iSmart.Service
         List<ImportOrderDTO> GetAllImportOrder();
         ImportOrder? GetImportOrderByOrderCode(string code);
 
-
-
         CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
-
-        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize,int page, int? storage, int? status, int? sortDate,  string? keyword = "");
-
-
+        ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize, int page, int? storage, int? status, int? sortDate, string? keyword = "");
         Task<string> Import(int importid);
     }
 
@@ -48,6 +43,7 @@ namespace iSmart.Service
             try
             {
                 var importOrder = _context.ImportOrders
+                    .OrderByDescending(g => g.ImportedDate)
                     .Select(i => new ImportOrderDTO
                     {
                         ImportId = i.ImportId,
@@ -122,7 +118,7 @@ namespace iSmart.Service
 
                 if (sortDate != null)
                 {
-                    importOrders = importOrders.OrderBy(s => s.ImportedDate);
+                    importOrders = importOrders.OrderByDescending(s => s.ImportedDate);
                 }
 
                 var count = importOrders.Count();
@@ -149,6 +145,8 @@ namespace iSmart.Service
                         Image = i.Image,
                         StorekeeperId = i.StaffId,
                         StorekeeperName = _context.Users.FirstOrDefault(u => u.UserId == i.StaffId).UserName,
+                        WarehouseDestinationId = i.WarehouseDestinationId,
+                        WarehouseDestinationName = _context.Warehouses.FirstOrDefault(u => u.WarehouseId == i.WarehouseDestinationId).WarehouseName,
                         ImportOrderDetails = i.ImportOrderDetails
                             .Select(id => new ImportDetailDTO
                             {
@@ -190,7 +188,7 @@ namespace iSmart.Service
                 {
                     ImportCode = "IMP" + i.ImportCode,
                     UserId = staffId,
-                    SupplierId = 69,
+                    SupplierId = 1,
                     TotalCost = 0,
                     Note = i.Note,
                     CreatedDate = DateTime.Now,
@@ -215,7 +213,6 @@ namespace iSmart.Service
                     DeliveryId = i.DeliveryId,
                     Image = i.Image,
                     StaffId = _userWarehouseService.GetManagerIdByStaffId(staffId),
-
                 };
 
                 if (_context.ImportOrders.SingleOrDefault(z => importOrder.ImportCode.ToLower() == z.ImportCode.ToLower()) == null)
@@ -223,7 +220,7 @@ namespace iSmart.Service
                     _context.Add(importOrder);
                     _context.SaveChanges();
                     // Gửi thông điệp qua WebSocket
-                    Task.Run(() => _webSocketService.SendMessageAsync("Đơn hàng có mã " + importOrder.ImportCode +" cần được xác nhận"));
+                    Task.Run(() => _webSocketService.SendMessageAsync("Đơn hàng nhập kho có mã " + importOrder.ImportCode +" cần được xác nhận"));
                     return new CreateImportOrderResponse { IsSuccess = true, Message = "Tạo đơn hàng nhập kho thành công" };
                 }
                 else
@@ -381,5 +378,3 @@ namespace iSmart.Service
 
     }
 }
-
-

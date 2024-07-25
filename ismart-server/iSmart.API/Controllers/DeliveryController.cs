@@ -23,6 +23,14 @@ namespace iSmart.API.Controllers
             var result = _deliveryService.GetAllDelivery();
             return Ok(result);
         }
+
+        [HttpGet("get-all-active-delivery")]
+        public IActionResult GetAllActiveDelivery()
+        {
+            var result = _deliveryService.GetAllActiveDelivery();
+            return Ok(result);
+        }
+
         [HttpGet("get-delivery-with-filter")]
 
         public IActionResult GetDeliveryByKeyword(int page, string? keyword = "")

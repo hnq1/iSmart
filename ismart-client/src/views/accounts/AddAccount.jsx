@@ -12,15 +12,14 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
+    const containsNumber = (str) => /\d/.test(str);
 
-    const [userCode, setUserCode] = useState("");
-    const [userName, setUserName] = useState();
-    const [password, setPassword] = useState();
-    const [email, setEmail] = useState();
-    const [phone, setPhone] = useState();
-    const [address, setAddress] = useState();
-    const [image, setImage] = useState();
-    const [fullName, setFullName] = useState();
+    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [address, setAddress] = useState("");
+    const [image, setImage] = useState("");
+    const [fullName, setFullName] = useState("");
 
     useEffect(() => {
         getAllStorages();
@@ -49,17 +48,11 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
         // getUsers(1);
     }
 
-    const handleChangeUserCode = (event) => {
-        setUserCode(event.target.value);
-    }
 
     const handleChangeUserName = (event) => {
         setUserName(event.target.value);
     }
 
-    const handleChangePassword = (event) => {
-        setPassword(event.target.value);
-    }
 
     const handleChangeEmail = (event) => {
         setEmail(event.target.value);
@@ -78,7 +71,11 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
         setImage(urlImage);
     }
     const handleChangeFullName = (event) => {
-        setFullName(event.target.value);
+        if (!containsNumber(event.target.value)) {
+            setFullName(event.target.value);
+        } else {
+            toast.warning("Họ và tên không được chứa số.");
+        }
     }
 
 
@@ -86,50 +83,55 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
     const handleReset = () => {
         setSelectedWarehouse(null);
         setSelectedWarehouseId(null);
-
-        setUserCode(null);
         setUserName(null);
-
-        setPassword(null);
         setEmail(null);
-
-
+        setPhone(null);
+        setAddress(null);
+        setImage(null);
+        setFullName(null);
     }
     // Điều kiện login
     const handleSave = async () => {
-        if (!email && !validateEmail.test(email)) {
-            toast.warning("Email không hợp lệ");
-        }
-        //  if (!isStrongPassword.test(password)) {
-        //     toast.warning("Mật khẩu phải có ít nhất 6 chữ số và 1 chữ cái");
-        // } 
-        else if (!userName) {
-            toast.warning("Tên đăng nhập không được để trống");
-        }
-        else if (!selectedWarehouseId) {
-            toast.warning("Vui lòng chọn kho");
-        }
-        else {
-            let res = await addUser(selectedWarehouseId,
-                email, password,
-                phone, selectedOptionRole,
-                1,
-                userName,
-                userCode,
-                address,
-                image,
-                fullName);
-            // console.log("res: ", image);
-            if (res.isSuccess) {
-                toast.success("Thêm mới tài khoản thành công");
-                updateTable();
-                handleClose();
-            } else {
-                toast.warning("Người dùng đã tồn tại");
-
+        try {
+            if (!selectedWarehouseId) {
+                toast.warning("Vui lòng chọn kho");
             }
+            else if (!selectedOptionRole) {
+                toast.warning("Vui lòng chọn chức vụ");
+            } else if (!(fullName || "").trim()) {
+                toast.warning("Họ và tên không được để trống");
+            } else if (!(phone || "").trim() || !validatePhone.test((phone || "").trim())) {
+                toast.warning("Số điện thoại không hợp lệ");
+            } else if (!(userName || "").trim()) {
+                toast.warning("Tên đăng nhập không được để trống");
+            }
+            else if (!(email || "").trim() || !validateEmail.test((email || "").trim())) {
+                toast.warning("Email không hợp lệ");
+            }
+            else if (!(address || "").trim()) {
+                toast.warning("Địa chỉ không được để trống");
+            } else if (!image) {
+                toast.warning("Hình ảnh không được để trống");
+            } else {
+                let res = await addUser(selectedWarehouseId,
+                    email,
+                    phone,
+                    selectedOptionRole,
+                    userName,
+                    address,
+                    image,
+                    fullName);
+                if (res.isSuccess) {
+                    toast.success("Thêm mới tài khoản thành công");
+                    updateTable();
+                    handleClose();
+                } else {
+                    toast.warning("Tên đăng nhập đã tồn tại");
+                }
+            }
+        } catch (error) {
+            toast.warning("Thêm mới tài khoản không thành công");
         }
-
     }
 
     const handleCloseModal = () => {
@@ -143,31 +145,8 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    <Row>
+                    <Row >
                         <Col md={5}>
-                            <label >Mã nhân viên</label>
-                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={userCode} onChange={handleChangeUserCode} />
-                        </Col>
-
-                    </Row>
-                    <Row>
-                        <Col md={5}>
-                            <label >Họ và tên</label>
-                            <input type="text" className="form-control inputCSS" value={fullName} onChange={handleChangeFullName} />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={7}>
-                            <label >Vai trò</label>
-                            <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
-                                <option value="">Vai trò</option>
-                                <option value="2">WarehouseManager</option>
-                                <option value="3">WarehouseStaff</option>
-                                <option value="4">Accountant</option>
-                            </Form.Select>
-                        </Col>
-
-                        <Col md={2}>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
                                 title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
@@ -187,8 +166,32 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             </DropdownButton>
                         </Col>
                     </Row>
+                    <br />
                     <Row>
-                        <Col md={5}>
+
+                        <Col md={6}>
+
+                            <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={handleSelectChange}>
+                                <option value="">Chức vụ</option>
+                                <option value="2">WarehouseManager</option>
+                                <option value="3">WarehouseStaff</option>
+                                <option value="4">Accountant</option>
+                            </Form.Select>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={6}>
+                            <label >Họ và tên</label>
+                            <input type="text" className="form-control inputCSS" value={fullName} onChange={handleChangeFullName} />
+                        </Col>
+                        <Col md={6}>
+                            <label >Số điện thoại</label>
+                            <input type="number" className="form-control inputCSS" value={phone} onChange={handleChangePhone} />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col md={6}>
                             <label >Tên Đăng Nhập</label>
                             <input type="text" className="form-control inputCSS" value={userName} onChange={handleChangeUserName} />
                         </Col>
@@ -196,22 +199,13 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                             <label >Mật khẩu</label>
                             <input type="password" className="form-control inputCSS" value={password} onChange={handleChangePassword} />
                         </Col> */}
-                    </Row>
-                    <Row>
-                        <Col md={5}>
+                        <Col md={6}>
                             <label >Email</label>
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={email} onChange={handleChangeEmail} />
                         </Col>
                     </Row>
-
                     <Row>
-                        <Col md={5}>
-                            <label >Số điện thoại</label>
-                            <input type="number" className="form-control inputCSS" value={phone} onChange={handleChangePhone} />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={5}>
+                        <Col md={12}>
                             <label >Địa chỉ</label>
                             <input type="text" className="form-control inputCSS" value={address} onChange={handleChangeAddress} />
                         </Col>

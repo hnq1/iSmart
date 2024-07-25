@@ -86,6 +86,10 @@ internal class Program
     });
 
         builder.Services.AddControllers();
+
+        var openAiApiKey = builder.Configuration["OpenAI:ApiKey"];
+        
+        
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", builder =>
@@ -110,15 +114,20 @@ internal class Program
         builder.Services.AddScoped<IUserWarehouseService, UserWarehouseService>();
         builder.Services.AddScoped<IImportOrderService, ImportOrderService>();
         builder.Services.AddScoped<IImportOrderDetailService, ImportOrderDetailService>();
+        builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
+        builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
+        builder.Services.AddScoped<ICustomerService, CustomerService>();
+        builder.Services.AddScoped<IReportService, ReportService>();
+        builder.Services.AddScoped<IReturnOrderService, ReturnOrderService>();
+        builder.Services.AddScoped<IReturnOrderDetailService, ReturnOrderDetailService>();
         builder.Services.AddSingleton<WebSocketService>();
+        builder.Services.AddSingleton(new OpenAIService(openAiApiKey));
 
         // Đăng ký các dịch vụ
         // builder.Services.AddScoped<ICategoryService, CategoryService>();
         // builder.Services.AddScoped<ISupplierService, SupplierService>();
         // builder.Services.AddScoped<IUserService, UserService>();
-        // builder.Services.AddScoped<IStatusService, StatusService>();
-        // builder.Services.AddScoped<IExportOrderService, ExportOrderService>();
-        // builder.Services.AddScoped<IExportOrderDetailService, ExportOrderDetailService>();
+        // builder.Services.AddScoped<IStatusService, StatusService>();         
         // builder.Services.AddScoped<IProjectService, ProjectService>();
         // builder.Services.AddScoped<IStocktakeNoteService, StocktakeNoteService>();
         // builder.Services.AddScoped<IStocktakeNoteDetailService, StocktakeNoteDetailService>();

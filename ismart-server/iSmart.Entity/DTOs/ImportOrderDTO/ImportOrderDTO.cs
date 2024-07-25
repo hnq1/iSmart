@@ -30,6 +30,8 @@ namespace iSmart.Entity.DTOs.ImportOrderDTO
 
         public int StorageId { get; set; }
         public string? StorageName { get; set; }
+        public int? WarehouseDestinationId { get; set; }
+        public string? WarehouseDestinationName { get; set; }
 
         public int? DeliveryId { get; set; }
         public string? DeliveryName { get; set; }

@@ -103,11 +103,11 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
     }
 
     const handleUpdateImportOrder = async () => {
-        if (totalPrice === 0) {
-            toast.warning("Vui lòng nhập mặt hàng nhập");
-        } else {
+        // if (totalPrice === 0) {
+        //     toast.warning("Vui lòng nhập mặt hàng nhập");
+        // } else {
             console.log(detailOrderEdit.importId);
-            let res = await updateImportOrder(detailOrderEdit.importId, userId, selectedSupplierId, totalPrice, "", detailOrderEdit.createdDate, detailOrderEdit.importedDate, 3, importCode, selectedStorageId, selectedDeliveryId, detailOrderEdit.image, null);
+            let res = await updateImportOrder(detailOrderEdit.importId, userId, selectedSupplierId, 0, "", detailOrderEdit.createdDate, detailOrderEdit.importedDate, 3, importCode, selectedStorageId, selectedDeliveryId, detailOrderEdit.image, null);
             console.log(res);
             if (rowsData && rowsData.length > 0) {
                 await Promise.all(rowsData.map(async (data, index) => {
@@ -116,13 +116,14 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
                         data.costPrice,
                         data.detailId,
                         data.goodsId,
-                        data.quantity);
+                        data.quantity
+                    );
                 }));
             }
             toast.success("Thêm lô hàng nhập thành công");
             updateTable();
             handleCloseModal();
-        }
+        // }
 
     }
     const handleCloseModal = () => {

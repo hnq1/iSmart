@@ -11,24 +11,23 @@ const ModelAddStorage = ({ isShow, handleClose, updateTableStorage }) => {
 
 
     const handleSave = async () => {
-        if (!validatePhone.test(storagePhone)) {
+        if (!validatePhone.test(storagePhone.trim())) {
             toast.error("Định dạng số điện thoại sai");
-        } else if (!validateTextRequired.test(storageName)) {
-            toast.error("Tên khống được trống và chứa ký tự đặc biệt");
-        } else if (!validateText.test(storageAddress)) {
+        } else if (!validateTextRequired.test(storageName.trim())) {
+            toast.error("Tên kho hàng không được trống và không chứa ký tự đặc biệt");
+        } else if (!validateText.test(storageAddress.trim())) {
             toast.error("Địa chỉ không được chứa ký tự đặc biệt");
-        }
-        else {
-            let res = await createNewStorage(storageName, storageAddress, storagePhone);
-            toast.success("Thêm kho hàng", {
+        } else if (storageName.trim() === "" || storageAddress.trim() === "" || storagePhone.trim() === "") {
+            toast.error("Thông tin không được để trống hoặc chỉ chứa dấu cách");
+        } else {
+            let res = await createNewStorage(storageName.trim(), storageAddress.trim(), storagePhone.trim());
+            toast.success("Thêm kho hàng thành công", {
                 className: 'toast-success',
-
             });
             handleReset();
             updateTableStorage();
             handleClose();
         }
-
     };
 
     const handleReset = () => {

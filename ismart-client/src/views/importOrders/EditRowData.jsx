@@ -3,6 +3,7 @@ import { Row, Col, Dropdown, Modal, Button } from "react-bootstrap";
 import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
+import { formatDate } from "date-fns";
 
 const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const [goodsId, setGoodsId] = useState();
@@ -29,9 +30,16 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
         setSupplierId(data.supplierId);
         setSupplierName(data.supplierName);
         setTotalOneGoodPrice(data.totalOneGoodPrice);
-
+        if (data.expiryDate) {
+            const formattedExpiryDate = formatDate(new Date(data.expiryDate), 'yyyy-MM-dd');
+            setExpiryDate(formattedExpiryDate);
+        }
+        if (data.manufactureDate) {
+            const formattedManufactureDate = formatDate(new Date(data.manufactureDate), 'yyyy-MM-dd');
+            setManufactureDate(formattedManufactureDate);
+        }
     }, [data])
-    // console.log("dataEditRowDataOrder: ", data);
+    // console.log("EditRowDataOrder: ", data);
 
     useEffect(() => {
         setTotalOneGoodPrice(quantity * costPrice);
@@ -77,13 +85,11 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const handleEditRowData = () => {
         if (quantity <= 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        } else if (costPrice <= 0) {
-            toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
         } else {
             dataAfterEdit({
                 // ...data,
                 batchCode: batchCode,
-                costPrice: costPrice,
+                costPrice: 0,
                 expiryDate: expiryDate,
                 goodsCode: goodsCode,
                 goodsId: goodsId,
@@ -92,10 +98,10 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
                 quantity: quantity,
                 supplierId: supplierId,
                 supplierName: supplierName,
-                totalOneGoodPrice: totalOneGoodPrice
+                totalOneGoodPrice: 0
 
             });
-            console.log("dataAfterEdit: ", quantity);
+            // console.log("dataAfterEdit: ", quantity);
             handleClose();
         };
     }
@@ -121,19 +127,7 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
                         <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                     </div>
                 </Col>
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Giá tiền</label>
-                        <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
-                    </div>
-                </Col>
-
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Tổng giá tiền</label>
-                        <input type="text" className="form-control" value={totalOneGoodPrice} disabled />
-                    </div>
-                </Col>
+                
                 <Col md={2}>
                     <div className="form-group mb-3">
                         <label >Mã lô hàng</label>

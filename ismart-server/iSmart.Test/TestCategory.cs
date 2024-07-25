@@ -90,7 +90,7 @@ namespace iSmart.Test
                 CategoryName = "TestUpdate",
                 Description = "TestUpdate"
             };
-            var categoryResponse = _categoryService.UpdateCaregory(categoryEntry);
+            var categoryResponse = _categoryService.UpdateCategory(categoryEntry);
             if (categoryResponse.IsSuccess is true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }

@@ -4,7 +4,7 @@ import { updateUser, fetchAllRole } from "~/services/UserServices";
 import { toast } from 'react-toastify';
 import uploadImage from '~/services/ImageServices';
 import { set } from 'lodash';
-
+import { validateEmail, validatePhone, validateText, validateTextRequired, isStrongPassword } from "~/validate";
 const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) => {
     const [selectedOptionRole, setSelectedOption] = useState('3');
 
@@ -16,6 +16,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
     const [email, setEmail] = useState();
     const [address, setAddress] = useState();
     const [image, setImage] = useState();
+    const [status, setStatus] = useState();
 
 
     useEffect(() => {
@@ -27,7 +28,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
             setPhone(dataUserEdit.phone);
             setEmail(dataUserEdit.email);
             setAddress(dataUserEdit.address);
-
+            setStatus(dataUserEdit.statusId);
         }
     }, [dataUserEdit])
 
@@ -59,31 +60,44 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
         let res = await uploadImage(file);
         const urlImage = res.url;
         setImage(urlImage);
-
-        console.log("upload image: ", res);
-
     }
 
 
     const handleSave = async () => {
-        let res = await updateUser(
-            dataUserEdit.userId,
-            email,
-            phone,
-            dataUserEdit.roleId,
-            1,
-            userName,
-            userCode,
-            address,
-            image,
-            fullName);
-        // console.log("check res image: ", image);
-        if (res) { // Check if the update was successful
-            toast.success("Cập nhật thông tin người dùng thành công");
-            updateTable(); // Update the user list
-            handleCloseModal(); // Close the modal
+        if (!userName.trim()) {
+            toast.error("Tên đăng nhập không được để trống");
+            // } else if (!userCode.trim()) {
+            //     toast.error("Mã người dùng không được để trống");
+        } else if (!fullName.trim()) {
+            toast.error("Tên không được để trống");
+        } else if (!(phone || "").trim() || !validatePhone.test((phone || "").trim())) {
+            toast.error("Số điện thoại không hợp lệ!");
+        } else if (!(email || "").trim() || !validateEmail.test((email || "").trim())) {
+            toast.error("Email không hợp lệ!");
+        } else if (!(address || "").trim()) {
+            toast.error("Địa chỉ không được để trống");
+        } else if (!image && !dataUserEdit.image) { // Kiểm tra nếu không có hình ảnh mới và không có hình ảnh hiện tại
+            toast.error("Hình ảnh không được để trống");
         } else {
-            toast.error("Có lỗi xảy ra khi cập nhật thông tin người dùng");
+            let finalImage = image || dataUserEdit.image; // Sử dụng hình ảnh mới nếu có, nếu không sử dụng hình ảnh hiện tại
+            let res = await updateUser(
+                dataUserEdit.userId,
+                email,
+                phone,
+                dataUserEdit.roleId,
+                status,
+                userName,
+                userCode,
+                address,
+                finalImage, // Sử dụng biến finalImage ở đây
+                fullName);
+            if (res) { // Check if the update was successful
+                toast.success("Cập nhật thông tin người dùng thành công");
+                updateTable(); // Update the user list
+                handleCloseModal(); // Close the modal
+            } else {
+                toast.error("Có lỗi xảy ra khi cập nhật thông tin người dùng");
+            }
         }
     }
     const handleCloseModal = () => {
@@ -97,27 +111,27 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
         <>
             <Modal show={isShow} onHide={handleCloseModal} >
                 <Modal.Header closeButton>
-                    <Modal.Title>Chỉnh sửa tài khoản
+                    <Modal.Title>Chỉnh sửa tài khoản: &nbsp;
                         {dataUserEdit.fullName}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Row>
                         <Col md={7}>
-                            <label >UseCode</label>
-                            <input type="text" className="form-control inputCSS" value={userCode} onChange={handleUserCode} />
+                            <label >Mã nhân viên</label>
+                            <input type="text" className="form-control inputCSS" value={userCode} onChange={handleUserCode} disabled />
                         </Col>
                     </Row>
                     <Row>
                         <Col md={7}>
-                            <label >FullName</label>
+                            <label >Họ và tên</label>
                             <input type="text" className="form-control inputCSS" value={fullName} onChange={handleFullName} />
                         </Col>
                     </Row>
                     <Row>
                         <Col md={7}>
                             <label >Tên Đăng Nhập</label>
-                            <input type="text" className="form-control inputCSS" value={userName} onChange={handleUserName} />
+                            <input type="text" className="form-control inputCSS" value={userName} onChange={handleUserName} disabled />
                         </Col>
                     </Row>
                     <Row>
@@ -157,7 +171,7 @@ const ModalEditAccount = ({ isShow, handleClose, updateTable, dataUserEdit, }) =
                     <Button variant="secondary" onClick={handleCloseModal}>
                         Đóng
                     </Button>
-                    <Button variant="primary" onClick={handleSave}>
+                    <Button variant="primary" className="ButtonCSS" onClick={handleSave}>
                         Cập nhật tài khoản
                     </Button>
                 </Modal.Footer>

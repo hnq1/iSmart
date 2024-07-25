@@ -15,7 +15,7 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
 
     useEffect(() => {
         if (dataImportOrder.exportId) {
-            console.log(dataImportOrder);
+            console.log("dataImportOrder; ",dataImportOrder);
             getTotalOrderDetail(dataImportOrder.exportId);
         }
     }, [dataImportOrder])
@@ -26,13 +26,26 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
 
     const getTotalOrderDetail = async (exportId) => {
         let res = await getExportOrderDetailByExportId(exportId);
-        console.log(exportId);
-        console.log(res);
+        console.log("exportId:", exportId);
+        console.log("getTotalOrderDetail: ", res);
         setTotalOrderDetail(res);
     }
 
     const SaveAddImportOrder = async () => {
-        let resSuccessImportOrder = await updateExportOrder(dataImportOrder.exportId, dataImportOrder.userId, dataImportOrder.projectId, dataImportOrder.totalPrice, "", dataImportOrder.createdDate, dataImportOrder.exportedDate, 3, dataImportOrder.exportCode, dataImportOrder.storageId, dataImportOrder.deliveryId, dataImportOrder.image, userId)
+        let s = await updateExportOrder(
+            dataImportOrder.exportId,
+            dataImportOrder.userId,
+            dataImportOrder.projectId,
+            dataImportOrder.totalPrice,
+            "",
+            dataImportOrder.createdDate,
+            dataImportOrder.exportedDate,
+            3,
+            dataImportOrder.exportCode,
+            dataImportOrder.storageId,
+            dataImportOrder.deliveryId,
+            dataImportOrder.image,
+            userId)
         let res = await addSuccessFullExportOrder(dataImportOrder.exportId);
         console.log(res);
         if (res.status === 400) {
@@ -59,16 +72,28 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
                         <Col md={2}>
                             <div className="form-group mb-3">
                                 <label >Kho hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.storageName}</button>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseName}</button>
                             </div>
                         </Col>
+                        <Col md={2}>
+                            <div className="form-group mb-3">
+                                <label >Khách hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.customerName}</button>
+                            </div>
+                        </Col>
+                        <Col md={2}>
+                            <div className="form-group mb-3">
 
-                        <Col md={3}>
+                                <label >Giao hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.deliveryName}</button>
+                            </div>
+                        </Col>
+                        {/* <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Tổng giá trị đơn hàng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{formattedAmount(dataImportOrder.totalPrice)}</button>
                             </div>
-                        </Col>
+                        </Col> */}
                     </Row>
 
 
@@ -88,7 +113,7 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
                                         <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
                                     </div>
                                 </Col>
-                                <Col md={2}>
+                                {/* <Col md={2}>
                                     <div className="form-group mb-3">
                                         <label >Giá tiền</label>
                                         <input type="number" className="form-control inputCSS" value={o.price} readOnly />
@@ -100,7 +125,7 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
                                         <label >Tổng giá tiền</label>
                                         <input type="number" className="form-control inputCSS" value={o.quantity * o.price} readOnly />
                                     </div>
-                                </Col>
+                                </Col> */}
                             </Row>
                         ))
                     }

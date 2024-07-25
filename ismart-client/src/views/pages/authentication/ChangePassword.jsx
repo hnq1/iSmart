@@ -13,10 +13,13 @@ import { Form, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import { changePassword } from '~/services/LoginServices';
 import { Link } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+
 const ChangePassword = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    // const navigate = useNavigate(); 
 
     const userIdString = localStorage.getItem('userId');
     const userId = parseInt(userIdString, 10);
@@ -24,10 +27,8 @@ const ChangePassword = () => {
     const handleChangePassword = async (e) => {
         e.preventDefault();
 
-        console.log('Form has been submitted');
 
         let response = await changePassword(userId, newPassword, oldPassword);
-        console.log("change password", response);
 
         // Cần thêm điều kiên thay đổi mật khẩu như yêu cầu add tài khoản và đổi mật khẩu
         if (response.status === 400) {
@@ -35,7 +36,15 @@ const ChangePassword = () => {
             return;
         }
         setErrorMessage('Đổi mật khẩu thành công');
+        // logout();
     };
+
+    // const logout = () => {
+    //     localStorage.removeItem('warehouseId'); 
+    //     localStorage.removeItem('token');
+    //     localStorage.removeItem('roleId');
+    //     localStorage.removeItem('userName');
+    // };
     return (
         // <section className="h-100">
         //     <div className="container-fluid">

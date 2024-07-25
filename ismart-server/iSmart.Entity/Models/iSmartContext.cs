@@ -16,7 +16,7 @@ namespace iSmart.Entity.Models
             : base(options)
         {
         }
-
+        public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<ActionType> ActionTypes { get; set; }
         public virtual DbSet<AvailableForReturn> AvailableForReturns { get; set; }
         public virtual DbSet<Bill> Bills { get; set; }
@@ -42,7 +42,8 @@ namespace iSmart.Entity.Models
         public virtual DbSet<UserWarehouse> UserWarehouses { get; set; }
         public virtual DbSet<Warehouse> Warehouses { get; set; }
         public virtual DbSet<GoodsWarehouse> GoodsWarehouses { get; set; }
-
+        public virtual DbSet<InventoryCheck> InventoryChecks { get; set; }
+        public virtual DbSet<InventoryCheckDetail> InventoryCheckDetails { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -59,6 +60,38 @@ namespace iSmart.Entity.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.HasKey(e => e.CustomerId);
+                entity.Property(e => e.CustomerName)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.CustomerAddress)
+                      .HasMaxLength(200);
+
+                entity.Property(e => e.CustomerPhone)
+                      .HasMaxLength(20);
+
+                entity.Property(e => e.CustomerEmail)
+                      .HasMaxLength(100);
+
+            });
+            modelBuilder.Entity<InventoryCheck>()
+                .HasOne(ic => ic.Warehouse)
+                .WithMany(w => w.InventoryChecks)
+                .HasForeignKey(ic => ic.WarehouseId);
+
+            modelBuilder.Entity<InventoryCheckDetail>()
+                .HasOne(icd => icd.InventoryCheck)
+                .WithMany(ic => ic.InventoryCheckDetails)
+                .HasForeignKey(icd => icd.InventoryCheckId);
+
+            modelBuilder.Entity<InventoryCheckDetail>()
+                .HasOne(icd => icd.Good)
+                .WithMany(g => g.InventoryCheckDetails)
+                .HasForeignKey(icd => icd.GoodId);
+
             modelBuilder.Entity<GoodsWarehouse>(entity =>
             {
                 entity.HasKey(e => new { e.GoodsId, e.WarehouseId });
@@ -206,8 +239,6 @@ namespace iSmart.Entity.Models
 
                 entity.ToTable("ExportOrder");
 
-                entity.Property(e => e.Customer).HasMaxLength(50);
-
                 entity.Property(e => e.ExportCode)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -238,6 +269,12 @@ namespace iSmart.Entity.Models
                     .HasForeignKey(d => d.WarehouseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ExportOrder_Storage_StorageId");
+
+                entity.HasOne(d => d.Customer)
+                   .WithMany(c => c.ExportOrders)  // Customer can have many ExportOrders
+                   .HasForeignKey(d => d.CustomerId)  // Foreign key property in ExportOrder
+                   .OnDelete(DeleteBehavior.ClientSetNull)  // If Customer is deleted, set CustomerId to null
+                   .HasConstraintName("FK_ExportOrder_Customer_CustomerId");
             });
 
             modelBuilder.Entity<ExportOrderDetail>(entity =>
@@ -254,6 +291,11 @@ namespace iSmart.Entity.Models
                     .WithMany(p => p.ExportOrderDetails)
                     .HasForeignKey(d => d.GoodsId)
                     .HasConstraintName("FK_ExportOrderDetail_Goods");
+                entity.HasOne(eod => eod.ImportOrderDetail)
+                     .WithMany()
+                     .HasForeignKey(eod => eod.ImportOrderDetailId)
+                     .OnDelete(DeleteBehavior.ClientSetNull)
+                     .HasConstraintName("FK_ExportOrderDetail_ImportOrderDetail");
             });
 
             modelBuilder.Entity<Feature>(entity =>
@@ -428,65 +470,65 @@ namespace iSmart.Entity.Models
 
             modelBuilder.Entity<ReturnsOrder>(entity =>
             {
-                entity.HasKey(e => e.ReturnsId);
+                entity.HasKey(e => e.ReturnOrderId);
 
-                entity.ToTable("ReturnsOrder");
+                entity.ToTable("ReturnOrder");
 
-                entity.Property(e => e.CreatedDate).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
-
-                entity.Property(e => e.Image).HasColumnName("image");
-
-                entity.Property(e => e.Note).HasMaxLength(250);
-
-                entity.Property(e => e.ReturnsCode)
+                entity.Property(e => e.ReturnOrderCode)
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.Export)
-                    .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.ExportId)
-                     .OnDelete(DeleteBehavior.NoAction);
+                entity.Property(e => e.ReturnedDate).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
+                entity.Property(e => e.ConfirmedDate).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
 
-                entity.HasOne(d => d.Import)
+                entity.HasOne(d => d.Warehouse)
                     .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.ImportId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .HasForeignKey(d => d.WarehouseId)
+                    .HasConstraintName("FK_ReturnOrder_Warehouse");
+
+                entity.HasOne(d => d.Supplier)
+                    .WithMany(p => p.ReturnsOrders)
+                    .HasForeignKey(d => d.SupplierId)
+                    .HasConstraintName("FK_ReturnOrder_Supplier");
 
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.ReturnsOrders)
                     .HasForeignKey(d => d.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ReturnsOrder_Status");
-
-                entity.HasOne(d => d.Supplier)
-                    .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.SupplierId);
+                    .HasConstraintName("FK_ReturnOrder_Status");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                   .WithMany(p => p.CreatedReturnOrders)
+                   .HasForeignKey(d => d.CreatedBy)
+                   .OnDelete(DeleteBehavior.NoAction)
+                   .HasConstraintName("FK_ReturnOrder_CreatedByUser");
 
-                entity.HasOne(d => d.Warehouse)
-                    .WithMany(p => p.ReturnsOrders)
-                    .HasForeignKey(d => d.WarehouseId)
-                    .HasConstraintName("FK_ReturnsOrder_Storage_StorageId");
+                entity.HasOne(d => d.ApprovedByUser)
+                    .WithMany(p => p.ApprovedReturnOrders)
+                    .HasForeignKey(d => d.ApprovedBy)
+                    .OnDelete(DeleteBehavior.NoAction)
+                    .HasConstraintName("FK_ReturnOrder_ApprovedByUser");
             });
 
             modelBuilder.Entity<ReturnsOrderDetail>(entity =>
             {
-                entity.HasKey(e => e.DetailId);
+                entity.HasKey(e => e.ReturnOrderDetailId);
 
-                entity.ToTable("ReturnsOrderDetail");
+                entity.ToTable("ReturnOrderDetail");
 
                 entity.HasOne(d => d.Goods)
                     .WithMany(p => p.ReturnsOrderDetails)
-                    .HasForeignKey(d => d.GoodsId);
+                    .HasForeignKey(d => d.GoodsId)
+                    .HasConstraintName("FK_ReturnOrderDetail_Goods");
 
-                entity.HasOne(d => d.Returns)
+                entity.HasOne(d => d.ReturnOrder)
                     .WithMany(p => p.ReturnsOrderDetails)
-                    .HasForeignKey(d => d.ReturnsId)
-                     .OnDelete(DeleteBehavior.NoAction);
+                    .HasForeignKey(d => d.ReturnOrderId)
+                    .OnDelete(DeleteBehavior.NoAction)
+                    .HasConstraintName("FK_ReturnOrderDetail_ReturnOrder");
+
+                entity.Property(e => e.Reason).HasMaxLength(250);
+                entity.Property(e => e.BatchCode).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Role>(entity =>

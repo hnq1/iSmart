@@ -47,13 +47,13 @@ function StorageList() {
         let res;
         if (roleId === 1) {
             res = await fetchAllStorages(res)
-            // console.log(res);
+            
             setListStorage(res);
         }
         if (roleId === 4 || roleId === 3 || roleId === 2) {
             // Nhân viên: lấy danh sách kho cụ thể mà họ quản lý
             let res = await getUserIdWarehouse(userId);
-            console.log(res);
+            
             setListStorage(res);
 
         } else {
@@ -118,7 +118,7 @@ function StorageList() {
                                 </div>
                             </div>
                             {
-                                (roleId === 1 || roleId === 2) ?
+                                (roleId === 1 ) ?
                                     // roleId === 4 ? '' :
                                     <div className="col-auto ButtonCSSDropdown">
                                         <button
@@ -158,7 +158,7 @@ function StorageList() {
                                                 <td className="align-middle" style={{ textAlign: 'left' }}>{s.warehouseAddress}</td>
                                                 <td className="align-middle">{s.warehousePhone}</td>
                                                 {
-                                                    roleId === 1 || roleId === 2 ?
+                                                    roleId === 1 ?
                                                         // roleId === 4 ? '' :
                                                         <td className="align-middle " style={{ padding: '10px' }}>
 

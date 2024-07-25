@@ -9,7 +9,7 @@ namespace iSmart.Entity.DTOs.ImportOrderDTO
     public class CreateImportOrderRequest
     {
        //ublic int ImportId { get; set; }
-        public int UserId { get; set; }
+        //public int UserId { get; set; }
 
         public int? SupplierId { get; set; }
        

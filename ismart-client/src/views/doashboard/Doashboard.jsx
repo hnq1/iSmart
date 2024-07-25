@@ -11,11 +11,19 @@ import { formatDateImport, formattedAmount, formatDate } from '~/validate';
 import ChartComponent from '../components/others/Chart';
 import { fetchHistoryGood } from '~/services/GoodServices';
 import { useNavigate } from 'react-router-dom';
+import { Button, Modal } from 'react-bootstrap';
+import { fetchAlertsinGoods } from '~/services/GoodServices';
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+
+
 
 
 const Doashboard = () => {
-    const roleId = parseInt(localStorage.getItem('roleId'), 10);;
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
+
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -25,44 +33,63 @@ const Doashboard = () => {
             navigate('/cac-lo-hang-nhap-ngoai'); // Chuyển hướng người dùng với roleId là 3 đến dashboard
         }
 
+
     }, [roleId, navigate]);
+
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [alerts, setAlerts] = useState([]);
+
 
     const [totalStorages, setTotalStorages] = useState([]);
     const [selectedStorage, setSelectedStorage] = useState(null);
     const [selectedStorageId, setSelectedStorageId] = useState(null);
 
+
     const [selectedDateStart, setSelectedDateStart] = useState(formatDateImport(new Date()));
     const [selectedDateEnd, setSelectedDateEnd] = useState(formatDateImport(new Date()));
+
 
     const [totalImportOrderByDate, setTotalImportOrderByDate] = useState(0);
     const [totalCostImportOrderByDate, setTotalCostImportOrderByDate] = useState('');
 
+
     const [totalExportOrderByDate, setTotalExportOrderByDate] = useState(0);
     const [totalCostExportOrderByDate, setTotalCostExportOrderByDate] = useState('');
+
 
     const [totalGoods, setTotalGoods] = useState([]);
     const [selectedGoodCode, setSelectedGoodCode] = useState(null);
     const [selectedGoodId, setSelectedGoodId] = useState(null);
 
+
     // thông tin của hàng đang được hiển thị trên chart
     const [dataGood, setDataGood] = useState([]);
+
 
     const [totalSuppliers, setTotalSuppliers] = useState([]);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
+
     const [totalStoragesGood, setTotalStoragesGood] = useState([]);
     const [selectedStorageGood, setSelectedStorageGood] = useState(null);
     const [selectedStorageIdGood, setSelectedStorageIdGood] = useState(null);
 
-    // dữ liệu truyền vào chart 
+
+    // dữ liệu truyền vào chart
     const [dateImportOrder, setDateImportOrder] = useState([]);
     const [quantityImportOrder, setQuantityImportOrder] = useState([]);
 
 
-    // dữ liệu truyền vào chart 
+
+
+    // dữ liệu truyền vào chart
     const [dateExportOrder, setDateExportOrder] = useState([]);
     const [quantityExportOrder, setQuantityExportOrder] = useState([]);
+
+
+
 
 
 
@@ -70,12 +97,40 @@ const Doashboard = () => {
     const [selectedYear, setSelectedYear] = useState(null);
 
 
+
+
+    useEffect(() => {
+        fetchAlerts();
+    }, []);
+
+
+
+
+
+
+    //Fetch alerts khi trang được tải
+    const fetchAlerts = async () => {
+        let u = await getUserIdWarehouse(userId);
+        // console.log("res: ", u);
+        const a = await fetchAlertsinGoods(u[0].warehouseId);
+        // console.log("whId: ", u.warehouseId);
+        setAlerts(a);
+        setIsOpen(true); // Mở popup sau khi lấy dữ liệu
+    };
+
+
+
+
+    const closePopup = () => {
+        setIsOpen(false);
+    };
     useEffect(() => {
         getAllStorages();
         getAllSuppliers();
         getDataStatisticalImport();
         getDataStatisticalExport();
     }, [])
+
 
     useEffect(() => {
         getAllGoods();
@@ -86,18 +141,25 @@ const Doashboard = () => {
         setQuantityImportOrder([]);
         setQuantityExportOrder([]);
 
+
     }, [selectedStorageIdGood, selectedSupplierId])
+
 
     useEffect(() => {
         getDataStatisticalExport();
         getDataStatisticalImport();
     }, [selectedDateStart, selectedDateEnd, selectedStorageId])
 
+
     useEffect(() => {
         getHistoryGood();
         getGoodById();
 
+
     }, [selectedGoodId, selectedYear])
+
+
+
 
 
 
@@ -109,18 +171,23 @@ const Doashboard = () => {
     }
 
 
+
+
     function fillMissingMonths(data) {
         const monthsWithQuantities = data.map(item => item.month);
         const allMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         const missingMonths = allMonths.filter(month => !monthsWithQuantities.includes(month));
+
 
         const filledData = data.slice(); // Tạo một bản sao của mảng dữ liệu ban đầu
         missingMonths.forEach(month => {
             filledData.push({ year: selectedYear, month, quantity: 0 });
         });
 
+
         // Sắp xếp lại mảng theo tháng
         filledData.sort((a, b) => a.month - b.month);
+
 
         return filledData;
     }
@@ -128,14 +195,21 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     const getHistoryGood = async () => {
         if (selectedGoodId) {
+
 
             let res = await fetchHistoryGood(selectedGoodId);
             let ImportRes = res.filter(r => r.actionId === 1); // Nhập hàng
             let ExportRes = res.filter(r => r.actionId === 2); // Xuất hàng
 
+
             console.log(res);
+
 
             // chia thành 2 mảng riêng chứa số lượng và tháng
             let quantitiesImport = [];
@@ -147,7 +221,9 @@ const Doashboard = () => {
                 quantitiesImport.push(element);
                 datesImport.push(formatDateImport(dateElement));
 
+
             }
+
 
             // chia thành 2 mảng riêng chứa số lượng và tháng
             let quantitiesExport = [];
@@ -160,20 +236,26 @@ const Doashboard = () => {
                 datesExport.push(formatDateImport(dateElement));
             }
 
+
             // khai báo mảng chứa các phần tử tháng và số lượng trong tháng
             let datequantityImport = [];
             let datequantityExport = [];
+
 
             for (let index = 0; index < quantitiesImport.length; index++) {
                 datequantityImport.push({ date: datesImport[index], quantity: quantitiesImport[index] });
             }
 
+
             for (let index = 0; index < quantitiesExport.length; index++) {
                 datequantityExport.push({ date: datesExport[index], quantity: quantitiesExport[index] });
             }
 
+
             const monthlyStats = {};
             const monthlyStatsExport = {};
+
+
 
 
             datequantityImport.forEach(item => {
@@ -183,17 +265,21 @@ const Doashboard = () => {
                 const year = date.getFullYear();
                 const month = date.getMonth() + 1; // Tháng bắt đầu từ 0
 
+
                 // Tạo một khóa duy nhất cho tháng và năm
                 const key = `${year}-${month}`;
+
 
                 // Nếu khóa này chưa tồn tại trong bảng thống kê, khởi tạo nó với giá trị số lượng là 0
                 if (!monthlyStats[key]) {
                     monthlyStats[key] = 0;
                 }
 
+
                 // Tăng số lượng cho tháng hiện tại
                 monthlyStats[key] += item.quantity;
             });
+
 
             datequantityExport.forEach(item => {
                 // Phân tích ngày từ mục hiện tại
@@ -202,27 +288,33 @@ const Doashboard = () => {
                 const year = date.getFullYear();
                 const month = date.getMonth() + 1; // Tháng bắt đầu từ 0
 
+
                 // Tạo một khóa duy nhất cho tháng và năm
                 const key = `${year}-${month}`;
+
 
                 // Nếu khóa này chưa tồn tại trong bảng thống kê, khởi tạo nó với giá trị số lượng là 0
                 if (!monthlyStatsExport[key]) {
                     monthlyStatsExport[key] = 0;
                 }
 
+
                 // Tăng số lượng cho tháng hiện tại
                 monthlyStatsExport[key] += item.quantity;
             });
+
 
             let monthlyStatsSort = Object.keys(monthlyStats).map(key => {
                 const [year, month] = key.split('-').map(Number);
                 return { year, month, quantity: monthlyStats[key] };
             });
 
+
             let monthlyStatsExportSort = Object.keys(monthlyStatsExport).map(key => {
                 const [year, month] = key.split('-').map(Number);
                 return { year, month, quantity: monthlyStatsExport[key] };
             });
+
 
             // Sắp xếp mảng các đối tượng theo tháng
             monthlyStatsSort.sort((a, b) => {
@@ -233,6 +325,7 @@ const Doashboard = () => {
                 }
             });
 
+
             monthlyStatsExportSort.sort((a, b) => {
                 if (a.year !== b.year) {
                     return a.year - b.year; // Sắp xếp theo năm
@@ -241,12 +334,18 @@ const Doashboard = () => {
                 }
             });
 
+
             console.log(monthlyStatsSort);
+
 
             monthlyStatsSort = fillMissingMonths(monthlyStatsSort);
             monthlyStatsExportSort = fillMissingMonths(monthlyStatsExportSort);
 
+
             console.log(monthlyStatsSort);
+
+
+
 
 
 
@@ -254,16 +353,20 @@ const Doashboard = () => {
             let quantityDataImport = [];
             let dateDataImport = [];
 
+
             for (const item of monthlyStatsSort) {
                 if (item.year == selectedYear) {
                     quantityDataImport.push(item.quantity);
                     dateDataImport.push("T" + item.month);
                 }
 
+
             }
+
 
             let quantityDataExport = [];
             let dateDataExport = [];
+
 
             for (const item of monthlyStatsExportSort) {
                 if (item.year == selectedYear) {
@@ -271,11 +374,16 @@ const Doashboard = () => {
                     dateDataExport.push("T" + item.month);
                 }
 
+
             }
+
+
 
 
             setQuantityImportOrder(quantityDataImport);
             setDateImportOrder(dateDataImport);
+
+
 
 
             setQuantityExportOrder(quantityDataExport);
@@ -283,7 +391,10 @@ const Doashboard = () => {
         }
 
 
+
+
     }
+
 
     // lấy số lượng và giá trị nhập hàng
     const getDataStatisticalImport = async () => {
@@ -292,12 +403,14 @@ const Doashboard = () => {
         setTotalCostImportOrderByDate(res.totalCost);
     }
 
+
     // lấy số lượng và giá trị xuất hàng
     const getDataStatisticalExport = async () => {
         let res = await fetchDataStatisticalExortOrder(selectedDateStart, selectedDateEnd, selectedStorageId);
         setTotalExportOrderByDate(res.totalOrder);
         setTotalCostExportOrderByDate(res.totalCost);
     }
+
 
     // lấy thông tin sản phẩm
     const getAllGoods = async () => {
@@ -307,12 +420,15 @@ const Doashboard = () => {
             setTotalGoods(res);
         }
 
+
     }
+
 
     const handleGoodClick = (good, event) => {
         setSelectedGoodCode(good.goodsCode);
         setSelectedGoodId(good.goodsId);
     }
+
 
     // lấy thông tin kho
     const getAllStorages = async () => {
@@ -321,24 +437,30 @@ const Doashboard = () => {
         setTotalStoragesGood(res);
     }
 
+
     const handleStorageClickTotal = () => {
         setSelectedStorage("Tất cả kho");
         setSelectedStorageId("");
     }
+
 
     const handleStorageClick = (storage) => {
         setSelectedStorage(storage.storageName);
         setSelectedStorageId(storage.storageId);
     }
 
+
     // lấy ngày tháng để filter order
     const handleDateStartChange = (event) => {
         setSelectedDateStart(formatDateImport(event.target.value));
     };
 
+
     const handleDateEndChange = (event) => {
         setSelectedDateEnd(formatDateImport(event.target.value));
     };
+
+
 
 
     // lấy thông tin nhà sản xuất
@@ -347,19 +469,23 @@ const Doashboard = () => {
         setTotalSuppliers(res);
     }
 
+
     const handleSupplierClick = (supplier, event) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId)
     }
+
 
     const handleStorageGoodClick = (storage) => {
         setSelectedStorageGood(storage.storageName);
         setSelectedStorageIdGood(storage.storageId);
     }
 
+
     const handleYearSelect = (year) => {
         setSelectedYear(year);
     };
+
 
     return (<>
         <div className="container" >
@@ -371,6 +497,7 @@ const Doashboard = () => {
                             <label className='text-muted'>Chọn kho:</label>
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả"} variant="success" >
 
+
                                 <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả</Dropdown.Item>
                                 {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
                                     <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
@@ -378,13 +505,16 @@ const Doashboard = () => {
                             </DropdownButton>
                         </Col>
 
+
                         <Col md={2}>
                             <label className='text-muted'>Từ ngày: &nbsp;</label>
                             <div>
 
+
                                 <input type="date" className="datepickerCSS" id="datepicker" value={selectedDateStart} onChange={handleDateStartChange} />
                             </div>
                         </Col>
+
 
                         <Col md={2}>
                             <div>
@@ -393,10 +523,12 @@ const Doashboard = () => {
                             </div>
                         </Col>
 
+
                     </div>
                 </div>
                 <hr></hr>
             </div>
+
 
             <Row className='SolieuCSS'>
                 <Col md={3}>
@@ -422,6 +554,7 @@ const Doashboard = () => {
                     </Card>
                 </Col>
 
+
                 <Col md={3}>
                     <Card className="text-white mb-4" style={{ backgroundImage: 'linear-gradient(to left, #fbcf6e, #ffb751)' }}>
                         <Card.Body>
@@ -445,12 +578,17 @@ const Doashboard = () => {
                     </Card>
                 </Col>
 
+
             </Row>
             <hr></hr>
             <Row>
                 <Col md={2}>
 
+
                     <div>
+
+
+
 
 
 
@@ -458,6 +596,7 @@ const Doashboard = () => {
                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                 <span style={{ color: 'white' }}>{selectedStorageGood !== null ? selectedStorageGood : "Kho"}</span>
                             </Dropdown.Toggle>
+
 
                             <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }} className='ButtonCSSDropdown'>
                                 {totalStoragesGood && totalStoragesGood.length > 0 && totalStoragesGood.map((g, index) => (
@@ -469,15 +608,19 @@ const Doashboard = () => {
                         </Dropdown>
 
 
+
+
                     </div>
                 </Col>
                 <Col md={2}>
+
 
                     <div>
                         <Dropdown style={{ position: 'relative', fontWeight: 'bold' }}>
                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                 <span style={{ color: 'white' }}>{selectedSupplier !== null ? selectedSupplier : "Nhà cung cấp"}</span>
                             </Dropdown.Toggle>
+
 
                             <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }} className='ButtonCSSDropdown'>
                                 {totalSuppliers && totalSuppliers.length > 0 && totalSuppliers.map((g, index) => (
@@ -486,6 +629,7 @@ const Doashboard = () => {
                                     </Dropdown.Item>
                                 ))}
 
+
                                 {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
@@ -494,15 +638,18 @@ const Doashboard = () => {
                             </Dropdown.Menu>
                         </Dropdown>
 
+
                     </div>
                 </Col>
                 <Col md={2}>
+
 
                     <div>
                         <Dropdown style={{ position: 'relative', fontWeight: 'bold' }} >
                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components" className='DropdownButtonCSS'>
                                 <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Mã Sản phẩm"}</span>
                             </Dropdown.Toggle>
+
 
                             <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }} className='ButtonCSSDropdown'>
                                 {totalGoods && totalGoods.length > 0 && totalGoods.map((g, index) => (
@@ -511,6 +658,7 @@ const Doashboard = () => {
                                     </Dropdown.Item>
                                 ))}
 
+
                                 {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
@@ -519,8 +667,10 @@ const Doashboard = () => {
                             </Dropdown.Menu>
                         </Dropdown>
 
+
                     </div>
                 </Col>
+
 
                 <Col md={2}>
                     <div>
@@ -528,6 +678,7 @@ const Doashboard = () => {
                             <Dropdown.Toggle variant="primary" id="dropdown-basic">
                                 {selectedYear ? selectedYear : 'Chọn năm'}
                             </Dropdown.Toggle>
+
 
                             <Dropdown.Menu >
                                 {totalYear.map(year => (
@@ -548,19 +699,64 @@ const Doashboard = () => {
 
 
 
+
+
+
+
             <Row>
                 <Col md={6}>
 
+
                     <ChartComponent selectedGoodCode={selectedGoodCode} dateOrder={dateImportOrder} quantityOrder={quantityImportOrder} title="Nhập kho" />
                 </Col>
+
 
                 <Col md={6}>
                     <ChartComponent selectedGoodCode={selectedGoodCode} dateOrder={dateExportOrder} quantityOrder={quantityExportOrder} title="Xuất kho" />
                 </Col>
 
+
             </Row>
+
+
+            <Modal show={isOpen} onHide={closePopup} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Cảnh báo kho hàng</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {Array.isArray(alerts) && alerts.length > 0 ? (
+                        <ul>
+                            {alerts.map((alert, index) => (
+                                <li key={index}
+                                    style={{ listStyleType: '" __ "' }}>
+                                    <p></p>
+                                    {/* <p>Mã hàng: {alert.goodCode}</p>
+                        <p>Tên hàng: {alert.goodName}</p>
+                        <p>Số lượng: {alert.quantity}</p> */}
+                                    <p> <FontAwesomeIcon icon={faExclamationTriangle}
+                                        style={{ color: 'red', fontSize: '24px' }}
+                                    />Cảnh báo: {alert.alertType}</p>
+                                    <p>Thông báo: {alert.message}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <div>Không có cảnh báo nào để hiển thị</div>
+                    )
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={closePopup}>
+                        Đóng
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div >
     </>)
 }
 
+
 export default Doashboard
+
+
+

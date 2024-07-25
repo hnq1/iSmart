@@ -23,9 +23,9 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
-    const [totalStorages, setTotalStorages] = useState([]);
-    const [selectedStorage, setSelectedStorage] = useState(null);
-    const [selectedStorageId, setSelectedStorageId] = useState(null);
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
     const [goodName, setGoodName] = useState(null);
     const [goodCode, setGoodCode] = useState(null);
@@ -41,7 +41,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
 
     useEffect(() => {
-        console.log(dataGoodEdit);
+
 
         setSelectedCategory(dataGoodEdit.categoryName);
         setSelectedCategoryId(dataGoodEdit.categoryId);
@@ -49,8 +49,8 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setSelectedSupplier(dataGoodEdit.supplierName);
         setSelectedSupplierId(dataGoodEdit.supplierId);
 
-        setSelectedStorage(dataGoodEdit.storageName);
-        setSelectedStorageId(dataGoodEdit.storageId);
+        setSelectedWarehouse(dataGoodEdit.warehouseName);
+        setSelectedWarehouseId(dataGoodEdit.warehouseId);
 
         setStockPrice(dataGoodEdit.stockPrice);
         setMaxStock(dataGoodEdit.maxStock);
@@ -66,21 +66,26 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         setBarCode(dataGoodEdit.barcode);
 
     }, [dataGoodEdit])
-
+    console.log(dataGoodEdit);
     useEffect(() => {
         getAllStorages();
         getAllCategories();
         getAllSuppliers();
-
     }, [])
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
-        setTotalStorages(res);
+        setTotalWarehouse(res);
     }
 
-    const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+    const handleStorageTotalClick = () => {
+        setSelectedWarehouse("Tất cả Kho");
+        setSelectedWarehouseId("");
+    }
+
+
+    const handleStorageClick = (warehouse) => {
+        setSelectedWarehouse(warehouse.warehouseName);
+        setSelectedWarehouseId(warehouse.warehouseId);
     }
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
@@ -104,14 +109,11 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
 
 
-
-
     const handleChooseFile = async (event) => { //validate file ảnh and size ảnh
         const file = event.target.files[0];
         let res = await uploadImage(file)
         const urlImage = res.url;
         setImageGood(urlImage);
-
     }
 
 
@@ -145,42 +147,34 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     }
 
     const handleSave = async () => {
-
-        let res = await updateGood(dataGoodEdit.goodsId,
-            goodName,
-            goodCode,
-            selectedCategoryId,
-            description,
-            selectedSupplierId,
-            measuredUnit,
-            0,
-            imageGood,
-            1,
-            stockPrice,
-            warrantyTime,
-            barCode,
-            selectedStorageId,
-            maxStock,
-            minStock);
-        // console.log("RES UPDATE", res);
-        updateTable();
-        toast.success("Sửa mặt hàng thành công");
-        handleCloseModal();
-        if (warrantyTime <= 0) {/////
+        if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
+        } else if (!goodName) {
+            toast.warning("Vui lòng nhập tên sản phẩm");
+        } else if (!goodCode) {
+            toast.warning("Vui lòng nhập mã sản phẩm");
+        } else if (!selectedCategoryId) {
+            toast.warning("Vui lòng chọn danh mục cho sản phẩm");
+        } else if (!selectedSupplierId) {
+            toast.warning("Vui lòng chọn nhà cung cấp cho sản phẩm");
+        } else if (!measuredUnit) {
+            toast.warning("Vui lòng chọn đơn vị cho sản phẩm");
+        } else if (!barCode) {
+            toast.warning("Vui lòng nhập mã vạch cho sản phẩm");
+        } else if (!description) {
+            toast.warning("Vui lòng nhập thông tin chi tiết cho sản phẩm");
+        } else if (!imageGood && !dataGoodEdit.image) {
+            toast.warning("Vui lòng chọn một file ảnh cho sản phẩm");
         }
-        else if (stockPrice <= 0) {///////
-            toast.warning("Vui lòng nhập giá lớn hơn 0");
-        }
-        else if (!imageGood) {/////////
-            toast.warning("Vui lòng nhập file ảnh");
-        }
-        else if (maxStock <= 0) {///////
+        else if (maxStock <= 0) {
             toast.warning("Vui lòng nhập maxstock lớn hơn 0");
-        } else if (minStock <= 0) {//////////
+        } else if (minStock <= 0) {
             toast.warning("Vui lòng nhập minstock lớn hơn 0");
+        } else if (maxStock <= minStock) {///////
+            toast.warning("Vui lòng nhập tồn kho tối đa lớn hơn tồn kho tối thiểu");
         }
         else {
+            let finalImage = imageGood || dataGoodEdit.image;
             let res = await updateGood(dataGoodEdit.goodsId,
                 goodName,
                 goodCode,
@@ -189,18 +183,23 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 selectedSupplierId,
                 measuredUnit,
                 0,
-                imageGood,
+                finalImage,
                 1,
-                stockPrice,
+                0,
                 warrantyTime,
                 barCode,
-                selectedStorageId,
+                selectedWarehouseId,
                 maxStock,
                 minStock);
             // console.log("RES UPDATE", res);
-            updateTable();
-            toast.success("Sửa mặt hàng thành công");
-            handleCloseModal();
+            if (res.isSuccess) {
+                updateTable();
+                toast.success("Sửa mặt hàng thành công");
+                handleCloseModal();
+            } else {
+                toast.error("Mã hàng đã tồn tại trong kho này");
+            }
+
         }
     }
 
@@ -214,20 +213,31 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    {roleId == 1 ?
-                        <Row>
-                            <label >Kho</label>
+                    {/* {
+                        roleId === 1 ?
+                            <Row>
+                                <label >Kho</label>
+                                <DropdownButton
+                                    className="DropdownButtonCSS ButtonCSSDropdown"
+                                    title={selectedWarehouse == null ? selectedWarehouse : "Tất cả Kho"}
+                                    variant="success"
+                                    style={{ zIndex: 999 }}
+                                >
+                                    <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
 
-                            <Col md={5}>
-                                <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả Kho"} variant="success" style={{ zIndex: 999 }}>
-                                    {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                        <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                    {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                        <Dropdown.Item
+                                            key={`warehouse ${index}`}
+                                            eventKey={c.warehouseName}
+                                            onClick={(e) => handleStorageClick(c, e)}
+                                        >
+                                            {c.warehouseName}
+                                        </Dropdown.Item>
                                     ))}
                                 </DropdownButton>
-                            </Col>
-                        </Row>
-                        : ''
-                    }
+                            </Row>
+                            : ''
+                    } */}
                     <Col md={2}>
                         <label >Đơn vị </label>
                         <DropdownButton
@@ -299,7 +309,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                         </Col>
 
                         <Col md={5}>
-                            <label >Hạn bảo hành </label>
+                            <label >Hạn bảo hành (tháng) </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} />
                         </Col>
                     </Row>
@@ -313,18 +323,18 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                     </Row>
 
                     <row style={{ marginTop: '15px' }}>
-                        <Col md={5}>
+                        {/* <Col md={5}>
                             <label >Giá nhập </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
-                        </Col>
+                        </Col> */}
                     </row>
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={5}>
-                            <label >MaxStock </label>
+                            <label >Tồn kho tối đa </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
                         </Col>
                         <Col md={5}>
-                            <label >MinStock </label>
+                            <label >Tồn kho tối thiểu </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
                         </Col>
                     </Row>

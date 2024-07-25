@@ -89,12 +89,7 @@ const RowDataImportOrder = ({ data, index, deleteRowData, updateRowData }) => {
                     <input type="number" className="form-control" value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} disabled />
                 </div>
             </Col>
-            <Col md={2}>
-                <div className="form-group mb-3">
-                    <label >Giá tiền</label>
-                    <input type="number" className="form-control" value={costPrice} onChange={(e) => setCostPrice(Number(e.target.value))} disabled />
-                </div>
-            </Col>
+
 
             {/* <Col md={2}>
                 <div className="form-group mb-3">

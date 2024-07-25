@@ -39,7 +39,7 @@ function DeliveryList() {
 
         let res = await fetchDeliveriesWithKeyword(page, removeWhiteSpace(keyword ? keyword : ""));
         if (res) {
-            console.log("res.data: ", res.data);
+            // console.log("res.data: ", res.data);
             setListDeliveries(res.data);
             setTotalPages(res.totalPages);
         }
@@ -90,7 +90,7 @@ function DeliveryList() {
         setcurrentPage(0);
         const fetchData = async () => {
             let res = await getDeliveries(1, keywordSearch);
-            console.log("res: ", res);
+            // console.log("res: ", res);
 
             if (res.data.length == 0) {
                 toast.warning("Vui lòng nhập từ khóa tìm kiếm khác");
@@ -136,7 +136,7 @@ function DeliveryList() {
                                 </div>
                             </div>
                             {
-                                (roleId == 1 || roleId == 2) ?
+                                (roleId == 1 ) ?
                                     <div className="col-auto ButtonCSSDropdown">
                                         <button
                                             className="btn btn-success border-left-0 rounded"
@@ -159,11 +159,15 @@ function DeliveryList() {
                                         <th className="align-middle   text-nowrap" style={{ width: '100px' }}>STT</th>
                                         <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>Bên vận chuyển</th>
                                         {
-                                            (roleId == 1 || roleId == 2) ?
+                                            (roleId == 1) ?
                                                 <th className="align-middle  text-nowrap" style={{ width: '250px' }}>Tình trạng</th>
                                                 : ''
                                         }
-                                        <th className="align-middle  text-nowrap"></th>
+                                        {
+                                            (roleId == 1) ?
+                                                <th className="align-middle  text-nowrap"></th>
+                                                : ''
+                                        }
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -174,7 +178,7 @@ function DeliveryList() {
                                                 <td className="align-middle text-color-primary">{index + 1}</td>
                                                 <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{s.deliveryName}</td>
                                                 {
-                                                    (roleId == 1 || roleId == 2) ?
+                                                    (roleId == 1) ?
                                                         <td className="align-middle">
                                                             <SwitchButton status={s.statusId} handleChangeStatus={() => handleChangeStatus(s)} />
 
@@ -182,7 +186,7 @@ function DeliveryList() {
                                                         : ''
                                                 }
                                                 {
-                                                    (roleId == 1 || roleId == 2) ?
+                                                    (roleId == 1) ?
                                                         <td className="align-middle " style={{ padding: '10px' }}>
 
                                                             <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowModelEditSupplier(s)}></i>

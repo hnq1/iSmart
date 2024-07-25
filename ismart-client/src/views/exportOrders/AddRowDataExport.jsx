@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Row, Col, Dropdown, Modal, Button } from "react-bootstrap";
-import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
-import { fetchAllSuppliers } from "~/services/SupplierServices";
+import { Row, Col, Dropdown, Modal, Button, Table } from "react-bootstrap";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
-import { fetchGoodById } from "~/services/GoodServices";
 import { toast } from "react-toastify";
+import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
+import { fetchGoodinWarehouseById } from "~/services/GoodServices";
+import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
 
 const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
@@ -15,75 +15,79 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     const [totalGoods, setTotalGoods] = useState([]);
     const [selectedGoodCode, setSelectedGoodCode] = useState(null);
     const [selectedGoodId, setSelectedGoodId] = useState(null);
-
-    const [totalSuppliers, setTotalSuppliers] = useState([]);
-    const [selectedSupplier, setSelectedSupplier] = useState(null);
-    const [selectedSupplierId, setSelectedSupplierId] = useState(null);
-
-    useEffect(() => {
-        getAllSuppliers();
-    }, [])
+    const [dataMethod, setDataMethod] = useState(null);
+    const [selectedMethod, setSelectedMethod] = useState('');
+    const [selectImportOrderDetailId, setSelectImportOrderDetailId] = useState(null);
 
     useEffect(() => {
         getAllGoods();
-    }, [selectedStorageId, selectedSupplierId])
+    }, [selectedStorageId])
+
+    // useEffect(() => {
+    //     if (selectedGoodId) {
+    //         let res = getGoodinWarehouseById(selectedGoodId);
+    //     }
+
+    // }, [selectedGoodId])
 
     useEffect(() => {
-        if (selectedGoodId) {
-            let res = getGoodById(selectedGoodId);
-        }
-
-    }, [selectedGoodId])
-
-
+        setDataMethod();
+    }, [selectedMethod])
     const getAllGoods = async () => {
-        if (selectedStorageId && selectedSupplierId) {
-            let res = await fetchGoodsWithStorageAndSupplier(selectedStorageId, selectedSupplierId);
-            console.log(res);
+        if (selectedStorageId !== null) {
+            let res = await fetchAllGoodsInWarehouse(selectedStorageId);
+            // console.log("getAllGoods: ", res);
             setTotalGoods(res);
         }
-
     }
 
-    const getGoodById = async (id) => {
-        let res = await fetchGoodById(id);
-        setQuantityInStock(res.inStock)
-    }
-
-    const getAllSuppliers = async () => {
-        let res = await fetchAllSuppliers();
-        setTotalSuppliers(res);
-    }
-
-    const handleGoodClick = (good, event) => {
+    const handleGoodClick = async (good, event) => {
         setSelectedGoodCode(good.goodsCode);
         setSelectedGoodId(good.goodsId);
+        let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
+        setQuantityInStock(res.inStock);
+        // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
     }
 
-    const handleSupplierClick = (supplier, event) => {
-        setSelectedSupplier(supplier.supplierName);
-        setSelectedSupplierId(supplier.supplierId)
-    }
+
+
+    const handleSelectMethod = async (method) => {
+        if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
+            toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+            return;
+        }
+        setSelectedMethod(method);
+        let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
+        setDataMethod(res);
+        setSelectImportOrderDetailId(res[0].importOrderDetailId);
+        // console.log("method:", res[0].importOrderDetailId);
+
+        // console.log("getBatchInventoryForExportgoods:", res);
+    };
+
 
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
     }
 
-    const handleChangePrice = (event) => {
-        setCostPrice(event.target.value);
-    }
+
 
     const handleConfirmRowData = () => {
         if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm")
         } else if (quantity === 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0")
-        } else if (costPrice === 0) {
-            toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
         } else if (quantity > quantityInStock) {
             toast.warning("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
         } else {
-            onChange({ costPrice: costPrice, quantity: quantity, goodsId: selectedGoodId, goodsCode: selectedGoodCode, totalOneGoodPrice: costPrice * quantity });
+            onChange({
+                costPrice: 0,
+                quantity: quantity,
+                goodsId: selectedGoodId,
+                goodsCode: selectedGoodCode,
+                totalOneGoodPrice: 0,
+                importOrderDetailId: selectImportOrderDetailId
+            });
             handleCloseModal();
         }
 
@@ -96,8 +100,9 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     }
 
     const handleReset = () => {
-        setSelectedSupplier(null);
-        setSelectedSupplierId(null);
+        setSelectedMethod(null);
+        // setSelectedSupplier(null);
+        // setSelectedSupplierId(null);
         setSelectedGoodCode(null);
         setSelectedGoodId(null);
         setQuantityInStock(0);
@@ -106,37 +111,12 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     }
 
     return (
-        <Modal show={isShow} onHide={handleCloseModal} size="lg">
+
+        <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
                 <Modal.Title>Chọn sản phẩm</Modal.Title>
             </Modal.Header>
             <Modal.Body><Row>
-
-                <Col md={3}>
-                    <label>Nhà cung cấp</label>
-                    <div>
-                        <Dropdown style={{ position: 'relative' }}>
-                            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                <span style={{ color: 'white' }}>{selectedSupplier !== null ? selectedSupplier : "Nhà cung cấp"}</span>
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
-                                {totalSuppliers && totalSuppliers.length > 0 && totalSuppliers.map((g, index) => (
-                                    <Dropdown.Item key={`supplier ${index}`} eventKey={g.supplierName} onClick={(e) => handleSupplierClick(g, e)}>
-                                        {g.supplierName}
-                                    </Dropdown.Item>
-                                ))}
-
-                                {totalGoods.length === 0 && (
-                                    <Dropdown.Item key="empty" disabled>
-                                        Không có mặt hàng
-                                    </Dropdown.Item>
-                                )}
-                            </Dropdown.Menu>
-                        </Dropdown>
-
-                    </div>
-                </Col>
 
                 <Col md={3}>
                     <label>Mã sản phẩm</label>
@@ -153,21 +133,45 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                                     </Dropdown.Item>
                                 ))}
 
-                                {totalGoods.length === 0 && (
+                                {/* {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
                                     </Dropdown.Item>
-                                )}
+                                )} */}
                             </Dropdown.Menu>
                         </Dropdown>
 
                     </div>
                 </Col>
 
-            </Row>
+                <Col md={3}>
+                    <div className="form-group mb-3">
+                        <label>Phương thức xuất kho</label>
+                        <Dropdown style={{ position: 'relative' }}>
+                            <Dropdown.Toggle as={CustomToggle}
+                                className="DropdownButtonCSS ButtonCSSDropdown">
+                                {/* <span style={{ color: 'white' }}>{selectedMethod || 'Chọn phương thức'}</span> */}
+                                <span style={{ color: 'white' }}>{selectedMethod ? selectedMethod : "Chọn phương thức"}</span>
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu style={{ position: 'absolute', zIndex: '9999' }}>
+                                <Dropdown.Item
+                                    onClick={() => handleSelectMethod('LIFO')}
+                                >LIFO (Last In, First Out)</Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => handleSelectMethod('FIFO')}
+                                >FIFO (First In, First Out)</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                    </div>
+                </Col>
+
+
+            </Row >
                 <Row style={{ marginTop: "20px" }}>
 
-                    <Col md={3}>
+                    <Col md={2}>
                         <div className="form-group mb-3">
                             <label >Số lượng trong kho</label>
                             <input type="number" className="form-control inputCSS" value={quantityInStock} disabled />
@@ -180,30 +184,39 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                         </div>
                     </Col>
-                    <Col md={2}>
-                        <div className="form-group mb-3">
-                            <label >Giá tiền</label>
-                            <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
-                        </div>
-                    </Col>
-
-                    <Col md={2}>
-                        <div className="form-group mb-3">
-                            <label >Tổng giá tiền</label>
-                            <input type="number" className="form-control inputCSS" value={costPrice * quantity} disabled />
-                        </div>
-                    </Col>
-
 
 
                 </Row>
             </Modal.Body>
+            <Table >
+                <thead>
+                    <tr>
+                        <th>Mã Lô Hàng</th>
+                        <th>Ngày Sản Xuất</th>
+                        <th>Ngày Hết Hạn</th>
+                        <th>Số Lượng</th>
+                        <th>Vị Trí Trong Kho</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {dataMethod && dataMethod.map((d, index) => (
+                        <tr key={index}>
+                            <td>{d.batchCode}</td>
+                            <td>{new Date(d.manufactureDate).toLocaleDateString()}</td>
+                            <td>{new Date(d.expiryDate).toLocaleDateString()}</td>
+                            <td>{d.quantity}</td>
+                            <td>{d.location || 'N/A'}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
             <Modal.Footer>
                 <Button variant="primary" className="ButtonCSS" onClick={handleConfirmRowData}>
                     Xác nhận xuất kho
                 </Button>
             </Modal.Footer>
-        </Modal >)
+        </Modal >
+    )
 }
 
 export default AddRowDataExportOrder

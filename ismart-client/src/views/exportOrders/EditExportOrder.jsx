@@ -25,11 +25,10 @@ const ModalEditExportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
     const [selectedStorageId, setSelectedStorageId] = useState(null);
 
 
-    const [selectedDelivery, setSelectedDelivery] = useState(null);
-    const [selectedDeliveryId, setSelectedDeliveryId] = useState(null);
 
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [selectedProjectId, setSelectedProjectId] = useState(null);
+
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [selectedProjectId, setSelectedCustomerId] = useState(null);
 
     const [exportCode, setExportCode] = useState(null);
 
@@ -39,21 +38,17 @@ const ModalEditExportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
         if (detailOrderEdit.exportId) {
             getTotalOrderDetail(detailOrderEdit.exportId);
 
-            setSelectedStorage(detailOrderEdit.storageName);
-            setSelectedStorageId(detailOrderEdit.storageId);
+            setSelectedStorage(detailOrderEdit.warehouseName);
+            setSelectedStorageId(detailOrderEdit.warehouseId);
 
-
-            setSelectedDelivery(detailOrderEdit.deliveryName);
-            setSelectedDeliveryId(detailOrderEdit.deliveryId);
-
-            setSelectedProject(detailOrderEdit.projectName);
-            setSelectedProjectId(detailOrderEdit.projectId);
+            setSelectedCustomer(detailOrderEdit.customerName);
+            setSelectedCustomerId(detailOrderEdit.customerId);
 
             setExportCode(detailOrderEdit.exportCode);
 
             setSelectedDate(formatDateImport(detailOrderEdit.exportedDate));
         }
-        console.log(detailOrderEdit);
+        console.log(detailOrderEdit.CustomerName);
 
     }, [detailOrderEdit])
 
@@ -98,7 +93,7 @@ const ModalEditExportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
             toast.warning("Vui lòng nhập mặt hàng xuất");
         } else {
             console.log(detailOrderEdit.exportId);
-            let res = await updateExportOrder(detailOrderEdit.exportId, userId, selectedProjectId, totalPrice, "", detailOrderEdit.createdDate, detailOrderEdit.exportedDate, 3, exportCode, selectedStorageId, selectedDeliveryId, detailOrderEdit.image, null);
+            let res = await updateExportOrder(detailOrderEdit.exportId, userId, selectedProjectId, 0, "", detailOrderEdit.createdDate, detailOrderEdit.exportedDate, 3, exportCode, selectedStorageId, "", detailOrderEdit.image, null);
             console.log(res);
             if (rowsData && rowsData.length > 0) {
                 await Promise.all(rowsData.map(async (data, index) => {
@@ -142,7 +137,7 @@ const ModalEditExportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                         </Col>
 
                         <Col md={2}>
-                            <DropdownButton className="ButtonCSSDropdown" title={selectedProject} variant="success" disabled>
+                            <DropdownButton className="ButtonCSSDropdown" title={selectedCustomer} variant="success" disabled>
                             </DropdownButton>
                         </Col>
 
@@ -156,10 +151,10 @@ const ModalEditExportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
 
 
 
-                        <Col >
+                        {/* <Col >
                             <DropdownButton className="ButtonCSSDropdown" title={selectedDelivery} variant="success" disabled>
                             </DropdownButton>
-                        </Col>
+                        </Col> */}
 
 
 
@@ -179,7 +174,7 @@ const ModalEditExportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                         {renderExportData()}
 
                     </Row>
-                    <div className="">
+                    {/* <div className="">
                         <button
                             className="btn rounded ButtonRed"
                             type="button"
@@ -188,7 +183,7 @@ const ModalEditExportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                             Tổng giá tiền: {formattedAmount(totalPrice)}
                         </button>
 
-                    </div>
+                    </div> */}
 
                 </div>
             </Modal.Body>
