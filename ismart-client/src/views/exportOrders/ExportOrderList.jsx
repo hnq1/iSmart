@@ -249,7 +249,7 @@ const ExportOrderList = () => {
                     <div className="col-sm-12">
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng xuất kho</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                            {roleId == 2 || roleId == 4 || roleId == 1 ?
+                            {roleId == 4 || roleId == 1 ?
                                 <Col md={2}>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"

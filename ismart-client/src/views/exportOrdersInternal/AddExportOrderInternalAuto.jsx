@@ -209,7 +209,10 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
             toast.warning("Vui lòng nhập ngày xuất hàng");
             // } else if (totalPrice === 0) {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
-        } else if (!selectedDelivery) {
+        } else if (rowsData.length === 0) {
+            toast.warning("Hãy thêm lô hàng");
+        } 
+         else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
@@ -275,7 +278,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>Thêm lô hàng xuất</Modal.Title>
+                <Modal.Title>Thêm lô hàng xuất nội bộ tự động</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">

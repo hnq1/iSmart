@@ -172,17 +172,21 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         const trimmedGoodName = goodName ? goodName.trim() : '';
         const trimmedGoodCode = goodCode ? goodCode.trim() : '';
         const trimmedDescription = description ? description.trim() : '';
-        if (!trimmedGoodName) {
-            toast.warning("Vui lòng nhập tên mặt hàng");
-        } else if (!trimmedGoodCode) {
-            toast.warning("Vui lòng nhập mã mặt hàng");
-        } else if (!selectedCategoryId) {
-            toast.warning("Vui lòng chọn danh mục");
-        } else if (!selectedSupplierId) {
-            toast.warning("Vui lòng chọn nhà phân phối");
+         if (!selectedWarehouseId) {
+            toast.warning("Vui lòng chọn kho");
         } else if (!measuredUnit) {
             toast.warning("Vui lòng chọn đơn vị");
         }
+        else if (!trimmedGoodName) {
+            toast.warning("Vui lòng nhập tên mặt hàng");
+        }else if (!trimmedGoodCode) {
+            toast.warning("Vui lòng nhập mã mặt hàng");
+        } 
+        else if (!selectedCategoryId) {
+            toast.warning("Vui lòng chọn danh mục");
+        } else if (!selectedSupplierId) {
+            toast.warning("Vui lòng chọn nhà cung cấp");
+        } 
         else if (!imageGood) {
             toast.warning("Vui lòng chọn hình ảnh");
         }
