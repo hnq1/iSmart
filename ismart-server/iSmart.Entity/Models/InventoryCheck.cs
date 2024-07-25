@@ -13,7 +13,7 @@ namespace iSmart.Entity.Models
         public DateTime CheckDate { get; set; }
 
         // Navigation property
-        public Warehouse Warehouse { get; set; }
-        public ICollection<InventoryCheckDetail> InventoryCheckDetails { get; set; }
+        public virtual Warehouse Warehouse { get; set; }
+        public virtual ICollection<InventoryCheckDetail> InventoryCheckDetails { get; set; }
     }
 }

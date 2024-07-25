@@ -200,12 +200,13 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             const updatedRowsData = [...rowsData];
 
 
+
+
             updatedRowsData[existingProductIndex].quantity += importData.quantity; // Cập nhật số lượng
             updatedRowsData[existingProductIndex] = { ...updatedRowsData[existingProductIndex], ...importData }; // Cập nhật các giá trị mới
 
 
             setRowsData(updatedRowsData);
-
 
             //setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice); // Cập nhật tổng chi phí
             toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
@@ -303,7 +304,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng!");
         }
-        else if (!selectedWarehouseId) {
+        else if (roleId === 1 && !selectedWarehouseId) {
             toast.warning("Vui lòng chọn kho hàng!");
         }
         else if (!selectedSupplier) {
@@ -358,8 +359,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                             data.expiryDate,
                             data.goodsId,
                             data.quantity
-
-
                         );
                         console.log("data1:", data);
                     }));

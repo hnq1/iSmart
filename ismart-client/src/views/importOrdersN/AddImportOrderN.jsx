@@ -283,7 +283,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         // } else 
         if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
-        } else if (!selectedWarehouseImportId) {
+        } else if (roleId === 1 && !selectedWarehouseImportId) {
             toast.warning("Vui lòng chọn kho nhập hàng");
         } else if (!selectedWarehouseExportId) {
             toast.warning("Vui lòng chọn kho xuất hàng");

@@ -222,26 +222,35 @@ namespace iSmart.Service
         {
             try
             {
-                var requestOrder = new ImportOrderDetail
+                // Tìm import order detail hiện tại bằng ImportId và GoodsId hoặc các điều kiện cần thiết
+                var existingOrderDetail = _context.ImportOrderDetails
+                    .FirstOrDefault(x => x.DetailId == detail.DetailId);
+
+                if (existingOrderDetail != null)
                 {
-                    ImportId = detail.ImportId,
-                    GoodsId = (int)detail.GoodsId,
-                    Quantity = (int)detail.Quantity,
-                    ActualQuantity = (int)detail.Quantity,
-                    CostPrice = detail.CostPrice,
-                    BatchCode = detail.BatchCode,
-                    ExpiryDate = detail.ExpiryDate,
-                    ManufactureDate = detail.ManufactureDate,
-                };
-                _context.Update(requestOrder);
-                _context.SaveChanges();
-                return new UpdateImportOrderDetailResponse { IsSuccess = true, Message = "Update order detail complete" };
+                    // Cập nhật các trường thông tin
+                    existingOrderDetail.Quantity = (int)detail.Quantity;
+                    existingOrderDetail.ActualQuantity = (int)detail.Quantity;
+                    existingOrderDetail.CostPrice = detail.CostPrice;
+                    existingOrderDetail.BatchCode = detail.BatchCode;
+                    existingOrderDetail.ExpiryDate = detail.ExpiryDate;
+                    existingOrderDetail.ManufactureDate = detail.ManufactureDate;
+
+                    _context.Update(existingOrderDetail);
+                    _context.SaveChanges();
+                    return new UpdateImportOrderDetailResponse { IsSuccess = true, Message = "Update order detail complete" };
+                }
+                else
+                {
+                    return new UpdateImportOrderDetailResponse { IsSuccess = false, Message = "Order detail not found" };
+                }
             }
             catch (Exception e)
             {
-                return new UpdateImportOrderDetailResponse { IsSuccess = false, Message = $"Update order detail failed {e.Message}" };
+                return new UpdateImportOrderDetailResponse { IsSuccess = false, Message = $"Update order detail failed: {e.Message}" };
             }
         }
+
 
         public List<BatchInventoryDTO> GetBatchForReturn(int warehouseId, int goodId)
         {
