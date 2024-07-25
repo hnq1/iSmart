@@ -3,7 +3,7 @@ import { Table, Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
 import { formatDate } from '~/validate';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
-import { fetchReturnOrdersWithFilter, confirmReturnOrder } from '~/services/ReturnOrderService';
+import { fetchReturnOrdersWithFilter, confirmReturnOrder, updateReturnOrder } from '~/services/ReturnOrderService';
 import { fetchAllStorages } from '~/services/StorageServices';
 import ModelAddReturnOrder from "./AddReturnOrder";
 import ModalDetailReturnOrder from "./DetailReturnOrder";
@@ -44,6 +44,7 @@ function ReturnOrderList() {
     const [isShowReturnOrderModelAdd, setIsShowReturnOrderModelAdd] = useState(false);
     const [isShowModalCancelImport, setIsShowModalCancelImport] = useState(false);
     const [isShowEditOrder, setIsShowEditOrder] = useState(false);
+    const [isShowModalCancelOrder, setIsShowModalCancelOrder] = useState(false);
     const [dataEditOrder, setDataEditOrder] = useState([]);
 
     const [completed, setCompleted] = useState();
@@ -76,11 +77,34 @@ function ReturnOrderList() {
         setCompleted(i);
     }
 
+    const openModalCancel = (i) => {
+        setIsShowModalCancelOrder(true);
+        setCompleted(i);
+    }
+
+    const CancelOrder = async () => {
+        if (completed) {
+            await updateReturnOrder(completed.returnOrderId, completed.returnOrderCode, completed.returnedDate, completed.warehouseId
+                , completed.supplierId, 5, completed.createdBy, completed.approvedBy)
+                .then((data) => {
+                    console.log(data);
+                    toast.success("Hủy đơn hàng thành công");
+                    setUpdate(!update);
+                })
+                .catch((error) => {
+                    toast.error(data.message);
+                })
+                .finally(() => {
+                    setIsShowModalCancelOrder(false);
+                })
+        }
+    }
+
     const ConfirmCancelImport = async () => {
         if (completed) {
             await confirmReturnOrder(completed.returnOrderId)
                 .then((data) => {
-                    toast.success(data.message);
+                    toast.success("Xác nhận đơn hàng thành công");
                     setUpdate(!update);
                 })
                 .catch((error) => {
@@ -326,11 +350,21 @@ function ReturnOrderList() {
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : <td></td>} */}
                                                 {(roleId === 1 || roleId === 2) ? <td className="align-middle">
-                                                    <i className="fa-solid fa-ban actionButtonCSS"
-                                                    ></i></td> : ''}
+                                                    <button disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}>
+
+                                                        <i className="fa-solid fa-ban actionButtonCSS" onClick={() => openModalCancel(i)}
+
+                                                        ></i>
+                                                    </button>
+                                                </td> : ''}
 
                                                 {(roleId === 1 || roleId === 2) ? <td className="align-middle " style={{ padding: '10px' }}>
-                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)} ></i>
+                                                    <button disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}>
+
+                                                        <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}
+
+                                                        ></i>
+                                                    </button>
                                                 </td> : ''}
 
 
@@ -382,7 +416,9 @@ function ReturnOrderList() {
                 updateTable={updateTable}
             />
             <ModalConfirm isShow={isShowModalCancelImport} handleClose={() => setIsShowModalCancelImport(false)}
-                title="Hủy đơn hàng nhập" ConfirmCancel={ConfirmCancelImport} />
+                title="Xác nhận đơn trả hàng" ConfirmCancel={ConfirmCancelImport} />
+            <ModalConfirm isShow={isShowModalCancelOrder} handleClose={() => setIsShowModalCancelOrder(false)}
+                title="Hủy đơn trả hàng" ConfirmCancel={CancelOrder} />
             <ModalDetailReturnOrder isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={dataDetailOrder} />
             <ModalEditReturnOrder isShow={isShowEditOrder} handleClose={() => setIsShowEditOrder(false)} detailOrderEdit={dataEditOrder} updateTable={updateTable} />
         </>

@@ -16,7 +16,7 @@ const ModalConfirm = ({ isShow, handleClose, title, ConfirmCancel }) => {
                 <div className="body-add-new">
                     <div className="form-group mb-3">
                         <label>
-                            Bạn có muốn xác nhận đơn hàng không ?
+                            {title === 'Xác nhận đơn trả hàng' ? "Bạn có muốn xác nhận đơn hàng không ?" : "Bạn có chắc chắn muốn hủy đơn hàng trả lại ?"}
                         </label>
                     </div>
                 </div>

@@ -35,7 +35,7 @@ const EditRowDataReturnOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
             toast.warning("Số lượng phải lớn hơn 0");
         }
         else {
-            dataAfterEdit({ quantity: quantity, reason: reason, goodsId: data.goodsId, batchCode: data.batchCode, returnOrderDetailId: data.returnOrderDetailId, returnOrderId: data.returnOrderId });
+            dataAfterEdit({ goodsCode: data.goodsCode, quantity: quantity, reason: reason, goodsId: data.goodsId, batchCode: data.batchCode, returnOrderDetailId: data.returnOrderDetailId, returnOrderId: data.returnOrderId });
             handleClose();
         }
     }

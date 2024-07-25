@@ -8,26 +8,28 @@ const EditRowDataReturnOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
     const [goodsId, setGoodsId] = useState();
     const [goodsCode, setGoodsCode] = useState();
     const [quantity, setQuantity] = useState();
-    const [costPrice, setCostPrice] = useState();
+    const [reason, setReason] = useState();
     const [batchCode, setBatchCode] = useState();
 
 
     useEffect(() => {
-        setBatchCode(data[0].batchCode);
-        setGoodsCode(data[0].goodsCode);
-        setGoodsId(data[0].goodsId);
-        setQuantity(data[0].quantity);
-
-    }, [])
+        setBatchCode(data.batchCode);
+        setGoodsCode(data.goodsCode);
+        setGoodsId(data.goodsId);
+        setQuantity(data.quantity);
+        setReason(data.reason);
+    }, [data])
     //console.log("dataEditRowDataOrder: ", data[0]);
 
     useEffect(() => {
-        //setTotalOneGoodPrice(quantity * costPrice);
-    }, [quantity, costPrice]);
-    // console.log("dataEdit: ", data);
+    }, [quantity, reason]);
+
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
-        //setTotalOneGoodPrice(event.target.value * costPrice);
+    }
+
+    const handleChangeReason = (event) => {
+        setReason(event.target.value);
     }
 
     const handleReset = () => {
@@ -35,6 +37,7 @@ const EditRowDataReturnOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
         setQuantity(data.quantity);
+        setReason(data.reason);
     }
     const handleCloseModal = () => {
         handleReset();
@@ -46,20 +49,15 @@ const EditRowDataReturnOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
         } else {
             dataAfterEdit({
-                // ...data,
-                batchCode: batchCode,
-                goodsCode: goodsCode,
-                goodsId: goodsId,
-                quantity: quantity,
+                batchCode,
+                goodsCode,
+                goodsId,
+                quantity,
+                reason
             });
-            console.log("dataAfterEdit: ", quantity);
             handleClose();
         };
     }
-
-
-
-
 
     return (
         <Modal show={isShow} onHide={handleCloseModal} size="lg">
@@ -82,14 +80,14 @@ const EditRowDataReturnOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                         <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                     </div>
                 </Col>
-                {/* <Col md={2}>
+                <Col md={2}>
                     <div className="form-group mb-3">
-                        <label >Giá tiền</label>
-                        <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
+                        <label >Lý do</label>
+                        <input type="text" className="form-control inputCSS" value={reason} onChange={handleChangeReason} />
                     </div>
                 </Col>
 
-                <Col md={2}>
+                {/* <Col md={2}>
                     <div className="form-group mb-3">
                         <label >Tổng giá tiền</label>
                         <input type="text" className="form-control" value={totalOneGoodPrice} disabled />

@@ -85,29 +85,22 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         setRowsData(updateDataImport);
     }
 
-    // const handleChooseFile = async (event) => {
-    //     const file = event.target.files[0];
-    //     let res = await uploadImage(file);
-    //     const urlImage = res.url;
-    //     setImageExportOrder(urlImage);
-    // }
 
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
     };
 
     const deleteRowData = (rowdel) => {
-        const updateDataImport = rowsData.filter((item, index) => index !== rowdel);
-        //const deletePrice = rowsData[rowdel].totalOneGoodPrice;
+        // Loại bỏ bản ghi tại chỉ số rowdel
+        const updateDataImport = rowsData.filter((_, index) => index !== rowdel);
         setRowsData(updateDataImport);
-        //setTotalCost(x => x - deletePrice ? x - deletePrice : 0);
     }
     // render rowsData
     const renderReturnData = () => {
         return rowsData.map((data, index) => (
             <RowDataReturnOrderManual key={index} data={rowsData[index]} index={index}
-                updateRowData={updateRowData}
                 deleteRowData={deleteRowData}
+                updateRowData={updateRowData}
             />
         ))
     }
@@ -127,13 +120,14 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Vui lòng nhập mã đơn hàng");
         }
         else if (!selectedWarehouse) {
-            toast.warning("Vui lòng chọn kho xuất hàng");
+            toast.warning("Vui lòng chọn kho hàng");
         } else if (!selectedDate) {
-            toast.warning("Vui lòng nhập ngày xuất hàng");
+            toast.warning("Vui lòng nhập ngày trả hàng");
+        } else if (!selectedSupplierId) {
+            toast.warning("Vui lòng chọn nhà cung cấp");
+        } else if (!rowsData || rowsData.length === 0) {
+            toast.warning("Phải có ít nhất một chi tiết đơn hàng để tạo đơn hàng xuất.");
         } else {
-            if (!rowsData || rowsData.length === 0) {
-                toast.warning("Phải có ít nhất một chi tiết đơn hàng để tạo đơn hàng xuất.");
-            }
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let res = await addNewReturnOrder(
                 userId,
@@ -152,7 +146,7 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                             createNewReturnOrderDetail(returnOrderId,
                                 item.goodsId,
                                 item.quantity,
-                                note,
+                                item.reason,
                                 item.batchCode);
                         })
                     }));
@@ -279,7 +273,7 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                 </div>
                             </Col>
 
-                            <Col md={3} className="">
+                            <Col md={3} className="mt-2">
                                 <div className="ButtonCSSDropdown">
                                     <button
                                         className="btn btn-success border-left-0 rounded"
@@ -305,7 +299,7 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                     />
                                 </div>
                             </Col> */}
-                            <Col md={2}>
+                            {/* <Col md={2}>
                                 <div className="flex col-auto ButtonCSSDropdown space-x-2 items-center">
                                     <button
                                         className="btn btn-success border-left-0 rounded"
@@ -320,7 +314,7 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
 
                                 </div>
 
-                            </Col>
+                            </Col> */}
 
                             <Col md={7}>
                             </Col>
@@ -352,7 +346,7 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
             //updateTable={updateTable}
             />
 
-            <AddRowDataReturnOrderManual isShow={isShowRowDataReturn} selectedStorageId={selectedWarehouseId}
+            <AddRowDataReturnOrderManual isShow={isShowRowDataReturn} selectedStorageId={selectedWarehouseId} selectedSupplierId={selectedSupplierId}
                 onChange={(exportData) => takeRowDataExportOrder(exportData)}
                 handleClose={() => setIsShowRowDataReturn(false)} />
 
