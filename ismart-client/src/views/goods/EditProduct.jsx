@@ -41,31 +41,32 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
 
 
     useEffect(() => {
+        if(isShow ){
+            setSelectedCategory(dataGoodEdit.categoryName || "");
 
+            setSelectedCategoryId(dataGoodEdit.categoryId || "");
+    
+            setSelectedSupplier(dataGoodEdit.supplierName || "");
+            setSelectedSupplierId(dataGoodEdit.supplierId || "");
+    
+            setSelectedWarehouse(dataGoodEdit.warehouseName || "");
+            setSelectedWarehouseId(dataGoodEdit.warehouseId || "");
+    
+            setStockPrice(dataGoodEdit.stockPrice || "");
+            setMaxStock(dataGoodEdit.maxStock || "");
+            setMinStock(dataGoodEdit.minStock || "");
+            setMeasuredUnit(dataGoodEdit.measuredUnit || "");
+            setGoodName(dataGoodEdit.goodsName || "");
+            setGoodCode(dataGoodEdit.goodsCode || "");
+    
+            setwarrantyTime(dataGoodEdit.warrantyTime || "");
+            setDescription(dataGoodEdit.description || "");
+    
+            setImageGood(dataGoodEdit.image || "");
+            setBarCode(dataGoodEdit.barcode || "");
+        }
 
-        setSelectedCategory(dataGoodEdit.categoryName);
-        setSelectedCategoryId(dataGoodEdit.categoryId);
-
-        setSelectedSupplier(dataGoodEdit.supplierName);
-        setSelectedSupplierId(dataGoodEdit.supplierId);
-
-        setSelectedWarehouse(dataGoodEdit.warehouseName);
-        setSelectedWarehouseId(dataGoodEdit.warehouseId);
-
-        setStockPrice(dataGoodEdit.stockPrice);
-        setMaxStock(dataGoodEdit.maxStock);
-        setMinStock(dataGoodEdit.minStock);
-        setMeasuredUnit(dataGoodEdit.measuredUnit);
-        setGoodName(dataGoodEdit.goodsName);
-        setGoodCode(dataGoodEdit.goodsCode);
-
-        setwarrantyTime(dataGoodEdit.warrantyTime);
-        setDescription(dataGoodEdit.description);
-
-        setImageGood(dataGoodEdit.image);
-        setBarCode(dataGoodEdit.barcode);
-
-    }, [dataGoodEdit])
+    }, [isShow, dataGoodEdit])
     console.log(dataGoodEdit);
     useEffect(() => {
         getAllStorages();

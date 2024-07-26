@@ -213,7 +213,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             // Nếu sản phẩm chưa tồn tại, thêm vào danh sách và cập nhật tổng chi phí
             const updateDataImport = [...rowsData, importData];
             setRowsData(updateDataImport);
-            setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice);
+            // setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice);
         }
     }
 

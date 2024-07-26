@@ -15,7 +15,7 @@ import { fetchAllStorages } from '~/services/StorageServices';
 import { fetchUserByUserId } from "~/services/UserServices";
 import { Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
 import { toast } from "react-toastify";
-
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 
 import { format } from 'date-fns';
 
@@ -139,17 +139,34 @@ const ExportOrderListInternal = () => {
 
 
     const getExportOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
-        setcurrentPage(page - 1);
-        let res = await fetchExportOrdersWithFilter(
-            pageSize, page, selectedWarehouseId,
-            "", "",
-            sortedByStatusId,
-            sortedByDateId, keywordSearch);
+        if(roleId === 1){
+            setcurrentPage(page - 1);
 
-
-        setTotalExportOrder(res.data);
-        setTotalPages(res.totalPages);
-        // console.log("fetchExportOrdersWithFilter: ", res.data);
+            let res = await fetchExportOrdersWithFilter(
+                pageSize, page, selectedWarehouseId,
+                "", "",
+                sortedByStatusId,
+                sortedByDateId, keywordSearch);
+    
+    
+            setTotalExportOrder(res.data);
+            setTotalPages(res.totalPages);
+            // console.log("fetchExportOrdersWithFilter: ", res.data);
+        }
+        if(roleId === 2 || roleId === 3 ){
+            setcurrentPage(page - 1);
+            let wh = await getUserIdWarehouse(userId);
+            let res = await fetchExportOrdersWithFilter(
+                pageSize, page, wh[0].warehouseId,
+                "", "",
+                sortedByStatusId,
+                sortedByDateId, keywordSearch);
+    
+    
+            setTotalExportOrder(res.data);
+            setTotalPages(res.totalPages);
+            // console.log("fetchExportOrdersWithFilter: ", res.data);
+        }
     }
 
 
@@ -241,7 +258,7 @@ const ExportOrderListInternal = () => {
                     <div className="col-sm-12">
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng xuất giữa các kho</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                            {roleId == 2 || roleId == 4 || roleId == 1 ?
+                            { roleId == 1 ?
                                 <Col md={2}>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"
