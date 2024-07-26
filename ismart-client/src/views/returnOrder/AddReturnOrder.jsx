@@ -71,11 +71,27 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         console.log(delivery);
     }
 
-    const takeRowDataExportOrder = (returnOrderData) => {
-        console.log("returnOrderData:", returnOrderData);
-        const updateDataExport = [...rowsData, returnOrderData];
 
-        setRowsData(updateDataExport);
+
+
+    // nhận dữ liệu từ addRowDataImport
+
+    const takeRowDataExportOrder = (returnOrderData) => {
+        // console.log("returnOrderData:", returnOrderData);
+
+        const redata = rowsData.findIndex((item) => item.goodsId === returnOrderData.goodsId);
+        if (redata !== -1) {
+            const updateDataImport = [...rowsData];
+            updateDataImport[redata].quantity += returnOrderData.quantity;
+            updateDataImport[redata] = { ...updateDataImport[redata], ...returnOrderData };
+            
+            setRowsData(updateDataImport);
+            toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
+        } else {
+            const updateDataExport = [...rowsData, returnOrderData];
+
+            setRowsData(updateDataExport);
+        }
     }
 
     const updateRowData = (rowUpdate, updateData) => {

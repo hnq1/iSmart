@@ -12,11 +12,12 @@ const RowDataExportOrderManual = ({ data, index, deleteRowData, updateRowData })
     const [costPrice, setCostPrice] = useState();
 
     useEffect(() => {
-        // Tính tổng số lượng
-        const totalQuantity = data.reduce((total, item) => total + item.quantity, 0);
+        
+        // // Tính tổng số lượng
+        // const totalQuantity = data.reduce((total, item) => total + item.quantity, 0);
 
-        // Thiết lập tổng số lượng
-        setQuantity(totalQuantity);
+        // // Thiết lập tổng số lượng
+        // setQuantity(totalQuantity);
         data.forEach(item => {
 
             console.log("item: ", item);
@@ -30,7 +31,7 @@ const RowDataExportOrderManual = ({ data, index, deleteRowData, updateRowData })
 
 
 
-        // console.log("dataRowDataExportOrder: ", data[0].goodsId);
+        
     }, [data])
 
     const handleEditRowData = () => {
