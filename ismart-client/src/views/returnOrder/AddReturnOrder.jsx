@@ -77,9 +77,10 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
     // nhận dữ liệu từ addRowDataImport
 
     const takeRowDataExportOrder = (returnOrderData) => {
-        // console.log("returnOrderData:", returnOrderData);
+         console.log("returnOrderData:", returnOrderData);
 
         const redata = rowsData.findIndex((item) => item.goodsId === returnOrderData.goodsId);
+        console.log("redata:",redata);
         if (redata !== -1) {
             const updateDataImport = [...rowsData];
             updateDataImport[redata].quantity += returnOrderData.quantity;
