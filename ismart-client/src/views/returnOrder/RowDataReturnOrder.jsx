@@ -3,12 +3,16 @@ import { Row, Col, Dropdown } from "react-bootstrap";
 import EditRowDataReturnOrder from './EditRowDataReturnOrder';
 
 
+
+
 const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData }) => {
+
 
     const [isShowEditRowData, setIsShowEditRowData] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(null);
     const [orderData, setOrderData] = useState([]);
     const [odata, setOData] = useState([])
+
 
     useEffect(() => {
         // Kiểm tra và chuyển đổi dữ liệu thành mảng nếu cần thiết
@@ -19,15 +23,18 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
         }
     }, [data]);
 
+
     const handleEditRowData = (item, index) => {
         setOrderData(item);
         setCurrentIndex(index);
         setIsShowEditRowData(true);
     };
 
+
     const handleDeleteRowData = (item, index) => {
         deleteRowData(index);
     }
+
 
     const dataAfterEdit = (updatedData) => {
         console.log(updatedData);
@@ -41,7 +48,9 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
         setIsShowEditRowData(false);
     };
 
+
     return (<><Row>
+
 
         {odata && odata.length > 0 && (
             <Row className="mb-3">
@@ -68,6 +77,7 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
                         <input type="text" className="form-control" defaultValue={item.goodsCode} disabled />
                     </div>
                 </Col>
+
 
                 <Col md={2}>
                     <div className="form-group mb-3">
@@ -96,6 +106,7 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
                     </div>
                 </Col>
 
+
                 <Col md={1}>
                     <div className="form-group mb-3 ButtonCSSDropdown red">
                         <button
@@ -110,12 +121,16 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
             </Row>
         ))}
 
+
         {/* <Col md={2}>
             <div className="form-group mb-3">
                 <label >Tổng giá tiền</label>
                 <input type="text" className="form-control" defaultValue={data.totalOneGoodPrice} disabled />
             </div>
         </Col> */}
+
+
+
 
 
 
@@ -126,4 +141,7 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
 }
 
 
+
+
 export default RowDataReturnOrderManual
+
