@@ -18,25 +18,30 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
     const [supplierName, setSupplierName] = useState();
 
     useEffect(() => {
-        setBatchCode(data.batchCode);
-        setCostPrice(data.costPrice);
-        setExpiryDate(data.expiryDate);
-        setGoodsCode(data.goodsCode);
-        setGoodsId(data.goodsId);
-        setSelectedImportId(data.importId);
-        setManufactureDate(data.manufactureDate);
-        setQuantity(data.quantity);
-        setSupplierId(data.supplierId);
-        setSupplierName(data.supplierName);
-        setTotalOneGoodPrice(data.totalOneGoodPrice);
+        if(isShow){
+            data.forEach(item =>{
+                console.log("item:",item );
+                setBatchCode(item.batchCode );
+                setCostPrice(item.costPrice);
+                setExpiryDate(item.expiryDate);
+                setGoodsCode(item.goodsCode);
+                setGoodsId(item.goodsId);
+                setSelectedImportId(item.importId);
+                setManufactureDate(item.manufactureDate);
+                setQuantity(item.quantity);
+                setSupplierId(item.supplierId);
+                setSupplierName(item.supplierName);
+                setTotalOneGoodPrice(item.totalOneGoodPrice);
+        
+            }) 
+        }
+       
+        
+    }, [isShow,data])
+     console.log("dataEditRowDataOrder: ", data);
 
-    }, [data])
-    // console.log("dataEditRowDataOrder: ", data);
-
-    useEffect(() => {
-        setTotalOneGoodPrice(quantity * costPrice);
-    }, [quantity, costPrice]);
-    // console.log("dataEdit: ", data);
+    
+   
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
         setTotalOneGoodPrice(event.target.value * costPrice);
