@@ -77,16 +77,20 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
     // nhận dữ liệu từ addRowDataImport
 
     const takeRowDataExportOrder = (returnOrderData) => {
-        // console.log("returnOrderData:", returnOrderData);
+        console.log("returnOrderData:", returnOrderData);
+        const redata = rowsData.findIndex(item => item.goodsId === returnOrderData.goodsId);
 
-        const redata = rowsData.findIndex((item) => item.goodsId === returnOrderData.goodsId);
+        console.log("redata:", redata);
         if (redata !== -1) {
             const updateDataImport = [...rowsData];
-            updateDataImport[redata].quantity += returnOrderData.quantity;
+
+
+            // updateDataImport[redata].quantity += returnOrderData.quantity;
             updateDataImport[redata] = { ...updateDataImport[redata], ...returnOrderData };
-            
+
             setRowsData(updateDataImport);
             toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
+            console.log("updateDataImport:", updateDataImport);
         } else {
             const updateDataExport = [...rowsData, returnOrderData];
 
@@ -187,7 +191,16 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         }
     }
     const handleReset = () => {
-
+        setReturnCode('');
+        setNote('');
+        setSelectedWarehouse(null);
+        setSelectedWarehouseId(null);
+        setSelectedSupplier(null);
+        setSelectedSupplierId(null);
+        setSelectedDelivery(null);
+        setSelectedDeliveryId(null);
+        setSelectedDate('');
+        setRowsData([]);
     }
     const handleCloseModal = () => {
         handleReset();
