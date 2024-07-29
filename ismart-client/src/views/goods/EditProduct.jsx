@@ -20,7 +20,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
     const [totalSuppliers, setTotalSuppliers] = useState([]);
-    const [selectedSupplier, setSelectedSupplier] = useState(null);
+    const [selectedSupplier, setSelectedSupplier] = useState(null); 
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
     const [totalWarehouse, setTotalWarehouse] = useState([]);

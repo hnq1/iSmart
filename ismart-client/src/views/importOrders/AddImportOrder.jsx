@@ -533,18 +533,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
 
                     </Row>
-                    {/* <div className="">
-                        <button
-                            className="btn rounded ButtonRed"
-                            type="button"
-
-
-                        >
-                            Tổng giá tiền: {formattedAmount(totalCost)}
-                        </button>
-
-
-                    </div> */}
+                  
 
 
                 </div>

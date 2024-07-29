@@ -422,16 +422,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
             </Modal.Body>
 
             <Modal.Footer>
-                {/* <div className=" ">
-                    <button
-                        className="btn  border-left-0 rounded ButtonRed"
-                        type="button"
-
-                    >
-                        Tổng giá tiền: {formattedAmount(totalPrice)}
-                    </button>
-
-                </div> */}
+              
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
                 </Button>

@@ -119,19 +119,7 @@ const EditRowDataExportOrderInternal = ({ isShow, handleClose, data, dataAfterEd
                         <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                     </div>
                 </Col>
-                {/* <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Giá tiền</label>
-                        <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
-                    </div>
-                </Col>
-
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Tổng giá tiền</label>
-                        <input type="text" className="form-control" value={totalOneGoodPrice} disabled />
-                    </div>
-                </Col> */}
+               
                 {/* <Col md={2}>
                     <div className="form-group mb-3">
                         <label >Mã lô hàng</label>

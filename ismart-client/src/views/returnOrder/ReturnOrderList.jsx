@@ -331,7 +331,7 @@ function ReturnOrderList() {
                                                 <td className="align-middle">{i.deliveryName}</td> */}
 
 
-                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
+                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#2275b7" }}>
                                                     {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã hủy"}
                                                 </td>
                                                 <td className="align-middle">{i.approvedByName}</td>

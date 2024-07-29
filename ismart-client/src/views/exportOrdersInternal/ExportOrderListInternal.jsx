@@ -139,7 +139,7 @@ const ExportOrderListInternal = () => {
 
 
     const getExportOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
-        if(roleId === 1){
+        if (roleId === 1) {
             setcurrentPage(page - 1);
 
             let res = await fetchExportOrdersWithFilter(
@@ -147,13 +147,13 @@ const ExportOrderListInternal = () => {
                 "", "",
                 sortedByStatusId,
                 sortedByDateId, keywordSearch);
-    
-    
+
+
             setTotalExportOrder(res.data);
             setTotalPages(res.totalPages);
             // console.log("fetchExportOrdersWithFilter: ", res.data);
         }
-        if(roleId === 2 || roleId === 3 ){
+        if (roleId === 2 || roleId === 3) {
             setcurrentPage(page - 1);
             let wh = await getUserIdWarehouse(userId);
             let res = await fetchExportOrdersWithFilter(
@@ -161,8 +161,8 @@ const ExportOrderListInternal = () => {
                 "", "",
                 sortedByStatusId,
                 sortedByDateId, keywordSearch);
-    
-    
+
+
             setTotalExportOrder(res.data);
             setTotalPages(res.totalPages);
             // console.log("fetchExportOrdersWithFilter: ", res.data);
@@ -258,7 +258,7 @@ const ExportOrderListInternal = () => {
                     <div className="col-sm-12">
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng xuất giữa các kho</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                            { roleId == 1 ?
+                            {roleId == 1 ?
                                 <Col md={2}>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"
@@ -410,7 +410,7 @@ const ExportOrderListInternal = () => {
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
-                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
+                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#2275b7" }}>
                                                     {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã hủy"}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>

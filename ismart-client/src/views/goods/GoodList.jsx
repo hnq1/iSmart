@@ -425,7 +425,7 @@ function MyTable() {
                                             type="button"
                                             onClick={handleSearch}
                                         >
-                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                            <i className="fa-solid fa-magnifying-glass"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -450,7 +450,7 @@ function MyTable() {
                             <div className="col">
                                 <button className="btn btn-success border-left-0 rounded ButtonCSS"
                                     variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()} >
-                                    <i class="fa-solid fa-file-import"></i>
+                                    <i className="fa-solid fa-file-import"></i>
                                     &nbsp;&nbsp;&nbsp;Nhập bằng Excel
                                 </button>
                             </div>

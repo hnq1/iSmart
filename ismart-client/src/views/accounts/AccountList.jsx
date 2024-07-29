@@ -300,7 +300,7 @@ const ListAccount = () => {
             updateTable={updateTable}
         />
         <ModalChangeStatusUser title="nhân viên"
-            statusText1={<span style={{ color: '#24cbc7' }}>Đang làm việc</span>}
+            statusText1={<span style={{ color: '#2275b7' }}>Đang làm việc</span>}
             statusText2={<span style={{ color: '#ff0000' }}>Ngừng làm việc</span>}
             isShow={isShowModalChangeStatus}
             handleClose={() => setIsShowModalChangeStatus(false)}

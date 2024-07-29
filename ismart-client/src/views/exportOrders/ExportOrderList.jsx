@@ -145,7 +145,7 @@ const ExportOrderList = () => {
 
 
     const getExportOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
-        if(roleId === 1){
+        if (roleId === 1) {
             setcurrentPage(page - 1);
 
             let res = await fetchExportOrdersWithFilter(
@@ -153,13 +153,13 @@ const ExportOrderList = () => {
                 "", "",
                 sortedByStatusId,
                 sortedByDateId, keywordSearch);
-    
-    
+
+
             setTotalExportOrder(res.data);
             setTotalPages(res.totalPages);
             // console.log("fetchExportOrdersWithFilter: ", res.data);
         }
-        if(roleId === 2 || roleId === 3 ){
+        if (roleId === 2 || roleId === 3) {
             setcurrentPage(page - 1);
             let wh = await getUserIdWarehouse(userId);
             let res = await fetchExportOrdersWithFilter(
@@ -167,13 +167,13 @@ const ExportOrderList = () => {
                 "", "",
                 sortedByStatusId,
                 sortedByDateId, keywordSearch);
-    
-    
+
+
             setTotalExportOrder(res.data);
             setTotalPages(res.totalPages);
             // console.log("fetchExportOrdersWithFilter: ", res.data);
         }
-        
+
     }
 
 
@@ -417,7 +417,7 @@ const ExportOrderList = () => {
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
-                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
+                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#2275b7" }}>
                                                     {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã hủy"}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
@@ -429,11 +429,7 @@ const ExportOrderList = () => {
                                                         onClick={() => ShowModalCancelExport(i)}></i></td>
                                                     : ''
                                                 } */}
-
-
                                                 {/* {roleId === 2 && i.statusType === "On Progress" ? <td className="align-middle " style={{ padding: '10px' }}>
-
-
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : <td></td>} */}
                                                 {(roleId === 1 || roleId === 2) ? (
@@ -454,8 +450,6 @@ const ExportOrderList = () => {
                                                     )
                                                 ) : ''}
                                                 {/* {(roleId === 1 || roleId === 2) ? <td className="align-middle " style={{ padding: '10px' }}>
-
-
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : ''} */}
                                                 {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
@@ -465,14 +459,6 @@ const ExportOrderList = () => {
                                                     disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}
                                                 >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Tiến hành xuất hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
-
-
-
-
-
-
-
-
                                             </tr>
                                         ))}
 
@@ -483,8 +469,6 @@ const ExportOrderList = () => {
                     </div>
                 </div>
             </div>
-
-
             <div className="d-flex justify-content-center  mt-3">
                 <ReactPaginate
                     breakLabel="..."

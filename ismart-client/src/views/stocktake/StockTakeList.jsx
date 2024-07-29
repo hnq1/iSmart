@@ -241,7 +241,7 @@ const StockTakeList = () => {
                                             <td className="align-middle ">{s.createdName}</td>
                                             <td className="align-middle ">{formatDate(s.createdDate)}</td>
                                             <td className="align-middle ">{s.storageName}</td>
-                                            <td className="align-middle "><span style={{ color: s.statusName === "On Progress" ? "#24cbc7" : s.statusName === "Completed" ? "#24cbc7" : s.statusName === "Cancel" ? "#ea5455" : "black" }}>
+                                            <td className="align-middle "><span style={{ color: s.statusName === "On Progress" ? "#2275b7" : s.statusName === "Completed" ? "#2275b7" : s.statusName === "Cancel" ? "#ea5455" : "black" }}>
                                                 {s.statusName === "On Progress" ? "Đang tiến hành" : s.statusName === "Completed" ? "Đã hoàn thành" : s.statusName === "Cancel" ? "Hủy" : ""}
                                             </span></td>
                                             <td className="align-middle ">{s.updatedName}</td>

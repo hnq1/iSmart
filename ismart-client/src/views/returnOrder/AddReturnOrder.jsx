@@ -10,42 +10,33 @@ import { createNewReturnOrderDetail } from "~/services/ReturnOrderDetailService"
 import AddRowDataReturnOrderManual from "./AddRowDataReturnOrder";
 import RowDataReturnOrderManual from "./RowDataReturnOrder";
 
-
 import ModelAddNote from "./AddNote";
 import { toast } from "react-toastify";
 import { data } from "autoprefixer";
 
-
 const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
-
 
     const [returnCode, setReturnCode] = useState('');
     const [note, setNote] = useState('');
     const [totalSuppliers, setTotalSuppliers] = useState([]);
 
-
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
-
 
     const [totalDelivery, setTotalDelivery] = useState([]);
     const [selectedDelivery, setSelectedDelivery] = useState(null);
     const [selectedDeliveryId, setSelectedDeliveryId] = useState(null);
 
-
     const [minDate, setMinDate] = useState();
     const [selectedDate, setSelectedDate] = useState('');
     const [rowsData, setRowsData] = useState([]);
 
-
     const [isShowNote, setIsShowNote] = useState(false);
     const [isShowRowDataReturn, setIsShowRowDataReturn] = useState(false);
 
-
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
-
 
     useEffect(() => {
         getAllStorages();
@@ -53,13 +44,10 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         getAllSuppliers();
     }, [])
 
-
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
     }
-
-
 
 
     const handleStorageClickTotal = () => {
@@ -67,18 +55,15 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedWarehouse("Tất cả kho");
     }
 
-
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
     }
 
-
     const getAllDelivery = async () => {
         let res = await fetchAllDelivery();
         setTotalDelivery(res);
     }
-
 
     const handleDeliveryClick = (delivery, event) => {
         setSelectedDelivery(delivery.deliveryName);
@@ -89,37 +74,29 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
 
 
 
-
-
-
-
     // nhận dữ liệu từ addRowDataImport
-
 
     const takeRowDataExportOrder = (returnOrderData) => {
         console.log("returnOrderData:", returnOrderData);
+        const redata = rowsData.findIndex(item => item.goodsId === returnOrderData.goodsId);
 
-
-        // Kiểm tra và chuyển đổi dữ liệu thành mảng nếu cần thiết
-        const rowsDataArray = Array.isArray(rowsData) ? rowsData : Object.values(rowsData);
-
-
-        const redata = rowsDataArray.findIndex(item => item.goodsId === returnOrderData.goodsId);
         console.log("redata:", redata);
         if (redata !== -1) {
-            const updateDataImport = [...rowsDataArray];
-            updateDataImport[redata] = { ...updateDataImport[redata], ...returnOrderData };
+            const updateDataImport = [...rowsData];
 
+
+            // updateDataImport[redata].quantity += returnOrderData.quantity;
+            updateDataImport[redata] = { ...updateDataImport[redata], ...returnOrderData };
 
             setRowsData(updateDataImport);
             toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
             console.log("updateDataImport:", updateDataImport);
         } else {
-            const updateDataExport = [...rowsDataArray, returnOrderData];
+            const updateDataExport = [...rowsData, returnOrderData];
+
             setRowsData(updateDataExport);
         }
     }
-
 
     const updateRowData = (rowUpdate, updateData) => {
         // console.log(updateData);
@@ -129,12 +106,9 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
     }
 
 
-
-
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
     };
-
 
     const deleteRowData = (rowdel) => {
         // Loại bỏ bản ghi tại chỉ số rowdel
@@ -151,18 +125,15 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         ))
     }
 
-
     const getAllSuppliers = async () => {
         let res = await fetchAllSuppliers();
         setTotalSuppliers(res);
     }
 
-
     const handleSupplierClick = (supplier, event) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
     }
-
 
     const handleAddReturntOrder = async () => {
         if (!returnCode.trim()) {
@@ -187,37 +158,18 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                 0
             );
 
-
             if (res.isSuccess == true) {
                 let returnOrderId = await getReturnOrderNewest();
-
-
-                // Kiểm tra và chuyển đổi dữ liệu thành mảng nếu cần thiết
-                const rowsDataArray = Array.isArray(rowsData) ? rowsData : Object.values(rowsData);
-
-
-                if (rowsDataArray && rowsDataArray.length > 0) {
-                    await Promise.all(rowsDataArray.map(async (data) => {
-                        // Kiểm tra và chuyển đổi data thành mảng nếu cần thiết
-                        const dataArray = Array.isArray(data) ? data : [data];
-                        console.log("dataArray:", dataArray);
-                        dataArray.forEach(item => {
-                            createNewReturnOrderDetail(
-                                returnOrderId,
+                if (rowsData && rowsData.length > 0) {
+                    await Promise.all(rowsData.map(async (data) => {
+                        data.forEach(item => {
+                            createNewReturnOrderDetail(returnOrderId,
                                 item.goodsId,
                                 item.quantity,
                                 item.reason,
-                                item.batchCode
-                            );
-                            console.log("item:", item);
-                            console.log("returnOrderId:", returnOrderId,
-                                "item.goodsId:", item.goodsId,
-                                "item.quantity:", item.quantity,
-                                "item.reason:", item.reason,
-                                "item.batchCode:", item.batchCode);
-                        });
+                                item.batchCode);
+                        })
                     }));
-
 
                     toast.success("Thêm lô hàng xuất thành công");
                     updateTable();
@@ -226,8 +178,6 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
             } else {
                 toast.warning("Mã đơn hàng đã tồn tại");
             }
-
-
 
 
         }
@@ -264,8 +214,6 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                 </Modal.Header>
 
 
-
-
                 <Modal.Body>
                     <div className="body-add-new">
                         <Row className="align-items-center">
@@ -284,7 +232,6 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                     <Dropdown.Item eventKey=""
                                         onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
 
-
                                     {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                         <Dropdown.Item
                                             key={`warehouse ${index}`}
@@ -297,14 +244,12 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                 </DropdownButton>
                             </Col>
 
-
                             <Col md={3}>
                                 <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                     <Dropdown style={{}}>
                                         <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                             <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedSupplier !== null ? selectedSupplier : "Chọn nhà cung cấp"}</span>
                                         </Dropdown.Toggle>
-
 
                                         <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} >
                                             {totalSuppliers && totalSuppliers.length > 0 && totalSuppliers.map((s, index) => (
@@ -317,7 +262,6 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                 </div>
                             </Col>
 
-
                             {/* <Col md={2}>
                                 <div className="col-auto ButtonCSSDropdown">
                                     <button
@@ -327,15 +271,11 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                     >
                                         Lí do
 
-
                                     </button>
                                     {note}
                                 </div>
 
-
                             </Col> */}
-
-
 
 
                             <Col md={2} style={{ width: '220px' }}>
@@ -344,7 +284,6 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                         <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                             <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedDelivery !== null ? selectedDelivery : "Bên vận chuyển"}</span>
                                         </Dropdown.Toggle>
-
 
                                         <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
                                             {totalDelivery && totalDelivery.length > 0 && totalDelivery.map((s, index) => (
@@ -357,13 +296,11 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                 </div>
                             </Col>
 
-
                             <Col md={2}>
                                 <div>
                                     <input type="date" className="datepickerCSS" id="datepicker" min={minDate} value={selectedDate} onChange={handleDateChange} />
                                 </div>
                             </Col>
-
 
                             <Col md={3} className="mt-2">
                                 <div className="ButtonCSSDropdown">
@@ -379,10 +316,7 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                             </Col>
 
 
-
-
                         </Row>
-
 
                         <Row style={{ marginTop: '20px' }}>
                             {/* <Col md={2}>
@@ -403,18 +337,13 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                     >
                                         Lí do
 
-
                                     </button>
-
 
                                     <div className={`text-md font-normal text-black ${note ? "block" : "hidden"}`}>{note}</div>
 
-
                                 </div>
 
-
                             </Col> */}
-
 
                             <Col md={7}>
                             </Col>
@@ -422,19 +351,13 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
 
 
 
-
-
-
                         {/* <hr /> */}
-
 
                         <Row style={{ maxHeight: '400px', overflowY: 'auto' }}>
                             {renderReturnData()}
 
-
                         </Row>
                     </div>
-
 
                 </Modal.Body>
                 <Modal.Footer>
@@ -446,29 +369,20 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                 </Modal.Footer>
             </Modal>
 
-
             <ModelAddNote isShow={isShowNote}
                 handleClose={() => setIsShowNote(false)}
                 onChange={(value) => setNote(value)}
             //updateTable={updateTable}
             />
 
-
             <AddRowDataReturnOrderManual isShow={isShowRowDataReturn} selectedStorageId={selectedWarehouseId} selectedSupplierId={selectedSupplierId}
                 onChange={(exportData) => takeRowDataExportOrder(exportData)}
                 handleClose={() => setIsShowRowDataReturn(false)} />
 
 
-
-
         </>
     )
 
-
 };
 
-
 export default ModelAddReturnOrder;
-
-
-

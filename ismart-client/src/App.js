@@ -14,11 +14,8 @@ function App() {
     return (
         <>
             <div className="app">
-
                 <AppRoutes />
-
             </div>
-
             <ToastContainer
                 position="top-right"
                 autoClose={3000}

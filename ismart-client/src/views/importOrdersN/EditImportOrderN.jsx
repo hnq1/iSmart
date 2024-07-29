@@ -194,17 +194,7 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
                         {renderImportData()}
 
                     </Row>
-                    <div className="">
-                        <button
-                            className="btn rounded ButtonRed"
-                            type="button"
-
-                        >
-                            Tổng giá tiền: {formattedAmount(totalPrice)}
-                        </button>
-
-                    </div>
-
+                  
                 </div>
             </Modal.Body>
             <Modal.Footer>
