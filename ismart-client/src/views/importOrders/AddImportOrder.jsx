@@ -118,10 +118,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     }
 
 
-
-
-
-
     const getAllSuppliers = async () => {
         let res = await fetchAllSupplierActive();
         setTotalSuppliers(res);
@@ -144,11 +140,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedDelivery(delivery.deliveryName);
         setSelectedDeliveryId(delivery.deliveyId);
     }
-
-
-
-
-
 
 
 

@@ -181,7 +181,7 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>Sửa lô hàng nhập</Modal.Title>
+                <Modal.Title>Sửa đơn hàng nhập</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
+import { Table, Dropdown, DropdownButton, Col, Row, Badge } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
@@ -455,7 +455,11 @@ function ImportOrderListN() {
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
                                                 <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#2275b7" }}>
-                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã huỷ"}
+                                                    {i.statusType === "On Progress" ?
+                                                        <Badge style={{ backgroundColor: "#0c7a42" }}>Đang tiến hành</Badge> :
+                                                        i.statusType === "Completed" ?
+                                                            <Badge bg="success">Đã hoàn thành</Badge> :
+                                                            <Badge bg="danger">Đã huỷ</Badge>}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle">
@@ -466,20 +470,21 @@ function ImportOrderListN() {
                                                     {(roleId === 1 || roleId === 2) ?
                                                         <i className="fa-solid fa-ban actionButtonCSS" title="Huỷ đơn hàng"
                                                             onClick={() => ShowModalCancelImport(i)}></i> : ''}
-                                                    {(roleId === 1 || roleId === 3) ?
+                                                    {/* {(roleId === 1 || roleId === 3) ?
                                                         <>
                                                             {i.statusType === "Completed" ?
                                                                 <i className="fa-solid fa-barcode actionButtonCSS" title="Mã vạch"
                                                                     onClick={() => ShowBarCode(i)}></i> : ''}
                                                         </>
-                                                        : ''}
+                                                        : ''} */}
                                                 </td>
-                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
-                                                    className="btn btn-success border-left-0 rounded "
+                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ' style={{ right: 0, minWidth: '150px' }}> <button
+                                                    className="btn btn-success "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
+                                                    style={{ backgroundColor: i.statusType === "Completed" ? "#0c7a42" : i.statusType === "On Progress" ? "#2275b7" : "#ea5455", fontWeight: 'bold' }}
                                                     disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}
-                                                >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Nhập hàng"}
+                                                >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Nhập hàng" : "Đã huỷ"}
                                                 </button></td> : ''}
                                             </tr>
                                         ))}

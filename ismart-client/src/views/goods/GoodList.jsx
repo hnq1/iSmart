@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Table, DropdownButton, Col, Row } from 'react-bootstrap';
 import { fetchGoodsWithFilter, fetchAllGoodsInWarehouse } from '~/services/GoodServices';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -19,6 +19,7 @@ import InportGoodsListModal from './inputExport/InPort';
 import ExportGoodsListModal from './inputExport/Export';
 import { TorusGeometry } from 'three';
 import { ReactBarcode } from 'react-jsbarcode';
+import ReactToPrint from 'react-to-print';
 
 
 
@@ -110,7 +111,7 @@ function MyTable() {
         height: 50, // Chiều cao của mã vạch
         displayValue: true // Hiển thị giá trị trên mã vạch
     };
-
+    const barcodeRefs = useRef(Array(listGoods.length).fill(null));
 
     useEffect(() => {
         let res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
@@ -558,7 +559,9 @@ function MyTable() {
                                                 {(() => {
                                                     const barcodeValue = g.barcode && g.barcode.trim() !== "" ? g.barcode : "null"; // Đảm bảo giá trị không trống
                                                     if (barcodeValue !== "null") {
-                                                        return <ReactBarcode value={barcodeValue} options={barcodeOptions} />;
+                                                        return <div ref={(ref) => barcodeRefs.current[index] = ref}>
+                                                            <ReactBarcode value={barcodeValue} options={barcodeOptions} />
+                                                        </div>;
                                                     }
                                                     return null;
                                                 })()}
@@ -568,6 +571,11 @@ function MyTable() {
                                                 (roleId == 1 || roleId == 2) ?
                                                     <td className="align-middle " style={{ padding: '10px' }}>
                                                         <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => showModelEditGood(g)}></i>
+                                                        <ReactToPrint
+                                                            trigger={() => <button variant="primary" className='fa-solid fa-barcode actionButtonCSS'></button>}
+                                                            content={() => barcodeRefs.current[index]}
+                                                        />
+
                                                     </td>
                                                     : ''
                                             }

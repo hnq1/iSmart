@@ -22,7 +22,22 @@ const InventoryInport = () => {
     const [year, setYear] = useState(new Date().getFullYear()); // Thêm state để lưu trữ năm
 
     useEffect(() => {
-        getAllStorages();
+        const fetchInitialData = async () => {
+            const start10Date = getStartDateTenYearsAgo();
+            const end10Date = new Date().toISOString().split('T')[0];
+
+            const storages = await fetchAllStorages();
+            setTotalWarehouse(storages);
+
+            const haiPhongWarehouse = storages.find(warehouse => warehouse.warehouseName === "Hải Phòng");
+            if (haiPhongWarehouse) {
+                setSelectedWarehouseId(haiPhongWarehouse.warehouseId);
+                const data = await fetchInventoryImport(start10Date, end10Date, haiPhongWarehouse.warehouseId);
+                setInventoryData(data);
+            }
+        };
+
+        fetchInitialData();
     }, []);
 
     useEffect(() => {
@@ -59,6 +74,17 @@ const InventoryInport = () => {
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
+
+        const haiPhongWarehouse = res.find(warehouse => warehouse.warehouseName === "Hải Phòng");
+        if (haiPhongWarehouse) {
+            setSelectedWarehouseId(haiPhongWarehouse.warehouseId);
+        }
+    }
+
+    const getStartDateTenYearsAgo = () => {
+        const today = new Date();
+        const tenYearsAgo = new Date(today.setFullYear(today.getFullYear() - 10));
+        return tenYearsAgo.toISOString().split('T')[0];
     }
 
     const handleStorageClickTotal = () => {
@@ -157,12 +183,12 @@ const InventoryInport = () => {
                                     <Col md={2}>
                                         <DropdownButton
                                             className="DropdownButtonCSS ButtonCSSDropdown"
-                                            title={selectedWarehouse ? selectedWarehouse : "Tất cả Kho"}
+                                            title={selectedWarehouse ? selectedWarehouse : "Hải Phòng"}
                                             variant="success"
                                             style={{ zIndex: 999 }}
                                         >
-                                            <Dropdown.Item eventKey=""
-                                                onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+                                            {/* <Dropdown.Item eventKey=""
+                                                onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item> */}
 
                                             {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                                 <Dropdown.Item
