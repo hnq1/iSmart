@@ -15,7 +15,7 @@ namespace iSmart.Service
     public interface IInventoryCheckService
     {
         CreateInventoryCheckResponse CreateInventoryCheck(CreateInventoryCheckDTO inventoryCheck);
-        Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync();
+        Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync(int? warehouseId);
         Task<ResponseInventoryCheckDTO> GetInventoryCheckByIdAsync(int id);
         Task UpdateBatchQuantitiesAsync(Dictionary<string, int> batchQuantities);
     }
@@ -36,6 +36,7 @@ namespace iSmart.Service
                 {
                     WarehouseId = inventoryCheckDTO.WarehouseId,
                     CheckDate = inventoryCheckDTO.CheckDate,
+                    StatusId = 3
                 };
                 _context.InventoryChecks.Add(inventoryCheck);
                 _context.SaveChanges();
@@ -68,21 +69,31 @@ namespace iSmart.Service
             }
         }
 
-        public async Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync()
+        public async Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync(int? warehouseId)
         {
             try
             {
-                return await _context.InventoryChecks
+                var query = _context.InventoryChecks.AsQueryable();
+
+                if (warehouseId.HasValue)
+                {
+                    query = query.Where(ic => ic.WarehouseId == warehouseId.Value);
+                }
+
+                return await query
                     .Select(ic => new CreateInventoryCheckDTO
                     {
                         WarehouseId = ic.WarehouseId,
                         CheckDate = ic.CheckDate,
+                        status = ic.StatusId == 3 ? "On Progress" :
+                         ic.StatusId == 4 ? "Completed" : "Cancel",
                         InventoryCheckDetails = ic.InventoryCheckDetails.Select(d => new InventoryCheckDetailDTO
                         {
                             GoodCode = _context.Goods.FirstOrDefault(g => g.GoodsId == d.GoodId).GoodsCode,
                             ExpectedQuantity = d.ExpectedQuantity,
                             ActualQuantity = d.ActualQuantity,
-                            Note = d.note
+                            Note = d.note,
+                            
                         }).ToList()
                     })
                     .ToListAsync();
@@ -92,6 +103,7 @@ namespace iSmart.Service
                 throw new ApplicationException("An error occurred while fetching inventory checks.", ex);
             }
         }
+
 
         public async Task<ResponseInventoryCheckDTO> GetInventoryCheckByIdAsync(int id)
         {

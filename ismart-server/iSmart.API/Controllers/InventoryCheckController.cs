@@ -37,11 +37,11 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-all-inventory-checks")]
-        public async Task<ActionResult<List<CreateInventoryCheckDTO>>> GetAllInventoryChecksAsync()
+        public async Task<ActionResult<List<CreateInventoryCheckDTO>>> GetAllInventoryChecksAsync(int? warehouseId)
         {
             try
             {
-                var inventoryChecks = await _inventoryCheckService.GetAllInventoryChecksAsync();
+                var inventoryChecks = await _inventoryCheckService.GetAllInventoryChecksAsync(warehouseId);
                 return Ok(inventoryChecks);
             }
             catch (Exception ex)
@@ -67,6 +67,23 @@ namespace iSmart.API.Controllers
                 return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
             }
         }
+
+        [HttpPost("cancel-inventory-check")]
+        public async Task<IActionResult> CancelInventoryCheck(int id)
+        {
+            var result = _context.InventoryChecks.FirstOrDefault(i => i.Id == id);
+            if (result != null && result.StatusId == 3)
+            {
+                result.StatusId = 5;
+                result.CheckDate = DateTime.Now;
+                _context.InventoryChecks.Update(result);
+                await _context.SaveChangesAsync();
+                return Ok("thành công");
+            }
+            else return BadRequest("Không tồn tại");
+
+        }
+    
 
         [HttpPost("update-batch-quantities")]
         public async Task<ActionResult> UpdateBatchQuantitiesAsync([FromBody] Dictionary<string, int> batchQuantities)
