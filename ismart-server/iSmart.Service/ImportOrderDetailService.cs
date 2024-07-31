@@ -228,21 +228,6 @@ namespace iSmart.Service
 
                 if (existingOrderDetail != null)
                 {
-<<<<<<< HEAD
-                    DetailId = detail.DetailId,
-                    ImportId = detail.ImportId,
-                    GoodsId = (int)detail.GoodsId,
-                    Quantity = (int)detail.Quantity,
-                    ActualQuantity = (int)detail.Quantity,
-                    CostPrice = detail.CostPrice,
-                    BatchCode = detail.BatchCode,
-                    ExpiryDate = detail.ExpiryDate,
-                    ManufactureDate = detail.ManufactureDate,
-                };
-                _context.Update(requestOrder);
-                _context.SaveChanges();
-                return new UpdateImportOrderDetailResponse { IsSuccess = true, Message = "Update order detail complete" };
-=======
                     // Cập nhật các trường thông tin
                     existingOrderDetail.Quantity = (int)detail.Quantity;
                     existingOrderDetail.ActualQuantity = (int)detail.Quantity;
@@ -259,7 +244,6 @@ namespace iSmart.Service
                 {
                     return new UpdateImportOrderDetailResponse { IsSuccess = false, Message = "Order detail not found" };
                 }
->>>>>>> origin/anhddhe170353
             }
             catch (Exception e)
             {

@@ -82,15 +82,12 @@ namespace iSmart.Entity.Models
                 .WithMany(w => w.InventoryChecks)
                 .HasForeignKey(ic => ic.WarehouseId);
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity<InventoryCheck>().HasOne(d => d.Status)
                     .WithMany(p => p.InventoryChecks)
                     .HasForeignKey(d => d.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_InventoryCheck_Status");
 
->>>>>>> origin/anhddhe170353
             modelBuilder.Entity<InventoryCheckDetail>()
                 .HasOne(icd => icd.InventoryCheck)
                 .WithMany(ic => ic.InventoryCheckDetails)

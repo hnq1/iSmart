@@ -10,13 +10,6 @@ namespace iSmart.Entity.Models
     {
         public int Id { get; set; }
         public int WarehouseId { get; set; }
-<<<<<<< HEAD
-        public DateTime CheckDate { get; set; }
-
-        // Navigation property
-        public Warehouse Warehouse { get; set; }
-        public ICollection<InventoryCheckDetail> InventoryCheckDetails { get; set; }
-=======
         public int StatusId { get; set; }
         public DateTime CheckDate { get; set; }
 
@@ -24,6 +17,5 @@ namespace iSmart.Entity.Models
         public virtual Status Status { get; set; }
         public virtual Warehouse Warehouse { get; set; }
         public virtual ICollection<InventoryCheckDetail> InventoryCheckDetails { get; set; }
->>>>>>> origin/anhddhe170353
     }
 }
