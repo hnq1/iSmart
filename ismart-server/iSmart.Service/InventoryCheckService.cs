@@ -15,11 +15,11 @@ namespace iSmart.Service
     public interface IInventoryCheckService
     {
         CreateInventoryCheckResponse CreateInventoryCheck(CreateInventoryCheckDTO inventoryCheck);
-<<<<<<< HEAD
+
         Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync();
-=======
+
         Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync(int? warehouseId);
->>>>>>> bf24d5b7e79b359d3851ca248b0f64624a58b629
+
         Task<ResponseInventoryCheckDTO> GetInventoryCheckByIdAsync(int id);
         Task UpdateBatchQuantitiesAsync(Dictionary<string, int> batchQuantities);
     }
@@ -40,10 +40,10 @@ namespace iSmart.Service
                 {
                     WarehouseId = inventoryCheckDTO.WarehouseId,
                     CheckDate = inventoryCheckDTO.CheckDate,
-<<<<<<< HEAD
-=======
+
+
                     StatusId = 3
->>>>>>> bf24d5b7e79b359d3851ca248b0f64624a58b629
+
                 };
                 _context.InventoryChecks.Add(inventoryCheck);
                 _context.SaveChanges();
