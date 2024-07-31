@@ -8,6 +8,7 @@ import { formatDate } from "date-fns";
 const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const [goodsId, setGoodsId] = useState();
     const [goodsCode, setGoodsCode] = useState();
+    const [detailId, setDetailId] = useState();
     const [quantity, setQuantity] = useState();
     const [costPrice, setCostPrice] = useState();
     const [expiryDate, setExpiryDate] = useState();
@@ -21,6 +22,7 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     useEffect(() => {
         setBatchCode(data.batchCode);
         setCostPrice(data.costPrice);
+        setDetailId(data.detailId);
         setExpiryDate(data.expiryDate);
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
@@ -67,6 +69,7 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const handleReset = () => {
         setBatchCode(data.batchCode);
         setCostPrice(data.costPrice);
+        setDetailId(data.detailId);
         setExpiryDate(data.expiryDate);
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
@@ -90,6 +93,7 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
                 // ...data,
                 batchCode: batchCode,
                 costPrice: 0,
+                detailId: detailId,
                 expiryDate: expiryDate,
                 goodsCode: goodsCode,
                 goodsId: goodsId,

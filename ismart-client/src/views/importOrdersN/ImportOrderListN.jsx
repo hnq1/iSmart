@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
+import { Table, Dropdown, DropdownButton, Col, Row, Badge } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
@@ -150,7 +150,7 @@ function ImportOrderListN() {
             let wh = await getUserIdWarehouse(userId);
             setcurrentPage(page - 1);
             let res = await fetchImportOrdersWithfilter(pageSize, page, wh[0].warehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-            
+
             setTotalImportOrder(res.data);
             setTotalPages(res.totalPages);
         }
@@ -405,7 +405,7 @@ function ImportOrderListN() {
                                         <th className="align-middle  text-nowrap position-sticky" style={{ left: 0 }}>STT</th>
                                         <th className="align-middle  text-nowrap">Mã<br />đơn hàng</th>
                                         <th className="align-middle  text-nowrap">Người <br />tạo đơn hàng</th>
-                                        <th className="align-middle  text-nowrap">Nhà <br />cung cấp</th>
+                                        {/* <th className="align-middle  text-nowrap">Nhà <br />cung cấp</th> */}
                                         {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />nhập hàng</th>
@@ -417,14 +417,15 @@ function ImportOrderListN() {
 
 
                                         <th className="align-middle  text-nowrap">Người <br />xác nhận</th>
-                                        <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
-                                        {( roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
-                                        {(roleId === 2 ) ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
-                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
-                                        {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
+                                        {/* <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
+                                         {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
+                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
+                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Chỉnh sửa<br />đơn hàng</th> : ''}
+                                        {(roleId === 1 || roleId === 2) ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
 
 
-                                        {roleId === 3 ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''}
+                                        {(roleId === 1 || roleId === 3) ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''} */}
+                                        <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Tuỳ chọn</th>
                                         {(roleId === 1 || roleId === 2) ?
                                             <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>
                                             : ''}
@@ -443,7 +444,7 @@ function ImportOrderListN() {
                                                 <td className="align-middle position-sticky" style={{ left: 0 }}>{index + 1}</td>
                                                 <td className="align-middle">{i.importCode}</td>
                                                 <td className="align-middle">{i.userName}</td>
-                                                <td className="align-middle">{i.supplierName}</td>
+                                                {/* <td className="align-middle">{i.supplierName}</td> */}
                                                 {/* <td className="align-middle">{formattedAmount(i.totalCost)}</td> */}
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{formatDate(i.importedDate)}</td>
@@ -453,32 +454,37 @@ function ImportOrderListN() {
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
-                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
-                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã huỷ"}
+                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#2275b7" }}>
+                                                    {i.statusType === "On Progress" ?
+                                                        <Badge style={{ backgroundColor: "#0c7a42" }}>Đang tiến hành</Badge> :
+                                                        i.statusType === "Completed" ?
+                                                            <Badge bg="success">Đã hoàn thành</Badge> :
+                                                            <Badge bg="danger">Đã huỷ</Badge>}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
-                                                <td className="align-middle " style={{ padding: '10px' }}>
-
-
-                                                    <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
+                                                <td className="align-middle">
+                                                    <i className="fa-solid fa-circle-info actionButtonCSS" title="Chi tiết" onClick={() => ShowDetailOrder(i)}></i>
+                                                    {(roleId === 1 || roleId === 2) ?
+                                                        <i className="fa-solid fa-pen-to-square actionButtonCSS" title="Chỉnh sửa" onClick={() => EditDetailOrder(i)}></i>
+                                                        : ''}
+                                                    {(roleId === 1 || roleId === 2) ?
+                                                        <i className="fa-solid fa-ban actionButtonCSS" title="Huỷ đơn hàng"
+                                                            onClick={() => ShowModalCancelImport(i)}></i> : ''}
+                                                    {/* {(roleId === 1 || roleId === 3) ?
+                                                        <>
+                                                            {i.statusType === "Completed" ?
+                                                                <i className="fa-solid fa-barcode actionButtonCSS" title="Mã vạch"
+                                                                    onClick={() => ShowBarCode(i)}></i> : ''}
+                                                        </>
+                                                        : ''} */}
                                                 </td>
-                                                {roleId === 2 ? <td className="align-middle " style={{ padding: '10px' }}>
-
-
-                                                    <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => EditDetailOrder(i)}></i>
-                                                </td> : ''}
-
-
-                                                {roleId === 2 ? <td className="align-middle"> <i className="fa-solid fa-ban actionButtonCSS" onClick={() => ShowModalCancelImport(i)}></i></td> : ''}
-                                                {roleId === 3 ? <td className="align-middle"> {i.statusType === "Completed" ? <i className="fa-solid fa-barcode actionButtonCSS" onClick={() => ShowBarCode(i)}></i> : ''}</td> : ''}
-
-
-                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
-                                                    className="btn btn-success border-left-0 rounded "
+                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ' style={{ right: 0, minWidth: '150px' }}> <button
+                                                    className="btn btn-success "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
+                                                    style={{ backgroundColor: i.statusType === "Completed" ? "#0c7a42" : i.statusType === "On Progress" ? "#2275b7" : "#ea5455", fontWeight: 'bold' }}
                                                     disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}
-                                                >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Tiến hành nhập hàng" : "Nhập hàng"}
+                                                >{i.statusType === "Completed" ? "Đã nhập hàng" : i.statusType === "On Progress" ? "Nhập hàng" : "Đã huỷ"}
                                                 </button></td> : ''}
                                             </tr>
                                         ))}

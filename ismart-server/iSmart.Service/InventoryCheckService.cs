@@ -15,7 +15,11 @@ namespace iSmart.Service
     public interface IInventoryCheckService
     {
         CreateInventoryCheckResponse CreateInventoryCheck(CreateInventoryCheckDTO inventoryCheck);
+<<<<<<< HEAD
         Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync();
+=======
+        Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync(int? warehouseId);
+>>>>>>> bf24d5b7e79b359d3851ca248b0f64624a58b629
         Task<ResponseInventoryCheckDTO> GetInventoryCheckByIdAsync(int id);
         Task UpdateBatchQuantitiesAsync(Dictionary<string, int> batchQuantities);
     }
@@ -36,6 +40,10 @@ namespace iSmart.Service
                 {
                     WarehouseId = inventoryCheckDTO.WarehouseId,
                     CheckDate = inventoryCheckDTO.CheckDate,
+<<<<<<< HEAD
+=======
+                    StatusId = 3
+>>>>>>> bf24d5b7e79b359d3851ca248b0f64624a58b629
                 };
                 _context.InventoryChecks.Add(inventoryCheck);
                 _context.SaveChanges();
@@ -68,21 +76,46 @@ namespace iSmart.Service
             }
         }
 
+<<<<<<< HEAD
         public async Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync()
         {
             try
             {
                 return await _context.InventoryChecks
+=======
+        public async Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync(int? warehouseId)
+        {
+            try
+            {
+                var query = _context.InventoryChecks.AsQueryable();
+
+                if (warehouseId.HasValue)
+                {
+                    query = query.Where(ic => ic.WarehouseId == warehouseId.Value);
+                }
+
+                return await query
+>>>>>>> bf24d5b7e79b359d3851ca248b0f64624a58b629
                     .Select(ic => new CreateInventoryCheckDTO
                     {
                         WarehouseId = ic.WarehouseId,
                         CheckDate = ic.CheckDate,
+<<<<<<< HEAD
+=======
+                        status = ic.StatusId == 3 ? "On Progress" :
+                         ic.StatusId == 4 ? "Completed" : "Cancel",
+>>>>>>> bf24d5b7e79b359d3851ca248b0f64624a58b629
                         InventoryCheckDetails = ic.InventoryCheckDetails.Select(d => new InventoryCheckDetailDTO
                         {
                             GoodCode = _context.Goods.FirstOrDefault(g => g.GoodsId == d.GoodId).GoodsCode,
                             ExpectedQuantity = d.ExpectedQuantity,
                             ActualQuantity = d.ActualQuantity,
+<<<<<<< HEAD
                             Note = d.note
+=======
+                            Note = d.note,
+                            
+>>>>>>> bf24d5b7e79b359d3851ca248b0f64624a58b629
                         }).ToList()
                     })
                     .ToListAsync();
@@ -93,6 +126,10 @@ namespace iSmart.Service
             }
         }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bf24d5b7e79b359d3851ca248b0f64624a58b629
         public async Task<ResponseInventoryCheckDTO> GetInventoryCheckByIdAsync(int id)
         {
                 var inventoryCheck = await _context.InventoryChecks.Include(i => i.Warehouse).ThenInclude(i => i.UserWarehouses).ThenInclude(i => i.User).ThenInclude(I => I.Role)

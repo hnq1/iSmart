@@ -7,11 +7,20 @@ import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
 import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
 
+
+
+
 const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
+
+
+
     const [quantityInStock, setQuantityInStock] = useState(0);
+
+
+
 
     const [totalGoods, setTotalGoods] = useState([]);
     const [selectedGoodCode, setSelectedGoodCode] = useState(null);
@@ -20,6 +29,9 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     const [selectedMethod, setSelectedMethod] = useState('');
     const [selectImportOrderDetailId, setSelectImportOrderDetailId] = useState(null);
     const [inputQuantities, setInputQuantities] = useState({});
+
+
+
 
     const [isManualClick, setIsManualClick] = useState(false); // theo dõi chọn phương thức xuất kho
     useEffect(() => {
@@ -31,7 +43,6 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
         setDataMethod();
     }, [selectedMethod])
 
-
     const getAllGoods = async () => {
         if (selectedStorageId !== null) {
             let res = await fetchAllGoodsInWarehouse(selectedStorageId);
@@ -39,6 +50,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             setTotalGoods(res);
         }
     }
+
 
     const handleGoodClick = async (good, event) => {
         setSelectedGoodCode(good.goodsCode);
@@ -55,52 +67,74 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
 
     const handleManualClick = async () => {
-        setIsManualClick(true);
+        if (!selectedGoodCode) {
+            toast.warning("Vui lòng chọn sản phẩm");
+        }
+        else {
+            setIsManualClick(true);
 
-        let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
-        if (m.length === 0) {
-            // Nếu không có lô hàng nào, hiển thị thông báo
-            toast.warning("Không có lô hàng nào");
-        } else {
-            setDataMethod(m);
-            const importOrderDetailIds = m.map(item => item.importOrderDetailId);
-            setSelectImportOrderDetailId(importOrderDetailIds);
+
+            let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
+            if (m.length === 0) {
+                // Nếu không có lô hàng nào, hiển thị thông báo
+                toast.warning("Không có lô hàng nào");
+            } else {
+                setDataMethod(m);
+                // const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+
+                const importOrderDetailIds = m.map(item => ({
+                    importOrderDetailId: item.importOrderDetailId,
+                    batchCode: item.batchCode
+                  }));
+
+                setSelectImportOrderDetailId(importOrderDetailIds);
+
+
+                const initialInputQuantities = {};
+                importOrderDetailIds.forEach((data, index) => {
+                    initialInputQuantities[index] = {
+                        quantity: 1,
+                        importOrderDetailId: data.importOrderDetailId,
+                        batchCode: data.batchCode
+                    };
+                });
+                setInputQuantities(initialInputQuantities);
+            }
         }
     }
     const handleInputQuantityChange = (index, value) => {
-        // Lấy ra importOrderDetailId tương ứng với index của input
-        const importOrderDetailId = selectImportOrderDetailId[index];
+        const importOrderDetailId = selectImportOrderDetailId[index].importOrderDetailId;
+        const batchCode = selectImportOrderDetailId[index].batchCode;
         // console.log("importOrderDetailId: ", importOrderDetailId);
         // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
         const newInputQuantities = {
             ...inputQuantities,
             [index]: {
                 quantity: Number(value),
-                importOrderDetailId: importOrderDetailId
+                importOrderDetailId: importOrderDetailId,
+                batchCode: batchCode
             }
         };
         setInputQuantities(newInputQuantities);
         console.log("newInputQuantities: ", newInputQuantities);
-        // Tính toán lại tổng số lượng từ các giá trị mới
-        // const newTotalQuantity = Object.values(newInputQuantities).reduce((acc, curr) => acc + curr.quantity, 0);
-        // setQuantity(newInputQuantities);
-        // console.log("newTotalQuantity: ", newInputQuantities.quantity);
     }
-
 
 
     // mới
     const handleConfirmRowData = () => {
-        if (!isManualClick) {
+
+
+        if (!selectedGoodCode) {
+            toast.warning("Vui lòng chọn sản phẩm");
+        } else if (!isManualClick) {
             toast.warning("Vui lòng chọn phương thức xuất kho");
         }
-        else if (!selectedGoodCode) {
-            toast.warning("Vui lòng chọn sản phẩm");
-        } else {
+        else {
             // Tạo mảng từ inputQuantities để gửi đi
             const inputQuantitiesArray = Object.keys(inputQuantities).map(key => ({
                 importOrderDetailId: inputQuantities[key].importOrderDetailId,
-                quantity: inputQuantities[key].quantity
+                quantity: inputQuantities[key].quantity,
+                batchCode: inputQuantities[key].batchCode
             }));
 
             // Tạo mảng mới với thông tin sản phẩm cho mỗi importOrderDetailId
@@ -110,7 +144,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                 goodsCode: selectedGoodCode,
                 quantity: item.quantity,
                 importOrderDetailId: item.importOrderDetailId,
-                totalOneGoodPrice: 0
+                batchCode: item.batchCode
 
             }));
 
@@ -174,6 +208,9 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                     </div>
                 </Col>
 
+
+
+
                 <Col md={3}>
                     <div className="form-group mb-3">
                         <label>Phương thức xuất kho</label>
@@ -185,13 +222,21 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                                 <span style={{ color: 'white' }}>{"Chọn lô hàng"}</span>
                             </Dropdown.Toggle>
                         </Dropdown>
-
                     </div>
                 </Col>
 
 
+
+
+
+
+
+
             </Row >
                 <Row style={{ marginTop: "20px" }}>
+
+
+
 
                     <Col md={2}>
                         <div className="form-group mb-3">
@@ -199,6 +244,9 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                             <input type="number" className="form-control inputCSS" value={quantityInStock} disabled />
                         </div>
                     </Col>
+
+
+
 
                     {/* <Col md={2}>
                         <div className="form-group mb-3">
@@ -235,7 +283,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                                     min={1}
                                     max={d.quantity}
                                     className="form-control"
-                                    value={inputQuantities[index]?.quantity || '0'}
+                                    value={inputQuantities[index]?.quantity || 1}
                                     onChange={(e) => handleInputQuantityChange(index, e.target.value)}
                                 />
                             </td>
@@ -252,4 +300,18 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     )
 }
 
+
+
+
 export default AddRowDataExportOrderManual
+
+
+
+
+
+
+
+
+
+
+

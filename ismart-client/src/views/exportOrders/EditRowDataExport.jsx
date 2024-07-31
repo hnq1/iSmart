@@ -33,9 +33,10 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
     const handleEditRowData = () => {
         if (quantity <= 0) {
             toast.warning("Số lượng phải lớn hơn 0");
-        } else if (costPrice <= 0) {
-            toast.warning("Giá tiền phải lớn hơn 0");
-        }
+        } 
+        // else if (costPrice <= 0) {
+        //     toast.warning("Giá tiền phải lớn hơn 0");
+        // }
         else {
             dataAfterEdit({ quantity: quantity, costPrice: costPrice });
             handleClose();
@@ -64,20 +65,7 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                         <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                     </div>
                 </Col>
-                {/* <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Giá tiền</label>
-                        <input type="number" className="form-control inputCSS" value={costPrice} onChange={handleChangePrice} />
-                    </div>
-                </Col> */}
-
-                {/* <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Tổng giá tiền</label>
-                        <input type="text" className="form-control" value={data.totalOneGoodPrice} disabled />
-                    </div>
-                </Col> */}
-
+               
 
 
             </Row>

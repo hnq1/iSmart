@@ -118,10 +118,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
     }
 
 
-
-
-
-
     const getAllSuppliers = async () => {
         let res = await fetchAllSupplierActive();
         setTotalSuppliers(res);
@@ -144,11 +140,6 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedDelivery(delivery.deliveryName);
         setSelectedDeliveryId(delivery.deliveyId);
     }
-
-
-
-
-
 
 
 
@@ -214,7 +205,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             // Nếu sản phẩm chưa tồn tại, thêm vào danh sách và cập nhật tổng chi phí
             const updateDataImport = [...rowsData, importData];
             setRowsData(updateDataImport);
-            setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice);
+            // setTotalCost(prevTotalCost => prevTotalCost + importData.totalOneGoodPrice);
         }
     }
 
@@ -532,18 +523,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
 
                     </Row>
-                    {/* <div className="">
-                        <button
-                            className="btn rounded ButtonRed"
-                            type="button"
-
-
-                        >
-                            Tổng giá tiền: {formattedAmount(totalCost)}
-                        </button>
-
-
-                    </div> */}
+                  
 
 
                 </div>

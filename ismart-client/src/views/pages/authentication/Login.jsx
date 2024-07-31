@@ -1,7 +1,7 @@
 import logo from '../../../assets/images/logo.png';
 import shape from '../../../assets/images/Shape.png';
 import GlobalStyles from '~/components/GlobalStyles';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,145 +9,107 @@ import { UserContext } from '../../../context/UserContext';
 import { loginApi } from '~/services/LoginServices';
 import { Link } from 'react-router-dom';
 
-
-
 const Login = () => {
     const navigate = useNavigate();
     const { loginContext } = useContext(UserContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showWarning, setShowWarning] = useState(false);
-
+    const [show, setShow] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         let token = localStorage.getItem('token');
         if (token) {
-            navigate('/dang-nhap');
+            navigate('/thong-ke');
         }
-    });
-    const handleLogin = async () => {
+    }, [navigate]);
 
+    const handleLogin = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        await delay(500);
         if (!username || !password) {
             toast.error('Vui lòng nhập tài khoản và mật khẩu');
+            setLoading(false);
             return;
         }
-        let res = await loginApi(username, password);
-
         try {
+            let res = await loginApi(username, password);
             if (res && res.status === 400) {
-
-                setShowWarning(true);
-                toast.error('Bạn không có quyền truy cập vào đây');
-
+                toast.error('Sai tên tài khoản hoặc mật khẩu!');
             } else if (res.token) {
-                setShowWarning(false);
                 loginContext(username, res.token.accessToken, res.userId, res.roleId);
                 if (res.roleId === 1 || res.roleId === 2 || res.roleId === 4) {
                     navigate("/thong-ke");
                 } else if (res.roleId === 3) {
                     navigate("/cac-lo-hang-nhap-ngoai");
                 }
-            }
-            else {
-                return (
-                    <div>
-                        {showWarning && (
-                            <p className="warning d-flex align-items-center justify-content-center">
-                                Sai tên tài khoản hoặc mật khẩu!
-                            </p>
-                        )}
-                        {/* Phần còn lại của form đăng nhập */}
-                        <button onClick={handleLogin}>Đăng nhập</button>
-                    </div>
-                );
+                setLoading(false);
+            } else {
+                toast.error('Sai tên tài khoản hoặc mật khẩu!');
+                setLoading(false);
             }
         } catch (error) {
-            setShowWarning(true);
-            console.error('Login error:', error);
             toast.error('Đã xảy ra lỗi, vui lòng thử lại sau.');
+            setLoading(false);
         }
+        setLoading(false);
     }
 
-
+    function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
 
     return (
-
-
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="sign-in__wrapper">
+            <div className="sign-in__backdrop"></div>
+            <Form className="shadow p-4 bg-white rounded" onSubmit={handleLogin}>
                 <img
-                    className="mx-auto h-10 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                    alt="Your Company"
+                    className=" mx-auto d-block mb-2"
+                    src={logo}
+                    alt="logo"
+                    width={200}
                 />
-                <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                    Sign in to your account
-                </h2>
-            </div>
-
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="space-y-6" action="#" method="POST">
-                    <div>
-                        <label htmlFor="UserName" className="block text-sm font-medium leading-6 text-gray-900">
-                            UserName
-                        </label>
-                        <div className="mt-2">
-                            <input
-                                id="UserName"
-                                name="UserName"
-                                style={{ paddingLeft: '10px' }}
-                                type="text"
-                                autoComplete="UserName"
-                                required
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                onChange={(event) => setUsername(event.target.value)}
-                            />
+                <div className="h4 mb-2 text-center" style={{ color: '#2275b7 ' }}>Đăng nhập</div>
+                <Form.Group className="mb-2" controlId="username">
+                    <Form.Label style={{ color: '#2275b7 ' }}>Tên tài khoản</Form.Label>
+                    <Form.Control
+                        className='inputCSS'
+                        type="text"
+                        placeholder="Tên tài khoản"
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </Form.Group>
+                <Form.Group className="mb-2" controlId="password">
+                    <Form.Label style={{ color: '#2275b7 ' }}>Mật khẩu</Form.Label>
+                    <Form.Control
+                        className='inputCSS'
+                        type="password"
+                        placeholder="Mật khẩu"
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </Form.Group>
+                <br />
+                {!loading ? (
+                    <Button className="w-100 ButtonCSS" variant="primary" type="submit">
+                        Đăng nhập
+                    </Button>
+                ) : (
+                    <Button className="w-100 ButtonCSS" variant="primary" type="submit" disabled>
+                        <div className="spinner-border" role="status">
                         </div>
-                    </div>
-
-                    <div>
-                        <div className="flex items-center justify-between">
-                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                                Password
-                            </label>
-                            <div className="text-sm">
-                                <a href="/quen-mat-khau" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                    Forgot password?
-                                </a>
-                            </div>
-                        </div>
-                        <div className="mt-2">
-                            <input
-                                id="password"
-                                name="password"
-                                style={{ paddingLeft: '10px' }}
-                                type="password"
-                                autoComplete="current-password"
-                                required
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                onChange={(event) => setPassword(event.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <button
-                            type="button"
-                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            onClick={() => handleLogin()}
-                        >
-                            Sign in
-                        </button>
-                    </div>
-                    {showWarning && <div>Login failed</div>}
-                </form>
-
-            </div>
+                    </Button>
+                )}
+                <div className="d-grid justify-content-end">
+                    <a href="/quen-mat-khau" className="text-muted px-0">
+                        Forgot password?
+                    </a>
+                </div>
+            </Form>
         </div>
-
-
-
-
     );
 };
 

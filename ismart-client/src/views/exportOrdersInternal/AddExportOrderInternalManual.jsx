@@ -219,7 +219,10 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
             toast.warning("Vui lòng nhập ngày xuất hàng");
             // } else if (totalPrice === 0) {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
-        } else if (!selectedDelivery) {
+        }  else if (rowsData.length === 0) {
+            toast.warning("Hãy thêm lô hàng");
+        }  
+        else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
@@ -287,7 +290,7 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>Thêm lô hàng xuất</Modal.Title>
+                <Modal.Title>Thêm lô hàng xuất nội bộ thủ công</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
@@ -431,16 +434,7 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
             </Modal.Body>
 
             <Modal.Footer>
-                {/* <div className=" ">
-                    <button
-                        className="btn  border-left-0 rounded ButtonRed"
-                        type="button"
-
-                    >
-                        Tổng giá tiền: {formattedAmount(totalPrice)}
-                    </button>
-
-                </div> */}
+               
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
                 </Button>

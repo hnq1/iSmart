@@ -248,7 +248,7 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>Thêm lô hàng xuất</Modal.Title>
+                <Modal.Title>Thêm lô hàng xuất tự động</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
@@ -373,16 +373,7 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
             </Modal.Body>
 
             <Modal.Footer>
-                {/* <div className=" ">
-                    <button
-                        className="btn  border-left-0 rounded ButtonRed"
-                        type="button"
-
-                    >
-                        Tổng giá tiền: {formattedAmount(totalPrice)}
-                    </button>
-
-                </div> */}
+               
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
                 </Button>

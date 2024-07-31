@@ -8,29 +8,33 @@ const RowDataExportOrderManual = ({ data, index, deleteRowData, updateRowData })
 
     const [goodsId, setGoodsId] = useState();
     const [goodsCode, setGoodsCode] = useState();
+    const [importOrderDetailId, setImportOrderDetail] = useState();
+    const [batchCode, setBatchCode] = useState();
     const [quantity, setQuantity] = useState();
     const [costPrice, setCostPrice] = useState();
 
     useEffect(() => {
-        // Tính tổng số lượng
-        const totalQuantity = data.reduce((total, item) => total + item.quantity, 0);
 
-        // Thiết lập tổng số lượng
-        setQuantity(totalQuantity);
-        data.forEach(item => {
+        // // Tính tổng số lượng
+        // const totalQuantity = data.reduce((total, item) => total + item.quantity, 0);
 
-            console.log("item: ", item);
-            setGoodsCode(item.goodsCode);
-            setGoodsId(item.goodsId);
-            setCostPrice(item.costPrice);
+        // // Thiết lập tổng số lượng
+        // setQuantity(totalQuantity);
 
 
-        });
+        console.log("item: ", data);
+        setGoodsCode(data.goodsCode);
+        setGoodsId(data.goodsId);
+        setImportOrderDetail(data.importOrderDetailId);
+        setCostPrice(data.costPrice);
+        setQuantity(data.quantity);
+        setBatchCode(data.batchCode);
 
 
 
 
-        // console.log("dataRowDataExportOrder: ", data[0].goodsId);
+
+
     }, [data])
 
     const handleEditRowData = () => {
@@ -51,6 +55,13 @@ const RowDataExportOrderManual = ({ data, index, deleteRowData, updateRowData })
 
     return (<><Row>
 
+<Col md={3}>
+            <div className="form-group mb-3">
+                <label >Mã lô hàng</label>
+                <input type="text" className="form-control" defaultValue={batchCode} disabled />
+            </div>
+        </Col>
+
         <Col md={3}>
             <div className="form-group mb-3">
                 <label >Mã Sản phẩm</label>
@@ -64,19 +75,7 @@ const RowDataExportOrderManual = ({ data, index, deleteRowData, updateRowData })
                 <input type="number" className="form-control" defaultValue={quantity} disabled />
             </div>
         </Col>
-        {/* <Col md={2}>
-            <div className="form-group mb-3">
-                <label >Giá tiền</label>
-                <input type="number" className="form-control" defaultValue={costPrice} disabled />
-            </div>
-        </Col> */}
 
-        {/* <Col md={2}>
-            <div className="form-group mb-3">
-                <label >Tổng giá tiền</label>
-                <input type="text" className="form-control" defaultValue={data.totalOneGoodPrice} disabled />
-            </div>
-        </Col> */}
 
         <Col md={1}>
             <div className="form-group mb-3 ButtonCSSDropdown">

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { fetchExportOrdersWithFilter } from "~/services/ExportOrderService";
 import { formatDate, formattedAmount } from '~/validate';
 import ReactPaginate from 'react-paginate';
-import { Table, Form, Modal, Button } from 'react-bootstrap';
+import { Table, Form, Modal, Button, Badge } from 'react-bootstrap';
 import ModelAddExportOrderInternalAuto from "./AddExportOrderInternalAuto";
 import ModelAddExportOrderInternalManual from "./AddExportOrderInternalManual";
 import ConfirmExportOrderInternal from "./ConfirmExportOrderInternal";
@@ -15,7 +15,7 @@ import { fetchAllStorages } from '~/services/StorageServices';
 import { fetchUserByUserId } from "~/services/UserServices";
 import { Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
 import { toast } from "react-toastify";
-
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 
 import { format } from 'date-fns';
 
@@ -139,17 +139,34 @@ const ExportOrderListInternal = () => {
 
 
     const getExportOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
-        setcurrentPage(page - 1);
-        let res = await fetchExportOrdersWithFilter(
-            pageSize, page, selectedWarehouseId,
-            "", "",
-            sortedByStatusId,
-            sortedByDateId, keywordSearch);
+        if (roleId === 1) {
+            setcurrentPage(page - 1);
+
+            let res = await fetchExportOrdersWithFilter(
+                pageSize, page, selectedWarehouseId,
+                "", "",
+                sortedByStatusId,
+                sortedByDateId, keywordSearch);
 
 
-        setTotalExportOrder(res.data);
-        setTotalPages(res.totalPages);
-        // console.log("fetchExportOrdersWithFilter: ", res.data);
+            setTotalExportOrder(res.data);
+            setTotalPages(res.totalPages);
+            // console.log("fetchExportOrdersWithFilter: ", res.data);
+        }
+        if (roleId === 2 || roleId === 3) {
+            setcurrentPage(page - 1);
+            let wh = await getUserIdWarehouse(userId);
+            let res = await fetchExportOrdersWithFilter(
+                pageSize, page, wh[0].warehouseId,
+                "", "",
+                sortedByStatusId,
+                sortedByDateId, keywordSearch);
+
+
+            setTotalExportOrder(res.data);
+            setTotalPages(res.totalPages);
+            // console.log("fetchExportOrdersWithFilter: ", res.data);
+        }
     }
 
 
@@ -241,7 +258,7 @@ const ExportOrderListInternal = () => {
                     <div className="col-sm-12">
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng xuất giữa các kho</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                            {roleId == 2 || roleId == 4 || roleId == 1 ?
+                            {roleId == 1 ?
                                 <Col md={2}>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"
@@ -393,9 +410,12 @@ const ExportOrderListInternal = () => {
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
-                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
-                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã hủy"}
-                                                </td>
+                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#2275b7" }}>
+                                                    {i.statusType === "On Progress" ?
+                                                        <Badge style={{ backgroundColor: "#0c7a42" }}>Đang tiến hành</Badge> :
+                                                        i.statusType === "Completed" ?
+                                                            <Badge bg="success">Đã hoàn thành</Badge> :
+                                                            <Badge bg="danger">Đã huỷ</Badge>}                                                </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>
 
@@ -438,26 +458,14 @@ const ExportOrderListInternal = () => {
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : ''} */}
 
-
-
-
-
-
-                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
-                                                    className="btn btn-success border-left-0 rounded "
+                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ' style={{ right: 0, minWidth: '150px' }}> <button
+                                                    className="btn btn-success "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
+                                                    style={{ backgroundColor: i.statusType === "Completed" ? "#0c7a42" : i.statusType === "On Progress" ? "#2275b7" : "#ea5455", fontWeight: 'bold' }}
                                                     disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}
-                                                >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Tiến hành xuất hàng" : "Nhập hàng"}
+                                                >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Xuất hàng" : "Đã huỷ"}
                                                 </button></td> : ''}
-
-
-
-
-
-
-
-
                                             </tr>
                                         ))}
 

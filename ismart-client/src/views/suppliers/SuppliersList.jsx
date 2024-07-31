@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 
 function SupplierList() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
-    
+
     const [isShowModelAddNew, setIsShowModelAddNew] = useState(false);
     const [isShowModelEdit, setIsShowModelEdit] = useState(false);
     const [isShowModalConfirm, setIsShowModalConfirm] = useState(false);
@@ -254,7 +254,7 @@ function SupplierList() {
             <ModelEditSupplier isShow={isShowModelEdit} handleClose={() => setIsShowModelEdit(false)} dataUpdateSupplier={dataUpdateSupplier}
                 updateTableSupplier={updateTableSupplier} />
             <ModalConfirm title="nhà cung cấp"
-                statusText1={<span style={{ color: '#24cbc7' }}>Đang hợp tác</span>}
+                statusText1={<span style={{ color: '#2275b7' }}>Đang hợp tác</span>}
                 statusText2={<span style={{ color: '#ff0000' }}>Ngừng hợp tác</span>} isShow={isShowModalConfirm}
                 handleClose={() => setIsShowModalConfirm(false)}
                 confirmChangeStatus={confirmChangeStatus}

@@ -36,20 +36,21 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
                         <Col md={2}>
                             <div className="form-group mb-3">
                                 <label >Kho hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.storageName}</button>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseName}</button>
                             </div>
                         </Col>
 
-                        <Col md={3}>
-                            <div className="form-group mb-3">
-                                <label >Tổng giá trị đơn hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{formattedAmount(detailOrder.totalPrice)}</button>
-                            </div>
-                        </Col>
                         <Col md={2}>
                             <div className="form-group mb-3">
                                 <label >Tình trạng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.statusType == "On Progress" ? "Đang tiến hành" : detailOrder.statusType == "Completed" ? "Đã hoàn thành" : "Đã hủy"}</button>
+                            </div>
+                        </Col>
+                        <Col md={2}>
+                            <div className="form-group mb-3">
+
+                                <label >Giao hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.deliveryName}</button>
                             </div>
                         </Col>
                     </Row>
@@ -71,19 +72,7 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
-                                <Col >
-
-                                    <label >Giá tiền</label>
-                                    <input type="number" className="form-control inputCSS" value={o.price} readOnly />
-
-                                </Col>
-
-                                <Col >
-
-                                    <label >Tổng giá tiền</label>
-                                    <input type="number" className="form-control inputCSS" value={o.quantity * o.price} readOnly />
-
-                                </Col>
+                                
                             </Row>
                         ))
                     }

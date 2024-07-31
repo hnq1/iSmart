@@ -15,6 +15,7 @@ namespace iSmart.Entity.Models
             Suppliers = new HashSet<Supplier>();
             Users = new HashSet<User>();
             Deliveries = new HashSet<Delivery>();
+            InventoryChecks = new HashSet<InventoryCheck>();
         }
 
         public int StatusId { get; set; }
@@ -28,5 +29,6 @@ namespace iSmart.Entity.Models
         public virtual ICollection<ReturnsOrder> ReturnsOrders { get; set; }
         public virtual ICollection<Supplier> Suppliers { get; set; }
         public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<InventoryCheck> InventoryChecks { get; set; }
     }
 }

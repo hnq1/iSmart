@@ -11,8 +11,13 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
     const [odata, setOData] = useState([])
 
     useEffect(() => {
-        setOData(data);
-    }, [data])
+        // Kiểm tra và chuyển đổi dữ liệu thành mảng nếu cần thiết
+        if (Array.isArray(data)) {
+            setOData(data);
+        } else {
+            setOData(Object.values(data));
+        }
+    }, [data]);
 
     const handleEditRowData = (item, index) => {
         setOrderData(item);
@@ -105,12 +110,7 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
             </Row>
         ))}
 
-        {/* <Col md={2}>
-            <div className="form-group mb-3">
-                <label >Tổng giá tiền</label>
-                <input type="text" className="form-control" defaultValue={data.totalOneGoodPrice} disabled />
-            </div>
-        </Col> */}
+       
 
 
 
