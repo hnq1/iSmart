@@ -87,7 +87,7 @@ namespace iSmart.Service
 
             return selectedBatches;
         }
-        public List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int warehouseId,int goodId)
+        public List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int warehouseId, int goodId)
         {
             try
             {
@@ -222,13 +222,8 @@ namespace iSmart.Service
         {
             try
             {
-                // Tìm import order detail hiện tại bằng ImportId và GoodsId hoặc các điều kiện cần thiết
-                var existingOrderDetail = _context.ImportOrderDetails
-                    .FirstOrDefault(x => x.DetailId == detail.DetailId);
-
-                if (existingOrderDetail != null)
+                var requestOrder = new ImportOrderDetail
                 {
-<<<<<<< HEAD
                     DetailId = detail.DetailId,
                     ImportId = detail.ImportId,
                     GoodsId = (int)detail.GoodsId,
@@ -242,31 +237,12 @@ namespace iSmart.Service
                 _context.Update(requestOrder);
                 _context.SaveChanges();
                 return new UpdateImportOrderDetailResponse { IsSuccess = true, Message = "Update order detail complete" };
-=======
-                    // Cập nhật các trường thông tin
-                    existingOrderDetail.Quantity = (int)detail.Quantity;
-                    existingOrderDetail.ActualQuantity = (int)detail.Quantity;
-                    existingOrderDetail.CostPrice = detail.CostPrice;
-                    existingOrderDetail.BatchCode = detail.BatchCode;
-                    existingOrderDetail.ExpiryDate = detail.ExpiryDate;
-                    existingOrderDetail.ManufactureDate = detail.ManufactureDate;
-
-                    _context.Update(existingOrderDetail);
-                    _context.SaveChanges();
-                    return new UpdateImportOrderDetailResponse { IsSuccess = true, Message = "Update order detail complete" };
-                }
-                else
-                {
-                    return new UpdateImportOrderDetailResponse { IsSuccess = false, Message = "Order detail not found" };
-                }
->>>>>>> origin/anhddhe170353
             }
             catch (Exception e)
             {
-                return new UpdateImportOrderDetailResponse { IsSuccess = false, Message = $"Update order detail failed: {e.Message}" };
+                return new UpdateImportOrderDetailResponse { IsSuccess = false, Message = $"Update order detail failed {e.Message}" };
             }
         }
-
 
         public List<BatchInventoryDTO> GetBatchForReturn(int warehouseId, int goodId)
         {
