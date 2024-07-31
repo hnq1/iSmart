@@ -252,6 +252,7 @@ namespace iSmart.API.Controllers
                     MailMessage mm = new MailMessage("wmsystemsp24@gmail.com", email);
                     mm.Subject = "Reset your password";
                     mm.Body = "Reset Password" + "<br>" +
+                        "Tên đăng nhập " + username + "<br>" +
                         "Mật khẩu của bạn đã được thay đổi: " + password + "<br>";
                     mm.IsBodyHtml = true;
                     SmtpClient smtp = new SmtpClient();
