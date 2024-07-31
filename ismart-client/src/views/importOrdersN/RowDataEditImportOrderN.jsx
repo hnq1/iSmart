@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Row, Col, Dropdown } from "react-bootstrap";
 import EditRowDataOrderN from "./EditRowDataN";
+import { formatDateImport } from "~/validate";
 
 const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) => {
 
@@ -12,6 +13,9 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
     const [costPrice, setCostPrice] = useState();
     const [detailId, setDetailId] = useState();
     const [importId, setImportId] = useState();
+    const [expiryDate, setExpiryDate] = useState();
+    const [manufactureDate, setManufactureDate] = useState();
+    const [batchCode, setBatchCode] = useState();
 
     useEffect(() => {
         console.log("RowDataEditImportOrder", data);
@@ -21,6 +25,10 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
         setCostPrice(data.costPrice);
         setDetailId(data.detailId);
         setImportId(data.importId);
+        setBatchCode(data.batchCode);
+        setExpiryDate(formatDateImport(data.expiryDate));
+        setManufactureDate(formatDateImport(data.manufactureDate));
+
     }, [data])
 
     const handleEditRowData = () => {
@@ -34,7 +42,18 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
     const dataAfterEdit = (data) => {
         setQuantity(data.quantity);
         setCostPrice(data.costPrice);
-        updateRowData(index, { costPrice: data.costPrice, detailId: detailId, quantity: data.quantity, goodsId: goodsId, goodsCode: goodsCode, importId: importId })
+        updateRowData(index,
+            {
+                costPrice: data.costPrice,
+                detailId: detailId,
+                quantity: data.quantity,
+                goodsId: goodsId,
+                goodsCode: goodsCode,
+                importId: importId,
+                batchCode: data.batchCode,
+                expiryDate: data.expiryDate,
+                manufactureDate: data.manufactureDate
+            })
     }
 
 
@@ -55,9 +74,28 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
                     <input type="number" className="form-control" defaultValue={quantity} disabled />
                 </div>
             </Col>
-           
 
-         
+            <Col md={3}>
+                    <div className="form-group mb-3">
+                        <label >Ngày sản xuất</label>
+                        <input type="date" className="form-control" value={manufactureDate}disabled />
+                    </div>
+                </Col>
+                <Col md={3}>
+                    <div className="form-group mb-3">
+                        <label >Ngày hết hạn</label>
+                        <input type="date" className="form-control" value={expiryDate}  disabled/>
+                    </div>
+                </Col>
+                <Col md={2}>
+                    <div className="form-group mb-3">
+                        <label >Mã lô hàng</label>
+                        <input type="text" className="form-control" value={batchCode} disabled />
+                    </div>
+                </Col>
+
+
+
 
             <Col md={1}>
                 <div className="form-group mb-3 ButtonCSSDropdown">

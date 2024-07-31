@@ -224,6 +224,7 @@ namespace iSmart.Service
             {
                 var requestOrder = new ImportOrderDetail
                 {
+                    DetailId = detail.DetailId,
                     ImportId = detail.ImportId,
                     GoodsId = (int)detail.GoodsId,
                     Quantity = (int)detail.Quantity,

@@ -3,6 +3,7 @@ import { Row, Col, Dropdown, Modal, Button } from "react-bootstrap";
 import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
 import { toast } from "react-toastify";
+import { formatDateImport } from "~/validate";
 
 const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const [goodsId, setGoodsId] = useState();
@@ -13,39 +14,23 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const [manufactureDate, setManufactureDate] = useState();
     const [batchCode, setBatchCode] = useState();
     const [selectedImportId, setSelectedImportId] = useState(null);
-    const [totalOneGoodPrice, setTotalOneGoodPrice] = useState(0);
-    const [supplierId, setSupplierId] = useState();
-    const [supplierName, setSupplierName] = useState();
 
     useEffect(() => {
         setBatchCode(data.batchCode);
         setCostPrice(data.costPrice);
-        setExpiryDate(data.expiryDate);
+        setExpiryDate(formatDateImport(data.expiryDate));
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
         setSelectedImportId(data.importId);
-        setManufactureDate(data.manufactureDate);
+        setManufactureDate(formatDateImport(data.manufactureDate));
         setQuantity(data.quantity);
-        setSupplierId(data.supplierId);
-        setSupplierName(data.supplierName);
-        setTotalOneGoodPrice(data.totalOneGoodPrice);
 
     }, [data])
     // console.log("dataEditRowDataOrder: ", data);
-
-    useEffect(() => {
-        setTotalOneGoodPrice(quantity * costPrice);
-    }, [quantity, costPrice]);
-    // console.log("dataEdit: ", data);
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
-        setTotalOneGoodPrice(event.target.value * costPrice);
     }
 
-    const handleChangePrice = (event) => {
-        setCostPrice(event.target.value);
-        setTotalOneGoodPrice(event.target.value * quantity);
-    }
     const handleChangeBatchCode = (event) => {
         setBatchCode(event.target.value);
 
@@ -59,15 +44,12 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const handleReset = () => {
         setBatchCode(data.batchCode);
         setCostPrice(data.costPrice);
-        setExpiryDate(data.expiryDate);
+        setExpiryDate(formatDateImport(data.expiryDate));
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
         setSelectedImportId(data.importId);
-        setManufactureDate(data.manufactureDate);
+        setManufactureDate(formatDateImport(data.manufactureDate));
         setQuantity(data.quantity);
-        setSupplierId(data.supplierId);
-        setSupplierName(data.supplierName);
-        setTotalOneGoodPrice(data.totalOneGoodPrice);
     }
     const handleCloseModal = () => {
         handleReset();
@@ -77,9 +59,9 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
     const handleEditRowData = () => {
         if (quantity <= 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
-        // } else if (costPrice <= 0) {
-        //     toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
-        // } else {
+            // } else if (costPrice <= 0) {
+            //     toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
+        } else {
             dataAfterEdit({
                 // ...data,
                 batchCode: batchCode,
@@ -90,9 +72,6 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
                 importId: selectedImportId,
                 manufactureDate: manufactureDate,
                 quantity: quantity,
-                supplierId: supplierId,
-                supplierName: supplierName,
-                totalOneGoodPrice: totalOneGoodPrice
 
             });
             console.log("dataAfterEdit: ", quantity);
@@ -125,7 +104,7 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
                 <Col md={2}>
                     <div className="form-group mb-3">
                         <label >Mã lô hàng</label>
-                        <input type="text" className="form-control" value={batchCode} onChange={handleChangeBatchCode} />
+                        <input type="text" className="form-control" value={batchCode} disabled onChange={handleChangeBatchCode} />
                     </div>
                 </Col>
                 {/* <Col md={3}>
@@ -137,13 +116,13 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
                 <Col md={3}>
                     <div className="form-group mb-3">
                         <label >Ngày sản xuất</label>
-                        <input type="date" className="form-control" value={manufactureDate} onChange={handleChangemMnufactureDate} />
+                        <input type="date" className="form-control" value={manufactureDate} onChange={handleChangemMnufactureDate} disabled/>
                     </div>
                 </Col>
                 <Col md={3}>
                     <div className="form-group mb-3">
                         <label >Ngày hết hạn</label>
-                        <input type="date" className="form-control" value={expiryDate} on onChange={handleChangeExpiryDate} />
+                        <input type="date" className="form-control" value={expiryDate} onChange={handleChangeExpiryDate} disabled/>
                     </div>
                 </Col>
 
