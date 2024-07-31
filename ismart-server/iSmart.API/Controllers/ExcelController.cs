@@ -155,7 +155,7 @@ namespace iSmart.API.Controllers
                     await file.CopyToAsync(stream);
                     using (var package = new ExcelPackage(stream))
                     {
-                        var worksheet = package.Workbook.Worksheets[0]; // Lấy sheet đầu tiên
+                        var worksheet = package.Workbook.Worksheets[0]; 
                         int rowCount = worksheet.Dimension.Rows;
 
                         for (int row = 2; row <= rowCount; row++)
@@ -168,31 +168,38 @@ namespace iSmart.API.Controllers
                             var unit = worksheet.Cells[row, 6].Value?.ToString();
                             var image = worksheet.Cells[row, 7].Value?.ToString();
                             var warrantyTime = worksheet.Cells[row, 8].Value?.ToString();
-                            var barcode = worksheet.Cells[row, 9].Value?.ToString();
-                            var maxStock = worksheet.Cells[row, 10].Value?.ToString();
-                            var minStock = worksheet.Cells[row, 11].Value?.ToString();
+                            var maxStock = worksheet.Cells[row, 9].Value?.ToString();
+                            var minStock = worksheet.Cells[row, 10].Value?.ToString();
 
-                            // Kiểm tra tính hợp lệ
                             var errors = new List<string>();
 
                             if (string.IsNullOrEmpty(goodsCode))
                                 errors.Add("Mã hàng hóa không được để trống.");
                             if (string.IsNullOrEmpty(goodsName))
                                 errors.Add("Tên hàng hóa không được để trống.");
-                            if (! _context.Categories.Any(c => c.CategoryId == int.Parse(categoryId)))
-                                errors.Add("Mã danh mục không hợp lệ.");
-                            if (!_context.Suppliers.Any(s => s.SupplierId == int.Parse(supplierId)))
-                                errors.Add("Mã nhà cung cấp không hợp lệ.");
+                            if (string.IsNullOrEmpty(categoryId) || !_context.Categories.Any(c => c.CategoryId == int.Parse(categoryId)))
+                                errors.Add("Mã danh mục không hợp lệ hoặc trống.");
+                            if (string.IsNullOrEmpty(supplierId) || !_context.Suppliers.Any(s => s.SupplierId == int.Parse(supplierId)))
+                                errors.Add("Mã nhà cung cấp không hợp lệ hoặc trống.");
                             if (string.IsNullOrEmpty(unit) || (unit != "Thùng" && unit != "Kg"))
-                                errors.Add("Đơn vị tính không hợp lệ.");
+                                errors.Add("Đơn vị tính không hợp lệ hoặc trống.");
+                            if (string.IsNullOrEmpty(warrantyTime))
+                                errors.Add("Thời gian bảo hành không được để trống.");
+                            if (string.IsNullOrEmpty(maxStock))
+                                errors.Add("Số lượng tồn kho tối đa không được để trống.");
+                            if (string.IsNullOrEmpty(minStock))
+                                errors.Add("Số lượng tồn kho tối thiểu không được để trống.");
 
                             if (errors.Count > 0)
                             {
                                 results.Add($"Lỗi ở hàng {row}: " + string.Join(", ", errors));
-                                continue; // Bỏ qua hàng này nếu có lỗi
+                                continue; 
                             }
 
-                            // Lưu vào DB nếu dữ liệu hợp lệ
+                            string countryCode = "VN";
+                            string year = DateTime.Now.Year.ToString().Substring(2, 2);
+                            string barcode = $"{countryCode}{year}{goodsCode}";
+
                             var goodsRequest = new CreateGoodsRequest
                             {
                                 GoodsCode = goodsCode,
@@ -234,6 +241,6 @@ namespace iSmart.API.Controllers
         }
 
 
- 
+
     }
 }

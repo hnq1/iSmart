@@ -1,5 +1,4 @@
 ﻿using iSmart.Entity.DTOs.CategoryDTO;
-using iSmart.Entity.Models;
 using iSmart.Entity.DTOs.ImportOrderDTO;
 using iSmart.Entity.DTOs.InventoryCheckDTO;
 using iSmart.Entity.Migrations;
@@ -15,7 +14,6 @@ namespace iSmart.Service
 {
     public interface IInventoryCheckService
     {
-        Task<InventoryCheck> CreateInventoryCheckAsync(InventoryCheck inventoryCheck);
         CreateInventoryCheckResponse CreateInventoryCheck(CreateInventoryCheckDTO inventoryCheck);
         Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync(int? warehouseId);
         Task<ResponseInventoryCheckDTO> GetInventoryCheckByIdAsync(int id);
@@ -29,14 +27,6 @@ namespace iSmart.Service
         {
             _context = context;
         }
-
-        public async Task<InventoryCheck> CreateInventoryCheckAsync(InventoryCheck inventoryCheck)
-        {
-            _context.InventoryChecks.Add(inventoryCheck);
-            await _context.SaveChangesAsync();
-            return inventoryCheck;
-        }
-    }
 
         public CreateInventoryCheckResponse CreateInventoryCheck(CreateInventoryCheckDTO inventoryCheckDTO)
         {
