@@ -665,22 +665,16 @@ namespace iSmart.Entity.Migrations
                     b.Property<DateTime>("CheckDate")
                         .HasColumnType("datetime2");
 
-<<<<<<< HEAD
-=======
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
->>>>>>> origin/anhddhe170353
                     b.Property<int>("WarehouseId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-<<<<<<< HEAD
-=======
                     b.HasIndex("StatusId");
 
->>>>>>> origin/anhddhe170353
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("InventoryChecks");
@@ -1374,26 +1368,20 @@ namespace iSmart.Entity.Migrations
 
             modelBuilder.Entity("iSmart.Entity.Models.InventoryCheck", b =>
                 {
-<<<<<<< HEAD
-=======
                     b.HasOne("iSmart.Entity.Models.Status", "Status")
                         .WithMany("InventoryChecks")
                         .HasForeignKey("StatusId")
                         .IsRequired()
                         .HasConstraintName("FK_InventoryCheck_Status");
 
->>>>>>> origin/anhddhe170353
                     b.HasOne("iSmart.Entity.Models.Warehouse", "Warehouse")
                         .WithMany("InventoryChecks")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-<<<<<<< HEAD
-=======
                     b.Navigation("Status");
 
->>>>>>> origin/anhddhe170353
                     b.Navigation("Warehouse");
                 });
 
@@ -1645,11 +1633,8 @@ namespace iSmart.Entity.Migrations
 
                     b.Navigation("ImportOrders");
 
-<<<<<<< HEAD
-=======
                     b.Navigation("InventoryChecks");
 
->>>>>>> origin/anhddhe170353
                     b.Navigation("ReturnsOrders");
 
                     b.Navigation("Suppliers");
