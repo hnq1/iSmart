@@ -1,13 +1,10 @@
 ﻿using iSmart.Entity.DTOs.CategoryDTO;
-<<<<<<< HEAD
 using iSmart.Entity.Models;
-=======
 using iSmart.Entity.DTOs.ImportOrderDTO;
 using iSmart.Entity.DTOs.InventoryCheckDTO;
 using iSmart.Entity.Migrations;
 using iSmart.Entity.Models;
 using Microsoft.EntityFrameworkCore;
->>>>>>> origin/anhddhe170353
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +15,11 @@ namespace iSmart.Service
 {
     public interface IInventoryCheckService
     {
-<<<<<<< HEAD
         Task<InventoryCheck> CreateInventoryCheckAsync(InventoryCheck inventoryCheck);
-=======
         CreateInventoryCheckResponse CreateInventoryCheck(CreateInventoryCheckDTO inventoryCheck);
         Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync(int? warehouseId);
         Task<ResponseInventoryCheckDTO> GetInventoryCheckByIdAsync(int id);
         Task UpdateBatchQuantitiesAsync(Dictionary<string, int> batchQuantities);
->>>>>>> origin/anhddhe170353
     }
 
     public class InventoryCheckService : IInventoryCheckService
@@ -36,7 +30,6 @@ namespace iSmart.Service
             _context = context;
         }
 
-<<<<<<< HEAD
         public async Task<InventoryCheck> CreateInventoryCheckAsync(InventoryCheck inventoryCheck)
         {
             _context.InventoryChecks.Add(inventoryCheck);
@@ -44,8 +37,7 @@ namespace iSmart.Service
             return inventoryCheck;
         }
     }
-}
-=======
+
         public CreateInventoryCheckResponse CreateInventoryCheck(CreateInventoryCheckDTO inventoryCheckDTO)
         {
             try
@@ -191,4 +183,3 @@ namespace iSmart.Service
 
     }
 }
->>>>>>> origin/anhddhe170353
