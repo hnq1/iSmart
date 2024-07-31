@@ -27,6 +27,7 @@ namespace iSmart.Service
         UpdateGoodsResponse UpdateGoods(UpdateGoodsRequest goods);
         bool UpdateStatusGoods(int id, int StatusId);
         Task<List<GoodsDTO>?> GetGoodsInWarehouse(int warehouseId);
+        Task<List<GoodsDTO>?> GetGoodsInWarehouseBySupplier(int warehouseId, int supplierId);
         GoodsDTO GetGoodsInWarehouseById(int warehouseId, int goodId);
         List<GoodAlert> Alert(int warehouseId);
     }
@@ -51,6 +52,10 @@ namespace iSmart.Service
 
                 if (existingGood == null)
                 {
+
+                    string countryCode = "VN";
+                    string year = DateTime.Now.Year.ToString().Substring(2, 2);
+                    string barcode = $"{countryCode}{year}{goods.GoodsCode}";
                     // Tạo hàng hóa mới
                     var newGood = new Good
                     {
@@ -65,7 +70,7 @@ namespace iSmart.Service
                         StockPrice = goods.StockPrice,
                         CreatedDate = DateTime.Now,
                         WarrantyTime = goods.WarrantyTime,
-                        Barcode = goods.Barcode,
+                        Barcode = barcode,
                         MaxStock = goods.MaxStock,
                         MinStock = goods.MinStock
                     };
@@ -126,6 +131,9 @@ namespace iSmart.Service
                 {
                     return new CreateGoodsResponse { IsSuccess = false, Message = "WarehouseId không tìm thấy" };
                 }
+                string countryCode = "VN";
+                string year = DateTime.Now.Year.ToString().Substring(2, 2);
+                string barcode = $"{countryCode}{year}{goods.GoodsCode}";
                 // Tạo hàng hóa mới
                 var newGood = new Good
                 {
@@ -140,7 +148,7 @@ namespace iSmart.Service
                     StockPrice = goods.StockPrice,
                     CreatedDate = DateTime.Now,
                     WarrantyTime = goods.WarrantyTime,
-                    Barcode = goods.Barcode,
+                    Barcode = barcode,
                     MaxStock = goods.MaxStock,
                     MinStock = goods.MinStock
                 };
@@ -436,6 +444,36 @@ namespace iSmart.Service
         {
             return await _context.GoodsWarehouses
                 .Where(gw => gw.WarehouseId == warehouseId)
+                .OrderByDescending(g => g.Good.CreatedDate)
+                .Select(gw => new GoodsDTO
+                {
+                    GoodsId = gw.Good.GoodsId,
+                    GoodsCode = gw.Good.GoodsCode,
+                    GoodsName = gw.Good.GoodsName,
+                    CategoryId = gw.Good.CategoryId,
+                    CategoryName = gw.Good.Category.CategoryName,
+                    Description = gw.Good.Description,
+                    StockPrice = gw.Good.StockPrice,
+                    MeasuredUnit = gw.Good.MeasuredUnit,
+                    InStock = gw.Quantity,
+                    Image = gw.Good.Image,
+                    CreatedDate = gw.Good.CreatedDate,
+                    WarrantyTime = gw.Good.WarrantyTime,
+                    Barcode = gw.Good.Barcode,
+                    MinStock = gw.Good.MinStock,
+                    MaxStock = gw.Good.MaxStock,
+                    SupplierId = gw.Good.SupplierId,
+                    SupplierName = gw.Good.Supplier.SupplierName,
+                    StatusId = gw.Good.StatusId,
+                    Status = gw.Good.Status.StatusType
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<GoodsDTO>> GetGoodsInWarehouseBySupplier(int warehouseId, int supplierId)
+        {
+            return await _context.GoodsWarehouses.Include(g => g.Good).ThenInclude(g => g.Supplier)
+                .Where(gw => gw.WarehouseId == warehouseId && gw.Good.SupplierId == supplierId)
                 .OrderByDescending(g => g.Good.CreatedDate)
                 .Select(gw => new GoodsDTO
                 {

@@ -100,6 +100,13 @@ namespace iSmart.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("get-goods-in-warehouse-by-supplier")]
+        public async Task<IActionResult> GetGoodsInWarehouseBySupplier(int warehouseId, int supplierId)
+        {
+            var result = await _goodsService.GetGoodsInWarehouseBySupplier(warehouseId, supplierId);
+            return Ok(result);
+        }
+
         [HttpGet("alerts")]
         public IActionResult GetAlerts(int warehouseId)
         {

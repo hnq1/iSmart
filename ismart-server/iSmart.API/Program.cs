@@ -25,7 +25,12 @@ internal class Program
         // Add services to the container.
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                options.JsonSerializerOptions.WriteIndented = true;
+            });
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -120,6 +125,7 @@ internal class Program
         builder.Services.AddScoped<IReportService, ReportService>();
         builder.Services.AddScoped<IReturnOrderService, ReturnOrderService>();
         builder.Services.AddScoped<IReturnOrderDetailService, ReturnOrderDetailService>();
+        builder.Services.AddScoped<IInventoryCheckService, InventoryCheckService>();
         builder.Services.AddSingleton<WebSocketService>();
         builder.Services.AddSingleton(new OpenAIService(openAiApiKey));
 
