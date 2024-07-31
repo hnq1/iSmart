@@ -14,7 +14,7 @@ const updateImportOrderDetail = (importId, costPrice, detailId, goodsId, quantit
 }
 
 const deleteImportOrderDetail = (id) => {
-    return axios.delete(`api/import-order-detail/delete-import-order-detail/${id}`)
+    return axios.delete(`api/ImportOrderDetail/delete-import-order-detail?detailId=${id}`)
 }
 const getImportOrderDetailByImportId = (oid) => {
     return axios.get(`api/import-order-detail/get-import-order-details?oid=${oid}`)

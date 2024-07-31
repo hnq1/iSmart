@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import React from 'react';
 import { Modal, Button, Row, Col, DropdownButton, Dropdown } from "react-bootstrap"
 import { updateImportOrder } from "~/services/ImportOrderServices";
-import { getImportOrderDetailByImportId, updateImportOrderDetail, deleteImportOrderDetail } from "~/services/ImportOrderDetailServices";
+import { getImportOrderDetailByImportId, updateImportOrderDetail } from "~/services/ImportOrderDetailServices";
 import { formatDateImport, formattedAmount } from "~/validate";
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 import AddRowDataImportOrder from "./AddRowDataImport";
@@ -18,7 +18,6 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
 
 
     const [rowsData, setRowsData] = useState([]);
-    const [deleteData, setDeleteData] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
 
     const [selectedStorage, setSelectedStorage] = useState(null);
@@ -97,11 +96,8 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
     // render rowsData
     const renderImportData = () => {
         return rowsData.map((data, index) => (
-            <>
-                <RowDataEditImportOrder key={`rowsdata${index}`} detailId={rowsData[index].detailId} data={rowsData[index]} index={index}
-                    deleteRowData={deleteRowData} updateRowData={updateRowData} />
-            </>
-
+            <RowDataEditImportOrder key={index} data={rowsData[index]} index={index}
+                deleteRowData={deleteRowData} updateRowData={updateRowData} />
         ))
 
 
@@ -110,14 +106,9 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
     // xóa 1 row của rowsData ở RowDataImport
     const deleteRowData = (rowdel) => {
         const updateDataImport = rowsData.filter((item, index) => index !== rowdel);
-        const deleteDataImport = rowsData[rowdel];
-        setDeleteData([...deleteData, deleteDataImport]);
-        console.log(rowsData[rowdel])
-
         const deletePrice = rowsData[rowdel].costPrice * rowsData[rowdel].quantity;
         setRowsData(updateDataImport);
         setTotalPrice(x => x - deletePrice ? x - deletePrice : 0);
-        console.log(updateDataImport);
     }
 
     // update 1 row data từ RowDataImport
@@ -148,29 +139,29 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
             detailOrderEdit.image,
             null);
         console.log("handleUpdateImportOrder: ", res);
-        console.log(rowsData);
         if (rowsData && rowsData.length > 0) {
             await Promise.all(rowsData.map(async (data, index) => {
-                let result = await updateImportOrderDetail(
+                await updateImportOrderDetail(
                     detailOrderEdit.importId,
                     data.costPrice,
-                    data.detailId,// chưa lấy được 
+                    data.detailId,// chưa lấy được
                     data.goodsId,
                     data.quantity,
                     data.manufactureDate,
                     data.expiryDate,
                     data.batchCode
                 );
+                console.log("data: ", detailOrderEdit.importId,
+                    data.costPrice,
+                    data.detailId,
+                    data.goodsId,
+                    data.quantity,
+                    data.manufactureDate,
+                    data.expiryDate,
+                    data.batchCode);
             }));
         }
-
-        if (deleteData && deleteData.length > 0) {
-            await Promise.all(deleteData.map(async (data, index) => {
-                let result = await deleteImportOrderDetail(data.detailId);
-                console.log(result);
-            }))
-        }
-        toast.success("Sửa lô hàng nhập thành công");
+        toast.success("Thêm lô hàng nhập thành công");
         updateTable();
         handleCloseModal();
         // }
@@ -182,16 +173,15 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
     }
 
     const handleReset = () => {
-        setTotalPrice();
-        setRowsData([]);
-        setDeleteData([]);
+        // setRowsData([]);
+        setTotalPrice()
 
     }
 
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>Sửa đơn hàng nhập 1</Modal.Title>
+                <Modal.Title>Sửa đơn hàng nhập</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
@@ -253,8 +243,6 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                 <Button variant="primary" className="ButtonCSS" onClick={handleUpdateImportOrder}>
                     Lưu
                 </Button>
-
-
             </Modal.Footer>
         </Modal >
 

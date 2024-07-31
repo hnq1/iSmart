@@ -44,6 +44,7 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
    
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
+        setTotalOneGoodPrice(event.target.value * costPrice);
     }
 
     const handleChangePrice = (event) => {
@@ -92,6 +93,9 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                 importId: selectedImportId,
                 manufactureDate: manufactureDate,
                 quantity: quantity,
+                supplierId: supplierId,
+                supplierName: supplierName,
+                totalOneGoodPrice: 0
 
             });
             console.log("dataAfterEdit: ", quantity);

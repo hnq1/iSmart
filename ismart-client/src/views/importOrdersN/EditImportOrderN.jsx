@@ -18,6 +18,7 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
 
 
     const [rowsData, setRowsData] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
 
     const [selectedStorage, setSelectedStorage] = useState(null);
     const [selectedStorageId, setSelectedStorageId] = useState(null);
@@ -61,6 +62,7 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
         let res = await getImportOrderDetailByImportId(importId);
         console.log(res);
         setRowsData(res);
+        setTotalPrice(detailOrderEdit.totalCost);
     }
 
     const takeRowDataImportOrder = (importData) => {
@@ -76,11 +78,8 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
     // render rowsData
     const renderImportData = () => {
         return rowsData.map((data, index) => (
-            <>
-                <RowDataEditImportOrder key={index} data={rowsData[index]} index={index}
-                    deleteRowData={deleteRowData} updateRowData={updateRowData} />
-            </>
-
+            <RowDataEditImportOrder key={index} data={rowsData[index]} index={index}
+                deleteRowData={deleteRowData} updateRowData={updateRowData} />
         ))
 
 
@@ -91,6 +90,7 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
         const updateDataImport = rowsData.filter((item, index) => index !== rowdel);
         const deletePrice = rowsData[rowdel].costPrice * rowsData[rowdel].quantity;
         setRowsData(updateDataImport);
+        setTotalPrice(x => x - deletePrice ? x - deletePrice : 0);
     }
 
     // update 1 row data từ RowDataImport
@@ -98,7 +98,7 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
         console.log(updateData);
         const updateDataImport = [...rowsData];
         updateDataImport[rowUpdate] = updateData;
-
+        setTotalPrice(x => x - rowsData[rowUpdate].costPrice * rowsData[rowUpdate].quantity + updateData.costPrice * updateData.quantity);
         setRowsData(updateDataImport);
     }
 
@@ -106,26 +106,23 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
         // if (totalPrice === 0) {
         //     toast.warning("Vui lòng nhập mặt hàng nhập");
         // } else {
-        console.log(detailOrderEdit.importId);
-        let res = await updateImportOrder(detailOrderEdit.importId, userId, selectedSupplierId, 0, "", detailOrderEdit.createdDate, detailOrderEdit.importedDate, 3, importCode, selectedStorageId, selectedDeliveryId, detailOrderEdit.image, null);
-        console.log(res);
-        if (rowsData && rowsData.length > 0) {
-            await Promise.all(rowsData.map(async (data, index) => {
-                await updateImportOrderDetail(
-                    detailOrderEdit.importId,
-                    data.costPrice,
-                    data.detailId,
-                    data.goodsId,
-                    data.quantity,
-                    data.manufactureDate,
-                    data.expiryDate,
-                    data.batchCode
-                );
-            }));
-        }
-        toast.success("Sửa lô hàng nhập thành công");
-        updateTable();
-        handleCloseModal();
+            console.log(detailOrderEdit.importId);
+            let res = await updateImportOrder(detailOrderEdit.importId, userId, selectedSupplierId, 0, "", detailOrderEdit.createdDate, detailOrderEdit.importedDate, 3, importCode, selectedStorageId, selectedDeliveryId, detailOrderEdit.image, null);
+            console.log(res);
+            if (rowsData && rowsData.length > 0) {
+                await Promise.all(rowsData.map(async (data, index) => {
+                    await updateImportOrderDetail(
+                        detailOrderEdit.importId,
+                        data.costPrice,
+                        data.detailId,
+                        data.goodsId,
+                        data.quantity
+                    );
+                }));
+            }
+            toast.success("Thêm lô hàng nhập thành công");
+            updateTable();
+            handleCloseModal();
         // }
 
     }
@@ -135,7 +132,8 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
     }
 
     const handleReset = () => {
-        setRowsData([]);
+        // setRowsData([]);
+        setTotalPrice()
 
     }
 
@@ -196,7 +194,7 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
                         {renderImportData()}
 
                     </Row>
-
+                  
                 </div>
             </Modal.Body>
             <Modal.Footer>

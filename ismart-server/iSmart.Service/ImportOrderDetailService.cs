@@ -225,6 +225,7 @@ namespace iSmart.Service
                 var requestOrder = new ImportOrderDetail
                 {
 <<<<<<< HEAD
+<<<<<<< HEAD
                     // Cập nhật các trường thông tin
                     existingOrderDetail.Quantity = (int)detail.Quantity;
                     existingOrderDetail.ActualQuantity = (int)detail.Quantity;
@@ -243,6 +244,8 @@ namespace iSmart.Service
                 }
 =======
                     DetailId = detail.DetailId,
+=======
+>>>>>>> parent of 90ab3d2 (update export, import order)
                     ImportId = detail.ImportId,
                     GoodsId = (int)detail.GoodsId,
                     Quantity = (int)detail.Quantity,

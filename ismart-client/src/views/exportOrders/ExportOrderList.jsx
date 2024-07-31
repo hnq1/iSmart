@@ -498,12 +498,8 @@ const ExportOrderList = () => {
                 title="Hủy đơn hàng xuất" ConfirmCancel={ConfirmCancelExport} />
             <ModalEditExportOrder isShow={isShowEditOrder} handleClose={() => setIsShowEditOrder(false)} detailOrderEdit={dataEditOrder} updateTable={updateTable} />
             <ModalDetailExportOrder isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={dataDetailOrder} />
-            
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
-            
-            <ConfirmExportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)}
-             dataImportOrder={dataImportOrder} updateTable={updateTable} />
-
+            <ConfirmExportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
             <ModelAddExportOrderAuto isShow={isShowExportModelAddAuto} handleClose={() => setIsShowExportModelAddAuto(false)} updateTable={updateTable} />
             <ModelAddExportOrderManual isShow={isShowExportModelAddManual}
                 handleClose={() => setIsShowExportModelAddManual(false)}
