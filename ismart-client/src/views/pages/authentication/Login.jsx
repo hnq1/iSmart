@@ -37,8 +37,8 @@ const Login = () => {
         try {
             let res = await loginApi(username, password);
             if (res && res.status === 400) {
-                toast.error('Sai tên tài khoản hoặc mật khẩu!');
-            } else if (res.token) {
+                toast.error('Sai tên tài khoản hoặc mật khẩu');
+            } else if (res && res.token) {
                 loginContext(username, res.token.accessToken, res.userId, res.roleId);
                 if (res.roleId === 1 || res.roleId === 2 || res.roleId === 4) {
                     navigate("/thong-ke");
@@ -47,7 +47,7 @@ const Login = () => {
                 }
                 setLoading(false);
             } else {
-                toast.error('Sai tên tài khoản hoặc mật khẩu!');
+                toast.error('Sai tên tài khoản hoặc mật khẩu!!');
                 setLoading(false);
             }
         } catch (error) {
