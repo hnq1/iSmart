@@ -23,10 +23,8 @@ const ProfileDetail = ({ isShow, handleClose, userId }) => {
 
     useEffect(() => {
 
-        console.log(userId);
         getDataUser(userId);
 
-        console.log(dataUser);
 
     }, [userId])
 
