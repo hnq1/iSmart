@@ -35,15 +35,15 @@ const Warehouse3D = () => {
         controls.maxPolarAngle = Math.PI / 2;
 
         const calculateShelves = (length, width, shelfLength, shelfWidth, aisleWidth) => {
-            const numShelvesLength = Math.max(0, Math.floor((length - aisleWidth) / (shelfLength + aisleWidth)));
-            const numShelvesWidth = Math.max(0, Math.floor((width - aisleWidth) / (shelfWidth + aisleWidth)));
+            const numShelvesLength = Math.floor((length - aisleWidth) / (shelfLength + aisleWidth));
+            const numShelvesWidth = Math.floor((width - aisleWidth) / (shelfWidth + aisleWidth));
             return { numShelvesLength, numShelvesWidth };
         };
 
         const { length, width } = dimensions;
         const height = 10;
         const shelfLength = 2;
-        const shelfWidth = 1;
+        const shelfWidth =  1;
         const shelfHeight = 2;
         const aisleWidth = 1.5;
 
@@ -65,7 +65,7 @@ const Warehouse3D = () => {
             for (let j = 0; j < numShelvesWidth; j++) {
                 const shelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
                 shelf.position.set(
-                    -length / 2 + shelfLength / 2 + aisleWidth + i * (shelfLength + aisleWidth),
+                    -length / 2 + shelfLength / 2 + aisleWidth + i * (shelfLength + aisleWidth) ,
                     shelfHeight / 2,
                     -width / 2 + shelfWidth / 2 + aisleWidth + j * (shelfWidth + aisleWidth)
                 );
@@ -77,34 +77,8 @@ const Warehouse3D = () => {
             }
         }
 
-        // Create custom grid
-        const createGrid = (length, width, step) => {
-            const grid = new THREE.Group();
-            const material = new THREE.LineBasicMaterial({ color: 0x000000, opacity: 0.2, transparent: true });
-
-            for (let i = -length / 2; i <= length / 2; i += step) {
-                const points = [];
-                points.push(new THREE.Vector3(i, 0, -width / 2));
-                points.push(new THREE.Vector3(i, 0, width / 2));
-                const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                const line = new THREE.Line(geometry, material);
-                grid.add(line);
-            }
-
-            for (let j = -width / 2; j <= width / 2; j += step) {
-                const points = [];
-                points.push(new THREE.Vector3(-length / 2, 0, j));
-                points.push(new THREE.Vector3(length / 2, 0, j));
-                const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                const line = new THREE.Line(geometry, material);
-                grid.add(line);
-            }
-
-            return grid;
-        };
-
-        const grid = createGrid(length, width, 1);
-        scene.add(grid);
+        const gridHelper = new THREE.GridHelper(Math.max(length, width), Math.max(length, width));
+        scene.add(gridHelper);
 
         camera.position.set(length / 2, height / 2, Math.max(length, width));
 
@@ -115,7 +89,7 @@ const Warehouse3D = () => {
         };
 
         animate();
-
+       
         return () => {
             mount.removeChild(renderer.domElement);
             renderer.dispose();
@@ -162,6 +136,7 @@ const Warehouse3D = () => {
             </div>
             <div ref={mountRef} style={styles.scene} />
         </div>
+        
     );
 };
 
@@ -189,7 +164,7 @@ const styles = {
         marginBottom: '10px',
     },
     label: {
-        width: '150px',
+        width: '150px', 
         marginRight: '10px',
     },
     input: {

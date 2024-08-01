@@ -52,10 +52,6 @@ namespace iSmart.Service
 
                 if (existingGood == null)
                 {
-
-                    string countryCode = "VN";
-                    string year = DateTime.Now.Year.ToString().Substring(2, 2);
-                    string barcode = $"{countryCode}{year}{goods.GoodsCode}";
                     // Tạo hàng hóa mới
                     var newGood = new Good
                     {
@@ -70,7 +66,7 @@ namespace iSmart.Service
                         StockPrice = goods.StockPrice,
                         CreatedDate = DateTime.Now,
                         WarrantyTime = goods.WarrantyTime,
-                        Barcode = barcode,
+                        Barcode = goods.Barcode,
                         MaxStock = goods.MaxStock,
                         MinStock = goods.MinStock
                     };
@@ -131,9 +127,6 @@ namespace iSmart.Service
                 {
                     return new CreateGoodsResponse { IsSuccess = false, Message = "WarehouseId không tìm thấy" };
                 }
-                string countryCode = "VN";
-                string year = DateTime.Now.Year.ToString().Substring(2, 2);
-                string barcode = $"{countryCode}{year}{goods.GoodsCode}";
                 // Tạo hàng hóa mới
                 var newGood = new Good
                 {
@@ -148,7 +141,7 @@ namespace iSmart.Service
                     StockPrice = goods.StockPrice,
                     CreatedDate = DateTime.Now,
                     WarrantyTime = goods.WarrantyTime,
-                    Barcode = barcode,
+                    Barcode = goods.Barcode,
                     MaxStock = goods.MaxStock,
                     MinStock = goods.MinStock
                 };

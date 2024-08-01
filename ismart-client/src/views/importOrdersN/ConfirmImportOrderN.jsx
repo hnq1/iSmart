@@ -93,7 +93,19 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
-                                
+                                {/* <Col >
+
+                                    <label >Giá tiền</label>
+                                    <input type="number" className="form-control inputCSS" value={o.costPrice} readOnly />
+
+                                </Col>
+
+                                <Col >
+
+                                    <label >Tổng giá tiền</label>
+                                    <input type="number" className="form-control inputCSS" value={o.quantity * o.costPrice} readOnly />
+
+                                </Col> */}
                             </Row>
                         ))
                     }

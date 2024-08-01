@@ -29,28 +29,8 @@ const InventoryAll = () => {
 
 
 
-    const getStartDateTenYearsAgo = () => {
-        const today = new Date();
-        const tenYearsAgo = new Date(today.setFullYear(today.getFullYear() - 10));
-        return tenYearsAgo.toISOString().split('T')[0];
-    }
     useEffect(() => {
-        const fetchInitialData = async () => {
-            const start10Date = getStartDateTenYearsAgo();
-            const end10Date = new Date().toISOString().split('T')[0];
-
-            const storages = await fetchAllStorages();
-            setTotalWarehouse(storages);
-
-            const haiPhongWarehouse = storages.find(warehouse => warehouse.warehouseName === "Hải Phòng");
-            if (haiPhongWarehouse) {
-                setSelectedWarehouseId(haiPhongWarehouse.warehouseId);
-                const data = await fetchInventoryAll(start10Date, end10Date, haiPhongWarehouse.warehouseId);
-                setInventoryData(data);
-            }
-        };
-
-        fetchInitialData();
+        getAllStorages();
     }, []);
 
 
@@ -90,10 +70,10 @@ const InventoryAll = () => {
     }
 
 
-    // const handleStorageClickTotal = () => {
-    //     setSelectedWarehouse("Tất cả kho");
-    //     setSelectedWarehouseId(null);
-    // }
+    const handleStorageClickTotal = () => {
+        setSelectedWarehouse("Tất cả kho");
+        setSelectedWarehouseId(null);
+    }
 
 
     const handleStorageClick = async (warehouse) => {
@@ -195,14 +175,14 @@ const InventoryAll = () => {
                                     <Col md={2}>
                                         <DropdownButton
                                             className="DropdownButtonCSS ButtonCSSDropdown"
-                                            title={selectedWarehouse ? selectedWarehouse : "Hải Phòng"}
+                                            title={selectedWarehouse ? selectedWarehouse : "Tất cả Kho"}
                                             variant="success"
                                             style={{ zIndex: 999 }}
                                         >
 
 
-                                            {/* <Dropdown.Item eventKey=""
-                                                onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item> */}
+                                            <Dropdown.Item eventKey=""
+                                                onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
 
 
                                             {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (

@@ -136,7 +136,7 @@ function DeliveryList() {
                                 </div>
                             </div>
                             {
-                                (roleId == 1) ?
+                                (roleId == 1 ) ?
                                     <div className="col-auto ButtonCSSDropdown">
                                         <button
                                             className="btn btn-success border-left-0 rounded"
@@ -232,7 +232,7 @@ function DeliveryList() {
                 updateTableSupplier={updateTableSupplier} />
 
             <ModalConfirm title="bên vận chuyển"
-                statusText1={<span style={{ color: '#2275b7' }}>Đang hợp tác</span>}
+                statusText1={<span style={{ color: '#24cbc7' }}>Đang hợp tác</span>}
                 statusText2={<span style={{ color: '#ff0000' }}>Ngừng hợp tác</span>} isShow={isShowModalConfirm}
                 handleClose={() => setIsShowModalConfirm(false)}
                 confirmChangeStatus={confirmChangeStatus}

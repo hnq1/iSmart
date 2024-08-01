@@ -71,23 +71,16 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
                         <Col md={2}>
                             <div className="form-group mb-3">
                                 <label >Kho hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseName}</button>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.storageName}</button>
                             </div>
                         </Col>
-                        <Col md={2}>
-                            <div className="form-group mb-3">
-                                <label >Khách hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.customerName}</button>
-                            </div>
-                        </Col>
-                        <Col md={2}>
-                            <div className="form-group mb-3">
 
-                                <label >Giao hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.deliveryName}</button>
+                        <Col md={3}>
+                            <div className="form-group mb-3">
+                                <label >Tổng giá trị đơn hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{formattedAmount(dataImportOrder.totalPrice)}</button>
                             </div>
                         </Col>
-                       
                     </Row>
 
 
@@ -101,14 +94,25 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
                                         <input type="text" className="form-control inputCSS" value={o.goodsCode} readOnly />
                                     </div>
                                 </Col>
-                                
                                 <Col md={2}>
                                     <div className="form-group mb-3">
                                         <label >Số lượng</label>
                                         <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
                                     </div>
                                 </Col>
-                                
+                                <Col md={2}>
+                                    <div className="form-group mb-3">
+                                        <label >Giá tiền</label>
+                                        <input type="number" className="form-control inputCSS" value={o.price} readOnly />
+                                    </div>
+                                </Col>
+
+                                <Col md={2}>
+                                    <div className="form-group mb-3">
+                                        <label >Tổng giá tiền</label>
+                                        <input type="number" className="form-control inputCSS" value={o.quantity * o.price} readOnly />
+                                    </div>
+                                </Col>
                             </Row>
                         ))
                     }

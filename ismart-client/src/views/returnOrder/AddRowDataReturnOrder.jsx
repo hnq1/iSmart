@@ -21,8 +21,7 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
 
     useEffect(() => {
         getAllGoods();
-    }, [selectedStorageId, selectedSupplierId]);
-
+    }, [selectedStorageId]);
 
     useEffect(() => {
         setDataMethod(null);

@@ -6,10 +6,10 @@
 /* Các kiểu CSS tùy chỉnh của bạn */
 
 :root {
-    // --primary: #2275b7;
+    // --primary: #24cbc7;
     --secondary: #5d586c;
-    --toastify-icon-color-success: #2275b7 !important;
-    --toastify-color-progress-success: #2275b7 !important;
+    --toastify-icon-color-success: #23c2bf !important;
+    --toastify-color-progress-success: #23c2bf !important;
 }
 
 body {
@@ -119,16 +119,13 @@ body {
     border: none !important;
 }
 .FormSelectCSS > option:hover {
-    background-color: #2275b7 !important;
+    background-color: #23c2bf !important;
     border: white;
     color: white !important;
     font-weight: bold;
 }
-.dropdown-toggle::after {
-    color: white;
-}
 .DropdownButtonCSS > button {
-    background-color: #2275b7 !important;
+    background-color: #24cbc7 !important;
     border: white;
     color: white !important;
     font-weight: bold;
@@ -137,61 +134,61 @@ body {
     position: fixed !important;
 }
 .DropdownButtonCSS > button:hover {
-    background-color: #2275b7 !important;
+    background-color: #23c2bf !important;
     border: white;
     color: white !important;
     font-weight: bold;
 }
 .DropdownButtonCSS > button:active {
-    background-color: #2275b7 !important;
+    background-color: #23c2bf !important;
     border: none !important;
     color: white !important;
     font-weight: bold;
 }
 .DropdownButtonCSS > button.show {
-    background-color: #2275b7 !important;
+    background-color: #23c2bf !important;
     border: none !important;
     color: white !important;
     font-weight: bold;
 }
 
 .ButtonCSSDropdown > button {
-    background-color: #2275b7 !important;
+    background-color: #24cbc7 !important;
     border: white;
     color: white !important;
     font-weight: bold;
 }
 .ButtonCSSDropdown > div > a:active {
-    background-color: #2275b7 !important;
+    background-color: #24cbc7 !important;
     border: white;
     color: white !important;
 }
 .ButtonCSSDropdown > ul > a:active {
-    background-color: #2275b7 !important;
+    background-color: #24cbc7 !important;
     border: white;
     color: white !important;
 }
 .ButtonCSSDropdown > button:hover {
-    background-color: #2275b7 !important;
+    background-color: #23c2bf !important;
     border: white;
     color: white !important;
     font-weight: bold;
 }
 .ButtonCSS {
-    background-color: #2275b7 !important;
+    background-color: #24cbc7 !important;
     border: white !important;
     color: white !important;
     font-weight: bold !important;
 }
 .ButtonCSS:hover {
-    background-color: #2275b7 !important;
+    background-color: #1faaa8 !important;
 
     color: white !important;
     font-weight: bold;
 }
 .inputCSS:focus {
     box-shadow: none !important;
-    border: #2275b7 1px solid !important;
+    border: #23c2bf 1px solid !important;
 }
 
 .actionButtonCSS {
@@ -202,7 +199,7 @@ body {
     cursor: pointer;
 }
 .actionButtonCSS:hover {
-    background-color: #2275b7;
+    background-color: rgba(36, 203, 199, 0.5);
 }
 
 .edit-product-form {
@@ -248,8 +245,8 @@ body {
 
 .page-item.active .page-link {
     color: white !important;
-    background-color: #2275b7 !important;
-    border: #2275b7 1px solid !important;
+    background-color: #23c2bf !important;
+    border: #23c2bf 1px solid !important;
     box-shadow: none !important;
 }
 .page-item {
@@ -258,7 +255,7 @@ body {
 }
 
 .page-item .page-link {
-    color: #2275b7 !important;
+    color: #23c2bf !important;
     box-shadow: none !important;
 }
 ul.pagination li.page-item.disabled a.page-link {
@@ -282,21 +279,21 @@ ul.pagination li.page-item.disabled a.page-link {
 }
 
 .custom-switch > input {
-    border-color: #2275b7 !important;
+    border-color: #24cbc7 !important;
 }
 
 .datepickerCSS {
     width: auto;
     height: 35px;
     border-radius: 8px;
-    border: solid 2px #2275b7 !important;
+    border: solid 2px #24cbc7 !important;
 }
 
 .datepickerCSS:focus-visible {
     width: auto;
     height: 35px;
     border-radius: 8px;
-    border: solid 2px #2275b7 !important;
+    border: solid 2px #24cbc7 !important;
 }
 /* Định dạng cho thẻ input */
 input[type='date'].datepickerCSS {
@@ -318,7 +315,7 @@ input[type='date'].datepickerCSS::-webkit-calendar-picker-indicator {
 /* Định dạng khi datepicker được focus */
 input[type='date'].datepickerCSS:focus {
     outline: none;
-    border-color: #2275b7;
+    border-color: #24cbc7;
     box-shadow: 0 0 5px rgba(36, 203, 199, 0.5);
 }
 
@@ -399,54 +396,3 @@ input[type='date'].datepickerCSS::-webkit-datetime-edit-year-field {
         border-bottom-right-radius: 0.3rem;
     }
 }
-
-/* ---------- SIGN IN ---------- */
-.sign-in__wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: relative;
-    padding: 100px;
-  }
-  
-  .sign-in__backdrop {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-  
-  .sign-in__wrapper form {
-    width: 40rem;
-    max-width: 100%;
-    z-index: 1;
-    animation: showSignInForm 1s;
-  }
-  
-  .sign-in__wrapper form img {
-    width: 10rem;
-  }
-  
-  @keyframes showSignInForm {
-    0%,
-    30% {
-      transform: translate(0, -200%);
-    }
-    70%,
-    90% {
-      transform: translate(0, 1rem);
-    }
-    80%,
-    100% {
-      transform: translate(0, 0);
-    }
-  }
-
-  .custom-navbar {
-    background: #2275b7 !important;
-}
-

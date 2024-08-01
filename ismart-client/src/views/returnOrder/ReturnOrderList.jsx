@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Dropdown, DropdownButton, Col, Row, Badge } from 'react-bootstrap';
+import { Table, Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
 import { formatDate } from '~/validate';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
@@ -266,7 +266,7 @@ function ReturnOrderList() {
                                     </div>
 
                                 </Col>
-                                {(roleId === 1 || roleId === 3) ?
+                                {(roleId === 3 || roleId === 1) ?
 
                                     <Col md={2}>
                                         <div className="col-auto ButtonCSSDropdown">
@@ -307,10 +307,9 @@ function ReturnOrderList() {
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
 
                                         <th className="align-middle  text-nowrap">Người <br />xác nhận</th>
-                                        <th className="align-middle  text-nowrap">Tuỳ chọn</th>
-                                        {/* <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
+                                        <th className="align-middle  text-nowrap">Xem <br />chi tiết</th>
                                         {roleId === 2 || roleId === 1 ? <th className="align-middle  text-nowrap">Hủy</th> : ''}
-                                        {roleId === 2 || roleId === 1 ? <th className="align-middle  text-nowrap">Chỉnh sửa</th> : ''} */}
+                                        {roleId === 2 || roleId === 1 ? <th className="align-middle  text-nowrap">Chỉnh sửa</th> : ''}
                                         {/* {roleId === 2 ? <th className="align-middle  text-nowrap">Hủy <br />đơn hàng</th> : ''}
 
                                         {roleId === 3 ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''} */}
@@ -332,17 +331,14 @@ function ReturnOrderList() {
                                                 <td className="align-middle">{i.deliveryName}</td> */}
 
 
-                                                <td className="align-middle">
-                                                    {i.statusType === "On Progress" ?
-                                                        <Badge style={{ backgroundColor: "#0c7a42" }}>Đang tiến hành</Badge> :
-                                                        i.statusType === "Completed" ?
-                                                            <Badge bg="success">Đã hoàn thành</Badge> :
-                                                            <Badge bg="danger">Đã huỷ</Badge>}
+                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
+                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã hủy"}
                                                 </td>
-
-
                                                 <td className="align-middle">{i.approvedByName}</td>
+                                                <td className="align-middle " style={{ padding: '10px' }}>
 
+                                                    <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
+                                                </td>
                                                 {/* {roleId === 2 && i.statusType === "On Progress" ?
                                                     <td className="align-middle"> <i className="fa-solid fa-ban actionButtonCSS"
                                                         onClick={() => ShowModalCancelExport(i)}></i></td>
@@ -353,25 +349,34 @@ function ReturnOrderList() {
 
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : <td></td>} */}
-                                                <td className="align-middle">
-                                                    <i className="fa-solid fa-circle-info actionButtonCSS" title="Chi tiết" onClick={() => ShowDetailOrder(i)}></i>
-                                                    {(roleId === 1 || roleId === 2) ?
-                                                        <i className="fa-solid fa-pen-to-square actionButtonCSS" title="Chỉnh sửa" onClick={() => ShowEditDetailOrder(i)}></i>
-                                                        : ''}
-                                                    {(roleId === 1 || roleId === 2) ?
-                                                        <i className="fa-solid fa-ban actionButtonCSS" title="Huỷ đơn hàng"
-                                                            onClick={() => openModalCancel(i)}></i> : ''}
-                                                </td>
+                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle">
+                                                    <button disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}>
+
+                                                        <i className="fa-solid fa-ban actionButtonCSS" onClick={() => openModalCancel(i)}
+
+                                                        ></i>
+                                                    </button>
+                                                </td> : ''}
+
+                                                {(roleId === 1 || roleId === 2) ? <td className="align-middle " style={{ padding: '10px' }}>
+                                                    <button disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}>
+
+                                                        <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}
+
+                                                        ></i>
+                                                    </button>
+                                                </td> : ''}
 
 
-                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ' style={{ right: 0, minWidth: '150px' }}> <button
-                                                    className="btn btn-success "
+
+                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
+                                                    className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    style={{ backgroundColor: i.statusType === "Completed" ? "#0c7a42" : i.statusType === "On Progress" ? "#2275b7" : "#ea5455", fontWeight: 'bold' }}
-                                                    disabled={i.statusType === "Cancel" || i.statusType === "Completed" || i.statusType === "Active" || (roleId !== 1 && roleId !== 2)}
-                                                >{i.statusType === "Completed" ? "Đã trả hàng" : i.statusType === "On Progress" ? "Trả hàng" : "Đã huỷ"}
+                                                    disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}
+                                                >{i.statusType === "Completed" ? "Hoàn thành" : i.statusType === "On Progress" ? "Tiến hành xác nhận" : "Đã hủy"}
                                                 </button></td> : ''}
+
                                             </tr>
                                         ))}
                                 </tbody>

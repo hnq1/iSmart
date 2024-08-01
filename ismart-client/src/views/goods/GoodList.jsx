@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, DropdownButton, Col, Row } from 'react-bootstrap';
 import { fetchGoodsWithFilter, fetchAllGoodsInWarehouse } from '~/services/GoodServices';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -19,7 +19,6 @@ import InportGoodsListModal from './inputExport/InPort';
 import ExportGoodsListModal from './inputExport/Export';
 import { TorusGeometry } from 'three';
 import { ReactBarcode } from 'react-jsbarcode';
-import ReactToPrint from 'react-to-print';
 
 
 
@@ -111,7 +110,7 @@ function MyTable() {
         height: 50, // Chiều cao của mã vạch
         displayValue: true // Hiển thị giá trị trên mã vạch
     };
-    const barcodeRefs = useRef(listGoods ? Array(listGoods.length).fill(null) : "");
+
 
     useEffect(() => {
         let res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId);
@@ -423,7 +422,7 @@ function MyTable() {
                                             type="button"
                                             onClick={handleSearch}
                                         >
-                                            <i className="fa-solid fa-magnifying-glass"></i>
+                                            <i class="fa-solid fa-magnifying-glass"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -448,7 +447,7 @@ function MyTable() {
                             <div className="col">
                                 <button className="btn btn-success border-left-0 rounded ButtonCSS"
                                     variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()} >
-                                    <i className="fa-solid fa-file-import"></i>
+                                    <i class="fa-solid fa-file-import"></i>
                                     &nbsp;&nbsp;&nbsp;Nhập bằng Excel
                                 </button>
                             </div>
@@ -556,9 +555,7 @@ function MyTable() {
                                                 {(() => {
                                                     const barcodeValue = g.barcode && g.barcode.trim() !== "" ? g.barcode : "null"; // Đảm bảo giá trị không trống
                                                     if (barcodeValue !== "null") {
-                                                        return <div ref={(ref) => barcodeRefs.current[index] = ref}>
-                                                            <ReactBarcode value={barcodeValue} options={barcodeOptions} />
-                                                        </div>;
+                                                        return <ReactBarcode value={barcodeValue} options={barcodeOptions} />;
                                                     }
                                                     return null;
                                                 })()}
@@ -568,11 +565,6 @@ function MyTable() {
                                                 (roleId == 1 || roleId == 2) ?
                                                     <td className="align-middle " style={{ padding: '10px' }}>
                                                         <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => showModelEditGood(g)}></i>
-                                                        <ReactToPrint
-                                                            trigger={() => <button variant="primary" className='fa-solid fa-barcode actionButtonCSS'></button>}
-                                                            content={() => barcodeRefs.current[index]}
-                                                        />
-
                                                     </td>
                                                     : ''
                                             }

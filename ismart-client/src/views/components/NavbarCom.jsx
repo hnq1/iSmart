@@ -36,23 +36,23 @@ function NavbarCom() {
 
         const roleId = parseInt(localStorage.getItem('roleId'), 10); // Lấy roleId từ localStorage
         // if (roleId === 2) { // Chỉ thiết lập WebSocket nếu roleId là 2
-        const socket = new WebSocket('wss://localhost:7033/ws'); // Thay đổi URL và port tương ứng với server của bạn
+            const socket = new WebSocket('wss://localhost:7033/ws'); // Thay đổi URL và port tương ứng với server của bạn
 
-        socket.onopen = () => {
-            console.log('WebSocket connected');
-        };
+            socket.onopen = () => {
+                console.log('WebSocket connected');
+            };
 
-        socket.onmessage = (event) => {
-            const message = event.data;
+            socket.onmessage = (event) => {
+                const message = event.data;
 
-            console.log('Received message from server:', message);
-            setWebSocketMessages(prevMessages => [...prevMessages, message]);
+                console.log('Received message from server:', message);
+                setWebSocketMessages(prevMessages => [...prevMessages, message]);
 
-        };
+            };
 
-        return () => {
-            socket.close();
-        };
+            return () => {
+                socket.close();
+            };
         // }
 
     }, []);
@@ -90,7 +90,7 @@ function NavbarCom() {
 
     return (
         <>
-            <Navbar expand="lg" style={{ background: '#2275b7 ' }}>
+            <Navbar bg="body-tertiary" expand="lg" style={{ background: 'linear-gradient(to right, #a5e6c8, #b4ead1, #c4eedb, #d3f3e4, #e2f7ed, #f2fbf7)' }}>
                 {!hideHeader &&
                     <Container>
                         <Navbar.Toggle aria-controls="navbarSupportedContent" />
@@ -99,7 +99,7 @@ function NavbarCom() {
                             </Nav>
                             <Nav className="d-flex align-items-center">
                                 <div style={{ position: 'relative' }}>
-                                    <i className="fa-solid fa-bell text-white" style={{ cursor: 'pointer' }} onClick={() => setShowNotifications(!showNotifications)}></i>
+                                    <i className="fa-solid fa-bell" onClick={() => setShowNotifications(!showNotifications)}></i>
                                     {webSocketMessages.length > 0 && (
                                         <span className="notification-count" style={{
                                             position: 'absolute',
@@ -120,7 +120,6 @@ function NavbarCom() {
                                 <NavDropdown
                                     id="navbarDropdownMenuAvatar"
                                     className='ButtonCSSDropdown'
-                                    style={{ color: 'white' }}
                                     show={showNotifications} // Hiển thị dropdown khi biểu tượng chuông được nhấp
                                     onMouseLeave={() => setShowNotifications(false)} // Tự động ẩn khi rời khỏi dropdown
                                 >
@@ -138,12 +137,11 @@ function NavbarCom() {
                                     {/* <NavDropdown.Item as={Link} to="/thong-bao">Xem tất cả thông báo</NavDropdown.Item> */}
                                 </NavDropdown>
                                 <span style={{ margin: '0 10px' }}></span> {/* Adjust the margin as needed */}
-                                <i className="fa-solid fa-user text-white"></i>
+                                <i className="fa-duotone fa-user"></i>
                                 <NavDropdown
-                                    title={<span className="text-white">Chào bạn {user.userName}</span>}
+                                    title={<span>Chào bạn {user.userName}</span>}
                                     id="navbarDropdownMenuAvatar"
-                                    className='ButtonCSSDropdown text-white'
-                                    style={{ color: 'white' }}
+                                    className='ButtonCSSDropdown'
                                 >
                                     {user && user.auth === true ? <NavDropdown.Item onClick={() => setIsShowProfileDetail(true)}>Hồ sơ</NavDropdown.Item> : ''}
                                     <NavDropdown.Item as={Link} to="/doi-mat-khau">Đổi mật khẩu</NavDropdown.Item>

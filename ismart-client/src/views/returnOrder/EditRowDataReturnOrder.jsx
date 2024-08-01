@@ -87,7 +87,12 @@ const EditRowDataReturnOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                     </div>
                 </Col>
 
-              
+                {/* <Col md={2}>
+                    <div className="form-group mb-3">
+                        <label >Tổng giá tiền</label>
+                        <input type="text" className="form-control" value={totalOneGoodPrice} disabled />
+                    </div>
+                </Col> */}
                 {/* <Col md={2}>
                     <div className="form-group mb-3">
                         <label >Mã lô hàng</label>

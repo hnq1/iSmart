@@ -11,6 +11,6 @@
 }
 
 .custom-switch .form-check-input:checked{
-    background-color: #2275b7 !important; /* Màu nền khi switch được chọn */
+    background-color: #24cbc7 !important; /* Màu nền khi switch được chọn */
 }
 

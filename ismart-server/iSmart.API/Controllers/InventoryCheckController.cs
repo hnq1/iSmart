@@ -37,6 +37,7 @@ namespace iSmart.API.Controllers
         }
 
         [HttpGet("get-all-inventory-checks")]
+<<<<<<< HEAD
 
 
        public async Task<ActionResult<List<CreateInventoryCheckDTO>>> GetAllInventoryChecksAsync(int? warehouseId)
@@ -45,6 +46,13 @@ namespace iSmart.API.Controllers
             {
                 var inventoryChecks = await _inventoryCheckService.GetAllInventoryChecksAsync(warehouseId);
 
+=======
+        public async Task<ActionResult<List<CreateInventoryCheckDTO>>> GetAllInventoryChecksAsync()
+        {
+            try
+            {
+                var inventoryChecks = await _inventoryCheckService.GetAllInventoryChecksAsync();
+>>>>>>> parent of 771822c (Merge branch 'main' of https://github.com/hnq1/iSmart into huynqhe150250)
                 return Ok(inventoryChecks);
             }
             catch (Exception ex)
@@ -71,6 +79,7 @@ namespace iSmart.API.Controllers
             }
         }
 
+<<<<<<< HEAD
 
         [HttpPost("cancel-inventory-check")]
         public async Task<IActionResult> CancelInventoryCheck(int id)
@@ -90,6 +99,8 @@ namespace iSmart.API.Controllers
     
 
 
+=======
+>>>>>>> parent of 771822c (Merge branch 'main' of https://github.com/hnq1/iSmart into huynqhe150250)
         [HttpPost("update-batch-quantities")]
         public async Task<ActionResult> UpdateBatchQuantitiesAsync([FromBody] Dictionary<string, int> batchQuantities)
         {

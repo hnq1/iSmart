@@ -32,7 +32,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
 
     const [goodName, setGoodName] = useState("");
-    const [goodCode, setGoodCode] = useState('');
+    const [goodCode, setGoodCode] = useState(null);
 
 
     const [warrantyTime, setWarrantyTime] = useState(0);
@@ -43,7 +43,10 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const [maxStock, setMaxStock] = useState(0);
     const [minStock, setMinStock] = useState(0);
     const [createdDate, setCreatedDate] = useState(new Date().toISOString().split('T')[0]);
-    const [barCode, setBarCode] = useState('');
+
+
+    const [barCode, setBarCode] = useState(null);
+
 
     useEffect(() => {
         getAllStorages();
@@ -51,10 +54,16 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         getAllSuppliers();
     }, [])
 
+
+    useEffect(() => {
+    }, [barCode]);
+
+
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
     }
+
 
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
@@ -119,18 +128,25 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setDescription(event.target.value);
     }
 
+
+    
+
+
     const handleUnitClick = (unit) => {
         setMeasuredUnit(unit);
     }
+
 
     const handleChangeCreatedDate = (event) => {
         setCreatedDate(event.target.value);
     }
 
+
     const handleCloseModal = () => {
         handleReset();
         handleClose();
     }
+
 
     const handleReset = () => {
         setSelectedCategoryId(null);
@@ -144,29 +160,11 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setMaxStock(0);
         setMinStock(0);
         setBarCode(null);
-        setGoodCode('');
+        setGoodCode(null);
         setGoodName(null);
         setDescription(null);
         setWarrantyTime(0);
         setImageGood(null);
-    }
-
-    const generateBarcode = () => {
-        const countryCode = "893";
-        const year = new Date().getFullYear().toString().slice(2);
-        const paddedProductCode = goodCode.toString();
-        return `${countryCode}-${year}-${paddedProductCode}`;
-    };
-
-    const handleCreateBarcode = () => {
-        const trimmedGoodCode = goodCode ? goodCode.trim() : '';
-        if (!trimmedGoodCode) {
-            toast.warning("Vui lòng nhập mã mặt hàng");
-        }
-        else {
-            setBarCode(generateBarcode());
-
-        }
     }
 
 
@@ -174,20 +172,16 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         const trimmedGoodName = goodName ? goodName.trim() : '';
         const trimmedGoodCode = goodCode ? goodCode.trim() : '';
         const trimmedDescription = description ? description.trim() : '';
-        if (!selectedWarehouseId) {
-            toast.warning("Vui lòng chọn kho");
-        } else if (!measuredUnit) {
-            toast.warning("Vui lòng chọn đơn vị");
-        }
-        else if (!trimmedGoodName) {
+        if (!trimmedGoodName) {
             toast.warning("Vui lòng nhập tên mặt hàng");
         } else if (!trimmedGoodCode) {
             toast.warning("Vui lòng nhập mã mặt hàng");
-        }
-        else if (!selectedCategoryId) {
+        } else if (!selectedCategoryId) {
             toast.warning("Vui lòng chọn danh mục");
         } else if (!selectedSupplierId) {
-            toast.warning("Vui lòng chọn nhà cung cấp");
+            toast.warning("Vui lòng chọn nhà phân phối");
+        } else if (!measuredUnit) {
+            toast.warning("Vui lòng chọn đơn vị");
         }
         else if (!imageGood) {
             toast.warning("Vui lòng chọn hình ảnh");
@@ -211,46 +205,51 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
             toast.warning("Vui lòng nhập số lượng tối đa lớn hơn số lượng tối thiểu");
         }
         else {
-            let res;
-            if (roleId === 1) {
-                res = await addGoodinAdmin(selectedWarehouseId,
-                    goodName, goodCode, selectedCategoryId,
-                    description,
-                    selectedSupplierId,
-                    measuredUnit,
-                    imageGood,
-                    1,
-                    0,
-                    createdDate,
-                    warrantyTime,
-                    barCode,
-                    maxStock,
-                    minStock
-                );
-            } else {
-                res = await addGood(userId,
-                    goodName, goodCode, selectedCategoryId,
-                    description,
-                    selectedSupplierId,
-                    measuredUnit,
-                    imageGood,
-                    1,
-                    0,
-                    createdDate,
-                    warrantyTime,
-                    barCode,
-                    maxStock,
-                    minStock
-                );
-            }
-            if (res.isSuccess) {
-                toast.success("Thêm mặt hàng mới thành công");
-                handleCloseModal();
-                updateTable();
-            } else {
-                toast.error(res.message || "Mã hàng đã tồn tại");
-            }
+           
+                let res;
+                if (roleId === 1) {
+                    res = await addGoodinAdmin(selectedWarehouseId,
+                        goodName, goodCode, selectedCategoryId,
+                        description,
+                        selectedSupplierId,
+                        measuredUnit,
+                        imageGood,
+                        1,
+                        0,
+                        createdDate,
+                        warrantyTime,
+                        barCode,
+                        maxStock,
+                        minStock
+                    );
+                } else {
+                    
+                    res = await addGood(userId,
+                        goodName, goodCode, selectedCategoryId,
+                        description,
+                        selectedSupplierId,
+                        measuredUnit,
+                        imageGood,
+                        1,
+                        0,
+                        createdDate,
+                        warrantyTime,
+                        barCode,
+                        maxStock,
+                        minStock
+                    );
+                }
+                if (res.isSuccess) {
+                    toast.success("Thêm mặt hàng mới thành công");
+                    handleCloseModal();
+                    updateTable();
+                } else {
+                    toast.error(res.message || "Mã hàng đã tồn tại");
+                }
+           
         }
+
+
     }
 
 
@@ -264,7 +263,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     <Row style={{ display: 'flex', alignItems: 'center' }}>
                         {
                             roleId === 1 ?
-                                <Col md={6}>
+                                <Col md={5}>
                                     <label >Kho</label>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"
@@ -288,7 +287,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                                 </Col>
                                 : ''
                         }
-                        <Col md={6}>
+                        <Col md={5}>
                             <label >Đơn vị </label>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
@@ -310,13 +309,13 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
 
                     <Row style={{ marginTop: '15px' }}>
-                        <Col md={6}>
+                        <Col md={5}>
                             <label >Tên hàng </label>
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={goodName} onChange={handleGoodName} />
                         </Col>
 
 
-                        <Col md={6}>
+                        <Col md={5}>
                             <label >Mã hàng </label>
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={goodCode} onChange={handleGoodCode} />
                         </Col>
@@ -324,7 +323,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
 
                     <Row style={{ marginTop: '15px' }}>
-                        <Col md={6}>
+                        <Col md={5}>
                             <label >Danh mục</label>
 
 
@@ -345,7 +344,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                         </Col>
 
 
-                        <Col md={6}>
+                        <Col md={5}>
                             <label >Nhà cung cấp </label>
                             <Dropdown style={{ position: 'relative' }}>
                                 <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
@@ -365,22 +364,14 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
 
                     </Row>
+
+
                     <Row style={{ marginTop: '15px' }}>
-                        <Col md={6}>
-                            <label >Mã vạch </label>
-                            <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={barCode} readOnly />
-                        </Col>
-                        <Col md={4}>
-                            <label >&nbsp;</label>
-                            <Button className='form-control ButtonCSS' type='submit' onClick={handleCreateBarcode}> Tạo mã vạch</Button>
-                        </Col>
-                    </Row>
-                    <Row style={{ marginTop: '15px' }}>
-                        <Col md={6}>
+                        <Col md={5}>
                             <label >Ngày tạo </label>
                             <input type="date" className="form-control inputCSS" aria-describedby="emailHelp" value={createdDate} onChange={handleChangeCreatedDate} />
                         </Col>
-                        <Col md={6}>
+                        <Col md={5}>
                             <label >Hạn bảo hành (tháng) </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={warrantyTime} onChange={handleChangeWarranty} />
                         </Col>
@@ -390,13 +381,29 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                             <label >Thông tin chi tiết </label>
                             <textarea type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={description} onChange={handleChangeDescription} />
                         </Col>
+
+
+
+
                     </Row>
+
+
                     <Row style={{ marginTop: '15px' }}>
-                        <Col md={6}>
+
+
+                        {/* <Col md={5}>
+                            <label >Giá nhập </label>
+                            <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={stockPrice} onChange={(e) => setStockPrice(e.target.value)} />
+                        </Col> */}
+                    </Row>
+
+
+                    <Row style={{ marginTop: '15px' }}>
+                        <Col md={5}>
                             <label >Tồn kho tối đa </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={maxStock} onChange={(e) => setMaxStock(e.target.value)} />
                         </Col>
-                        <Col md={6}>
+                        <Col md={5}>
                             <label > Tồn kho tối thiểu </label>
                             <input type="number" className="form-control inputCSS" aria-describedby="emailHelp" value={minStock} onChange={(e) => setMinStock(e.target.value)} />
                         </Col>
@@ -421,6 +428,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                 </div>
             </Modal.Body>
             <Modal.Footer>
+
+
                 <Button variant="secondary" onClick={handleCloseModal}>
                     Đóng
                 </Button>

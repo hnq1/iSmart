@@ -154,7 +154,16 @@ const ModalEditReturnOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                         {renderExportData()}
 
                     </Row>
-                    
+                    {/* <div className="">
+                        <button
+                            className="btn rounded ButtonRed"
+                            type="button"
+
+                        >
+                            Tổng giá tiền: {formattedAmount(totalPrice)}
+                        </button>
+
+                    </div> */}
 
                 </div>
             </Modal.Body>

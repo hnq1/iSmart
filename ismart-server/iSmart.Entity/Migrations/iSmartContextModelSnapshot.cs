@@ -665,15 +665,10 @@ namespace iSmart.Entity.Migrations
                     b.Property<DateTime>("CheckDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
                     b.Property<int>("WarehouseId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("StatusId");
 
                     b.HasIndex("WarehouseId");
 
@@ -1368,19 +1363,11 @@ namespace iSmart.Entity.Migrations
 
             modelBuilder.Entity("iSmart.Entity.Models.InventoryCheck", b =>
                 {
-                    b.HasOne("iSmart.Entity.Models.Status", "Status")
-                        .WithMany("InventoryChecks")
-                        .HasForeignKey("StatusId")
-                        .IsRequired()
-                        .HasConstraintName("FK_InventoryCheck_Status");
-
                     b.HasOne("iSmart.Entity.Models.Warehouse", "Warehouse")
                         .WithMany("InventoryChecks")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Status");
 
                     b.Navigation("Warehouse");
                 });
@@ -1632,8 +1619,6 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("Goods");
 
                     b.Navigation("ImportOrders");
-
-                    b.Navigation("InventoryChecks");
 
                     b.Navigation("ReturnsOrders");
 

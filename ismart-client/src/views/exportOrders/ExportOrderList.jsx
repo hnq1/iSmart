@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { fetchExportOrdersWithFilter } from "~/services/ExportOrderService";
 import { formatDate, formattedAmount } from '~/validate';
 import ReactPaginate from 'react-paginate';
-import { Table, Form, Modal, Button, Badge } from 'react-bootstrap';
+import { Table, Form, Modal, Button } from 'react-bootstrap';
 import ModelAddExportOrderAuto from "./AddExportOrderAuto";
 import ModelAddExportOrderManual from "./AddExportOrderManual";
 import ConfirmExportOrder from "./ConfirmExportOrder";
@@ -15,7 +15,7 @@ import { fetchAllStorages } from '~/services/StorageServices';
 import { fetchUserByUserId } from "~/services/UserServices";
 import { Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
 import { toast } from "react-toastify";
-import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
+
 
 import { format } from 'date-fns';
 import { get } from "lodash";
@@ -145,35 +145,17 @@ const ExportOrderList = () => {
 
 
     const getExportOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
-        if (roleId === 1) {
-            setcurrentPage(page - 1);
-
-            let res = await fetchExportOrdersWithFilter(
-                pageSize, page, selectedWarehouseId,
-                "", "",
-                sortedByStatusId,
-                sortedByDateId, keywordSearch);
+        setcurrentPage(page - 1);
+        let res = await fetchExportOrdersWithFilter(
+            pageSize, page, selectedWarehouseId,
+            "", "",
+            sortedByStatusId,
+            sortedByDateId, keywordSearch);
 
 
-            setTotalExportOrder(res.data);
-            setTotalPages(res.totalPages);
-            // console.log("fetchExportOrdersWithFilter: ", res.data);
-        }
-        if (roleId === 2 || roleId === 3) {
-            setcurrentPage(page - 1);
-            let wh = await getUserIdWarehouse(userId);
-            let res = await fetchExportOrdersWithFilter(
-                pageSize, page, wh[0].warehouseId,
-                "", "",
-                sortedByStatusId,
-                sortedByDateId, keywordSearch);
-
-
-            setTotalExportOrder(res.data);
-            setTotalPages(res.totalPages);
-            // console.log("fetchExportOrdersWithFilter: ", res.data);
-        }
-
+        setTotalExportOrder(res.data);
+        setTotalPages(res.totalPages);
+        // console.log("fetchExportOrdersWithFilter: ", res.data);
     }
 
 
@@ -267,7 +249,7 @@ const ExportOrderList = () => {
                     <div className="col-sm-12">
                         <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng xuất kho</h5>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
-                            {roleId == 4 || roleId == 1 ?
+                            {roleId == 2 || roleId == 4 || roleId == 1 ?
                                 <Col md={2}>
                                     <DropdownButton
                                         className="DropdownButtonCSS ButtonCSSDropdown"
@@ -417,12 +399,9 @@ const ExportOrderList = () => {
                                                 <td className="align-middle" onClick={() => handleZoomImage(i.image)}>
                                                     <img src={i.image} alt="Image" style={{ width: '50px', height: '50px' }} />
                                                 </td>
-                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#2275b7" }}>
-                                                    {i.statusType === "On Progress" ?
-                                                        <Badge style={{ backgroundColor: "#0c7a42" }}>Đang tiến hành</Badge> :
-                                                        i.statusType === "Completed" ?
-                                                            <Badge bg="success">Đã hoàn thành</Badge> :
-                                                            <Badge bg="danger">Đã huỷ</Badge>}                                                </td>
+                                                <td className="align-middle" style={{ color: i.statusType === "Cancel" ? "#ea5455" : "#24cbc7" }}>
+                                                    {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã hủy"}
+                                                </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>
                                                     <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
@@ -432,7 +411,11 @@ const ExportOrderList = () => {
                                                         onClick={() => ShowModalCancelExport(i)}></i></td>
                                                     : ''
                                                 } */}
+
+
                                                 {/* {roleId === 2 && i.statusType === "On Progress" ? <td className="align-middle " style={{ padding: '10px' }}>
+
+
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : <td></td>} */}
                                                 {(roleId === 1 || roleId === 2) ? (
@@ -453,16 +436,25 @@ const ExportOrderList = () => {
                                                     )
                                                 ) : ''}
                                                 {/* {(roleId === 1 || roleId === 2) ? <td className="align-middle " style={{ padding: '10px' }}>
+
+
                                                     <i className="fa-duotone fa-pen-to-square actionButtonCSS" onClick={() => ShowEditDetailOrder(i)}></i>
                                                 </td> : ''} */}
-                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ' style={{ right: 0, minWidth: '150px' }}> <button
-                                                    className="btn btn-success "
+                                                {(roleId === 1 || roleId === 2) ? <td className='position-sticky ButtonCSSDropdown' style={{ right: 0, minWidth: '150px' }}> <button
+                                                    className="btn btn-success border-left-0 rounded "
                                                     type="button"
                                                     onClick={() => ShowModelConfirm(i)}
-                                                    style={{ backgroundColor: i.statusType === "Completed" ? "#0c7a42" : i.statusType === "On Progress" ? "#2275b7" : "#ea5455", fontWeight: 'bold' }}
                                                     disabled={i.statusType === "Completed" || i.statusType === "Cancel" || (roleId !== 1 && roleId !== 2)}
-                                                >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Xuất hàng" : "Đã huỷ"}
+                                                >{i.statusType === "Completed" ? "Đã xuất hàng" : i.statusType === "On Progress" ? "Tiến hành xuất hàng" : "Nhập hàng"}
                                                 </button></td> : ''}
+
+
+
+
+
+
+
+
                                             </tr>
                                         ))}
 
@@ -473,6 +465,8 @@ const ExportOrderList = () => {
                     </div>
                 </div>
             </div>
+
+
             <div className="d-flex justify-content-center  mt-3">
                 <ReactPaginate
                     breakLabel="..."
@@ -498,12 +492,8 @@ const ExportOrderList = () => {
                 title="Hủy đơn hàng xuất" ConfirmCancel={ConfirmCancelExport} />
             <ModalEditExportOrder isShow={isShowEditOrder} handleClose={() => setIsShowEditOrder(false)} detailOrderEdit={dataEditOrder} updateTable={updateTable} />
             <ModalDetailExportOrder isShow={isShowDetailOrder} handleClose={() => setIsShowDetailOrder(false)} detailOrder={dataDetailOrder} />
-            
             <ModalZoomImage isShow={isShowModalZoomImage} handleClose={() => setIsShowModalZoomImage(false)} imageUrl={imageUrl} />
-            
-            <ConfirmExportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)}
-             dataImportOrder={dataImportOrder} updateTable={updateTable} />
-
+            <ConfirmExportOrder isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} updateTable={updateTable} />
             <ModelAddExportOrderAuto isShow={isShowExportModelAddAuto} handleClose={() => setIsShowExportModelAddAuto(false)} updateTable={updateTable} />
             <ModelAddExportOrderManual isShow={isShowExportModelAddManual}
                 handleClose={() => setIsShowExportModelAddManual(false)}

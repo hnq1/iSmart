@@ -115,35 +115,18 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         const updateDataExport = rowsData.filter((item, index) => index !== rowdel);
         const deletePrice = rowsData[rowdel].totalOneGoodPrice;
         setRowsData(updateDataExport);
+        setTotalPrice(x => x - deletePrice ? x - deletePrice : 0);
     }
 
 
     // nhận data từ AddRowDataExport
     const takeRowDataExportOrder = (exportData) => {
-
-        const updateDataExport = [...rowsData];
-
-        console.log(exportData);
-
-        for (var i = 0; i < exportData.length; i++) {
-            const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === exportData[i].importOrderDetailId);
-
-            if (existingIndex !== -1) {
-                updateDataExport[existingIndex] = exportData[i];
-            } else {
-                updateDataExport.push(exportData[i]);
-            }
-            // updateDataExport.push(exportData[i])
-        }
-
-        // exportData.forEach(data => {
-        //     const existingIndex = updateDataExport.findIndex(item => item.goodsId === data.goodsId);
-
-        //         updateDataExport.push(data);
-
-        // });
+        console.log("exportData:", exportData);
+        const updateDataExport = [...rowsData, exportData];
 
         setRowsData(updateDataExport);
+        console.log("updateDataExport:", updateDataExport);
+        setTotalPrice(x => x + exportData.totalOneGoodPrice);
 
     }
 
@@ -159,13 +142,9 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
     // render rowsData
     const renderExportData = () => {
         return rowsData.map((data, index) => (
-            <>
-                <RowDataExportOrderManual key={`rdt${index}`} data={rowsData[index]} index={index}
-                    updateRowData={updateRowData} deleteRowData={deleteRowData}
-
-                />
-            </>
-
+            <RowDataExportOrderManual key={index} data={rowsData[index]} index={index}
+                updateRowData={updateRowData} deleteRowData={deleteRowData}
+            />
         ))
 
 
@@ -192,7 +171,7 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         //     toast.warning("Vui lòng nhập mã đơn hàng");
         // }
         // else
-        if (!selectedWarehouse) {
+         if (!selectedWarehouse) {
             toast.warning("Vui lòng chọn kho xuất hàng");
         } else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày xuất hàng");
@@ -202,9 +181,9 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Vui lòng chọn bên giao hàng");
         } else if (!selectedCustomer) {
             toast.warning("Vui lòng chọn khách hàng");
-        } else if (rowsData.length === 0) {
+        }else if (rowsData.length === 0) {
             toast.warning("Hãy thêm lô hàng");
-        }
+        } 
         else {
             const newExportCode = generateExportCode();
             const userId = parseInt(localStorage.getItem('userId'), 10);
@@ -229,13 +208,13 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 // const importOrderDetailIds = rowsData.map(data => parseInt(data.importOrderDetailId, 10));
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
-                        
+                        data.forEach(item => {
                             createNewExportOrderDetail(resExportId,
-                                data.costPrice,
-                                data.goodsId,
-                                data.quantity,
-                                data.importOrderDetailId);
-                        
+                                item.costPrice,
+                                item.goodsId,
+                                item.quantity,
+                                item.importOrderDetailId);
+                        })
                     }))
 
                 }
@@ -276,7 +255,7 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title>Thêm lô hàng xuất thủ công</Modal.Title>
+                <Modal.Title>Thêm lô hàng xuất</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
@@ -395,7 +374,16 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
             </Modal.Body>
 
             <Modal.Footer>
+                {/* <div className=" ">
+                    <button
+                        className="btn  border-left-0 rounded ButtonRed"
+                        type="button"
 
+                    >
+                        Tổng giá tiền: {formattedAmount(totalPrice)}
+                    </button>
+
+                </div> */}
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
                 </Button>

@@ -41,19 +41,26 @@ const AppRoutes = () => {
                 <Route
                     path="/"
                     element={
-                        <Login />
+                        <Container fluid>
+                            <NavbarCom />
+                            <Login />
+                        </Container>
                     }
                 />
                 <Route
                     path="/dang-nhap"
                     element={
-                        <Login />
+                        <Container fluid>
+                            <NavbarCom />
+                            <Login />
+                        </Container>
                     }
                 />
                 <Route
                     path="/quen-mat-khau"
                     element={
                         <Container fluid>
+                            <NavbarCom />
                             <ForgotPassword />
                         </Container>
                     }
@@ -80,7 +87,7 @@ const AppRoutes = () => {
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col >
+                                    <Col className="py-3 background-primary">
                                         <NavbarCom />
                                         <SupplierList />
                                     </Col>
@@ -97,13 +104,12 @@ const AppRoutes = () => {
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col >
+                                    <Col className="py-3 background-primary">
                                         <NavbarCom />
                                         <CustomerList />
                                     </Col>
                                 </Row>
-                            </Container>
-                        </PrivateRoute>
+                            </Container></PrivateRoute>
                     }
                 />
                 <Route
@@ -114,7 +120,7 @@ const AppRoutes = () => {
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col >
+                                    <Col className="py-3 background-primary">
                                         <NavbarCom />
                                         <StorageList />
                                     </Col>
@@ -131,7 +137,7 @@ const AppRoutes = () => {
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col >
+                                    <Col className="py-3 background-primary">
                                         <NavbarCom />
                                         <CategoryList />
                                     </Col>
@@ -255,7 +261,7 @@ const AppRoutes = () => {
                     }
                 />
 
-                <Route
+<Route
                     path="/tra-lai-don-hang"
                     element={
                         <PrivateRoute>
@@ -277,9 +283,10 @@ const AppRoutes = () => {
                         // roleId === 1 || roleId === 2 || roleId === 4 ? (
                         <PrivateRoute>
                             <Container fluid>
-                                <Row>
+                                <Row className="flex-nowrap">
                                     <Sidebar />
-                                    <Col>
+
+                                    <Col className="py-3 background-primary">
                                         <NavbarCom />
                                         <Doashboard className="overflow-auto" />
                                     </Col>
@@ -301,7 +308,7 @@ const AppRoutes = () => {
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col >
+                                    <Col className="py-3 background-primary">
                                         <NavbarCom />
                                         <DeliveryList />
                                     </Col>
@@ -317,7 +324,7 @@ const AppRoutes = () => {
                                 <Row className="flex-nowrap">
                                     <Sidebar />
 
-                                    <Col >
+                                    <Col className="py-3 background-primary">
                                         <NavbarCom />
                                         <ProjectList />
                                     </Col>
