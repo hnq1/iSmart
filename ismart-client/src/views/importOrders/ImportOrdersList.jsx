@@ -140,7 +140,7 @@ function ImportOrderList() {
         if (roleId === 1) {
             setcurrentPage(page - 1);
             let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-            // console.log("pageSize:", selectedWarehouseId);
+            console.log("res:", res);
             setTotalImportOrder(res.data);
             setTotalPages(res.totalPages);
         } if (roleId === 2 || roleId === 3) {

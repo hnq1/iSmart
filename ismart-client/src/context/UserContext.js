@@ -25,6 +25,8 @@ const UserProvider = ({ children }) => {
             warehouseId: warehouseId
         }));
 
+        console.log(userId, roleId, warehouseId);
+
 
         localStorage.setItem('token', token);
         localStorage.setItem('userName', userName);
