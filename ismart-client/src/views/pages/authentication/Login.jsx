@@ -39,6 +39,7 @@ const Login = () => {
             if (res && res.status === 400) {
                 toast.error('Sai tên tài khoản hoặc mật khẩu');
             } else if (res && res.token) {
+                localStorage.setItem('token', res.token.accessToken);
                 loginContext(username, res.token.accessToken, res.userId, res.roleId);
                 if (res.roleId === 1 || res.roleId === 2 || res.roleId === 4) {
                     navigate("/thong-ke");
