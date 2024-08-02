@@ -13,27 +13,23 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
     const [manufactureDate, setManufactureDate] = useState();
     const [batchCode, setBatchCode] = useState();
     const [selectedImportId, setSelectedImportId] = useState(null);
-    const [totalOneGoodPrice, setTotalOneGoodPrice] = useState(0);
-    const [supplierId, setSupplierId] = useState();
-    const [supplierName, setSupplierName] = useState();
+    const [importOrderDetailId, setImportOrderDetailId] = useState();
 
     useEffect(() => {
         if(isShow){
-            data.forEach(item =>{
-                console.log("item:",item );
-                setBatchCode(item.batchCode );
-                setCostPrice(item.costPrice);
-                setExpiryDate(item.expiryDate);
-                setGoodsCode(item.goodsCode);
-                setGoodsId(item.goodsId);
-                setSelectedImportId(item.importId);
-                setManufactureDate(item.manufactureDate);
-                setQuantity(item.quantity);
-                setSupplierId(item.supplierId);
-                setSupplierName(item.supplierName);
-                setTotalOneGoodPrice(item.totalOneGoodPrice);
+            
+                setBatchCode(data.batchCode );
+                setCostPrice(data.costPrice);
+                setExpiryDate(data.expiryDate);
+                setGoodsCode(data.goodsCode);
+                setGoodsId(data.goodsId);
+                setSelectedImportId(data.importId);
+                setManufactureDate(data.manufactureDate);
+                setQuantity(data.quantity);
+                setImportOrderDetailId(data.importOrderDetailId);
+                
         
-            }) 
+            
         }
        
         
@@ -46,20 +42,7 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
         setQuantity(event.target.value);
     }
 
-    const handleChangePrice = (event) => {
-        setCostPrice(event.target.value);
-        setTotalOneGoodPrice(event.target.value * quantity);
-    }
-    const handleChangeBatchCode = (event) => {
-        setBatchCode(event.target.value);
 
-    }
-    const handleChangemMnufactureDate = (event) => {
-        setManufactureDate(event.target.value);
-    }
-    const handleChangeExpiryDate = (event) => {
-        setExpiryDate(event.target.value);
-    }
     const handleReset = () => {
         setBatchCode(data.batchCode);
         setCostPrice(data.costPrice);
@@ -69,9 +52,6 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
         setSelectedImportId(data.importId);
         setManufactureDate(data.manufactureDate);
         setQuantity(data.quantity);
-        setSupplierId(data.supplierId);
-        setSupplierName(data.supplierName);
-        setTotalOneGoodPrice(data.totalOneGoodPrice);
     }
     const handleCloseModal = () => {
         handleReset();
@@ -92,6 +72,7 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                 importId: selectedImportId,
                 manufactureDate: manufactureDate,
                 quantity: quantity,
+                importOrderDetailId: importOrderDetailId
 
             });
             console.log("dataAfterEdit: ", quantity);
@@ -118,6 +99,8 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                     <div className="form-group mb-3">
                         <label >Số lượng</label>
                         <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
+                        <button onClick={() => console.log(data)}>aaa</button>
+
                     </div>
                 </Col>
               

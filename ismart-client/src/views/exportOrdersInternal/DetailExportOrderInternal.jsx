@@ -62,6 +62,12 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
                             <Row key={`orderDetail${index}`}>
                                 <Col >
 
+                                    <label >Mã lô hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={o.batchCode} readOnly />
+
+                                </Col>
+                                <Col >
+
                                     <label >Mã hàng hóa</label>
                                     <input type="text" className="form-control inputCSS" value={o.goodsCode} readOnly />
 
@@ -72,7 +78,7 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
-                                
+
                             </Row>
                         ))
                     }

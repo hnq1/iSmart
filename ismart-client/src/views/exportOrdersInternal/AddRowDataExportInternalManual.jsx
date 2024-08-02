@@ -27,8 +27,7 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
 
     useEffect(() => {
         setDataMethod();
-    }, [selectedMethod])
-
+    }, [selectedMethod, selectedGoodId])
 
     const getAllGoods = async () => {
         if (selectedStorageId !== null) {
@@ -55,30 +54,44 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
     const handleManualClick = async () => {
         let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
         setDataMethod(m);
+        console.log(m);
         // Tạo một mảng mới chứa chỉ importOrderDetailId từ mỗi phần tử trong m
-        const importOrderDetailIds = m.map(item => item.importOrderDetailId);
-        setSelectImportOrderDetailId(importOrderDetailIds);
-        console.log("importOrderDetailId: ", importOrderDetailIds);
+        if (m.length > 0) {
+            const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+            setSelectImportOrderDetailId(importOrderDetailIds);
+            console.log("importOrderDetailId: ", importOrderDetailIds);
+        }
+
     }
     const handleInputQuantityChange = (index, value) => {
-        // Lấy ra importOrderDetailId tương ứng với index của input
         const importOrderDetailId = selectImportOrderDetailId[index];
         console.log("importOrderDetailId: ", importOrderDetailId);
+        
+        // Điều chỉnh giá trị nếu nhỏ hơn 0 hoặc lớn hơn d.quantity
+        let adjustedValue = Number(value);
+        if (adjustedValue < 0) {
+            adjustedValue = 0;
+        } else if (adjustedValue > dataMethod[index].quantity) {
+            adjustedValue = dataMethod[index].quantity;
+        }
+        
         // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
         const newInputQuantities = {
             ...inputQuantities,
             [index]: {
-                quantity: Number(value),
+                quantity: adjustedValue,
                 importOrderDetailId: importOrderDetailId
             }
         };
         setInputQuantities(newInputQuantities);
         console.log("newInputQuantities: ", newInputQuantities);
-        // Tính toán lại tổng số lượng từ các giá trị mới
-        // const newTotalQuantity = Object.values(newInputQuantities).reduce((acc, curr) => acc + curr.quantity, 0);
-        // setQuantity(newInputQuantities);
-        // console.log("newTotalQuantity: ", newInputQuantities.quantity);
+    
+        // Hiển thị thông báo nếu giá trị nhập vào lớn hơn d.quantity
+        if (Number(value) > dataMethod[index].quantity) {
+            toast.warning("Phải nhập số lượng nhỏ hơn hoặc bằng số lượng hiện có!");
+        }
     }
+    
 
 
 
@@ -97,12 +110,10 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
 
             // Tạo mảng mới với thông tin sản phẩm cho mỗi importOrderDetailId
             const exportDataArray = inputQuantitiesArray.map(item => ({
-                costPrice: 0,
                 goodsId: selectedGoodId,
                 goodsCode: selectedGoodCode,
                 quantity: item.quantity,
                 importOrderDetailId: item.importOrderDetailId,
-                totalOneGoodPrice: 0
 
             }));
 
@@ -121,8 +132,6 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
 
     const handleReset = () => {
         setSelectedMethod(null);
-        // setSelectedSupplier(null);
-        // setSelectedSupplierId(null);
         setSelectedGoodCode(null);
         setSelectedGoodId(null);
         setQuantityInStock(0);
@@ -213,7 +222,7 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
                     </tr>
                 </thead>
                 <tbody>
-                    {dataMethod && dataMethod.map((d, index) => (
+                    { dataMethod && dataMethod.length > 0 && dataMethod.map((d, index) => (
                         <tr key={index}>
                             <td>{d.batchCode}</td>
                             <td>{new Date(d.manufactureDate).toLocaleDateString()}</td>

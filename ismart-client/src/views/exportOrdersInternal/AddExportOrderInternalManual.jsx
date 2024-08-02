@@ -118,11 +118,23 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
 
     // nhận data từ AddRowDataExport
     const takeRowDataExportOrder = (exportData) => {
-        console.log(exportData);
-        const updateDataExport = [...rowsData, exportData];
-        setRowsData(updateDataExport);
+        const updateDataExport = [...rowsData];
 
-        setTotalPrice(x => x + exportData.totalOneGoodPrice);
+        console.log(exportData);
+
+        for (var i = 0; i < exportData.length; i++) {
+            const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === exportData[i].importOrderDetailId);
+
+            if (existingIndex !== -1) {
+                updateDataExport[existingIndex] = exportData[i];
+            } else {
+                updateDataExport.push(exportData[i]);
+            }
+        }
+
+      
+
+        setRowsData(updateDataExport);
 
     }
 
@@ -236,12 +248,12 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                 0,
                 "",
                 formatDateImport(selectedDate),
-                warehouseIdToUse,
+                selectedWarehouseExportId,
                 "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
-                selectedCustomerId,
-                selectedWarehouseExportId
+                selectedCustomerId,                
+                warehouseIdToUse
             );
             // console.log("addNewExportOrder:", warehouseIdToUse);
             if (res.isSuccess == true) {
@@ -249,10 +261,10 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                 console.log("resExportId: ", resExportId);
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
-                        data.forEach(item => {
-                            createNewExportOrderDetail(resExportId, item.costPrice, item.goodsId, item.quantity, item.importOrderDetailId);
+                        
+                            createNewExportOrderDetail(resExportId, data.costPrice, data.goodsId, data.quantity, data.importOrderDetailId);
                         })
-                    }))
+                    )
 
                 }
                 toast.success("Thêm lô hàng xuất thành công");

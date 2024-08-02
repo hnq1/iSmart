@@ -43,6 +43,10 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
         setDataMethod();
     }, [selectedMethod])
 
+    // useEffect(() => {
+    //     setDataMethod(null);
+    // }, [selectedGoodId])
+
     const getAllGoods = async () => {
         if (selectedStorageId !== null) {
             let res = await fetchAllGoodsInWarehouse(selectedStorageId);
@@ -85,7 +89,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                 const importOrderDetailIds = m.map(item => ({
                     importOrderDetailId: item.importOrderDetailId,
                     batchCode: item.batchCode
-                  }));
+                }));
 
                 setSelectImportOrderDetailId(importOrderDetailIds);
 
@@ -93,7 +97,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                 const initialInputQuantities = {};
                 importOrderDetailIds.forEach((data, index) => {
                     initialInputQuantities[index] = {
-                        quantity: 1,
+                        quantity: 0,
                         importOrderDetailId: data.importOrderDetailId,
                         batchCode: data.batchCode
                     };
@@ -105,18 +109,26 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     const handleInputQuantityChange = (index, value) => {
         const importOrderDetailId = selectImportOrderDetailId[index].importOrderDetailId;
         const batchCode = selectImportOrderDetailId[index].batchCode;
-        // console.log("importOrderDetailId: ", importOrderDetailId);
+
+        // Kiểm tra và điều chỉnh giá trị nếu vượt quá d.quantity
+        const adjustedValue = Math.min(Number(value), dataMethod[index].quantity);
+
         // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
         const newInputQuantities = {
             ...inputQuantities,
             [index]: {
-                quantity: Number(value),
+                quantity: adjustedValue,
                 importOrderDetailId: importOrderDetailId,
                 batchCode: batchCode
             }
         };
         setInputQuantities(newInputQuantities);
         console.log("newInputQuantities: ", newInputQuantities);
+
+        // Hiển thị thông báo nếu giá trị nhập vào lớn hơn d.quantity
+        if (Number(value) > dataMethod[index].quantity) {
+            toast.warning("Phải nhập số lượng nhỏ hơn hoặc bằng số lượng hiện có!");
+        }
     }
 
 
@@ -280,15 +292,16 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                             <td>
                                 <input
                                     type="number"
-                                    min={1}
+                                    min={0}
                                     max={d.quantity}
                                     className="form-control"
-                                    value={inputQuantities[index]?.quantity || 1}
+                                    value={inputQuantities[index]?.quantity || 0}
                                     onChange={(e) => handleInputQuantityChange(index, e.target.value)}
                                 />
                             </td>
                         </tr>
                     ))}
+
                 </tbody>
             </Table>
             <Modal.Footer>

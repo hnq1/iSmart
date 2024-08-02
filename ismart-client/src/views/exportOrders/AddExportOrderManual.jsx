@@ -133,15 +133,9 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
             } else {
                 updateDataExport.push(exportData[i]);
             }
-            // updateDataExport.push(exportData[i])
         }
 
-        // exportData.forEach(data => {
-        //     const existingIndex = updateDataExport.findIndex(item => item.goodsId === data.goodsId);
-
-        //         updateDataExport.push(data);
-
-        // });
+      
 
         setRowsData(updateDataExport);
 
@@ -152,7 +146,6 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         console.log(updateData);
         const updateDataImport = [...rowsData];
         updateDataImport[rowUpdate] = updateData;
-        setTotalPrice(x => x - rowsData[rowUpdate].totalOneGoodPrice + updateData.totalOneGoodPrice);
         setRowsData(updateDataImport);
     }
 

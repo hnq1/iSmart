@@ -48,14 +48,20 @@ const RowDataExportOrderManual = ({ data, index, deleteRowData, updateRowData })
     const dataAfterEdit = (data) => {
         setQuantity(data.quantity);
         setCostPrice(data.costPrice);
-        updateRowData(index, { costPrice: 0, quantity: data.quantity, goodsId: goodsId, goodsCode: goodsCode, totalOneGoodPrice: 0 })
+        updateRowData(index, {
+            batchCode: data.batchCode,
+            costPrice: 0, quantity: data.quantity,
+            goodsId: goodsId,
+            goodsCode: goodsCode,
+            importOrderDetailId: data.importOrderDetailId
+        })
     }
 
 
 
     return (<><Row>
 
-<Col md={3}>
+        <Col md={3}>
             <div className="form-group mb-3">
                 <label >Mã lô hàng</label>
                 <input type="text" className="form-control" defaultValue={batchCode} disabled />
