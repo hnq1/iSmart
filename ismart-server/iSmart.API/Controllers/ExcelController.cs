@@ -50,9 +50,8 @@ namespace iSmart.API.Controllers
                 worksheet.Cells[1, 6].Value = "Đơn Vị Tính";
                 worksheet.Cells[1, 7].Value = "Hình Ảnh";
                 worksheet.Cells[1, 8].Value = "Thời Gian Bảo Hành";
-                worksheet.Cells[1, 9].Value = "Mã Vạch";
-                worksheet.Cells[1, 10].Value = "Tồn Tối Đa";
-                worksheet.Cells[1, 11].Value = "Tồn Tối Thiểu";
+                worksheet.Cells[1, 9].Value = "Tồn Tối Đa";
+                worksheet.Cells[1, 10].Value = "Tồn Tối Thiểu";
 
                 // Đặt kích thước cột
                 worksheet.Column(1).Width = 15; // Mã Hàng Hóa
@@ -63,9 +62,8 @@ namespace iSmart.API.Controllers
                 worksheet.Column(6).Width = 10; // Đơn Vị Đo Lường
                 worksheet.Column(7).Width = 30; // Hình Ảnh
                 worksheet.Column(8).Width = 15; // Thời Gian Bảo Hành
-                worksheet.Column(9).Width = 20; // Mã Vạch
-                worksheet.Column(10).Width = 10; // Tồn Tối Đa
-                worksheet.Column(11).Width = 10; // Tồn Tối Thiểu
+                worksheet.Column(9).Width = 10; // Tồn Tối Đa
+                worksheet.Column(10).Width = 10; // Tồn Tối Thiểu
 
                 // Tạo sheet danh mục hàng hóa
                 var categorySheet = package.Workbook.Worksheets.Add("Danh Mục Hàng Hóa");
