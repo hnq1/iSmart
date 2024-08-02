@@ -68,6 +68,12 @@ const ModalDetailExportOrder = ({ isShow, handleClose, detailOrder }) => {
                             <Row key={`orderDetail${index}`}>
                                 <Col >
 
+                                    <label >Mã lô hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={o.batchCode} readOnly />
+
+                                </Col>
+                                <Col >
+
                                     <label >Mã hàng hóa</label>
                                     <input type="text" className="form-control inputCSS" value={o.goodsCode} readOnly />
 
@@ -86,7 +92,7 @@ const ModalDetailExportOrder = ({ isShow, handleClose, detailOrder }) => {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" className=" ButtonRed">
+                <Button variant="primary" className=" ButtonRed" onClick={handleCloseModal}>
                     Đóng
                 </Button>
             </Modal.Footer>
