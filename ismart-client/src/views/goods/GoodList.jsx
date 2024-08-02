@@ -110,7 +110,11 @@ function MyTable() {
         height: 50, // Chiều cao của mã vạch
         displayValue: true // Hiển thị giá trị trên mã vạch
     };
+<<<<<<< HEAD
 
+=======
+    const barcodeRefs = useRef(Array(listGoods.length).fill(null));
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
 
     useEffect(() => {
         let res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, selectedSupplierId);

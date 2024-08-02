@@ -14,6 +14,7 @@ using iSmart.Service;
 using System.Net.WebSockets;
 using iSmart.API.Controllers;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json;
 
 internal class Program
 {
@@ -90,7 +91,11 @@ internal class Program
             });
     });
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        });
 
         var openAiApiKey = builder.Configuration["OpenAI:ApiKey"];
         

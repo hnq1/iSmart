@@ -40,8 +40,12 @@ const Login = () => {
                 toast.error('Bạn không có quyền truy cập vào đây');
 
             } else if (res.token) {
+<<<<<<< HEAD
                 setShowWarning(false);
                 loginContext(username, res.token.accessToken, res.userId, res.roleId);
+=======
+                loginContext(username, res.token.accessToken, res.userId, res.roleId, res.warehouseId);
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
                 if (res.roleId === 1 || res.roleId === 2 || res.roleId === 4) {
                     navigate("/thong-ke");
                 } else if (res.roleId === 3) {

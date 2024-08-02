@@ -50,7 +50,7 @@ function InportGoodsListModal({ isShow, handleClose, updateTable }) {
 
     const handleSave = async (event) => {
         event.preventDefault();
-        if (!selectedWarehouseId) {
+        if (!selectedWarehouseId && roleId === 1) {
             toast.warning("Chưa chọn kho!");
             return;
         }

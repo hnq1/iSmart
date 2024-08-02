@@ -140,7 +140,7 @@ function ImportOrderList() {
         if (roleId === 1) {
             setcurrentPage(page - 1);
             let res = await fetchImportOrdersWithfilter(pageSize, page, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-            // console.log("pageSize:", selectedWarehouseId);
+            console.log("res:", res);
             setTotalImportOrder(res.data);
             setTotalPages(res.totalPages);
         } if (roleId === 2 || roleId === 3) {
@@ -241,8 +241,14 @@ function ImportOrderList() {
 
 
     const EditDetailOrder = (order) => {
-        setIsShowEditOrder(true);
-        setDetailOrderEdit(order);
+        if (order.statusType == "Completed" || order.statusType == "Cancel") {
+            
+            toast.warning("Không thể sửa đơn hàng đã nhập hoặc đã hủy");
+        }else{
+            setIsShowEditOrder(true);
+         setDetailOrderEdit(order);
+        }
+        
     }
 
 
@@ -252,8 +258,10 @@ function ImportOrderList() {
     }
     const ShowModalCancelImport = (data) => {
         if (data.statusType == "Completed" || data.statusType == "Cancel") {
+
             toast.warning("Không thể hủy đơn hàng đã nhập hoặc đã hủy");
-        } else {
+        } 
+        else {
             setIsShowModalCancelImport(true);
             setDataCancelImport(data);
         }
@@ -447,10 +455,22 @@ function ImportOrderList() {
                                                     {i.statusType === "On Progress" ? "Đang tiến hành" : i.statusType === "Completed" ? "Đã hoàn thành" : "Đã huỷ"}
                                                 </td>
                                                 <td className="align-middle">{i.storekeeperName}</td>
+<<<<<<< HEAD
                                                 <td className="align-middle " style={{ padding: '10px' }}>
 
 
                                                     <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
+=======
+                                                <td className="align-middle">
+                                                    <i className="fa-solid fa-circle-info actionButtonCSS" title="Chi tiết" onClick={() => ShowDetailOrder(i)}></i>
+                                                    {(roleId === 1 || roleId === 2) ?
+                                                        <i className="fa-solid fa-pen-to-square actionButtonCSS" title="Chỉnh sửa" onClick={() => EditDetailOrder(i)}></i>
+                                                        : ''}
+                                                    {(roleId === 1 || roleId === 2) ?
+                                                        <i className="fa-solid fa-ban actionButtonCSS" title="Huỷ đơn hàng" 
+                                                        
+                                                            onClick={() => ShowModalCancelImport(i)}></i> : ''}
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
                                                 </td>
                                                 {roleId === 2 ? <td className="align-middle " style={{ padding: '10px' }}>
 

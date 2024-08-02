@@ -23,17 +23,38 @@ const InventoryExport = () => {
     const [year, setYear] = useState(new Date().getFullYear()); // Thêm state để lưu trữ năm
 
     useEffect(() => {
+<<<<<<< HEAD
         getAllStorages();
+=======
+        const fetchInitialData = async () => {
+            const start10Date = getStartDateTenYearsAgo();
+            const end10Date = new Date().toISOString().split('T')[0];
+
+            const storages = await fetchAllStorages();
+            setTotalWarehouse(storages);
+            if(roleId === 1){
+                const haiPhongWarehouse = storages.find(warehouse => warehouse.warehouseName === "Hải Phòng");
+                if (haiPhongWarehouse) {
+                    setSelectedWarehouseId(haiPhongWarehouse.warehouseId);
+                    const data = await fetchInventoryExport(start10Date, end10Date, haiPhongWarehouse.warehouseId);
+                    setInventoryData(data);
+                }
+            } else {
+                const warehouse = await getWarehouseById(userId);
+                setSelectedWarehouseId(warehouse.warehouseId);
+                const data = await fetchInventoryExport(start10Date, end10Date, warehouse.warehouseId);
+                setInventoryData(data);
+            }
+           
+        };
+
+        fetchInitialData();
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
     }, []);
 
     useEffect(() => {
         const checkRoleAndFetchData = async () => {
-            if (roleId === 2) {
-
-                const warehouse = await getWarehouseById(userId);
-                const data = await fetchInventoryExport(startDate, endDate, warehouse.warehouseId);
-                setInventoryData(data);
-            }
+           
 
             if (startDate, endDate, selectedWarehouseId) {
                 const data = await fetchInventoryExport(startDate, endDate, selectedWarehouseId);
@@ -277,7 +298,7 @@ const InventoryExport = () => {
                                         <th className="align-middle  text-nowrap position-sticky" style={{ left: 0 }}>STT</th>
                                         <th className="align-middle  text-nowrap">Tên sản phẩm</th>
                                         <th className="align-middle  text-nowrap">Đơn vị tính</th>
-                                        <th className="align-middle  text-nowrap">Số lượng</th>
+                                        <th className="align-middle  text-nowrap">Xuất trong kỳ</th>
                                         <th className="align-middle  text-nowrap">NGày giao dịch</th>
                                     </tr>
                                 </thead>

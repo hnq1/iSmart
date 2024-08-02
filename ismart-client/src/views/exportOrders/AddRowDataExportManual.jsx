@@ -31,6 +31,12 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
         setDataMethod();
     }, [selectedMethod])
 
+<<<<<<< HEAD
+=======
+    // useEffect(() => {
+    //     setDataMethod(null);
+    // }, [selectedGoodId])
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
 
     const getAllGoods = async () => {
         if (selectedStorageId !== null) {
@@ -57,6 +63,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     const handleManualClick = async () => {
         setIsManualClick(true);
 
+<<<<<<< HEAD
         let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
         if (m.length === 0) {
             // Nếu không có lô hàng nào, hiển thị thông báo
@@ -71,20 +78,72 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
         // Lấy ra importOrderDetailId tương ứng với index của input
         const importOrderDetailId = selectImportOrderDetailId[index];
         // console.log("importOrderDetailId: ", importOrderDetailId);
+=======
+
+            let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
+            if (m.length === 0) {
+                // Nếu không có lô hàng nào, hiển thị thông báo
+                toast.warning("Không có lô hàng nào");
+            } else {
+                setDataMethod(m);
+                // const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+
+                const importOrderDetailIds = m.map(item => ({
+                    importOrderDetailId: item.importOrderDetailId,
+                    batchCode: item.batchCode
+                }));
+
+                setSelectImportOrderDetailId(importOrderDetailIds);
+
+
+                const initialInputQuantities = {};
+                importOrderDetailIds.forEach((data, index) => {
+                    initialInputQuantities[index] = {
+                        quantity: 0,
+                        importOrderDetailId: data.importOrderDetailId,
+                        batchCode: data.batchCode
+                    };
+                });
+                setInputQuantities(initialInputQuantities);
+            }
+        }
+    }
+    const handleInputQuantityChange = (index, value) => {
+        const importOrderDetailId = selectImportOrderDetailId[index].importOrderDetailId;
+        const batchCode = selectImportOrderDetailId[index].batchCode;
+
+        // Kiểm tra và điều chỉnh giá trị nếu vượt quá d.quantity
+        const adjustedValue = Math.min(Number(value), dataMethod[index].quantity);
+
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
         // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
         const newInputQuantities = {
             ...inputQuantities,
             [index]: {
+<<<<<<< HEAD
                 quantity: Number(value),
                 importOrderDetailId: importOrderDetailId
+=======
+                quantity: adjustedValue,
+                importOrderDetailId: importOrderDetailId,
+                batchCode: batchCode
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
             }
         };
         setInputQuantities(newInputQuantities);
         console.log("newInputQuantities: ", newInputQuantities);
+<<<<<<< HEAD
         // Tính toán lại tổng số lượng từ các giá trị mới
         // const newTotalQuantity = Object.values(newInputQuantities).reduce((acc, curr) => acc + curr.quantity, 0);
         // setQuantity(newInputQuantities);
         // console.log("newTotalQuantity: ", newInputQuantities.quantity);
+=======
+
+        // Hiển thị thông báo nếu giá trị nhập vào lớn hơn d.quantity
+        if (Number(value) > dataMethod[index].quantity) {
+            toast.warning("Phải nhập số lượng nhỏ hơn hoặc bằng số lượng hiện có!");
+        }
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
     }
 
 
@@ -232,15 +291,20 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                             <td>
                                 <input
                                     type="number"
-                                    min={1}
+                                    min={0}
                                     max={d.quantity}
                                     className="form-control"
+<<<<<<< HEAD
                                     value={inputQuantities[index]?.quantity || '0'}
+=======
+                                    value={inputQuantities[index]?.quantity || 0}
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
                                     onChange={(e) => handleInputQuantityChange(index, e.target.value)}
                                 />
                             </td>
                         </tr>
                     ))}
+
                 </tbody>
             </Table>
             <Modal.Footer>

@@ -194,6 +194,7 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
                         {renderImportData()}
 
                     </Row>
+<<<<<<< HEAD
                     <div className="">
                         <button
                             className="btn rounded ButtonRed"
@@ -205,6 +206,9 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
 
                     </div>
 
+=======
+                  
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
                 </div>
             </Modal.Body>
             <Modal.Footer>

@@ -121,8 +121,27 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
 
     // nhận data từ AddRowDataExport
     const takeRowDataExportOrder = (exportData) => {
+<<<<<<< HEAD
         console.log("exportData:", exportData);
         const updateDataExport = [...rowsData, exportData];
+=======
+
+        const updateDataExport = [...rowsData];
+
+        console.log(exportData);
+
+        for (var i = 0; i < exportData.length; i++) {
+            const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === exportData[i].importOrderDetailId);
+
+            if (existingIndex !== -1) {
+                updateDataExport[existingIndex] = exportData[i];
+            } else {
+                updateDataExport.push(exportData[i]);
+            }
+        }
+
+      
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
 
         setRowsData(updateDataExport);
         console.log("updateDataExport:", updateDataExport);
@@ -135,7 +154,6 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         console.log(updateData);
         const updateDataImport = [...rowsData];
         updateDataImport[rowUpdate] = updateData;
-        setTotalPrice(x => x - rowsData[rowUpdate].totalOneGoodPrice + updateData.totalOneGoodPrice);
         setRowsData(updateDataImport);
     }
 

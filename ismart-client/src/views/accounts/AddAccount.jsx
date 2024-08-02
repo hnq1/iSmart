@@ -215,7 +215,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
 
                         <Col md={2}>
                             <div>
-                                <input
+                                <input 
                                     type="file"
                                     accept="image/*" // Chỉ chấp nhận các loại file ảnh
                                     onChange={handleChangeImage} // Hàm xử lý sự kiện khi người dùng chọn file

@@ -61,6 +61,12 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
                             <Row key={`orderDetail${index}`}>
                                 <Col >
 
+                                    <label >Mã lô hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={o.batchCode} readOnly />
+
+                                </Col>
+                                <Col >
+
                                     <label >Mã hàng hóa</label>
                                     <input type="text" className="form-control inputCSS" value={o.goodsCode} readOnly />
 
@@ -71,6 +77,7 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
+<<<<<<< HEAD
                                 <Col >
 
                                     <label >Giá tiền</label>
@@ -84,6 +91,9 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
                                     <input type="number" className="form-control inputCSS" value={o.quantity * o.price} readOnly />
 
                                 </Col>
+=======
+
+>>>>>>> 1556425138f8676ee477c77d1153d8f69a0fe1f8
                             </Row>
                         ))
                     }

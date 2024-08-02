@@ -9,23 +9,19 @@ const RowDataExportInternalOrder = ({ data, index, deleteRowData, updateRowData 
     const [goodsId, setGoodsId] = useState();
     const [goodsCode, setGoodsCode] = useState();
     const [quantity, setQuantity] = useState();
-    const [costPrice, setCostPrice] = useState();
 
     useEffect(() => {
         // Tính tổng số lượng
-        const totalQuantity = data.reduce((total, item) => total + item.quantity, 0);
 
         // Thiết lập tổng số lượng
-        setQuantity(totalQuantity);
-        data.forEach(item => {
+        
 
-            console.log("item: ", item);
-            setGoodsCode(item.goodsCode);
-            setGoodsId(item.goodsId);
-            setCostPrice(item.costPrice);
+            setGoodsCode(data.goodsCode);
+            setGoodsId(data.goodsId);
+            setQuantity(data.quantity);
 
 
-        });
+        
 
 
 
@@ -43,7 +39,6 @@ const RowDataExportInternalOrder = ({ data, index, deleteRowData, updateRowData 
 
     const dataAfterEdit = (data) => {
         setQuantity(data.quantity);
-        setCostPrice(data.costPrice);
         updateRowData(index, { costPrice: 0, quantity: data.quantity, goodsId: goodsId, goodsCode: goodsCode, totalOneGoodPrice: 0 })
     }
 
