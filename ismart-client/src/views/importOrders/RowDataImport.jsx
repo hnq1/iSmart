@@ -93,7 +93,7 @@ const RowDataImportOrder = ({ data, index, deleteRowData, updateRowData }) => {
 
          
 
-            <Col md={2}>
+            <Col md={3}>
                 <div className="form-group mb-3">
                     <label >Mã lô hàng</label>
                     <input type="text" className="form-control" defaultValue={batchCode} disabled />

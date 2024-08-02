@@ -128,10 +128,10 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
                     </div>
                 </Col>
                 
-                <Col md={2}>
+                <Col md={4}>
                     <div className="form-group mb-3">
                         <label >Mã lô hàng</label>
-                        <input type="text" className="form-control" value={batchCode} onChange={handleChangeBatchCode} />
+                        <input type="text" className="form-control" value={batchCode} onChange={handleChangeBatchCode} disabled/>
                     </div>
                 </Col>
                 {/* <Col md={3}>
@@ -140,6 +140,9 @@ const EditRowDataOrder = ({ isShow, handleClose, data, dataAfterEdit }) => {
                         <input type="text" className="form-control" value={supplierName} disabled />
                     </div>
                 </Col> */}
+                <div>
+                    
+                </div>
                 <Col md={3}>
                     <div className="form-group mb-3">
                         <label >Ngày sản xuất</label>

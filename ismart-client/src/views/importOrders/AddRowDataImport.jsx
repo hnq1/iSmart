@@ -56,6 +56,16 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
             }
         }
     }
+    const generateBatchCode = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `MLH${year}${month}${day}${hours}${minutes}${seconds}`;
+    };
 
     const handleConfirmRowData = () => {
         const currentDate = new Date().toISOString().slice(0, 10); // Lấy ngày hiện tại với định dạng YYYY-MM-DD
@@ -63,6 +73,8 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
             toast.warning("Vui lòng chọn sản phẩm");
         } else if (quantity <= 0 || !quantity) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
+        } else if (!selectedBatchCode) {
+            toast.warning("Vui lòng tạo mã lô hàng!");
         } else if (!manufactureDate || !expiryDate) {
             toast.warning("Vui lòng nhập đầy đủ ngày sản xuất và ngày hết hạn");
         } else if (manufactureDate >= expiryDate) {
@@ -119,7 +131,10 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
         setManufactureDate(null);
         setExpiryDate(null);
     }
-
+    const handleCreateBatchCode = () => {
+        
+            setSelectedbatchCode(generateBatchCode());       
+    }
 
     return (
         <Modal show={isShow} onHide={handleCloseModal} size="lg">
@@ -163,13 +178,17 @@ const AddRowDataImportOrder = ({ selectedSupplierId, selectedStorageId, isShow, 
                     </Col>
 
 
-                    <Col md={2}>
+                    <Col md={4}>
                         <div className="form-group mb-3">
                             <label >Mã lô hàng</label>
-                            <input type="text" className="form-control inputCSS" value={selectedBatchCode} onChange={(e) => setSelectedbatchCode(e.target.value)} />
+                            <input type="text" className="form-control inputCSS" value={selectedBatchCode} disabled />
                         </div>
                     </Col>
-
+                    <Col md={2}>
+                        <label >&nbsp;</label>
+                        <Button className='form-control ButtonCSS' type='submit' onClick={handleCreateBatchCode} > Tạo mã lô </Button>
+                    </Col>
+                    <div></div>
                     <Col md={3}>
                         <div className="form-group mb-3">
                             <label >Ngày sản xuất</label>
