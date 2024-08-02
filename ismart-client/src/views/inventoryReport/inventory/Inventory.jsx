@@ -42,12 +42,20 @@ const InventoryAll = () => {
             const storages = await fetchAllStorages();
             setTotalWarehouse(storages);
 
-            const haiPhongWarehouse = storages.find(warehouse => warehouse.warehouseName === "Hải Phòng");
-            if (haiPhongWarehouse) {
-                setSelectedWarehouseId(haiPhongWarehouse.warehouseId);
-                const data = await fetchInventoryAll(start10Date, end10Date, haiPhongWarehouse.warehouseId);
+            if(roleId === 1){
+                const haiPhongWarehouse = storages.find(warehouse => warehouse.warehouseName === "Hải Phòng");
+                if (haiPhongWarehouse) {
+                    setSelectedWarehouseId(haiPhongWarehouse.warehouseId);
+                    const data = await fetchInventoryAll(start10Date, end10Date, haiPhongWarehouse.warehouseId);
+                    setInventoryData(data);
+                }
+            } else {
+                const warehouse = await getWarehouseById(userId);
+                setSelectedWarehouseId(warehouse.warehouseId);
+                const data = await fetchInventoryAll(start10Date, end10Date, warehouse.warehouseId);
                 setInventoryData(data);
             }
+           
         };
 
         fetchInitialData();
@@ -56,11 +64,7 @@ const InventoryAll = () => {
 
     useEffect(() => {
         const checkRoleAndFetchData = async () => {
-            if (roleId === 2) {
-                const warehouse = await getWarehouseById(userId);
-                const data = await fetchInventoryAll(startDate, endDate, warehouse.warehouseId);
-                setInventoryData(data);
-            }
+           
             if (startDate, endDate, selectedWarehouseId) {
                 const data = await fetchInventoryAll(startDate, endDate, selectedWarehouseId);
                 setInventoryData(data);

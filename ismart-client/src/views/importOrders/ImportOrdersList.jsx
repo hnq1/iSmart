@@ -241,8 +241,14 @@ function ImportOrderList() {
 
 
     const EditDetailOrder = (order) => {
-        setIsShowEditOrder(true);
-        setDetailOrderEdit(order);
+        if (order.statusType == "Completed" || order.statusType == "Cancel") {
+            
+            toast.warning("Không thể sửa đơn hàng đã nhập hoặc đã hủy");
+        }else{
+            setIsShowEditOrder(true);
+         setDetailOrderEdit(order);
+        }
+        
     }
 
 
@@ -252,8 +258,10 @@ function ImportOrderList() {
     }
     const ShowModalCancelImport = (data) => {
         if (data.statusType == "Completed" || data.statusType == "Cancel") {
+
             toast.warning("Không thể hủy đơn hàng đã nhập hoặc đã hủy");
-        } else {
+        } 
+        else {
             setIsShowModalCancelImport(true);
             setDataCancelImport(data);
         }
@@ -457,7 +465,8 @@ function ImportOrderList() {
                                                         <i className="fa-solid fa-pen-to-square actionButtonCSS" title="Chỉnh sửa" onClick={() => EditDetailOrder(i)}></i>
                                                         : ''}
                                                     {(roleId === 1 || roleId === 2) ?
-                                                        <i className="fa-solid fa-ban actionButtonCSS" title="Huỷ đơn hàng"
+                                                        <i className="fa-solid fa-ban actionButtonCSS" title="Huỷ đơn hàng" 
+                                                        
                                                             onClick={() => ShowModalCancelImport(i)}></i> : ''}
                                                 </td>
                                                 {(roleId === 1 || roleId === 2) ? <td className='position-sticky ' style={{ right: 0, minWidth: '150px' }}> <button
