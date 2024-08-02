@@ -211,7 +211,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     // mở addRowDataImport
     const handleAddRowDataImport = () => {
-        if (roleId === 3 || (selectedWarehouseId && selectedSupplierId)) {
+        if ( (selectedWarehouseId && selectedSupplierId)) {
             setIsShowRowDataImport(true);
             // setRowsData([
             //     ...rowsData,

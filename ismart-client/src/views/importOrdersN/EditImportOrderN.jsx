@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import React from 'react';
 import { Modal, Button, Row, Col, DropdownButton, Dropdown } from "react-bootstrap"
 import { updateImportOrder } from "~/services/ImportOrderServices";
-import { getImportOrderDetailByImportId, updateImportOrderDetail } from "~/services/ImportOrderDetailServices";
+import { deleteImportOrderDetail,getImportOrderDetailByImportId, updateImportOrderDetail } from "~/services/ImportOrderDetailServices";
 import { formatDateImport, formattedAmount } from "~/validate";
+
 import { CustomToggle, CustomMenu } from '../components/others/Dropdown';
 // import AddRowDataImportOrderN from "./AddRowDataImportOrderN";
 import RowDataEditImportOrder from './RowDataEditImportOrderN';
@@ -11,6 +12,8 @@ import { format, addDays } from 'date-fns';
 
 // import RowDataImportOrderN from "./RowDataImportOrderN";
 import { toast } from "react-toastify";
+
+
 
 
 const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTable }) => {
@@ -31,6 +34,9 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
     const [importCode, setImportCode] = useState(null);
 
     const [selectedDate, setSelectedDate] = useState(null);
+
+
+    const [deleteData, setDeleteData] = useState([]);
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
@@ -89,8 +95,10 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
     // xóa 1 row của rowsData ở RowDataImport
     const deleteRowData = (rowdel) => {
         const updateDataImport = rowsData.filter((item, index) => index !== rowdel);
-        const deletePrice = rowsData[rowdel].costPrice * rowsData[rowdel].quantity;
         setRowsData(updateDataImport);
+
+        const deleteDataImport = rowsData[rowdel];
+        setDeleteData([...deleteData, deleteDataImport]);
     }
 
     // update 1 row data từ RowDataImport
@@ -123,6 +131,13 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
                 );
             }));
         }
+
+        if (deleteData && deleteData.length > 0) {
+            await Promise.all(deleteData.map(async (data, index) => {
+                let result = await deleteImportOrderDetail(data.detailId);
+                console.log(result);
+            }))
+        }
         toast.success("Sửa lô hàng nhập thành công");
         updateTable();
         handleCloseModal();
@@ -136,6 +151,7 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
 
     const handleReset = () => {
         setRowsData([]);
+        setDeleteData([]);
 
     }
 

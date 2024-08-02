@@ -120,6 +120,20 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
         setManufactureDate(null);
         setExpiryDate(null);
     }
+    const generateBatchCode = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `MLH${year}${month}${day}${hours}${minutes}${seconds}`;
+    };
+    const handleCreateBatchCode = () => {
+
+        setSelectedbatchCode(generateBatchCode());
+    }
 
 
     return (
@@ -164,13 +178,19 @@ const AddRowDataImportOrderN = ({ selectedSupplierId, selectedStorageId, isShow,
                     </Col>
 
 
-                    <Col md={2}>
+                    <Col md={4}>
                         <div className="form-group mb-3">
                             <label >Mã lô hàng</label>
-                            <input type="text" className="form-control inputCSS" value={selectedBatchCode} onChange={(e) => setSelectedbatchCode(e.target.value)} />
+                            <input type="text" className="form-control inputCSS" value={selectedBatchCode} disabled />
                         </div>
                     </Col>
+                    <Col md={2}>
+                        <label >&nbsp;</label>
+                        <Button className='form-control ButtonCSS' type='submit' onClick={handleCreateBatchCode} > Tạo mã lô </Button>
+                    </Col>
+                    <div>
 
+                    </div>
                     <Col md={3}>
                         <div className="form-group mb-3">
                             <label >Ngày sản xuất</label>

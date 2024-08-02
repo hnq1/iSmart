@@ -76,23 +76,23 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
             </Col>
 
             <Col md={3}>
-                    <div className="form-group mb-3">
-                        <label >Ngày sản xuất</label>
-                        <input type="date" className="form-control" value={manufactureDate}disabled />
-                    </div>
-                </Col>
-                <Col md={3}>
-                    <div className="form-group mb-3">
-                        <label >Ngày hết hạn</label>
-                        <input type="date" className="form-control" value={expiryDate}  disabled/>
-                    </div>
-                </Col>
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Mã lô hàng</label>
-                        <input type="text" className="form-control" value={batchCode} disabled />
-                    </div>
-                </Col>
+                <div className="form-group mb-3">
+                    <label >Ngày sản xuất</label>
+                    <input type="date" className="form-control" value={manufactureDate} disabled />
+                </div>
+            </Col>
+            <Col md={3}>
+                <div className="form-group mb-3">
+                    <label >Ngày hết hạn</label>
+                    <input type="date" className="form-control" value={expiryDate} disabled />
+                </div>
+            </Col>
+            <Col md={2}>
+                <div className="form-group mb-3">
+                    <label >Mã lô hàng</label>
+                    <input type="text" className="form-control" value={batchCode} disabled />
+                </div>
+            </Col>
 
 
 
@@ -109,17 +109,17 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
                 </div>
             </Col>
 
-            {/* <Col md={1}>
-            <div className="form-group mb-3 ButtonCSSDropdown red">
-                <button
-                    className="btn btn-success border-left-0 rounded  mt-4 "
-                    type="button"
-                    onClick={() => handleDeleteRowData(data)}
-                >
-                    Xóa
-                </button>
-            </div>
-        </Col> */}
+            <Col md={1}>
+                <div className="form-group mb-3 ButtonCSSDropdown red">
+                    <button
+                        className="btn btn-success border-left-0 rounded  mt-4 "
+                        type="button"
+                        onClick={() => handleDeleteRowData(data)}
+                    >
+                        Xóa
+                    </button>
+                </div>
+            </Col>
 
 
 
