@@ -244,8 +244,13 @@ function ImportOrderListN() {
 
 
     const EditDetailOrder = (order) => {
-        setIsShowEditOrder(true);
-        setDetailOrderEdit(order);
+        if (order.statusType == "Completed" || order.statusType == "Cancel") {
+            toast.warning("Không thể sửa đơn hàng đã nhập hoặc đã hủy");
+        }else{
+            setIsShowEditOrder(true);
+            setDetailOrderEdit(order);
+        }
+        
     }
 
 

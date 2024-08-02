@@ -200,12 +200,22 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
         const urlImage = res.url;
         setImageExportOrder(urlImage);
     }
-
+    const generateExportCode = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}${month}${day}${hours}${minutes}${seconds}`;
+    };
     const handleAddExportOrder = async () => {
-        if (!exportCode.trim()) {
-            toast.warning("Vui lòng nhập mã đơn hàng");
+        // if (!exportCode.trim()) {
+        //     toast.warning("Vui lòng nhập mã đơn hàng");
 
-        } else if (!selectedDate) {
+        // } else
+         if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày xuất hàng");
             // } else if (totalPrice === 0) {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
@@ -222,7 +232,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
             let isInternalTransfer = true;
             let res = await addNewExportOrder(isInternalTransfer,
                 userId,
-                exportCode,
+                generateExportCode(),
                 0,
                 "",
                 formatDateImport(selectedDate),
@@ -283,11 +293,11 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
             <Modal.Body>
                 <div className="body-add-new">
                     <Row className="align-items-center">
-                        <Col md={2}>
+                        {/* <Col md={2}>
                             <div className="form-group ">
                                 <input type="text" className="form-control inputCSS" placeholder="Mã đơn hàng" value={exportCode} onChange={(event) => setExportCode(event.target.value)} />
                             </div>
-                        </Col>
+                        </Col> */}
 
                         <Col md={2}>
                             <DropdownButton
