@@ -14,7 +14,6 @@ import { formatDate } from '~/validate';
 import { cancelStockTake } from '~/services/StockTakeServices';
 import { fetchUserByUserId } from '~/services/UserServices';
 
-import ExportPDF from '../components/others/PDF/exportPDF';
 import { usePDF } from 'react-to-pdf';
 import { toast } from 'react-toastify';
 
@@ -298,8 +297,7 @@ const StockTakeList = () => {
                 </div>
             </div>
         </div >
-        <ExportPDF toPDF={toPDF} targetRef={targetRef} isPDF={isPDF} handleClose={handleChangeIsPDF}
-            dataModalCheckout={dataModalCheckout} />
+        
 
         <ModalCancel isShow={isShowModalCancel} handleClose={() => setIsShowModalCancel(false)}
             title="Hủy đơn kiểm hàng" ConfirmCancel={ConfirmCancelStock} />

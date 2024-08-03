@@ -140,20 +140,21 @@ const ModalEditImportOrderN = ({ isShow, handleClose, detailOrderEdit, updateTab
         }
         toast.success("Sửa lô hàng nhập thành công");
         updateTable();
-        handleCloseModal();
+        handleReset();
+        handleClose();
         // }
 
     }
     const handleCloseModal = () => {
         handleReset();
         handleClose();
+        getTotalOrderDetail(detailOrderEdit.importId);
     }
 
     const handleReset = () => {
-        setRowsData([]);
         setDeleteData([]);
-
     }
+
 
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="xl">

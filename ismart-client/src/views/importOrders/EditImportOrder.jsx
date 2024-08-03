@@ -98,6 +98,7 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
 
     // render rowsData
     const renderImportData = () => {
+
         return rowsData.map((data, index) => (
             <>
                 <RowDataEditImportOrder key={`rowsdata${index}`} detailId={rowsData[index].detailId} data={rowsData[index]} index={index}
@@ -114,12 +115,8 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
         const updateDataImport = rowsData.filter((item, index) => index !== rowdel);
         const deleteDataImport = rowsData[rowdel];
         setDeleteData([...deleteData, deleteDataImport]);
-        console.log(rowsData[rowdel])
 
-        setRowsData(
-            
-        );
-        console.log(updateDataImport);
+        setRowsData(updateDataImport);
     }
 
     // update 1 row data từ RowDataImport
@@ -132,9 +129,7 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
     }
 
     const handleUpdateImportOrder = async () => {
-        if (rowsData.length <= 0) {
-            toast.warning("Vui lòng thêm lô hàng nhập");
-        } else {
+       
             console.log(detailOrderEdit.importId);
             let res = await updateImportOrder(detailOrderEdit.importId,
                 userId,
@@ -151,23 +146,30 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                 null);
             console.log("handleUpdateImportOrder: ", res);
             console.log(rowsData);
+
+            if (deleteData && deleteData.length > 0) {
+                await Promise.all(deleteData.map(async (data, index) => {
+                    let result = await deleteImportOrderDetail(data.detailId);
+                    console.log(result);
+                }))
+            }
+
             if (rowsData && rowsData.length > 0) {
                 await Promise.all(rowsData.map(async (data, index) => {
-                    await createNewImportOrderDetail(
+                    let res = await updateImportOrderDetail(
                         detailOrderEdit.importId,
                         data.costPrice,
-                        data.batchCode,
+                        data.detailId,
+                        data.goodsId,
+                        data.quantity,                        
                         data.manufactureDate,
                         data.expiryDate,
-                        data.goodsId,
-                        data.quantity
-
-
+                        data.batchCode                      
                     );
-                    console.log("data1:", data);
+                    console.log("data1:", res);
                 }));
             }
-    
+
             if (deleteData && deleteData.length > 0) {
                 await Promise.all(deleteData.map(async (data, index) => {
                     let result = await deleteImportOrderDetail(data.detailId);
@@ -176,29 +178,31 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
             }
             toast.success("Sửa lô hàng nhập thành công");
             updateTable();
-            handleCloseModal();
+            handleReset();
+            handleClose();
             // }
-        }
         
+
 
     }
     const handleCloseModal = () => {
         handleReset();
         handleClose();
+        getTotalOrderDetail(detailOrderEdit.importId);
+
     }
 
     const handleReset = () => {
-        setTotalPrice();
-        setRowsData([]);
+
         setDeleteData([]);
 
     }
     const handleAddRowDataImport = () => {
-        
-            setIsShowRowDataImport(true);
-           
+
+        setIsShowRowDataImport(true);
+
     }
-    
+
     const takeRowDataImportOrder = (importData) => {
         importData.supplierId = selectedSupplierId;
         importData.supplierName = selectedSupplier;
@@ -253,7 +257,7 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                             </DropdownButton>
                         </Col>
 
-                     
+
 
                         <Col md={2}>
                             <div>
@@ -268,18 +272,18 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                             </DropdownButton>
                         </Col>
 
-                        <Col md={3} >
+                        {/* <Col md={3} >
                             <div className="ButtonCSSDropdown mt-3">
                                 <button
                                     className="btn btn-success border-left-0 rounded"
                                     type="button"
-                                     onClick={handleAddRowDataImport}
+                                    onClick={handleAddRowDataImport}
                                 ><i className="fa-solid fa-plus"></i>
                                     &nbsp;
                                     Thêm lô hàng
                                 </button>
                             </div>
-                        </Col>
+                        </Col> */}
 
 
 
@@ -306,6 +310,7 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
                 <Button variant="primary" className="ButtonCSS" onClick={handleUpdateImportOrder}>
                     Lưu
                 </Button>
+
 
 
             </Modal.Footer>

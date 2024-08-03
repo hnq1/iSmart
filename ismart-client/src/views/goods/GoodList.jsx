@@ -125,8 +125,6 @@ function MyTable() {
 
         if (roleId === 1) {
             getStorageIdByUser();
-
-
         }
         else if (roleId === 2) {
             setSelectedWarehouseId(localStorage.getItem('warehouseId'));
