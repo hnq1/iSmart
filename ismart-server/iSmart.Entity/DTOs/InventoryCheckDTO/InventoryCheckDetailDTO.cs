@@ -8,6 +8,7 @@ namespace iSmart.Entity.DTOs.InventoryCheckDTO
 {
     public class InventoryCheckDetailDTO
     {
+        public int GoodId { get; set; }
         public string GoodCode { get; set; }
         public int ExpectedQuantity { get; set; }
         public int ActualQuantity { get; set; }

@@ -83,12 +83,14 @@ namespace iSmart.Service
                 return await query
                     .Select(ic => new CreateInventoryCheckDTO
                     {
+                        InventoryCheckId = ic.Id,
                         WarehouseId = ic.WarehouseId,
                         CheckDate = ic.CheckDate,
                         status = ic.StatusId == 3 ? "On Progress" :
                          ic.StatusId == 4 ? "Completed" : "Cancel",
                         InventoryCheckDetails = ic.InventoryCheckDetails.Select(d => new InventoryCheckDetailDTO
                         {
+                            GoodId = d.GoodId,
                             GoodCode = _context.Goods.FirstOrDefault(g => g.GoodsId == d.GoodId).GoodsCode,
                             ExpectedQuantity = d.ExpectedQuantity,
                             ActualQuantity = d.ActualQuantity,
