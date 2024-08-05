@@ -8,6 +8,7 @@ namespace iSmart.Entity.DTOs.InventoryCheckDTO
 {
     public class CreateInventoryCheckDTO
     {
+        public int InventoryCheckId { get; set; }
         public int WarehouseId { get; set; }
         public DateTime CheckDate { get; set; }
         public string? status { get; set; }

@@ -96,7 +96,8 @@ namespace iSmart.Service
                     {
                         ImportOrderDetailId = s.DetailId,
                         BatchCode = s.BatchCode,
-                        Quantity = s.ActualQuantity,
+                        Quantity = s.Quantity,
+                        ActualQuantity = s.ActualQuantity,
                         CostPrice = s.CostPrice,
                         ManufactureDate = s.ManufactureDate,
                         ExpiryDate = s.ExpiryDate

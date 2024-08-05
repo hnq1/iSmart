@@ -1,42 +1,35 @@
-
 import { useEffect, useState } from "react";
 import { Modal, Button, Col, Row } from "react-bootstrap";
 import { formatDate, formattedAmount } from '~/validate';
 import { toast } from 'react-toastify';
+import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
 
-import ModalShipmentProduct from "./ModalShipmentProduct";
+const ModalShipmentProduct = ({ isShow, handleClose, detailShipment, warehouseId }) => {
 
-
-const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
-    const [totalStockTake, setTotalStockTake] = useState([]);
-
-    const [isShowDetailProduct, setIsShowDetailProduct] = useState(false);
-
-    const [detailShipment, setDetailShipment] = useState([]);
+    const [totalShipment, setTotalShipment] = useState([]);
 
     useEffect(() => {
-        setTotalStockTake(detailData.inventoryCheckDetails);
-    }, [detailData])
+        getTotalShipment();
+    }, [detailShipment])
 
+
+    const getTotalShipment = async () => {
+        let res = await getAvailableBatch(warehouseId, detailShipment.goodId);
+        console.log(res);
+        setTotalShipment(res);
+    }
 
     const handleCloseModal = () => {
         handleClose();
     }
-
-    const handleShowDetail = (data) => {
-        setIsShowDetailProduct(true);
-        console.log(data);
-        setDetailShipment(data);
-    }
-
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="lg">
             <Modal.Header closeButton>
-                <Modal.Title>Thông tin chi tiết đơn hàng nhập kho</Modal.Title>
+                <Modal.Title>Thông tin chi tiết lô hàng của sản phẩm {detailShipment.goodCode}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    <Row>
+                    {/* <Row>
                         <Col md={2}>
                             <div className="form-group mb-3">
                                 <label >Kho hàng</label>
@@ -61,23 +54,23 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailData.status == "On Progress" ? "Đang tiến hành" : detailData.statusType == "Completed" ? "Đã hoàn thành" : "Đã hủy"}</button>
                             </div>
                         </Col>
-                    </Row>
+                    </Row> */}
 
 
-                    {totalStockTake && totalStockTake.length > 0
-                        && totalStockTake.map((o, index) => (
+                    {totalShipment && totalShipment.length > 0
+                        && totalShipment.map((o, index) => (
 
-                            <Row key={`stockTake${index}`}>
+                            <Row key={`shipment${index}`}>
                                 <Col >
 
-                                    <label >Mã hàng hóa</label>
-                                    <input type="text" className="form-control inputCSS" value={o.goodCode} readOnly />
+                                    <label >Mã lô hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={o.batchCode} readOnly />
 
                                 </Col>
                                 <Col >
 
-                                    <label >Số lượng trên web</label>
-                                    <input type="number" className="form-control inputCSS" value={o.expectedQuantity} readOnly />
+                                    <label >Số lượng trên hệ thống</label>
+                                    <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
 
@@ -85,16 +78,14 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
                                     <input type="text" className="form-control inputCSS" value={o.actualQuantity} readOnly />
                                 </Col>
 
-                                <Col> <label >Ghi chú</label>
-                                    <input type="text" className="form-control inputCSS" value={o.note} readOnly />
+                                <Col > <label >Ngày sản xuất</label>
+                                    <input type="text" className="form-control inputCSS" value={o.manufactureDate} readOnly />
                                 </Col>
 
-                                <Col md={2}>
-                                    <label >Chi tiết</label>
-                                    <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >
-                                        <i className="fa-solid fa-circle-info actionButtonCSS" title="Chi tiết" onClick={() => handleShowDetail(o)}></i>
-                                    </button>
+                                <Col > <label >Ngày hết hạn</label>
+                                    <input type="text" className="form-control inputCSS" value={o.expiryDate} readOnly />
                                 </Col>
+
                             </Row>
                         ))
                     }
@@ -107,10 +98,7 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
                 </Button>
             </Modal.Footer>
         </Modal >
-
-        <ModalShipmentProduct isShow={isShowDetailProduct} handleClose={() => setIsShowDetailProduct(false)}
-            detailShipment={detailShipment} warehouseId={detailData.warehouseId}/>
     </>)
 }
 
-export default StockTakeDetail
+export default ModalShipmentProduct;
