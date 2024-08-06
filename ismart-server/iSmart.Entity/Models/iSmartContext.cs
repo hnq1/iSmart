@@ -16,6 +16,7 @@ namespace iSmart.Entity.Models
             : base(options)
         {
         }
+        public virtual DbSet<BatchCheckingDetail> BatchDetails { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<ActionType> ActionTypes { get; set; }
         public virtual DbSet<AvailableForReturn> AvailableForReturns { get; set; }
@@ -97,6 +98,10 @@ namespace iSmart.Entity.Models
                 .HasOne(icd => icd.Good)
                 .WithMany(g => g.InventoryCheckDetails)
                 .HasForeignKey(icd => icd.GoodId);
+            modelBuilder.Entity<InventoryCheckDetail>()
+                .HasMany(icd => icd.BatchDetails)
+                .WithOne(bd => bd.InventoryCheckDetail)
+                .HasForeignKey(bd => bd.InventoryCheckDetailId);
 
             modelBuilder.Entity<GoodsWarehouse>(entity =>
             {
