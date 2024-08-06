@@ -12,6 +12,7 @@ namespace iSmart.Service
     public interface IReportService
     {
         Task<IEnumerable<ImportReportDto>> GetImportReport(DateTime? startDate, DateTime? endDate, int warehouseId);
+        Task<IEnumerable<ImportReportDto>> GetImportReportByGoodCode(DateTime? startDate, DateTime? endDate, int warehouseId, string goodCode);
         Task<IEnumerable<ExportReportDto>> GetExportReport(DateTime? startDate, DateTime? endDate, int warehouseId);
         Task<IEnumerable<InventoryReportDto>> GetInventoryReport(DateTime? startDate, DateTime? endDate, int warehouseId);
     }
@@ -91,6 +92,40 @@ namespace iSmart.Service
 
             return importReports;
         }
+
+        public async Task<IEnumerable<ImportReportDto>> GetImportReportByGoodCode(DateTime? startDate, DateTime? endDate, int warehouseId, string goodCode)
+        {
+            var query = _context.ImportOrders
+                .Where(io => io.WarehouseId == warehouseId && io.StatusId == 4)
+                .Include(io => io.Warehouse)
+                .Include(io => io.ImportOrderDetails)
+                .ThenInclude(iod => iod.Goods)
+                .AsQueryable();
+
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                endDate = endDate.Value.AddDays(1);
+                query = query.Where(io => io.ImportedDate >= startDate.Value && io.ImportedDate <= endDate.Value);
+            }
+
+            var importReports = await query
+                .SelectMany(io => io.ImportOrderDetails
+                    .Where(iod => iod.Goods.GoodsCode == goodCode)
+                    .Select(iod => new ImportReportDto
+                    {
+                        TransactionCode = io.ImportCode,
+                        ProductId = iod.GoodsId,
+                        ProductName = iod.Goods.GoodsCode,
+                        Quantity = iod.Quantity,
+                        TransactionDate = (DateTime)io.ImportedDate,
+                        MeasureUnit = iod.Goods.MeasuredUnit
+                    })
+                )
+                .ToListAsync();
+
+            return importReports;
+        }
+
 
 
         public async Task<IEnumerable<InventoryReportDto>> GetInventoryReport(DateTime? startDate, DateTime? endDate, int warehouseId)
