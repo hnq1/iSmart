@@ -19,5 +19,7 @@ namespace iSmart.Entity.Models
         // Navigation properties
         public virtual InventoryCheck InventoryCheck { get; set; }
         public virtual Good Good { get; set; }
+        public virtual ICollection<BatchCheckingDetail> BatchDetails { get; set; } // Thêm mối quan hệ với BatchDetails
+
     }
 }

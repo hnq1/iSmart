@@ -28,6 +28,44 @@ namespace iSmart.Service
             _context = context;
         }
 
+        //public CreateInventoryCheckResponse CreateInventoryCheck(CreateInventoryCheckDTO inventoryCheckDTO)
+        //{
+        //    try
+        //    {
+        //        var inventoryCheck = new InventoryCheck
+        //        {
+        //            WarehouseId = inventoryCheckDTO.WarehouseId,
+        //            CheckDate = inventoryCheckDTO.CheckDate,
+        //            StatusId = 3
+        //        };
+        //        _context.InventoryChecks.Add(inventoryCheck);
+        //        _context.SaveChanges();
+        //        foreach (var detail in inventoryCheckDTO.InventoryCheckDetails)
+        //        {
+        //            var good = _context.Goods.SingleOrDefault(g => g.GoodsCode == detail.GoodCode);
+        //            if (good == null)
+        //            {
+        //                throw new Exception($"Good with code {detail.GoodCode} not found.");
+        //            } 
+        //            int inventoryCheckId = inventoryCheck.Id;
+        //            var inventoryCheckDetail = new InventoryCheckDetail
+        //            {
+        //                InventoryCheckId = inventoryCheckId,
+        //                GoodId = good.GoodsId,
+        //                ExpectedQuantity = detail.ExpectedQuantity,
+        //                ActualQuantity = detail.ActualQuantity,
+        //                note = detail.Note
+        //            };
+        //            _context.InventoryCheckDetails.Add(inventoryCheckDetail);
+        //        }
+        //        _context.SaveChanges();
+        //        return new CreateInventoryCheckResponse { IsSuccess = true, Message = "Tạo phiếu kiểm kê thành công" };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new CreateInventoryCheckResponse { IsSuccess = false, Message = $"Tạo phiếu kiểm kê thất bại: {ex.Message}" };
+        //    }
+        //}
         public CreateInventoryCheckResponse CreateInventoryCheck(CreateInventoryCheckDTO inventoryCheckDTO)
         {
             try
@@ -40,6 +78,7 @@ namespace iSmart.Service
                 };
                 _context.InventoryChecks.Add(inventoryCheck);
                 _context.SaveChanges();
+
                 foreach (var detail in inventoryCheckDTO.InventoryCheckDetails)
                 {
                     var good = _context.Goods.SingleOrDefault(g => g.GoodsCode == detail.GoodCode);
@@ -53,13 +92,27 @@ namespace iSmart.Service
                     {
                         InventoryCheckId = inventoryCheckId,
                         GoodId = good.GoodsId,
-                        ExpectedQuantity = detail.ExpectedQuantity,
-                        ActualQuantity = detail.ActualQuantity,
+                        ExpectedQuantity = detail.BatchDetails.Sum(b => b.ExpectedQuantity),
+                        ActualQuantity = detail.BatchDetails.Sum(b => b.ActualQuantity),
                         note = detail.Note
                     };
-
                     _context.InventoryCheckDetails.Add(inventoryCheckDetail);
+                    _context.SaveChanges();
+
+                    foreach (var batch in detail.BatchDetails)
+                    {
+                        var batchDetail = new Entity.Models.BatchCheckingDetail
+                        {
+                            InventoryCheckDetailId = inventoryCheckDetail.Id,
+                            BatchCode = batch.BatchCode,
+                            ExpectedQuantity = batch.ExpectedQuantity,
+                            ActualQuantity = batch.ActualQuantity,
+                            Note = batch.Note
+                        };
+                        _context.BatchDetails.Add(batchDetail);
+                    }
                 }
+
                 _context.SaveChanges();
                 return new CreateInventoryCheckResponse { IsSuccess = true, Message = "Tạo phiếu kiểm kê thành công" };
             }
@@ -68,6 +121,7 @@ namespace iSmart.Service
                 return new CreateInventoryCheckResponse { IsSuccess = false, Message = $"Tạo phiếu kiểm kê thất bại: {ex.Message}" };
             }
         }
+
 
         public async Task<List<CreateInventoryCheckDTO>> GetAllInventoryChecksAsync(int? warehouseId)
         {
@@ -83,19 +137,17 @@ namespace iSmart.Service
                 return await query
                     .Select(ic => new CreateInventoryCheckDTO
                     {
-                        InventoryCheckId = ic.Id,
                         WarehouseId = ic.WarehouseId,
                         CheckDate = ic.CheckDate,
                         status = ic.StatusId == 3 ? "On Progress" :
                          ic.StatusId == 4 ? "Completed" : "Cancel",
                         InventoryCheckDetails = ic.InventoryCheckDetails.Select(d => new InventoryCheckDetailDTO
                         {
-                            GoodId = d.GoodId,
                             GoodCode = _context.Goods.FirstOrDefault(g => g.GoodsId == d.GoodId).GoodsCode,
                             ExpectedQuantity = d.ExpectedQuantity,
                             ActualQuantity = d.ActualQuantity,
                             Note = d.note,
-                            
+
                         }).ToList()
                     })
                     .ToListAsync();
@@ -109,15 +161,21 @@ namespace iSmart.Service
 
         public async Task<ResponseInventoryCheckDTO> GetInventoryCheckByIdAsync(int id)
         {
-                var inventoryCheck = await _context.InventoryChecks.Include(i => i.Warehouse).ThenInclude(i => i.UserWarehouses).ThenInclude(i => i.User).ThenInclude(I => I.Role)
-                    .Include(ic => ic.InventoryCheckDetails)
-                    .ThenInclude(d => d.Good)
-                    .FirstOrDefaultAsync(ic => ic.Id == id);
+            var inventoryCheck = await _context.InventoryChecks
+                .Include(i => i.Warehouse)
+                .ThenInclude(i => i.UserWarehouses)
+                .ThenInclude(i => i.User)
+                .ThenInclude(i => i.Role)
+                .Include(ic => ic.InventoryCheckDetails)
+                .ThenInclude(d => d.Good)
+                .Include(ic => ic.InventoryCheckDetails)
+                .ThenInclude(d => d.BatchDetails)
+                .FirstOrDefaultAsync(ic => ic.Id == id);
 
-                if (inventoryCheck == null)
-                {
-                    throw new Exception($"Inventory Check with ID {id} not found.");
-                }
+            if (inventoryCheck == null)
+            {
+                throw new Exception($"Inventory Check with ID {id} not found.");
+            }
 
             var groupedDetails = inventoryCheck.InventoryCheckDetails
                 .GroupBy(i => i.GoodId)
@@ -129,7 +187,16 @@ namespace iSmart.Service
                     InAppQuantity = g.Sum(i => i.ExpectedQuantity),
                     Difference = g.Sum(i => i.ExpectedQuantity) - g.Sum(i => i.ActualQuantity),
                     MeasureUnit = g.First().Good.MeasuredUnit,
-                    Note = string.Join(", ", g.Select(i => i.note).Where(n => !string.IsNullOrEmpty(n)))
+                    Note = string.Join(", ", g.Select(i => i.note).Where(n => !string.IsNullOrEmpty(n))),
+                    BatchDetails = g.SelectMany(i => i.BatchDetails)
+                                    .GroupBy(b => b.BatchCode)
+                                    .Select(b => new ResponseBatchDetailDTO
+                                    {
+                                        BatchCode = b.Key,
+                                        ExpectedQuantity = b.Sum(x => x.ExpectedQuantity),
+                                        ActualQuantity = b.Sum(x => x.ActualQuantity),
+                                        Note = string.Join(", ", b.Select(x => x.Note).Where(n => !string.IsNullOrEmpty(n)))
+                                    }).ToList()
                 }).ToList();
 
             return new ResponseInventoryCheckDTO
@@ -140,8 +207,8 @@ namespace iSmart.Service
                 WarehouseManagerName = inventoryCheck.Warehouse.UserWarehouses.FirstOrDefault(i => i.User.RoleId == 2)?.User.UserName,
                 Detail = groupedDetails
             };
-
         }
+
 
         public async Task UpdateBatchQuantitiesAsync(Dictionary<string, int> batchQuantities)
         {
