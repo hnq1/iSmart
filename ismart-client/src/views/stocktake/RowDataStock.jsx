@@ -21,7 +21,7 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
         setImportOrderDetail(data.importOrderDetailId);
-        setQuantity(data.batchDetails[0].expectedQuantity);
+        setQuantity(data.batchDetails[0].actualQuantity);
         setBatchCode(data.batchDetails[0].batchCode);
         setActualQuantity(data.batchDetails[0].actualQuantity);
 

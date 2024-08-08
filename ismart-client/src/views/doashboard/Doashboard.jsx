@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Table, DropdownButton, DropdownMenu, Col, Row, Container, Badge, Card } from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { fetchDataStatisticalExortOrder, fetchDataStatisticalImportOrder } from '~/services/Doashboard';
+import { fetchDataAddChart, fetchDataStatisticalExortOrder, fetchDataStatisticalImportOrder } from '~/services/Doashboard';
 import { fetchAllStorages } from '~/services/StorageServices';
 import { CustomToggle, CustomMenu } from "../components/others/Dropdown";
-import { fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
+import { fetchAllGoodsInWarehouse, fetchGoodsWithStorageAndSupplier } from "~/services/GoodServices";
 import { fetchGoodById } from "~/services/GoodServices";
 import { fetchAllSuppliers } from "~/services/SupplierServices";
 import { formatDateImport, formattedAmount, formatDate } from '~/validate';
@@ -16,8 +16,7 @@ import { fetchAlertsinGoods } from '~/services/GoodServices';
 import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-
-
+import { fetchInventoryExport, fetchInventoryImport } from '~/services/InventoryReport';
 
 
 const Doashboard = () => {
@@ -32,23 +31,9 @@ const Doashboard = () => {
         } else if (roleId === 3) {
             navigate('/cac-lo-hang-nhap-ngoai'); // Chuyển hướng người dùng với roleId là 3 đến dashboard
         }
-
-
     }, [roleId, navigate]);
 
-//Demo Dashboard
-const importDates = ['1','2','3','4','5','6','7','8','9','10','11','12','(Tháng)' ];
-const importQuantities = [100, 150, 120, 170, 140, 160,100, 150, 120, 170, 140, 16];
 
-// Dữ liệu giả lập cho thống kê xuất kho
-const exportDates = ['1','2','3','4','5','6','7','8','9','10','11','12','(Tháng)' ];
-const exportQuantities = [80, 130, 110, 160, 150, 180];
-
-// Mã sản phẩm và tiêu đề cho biểu đồ
-const productCode = 'exampleGoodCode';
-const importChartTitle = 'Nhập kho';
-const exportChartTitle = 'Xuất kho';
-//
     const [isOpen, setIsOpen] = useState(false);
     const [alerts, setAlerts] = useState([]);
 
@@ -63,11 +48,13 @@ const exportChartTitle = 'Xuất kho';
 
 
     const [totalImportOrderByDate, setTotalImportOrderByDate] = useState(0);
-    const [totalCostImportOrderByDate, setTotalCostImportOrderByDate] = useState('');
+    const [mostGoodImportOrderByDate, setMostGoodImportOrderByDate] = useState('');
+    const [mostQuantityGoodImportOrderByDate, setMostQuantityGoodImportOrderByDate] = useState('');
 
 
     const [totalExportOrderByDate, setTotalExportOrderByDate] = useState(0);
-    const [totalCostExportOrderByDate, setTotalCostExportOrderByDate] = useState('');
+    const [mostGoodExportOrderByDate, setMostGoodExportOrderByDate] = useState('');
+    const [mostQuantityGoodExportOrderByDate, setMostQuantityGoodExportOrderByDate] = useState('');
 
 
     const [totalGoods, setTotalGoods] = useState([]);
@@ -79,21 +66,14 @@ const exportChartTitle = 'Xuất kho';
     const [dataGood, setDataGood] = useState([]);
 
 
-    const [totalSuppliers, setTotalSuppliers] = useState([]);
-    const [selectedSupplier, setSelectedSupplier] = useState(null);
-    const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
 
     const [totalStoragesGood, setTotalStoragesGood] = useState([]);
     const [selectedStorageGood, setSelectedStorageGood] = useState(null);
     const [selectedStorageIdGood, setSelectedStorageIdGood] = useState(null);
-
-
     // dữ liệu truyền vào chart
     const [dateImportOrder, setDateImportOrder] = useState([]);
     const [quantityImportOrder, setQuantityImportOrder] = useState([]);
-
-
 
 
     // dữ liệu truyền vào chart
@@ -101,33 +81,22 @@ const exportChartTitle = 'Xuất kho';
     const [quantityExportOrder, setQuantityExportOrder] = useState([]);
 
 
-
-
-
-
     const [totalYear, setTotalYear] = useState(["2024", "2023", "2022"])
     const [selectedYear, setSelectedYear] = useState(null);
-
-
-
-
+    const [importQuantity, setImportQuantity] = useState([]);
+    const [exportQuantity, setExportQuantity] = useState(null);
     useEffect(() => {
         fetchAlerts();
     }, []);
-
-
-
-
-
-
-    //Fetch alerts khi trang được tải
     const fetchAlerts = async () => {
         let u = await getUserIdWarehouse(userId);
-        // console.log("res: ", u);
-        const a = await fetchAlertsinGoods(u[0].warehouseId);
-        // console.log("whId: ", u.warehouseId);
-        setAlerts(a);
-        setIsOpen(true); // Mở popup sau khi lấy dữ liệu
+        if (u && u.length > 0) {
+            const a = await fetchAlertsinGoods(u[0].warehouseId);
+            setAlerts(a);
+            setIsOpen(true);
+        } else {
+            console.error("User data is not available");
+        }
     };
 
 
@@ -136,9 +105,10 @@ const exportChartTitle = 'Xuất kho';
     const closePopup = () => {
         setIsOpen(false);
     };
+
+
     useEffect(() => {
         getAllStorages();
-        getAllSuppliers();
         getDataStatisticalImport();
         getDataStatisticalExport();
     }, [])
@@ -152,9 +122,7 @@ const exportChartTitle = 'Xuất kho';
         setDateExportOrder([]);
         setQuantityImportOrder([]);
         setQuantityExportOrder([]);
-
-
-    }, [selectedStorageIdGood, selectedSupplierId])
+    }, [selectedStorageIdGood])
 
 
     useEffect(() => {
@@ -168,17 +136,19 @@ const exportChartTitle = 'Xuất kho';
         getGoodById();
 
 
+
+
     }, [selectedGoodId, selectedYear])
-
-
-
-
 
 
     const getGoodById = async () => {
         if (selectedGoodId) {
             let res = await fetchGoodById(selectedGoodId);
-            setDataGood(res);
+            if (res) {
+                setDataGood(res);
+            } else {
+                console.error("Invalid response from fetchGoodById");
+            }
         }
     }
 
@@ -191,249 +161,117 @@ const exportChartTitle = 'Xuất kho';
         const missingMonths = allMonths.filter(month => !monthsWithQuantities.includes(month));
 
 
+
+
         const filledData = data.slice(); // Tạo một bản sao của mảng dữ liệu ban đầu
         missingMonths.forEach(month => {
             filledData.push({ year: selectedYear, month, quantity: 0 });
         });
-
-
         // Sắp xếp lại mảng theo tháng
         filledData.sort((a, b) => a.month - b.month);
-
-
         return filledData;
     }
 
 
-
-
-
-
-
-
     const getHistoryGood = async () => {
-        if (selectedGoodId) {
-
-
-            let res = await fetchHistoryGood(selectedGoodId);
-            let ImportRes = res.filter(r => r.actionId === 1); // Nhập hàng
-            let ExportRes = res.filter(r => r.actionId === 2); // Xuất hàng
-
-
-            console.log(res);
-
-
-            // chia thành 2 mảng riêng chứa số lượng và tháng
-            let quantitiesImport = [];
-            let datesImport = [];
-            for (let index = 0; index < ImportRes.length; index++) {
-                let element = ImportRes[index].quantityDifferential;
-                element = Math.abs(element);
-                let dateElement = ImportRes[index].date;
-                quantitiesImport.push(element);
-                datesImport.push(formatDateImport(dateElement));
-
-
+        if (selectedStorageIdGood && selectedGoodCode && selectedYear) {
+            let res = await fetchDataAddChart(selectedStorageIdGood, selectedGoodCode, selectedYear);
+            if (Array.isArray(res)) {
+                const importQuantities = res.map(item => item.imports || 0);
+                setImportQuantity(importQuantities);
+                const exportQuantities = res.map(item => item.exports || 0);
+                setExportQuantity(exportQuantities);
+            } else {
+                console.error("Invalid response from fetchDataAddChart");
             }
-
-
-            // chia thành 2 mảng riêng chứa số lượng và tháng
-            let quantitiesExport = [];
-            let datesExport = [];
-            for (let index = 0; index < ExportRes.length; index++) {
-                let element = ExportRes[index].quantityDifferential;
-                element = Math.abs(element);
-                quantitiesExport.push(element);
-                let dateElement = ExportRes[index].date;
-                datesExport.push(formatDateImport(dateElement));
-            }
-
-
-            // khai báo mảng chứa các phần tử tháng và số lượng trong tháng
-            let datequantityImport = [];
-            let datequantityExport = [];
-
-
-            for (let index = 0; index < quantitiesImport.length; index++) {
-                datequantityImport.push({ date: datesImport[index], quantity: quantitiesImport[index] });
-            }
-
-
-            for (let index = 0; index < quantitiesExport.length; index++) {
-                datequantityExport.push({ date: datesExport[index], quantity: quantitiesExport[index] });
-            }
-
-
-            const monthlyStats = {};
-            const monthlyStatsExport = {};
-
-
-
-
-            datequantityImport.forEach(item => {
-                // Phân tích ngày từ mục hiện tại
-                const date = new Date(item.date);
-                console.log(date);
-                const year = date.getFullYear();
-                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0
-
-
-                // Tạo một khóa duy nhất cho tháng và năm
-                const key = `${year}-${month}`;
-
-
-                // Nếu khóa này chưa tồn tại trong bảng thống kê, khởi tạo nó với giá trị số lượng là 0
-                if (!monthlyStats[key]) {
-                    monthlyStats[key] = 0;
-                }
-
-
-                // Tăng số lượng cho tháng hiện tại
-                monthlyStats[key] += item.quantity;
-            });
-
-
-            datequantityExport.forEach(item => {
-                // Phân tích ngày từ mục hiện tại
-                const date = new Date(item.date);
-                console.log(date);
-                const year = date.getFullYear();
-                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0
-
-
-                // Tạo một khóa duy nhất cho tháng và năm
-                const key = `${year}-${month}`;
-
-
-                // Nếu khóa này chưa tồn tại trong bảng thống kê, khởi tạo nó với giá trị số lượng là 0
-                if (!monthlyStatsExport[key]) {
-                    monthlyStatsExport[key] = 0;
-                }
-
-
-                // Tăng số lượng cho tháng hiện tại
-                monthlyStatsExport[key] += item.quantity;
-            });
-
-
-            let monthlyStatsSort = Object.keys(monthlyStats).map(key => {
-                const [year, month] = key.split('-').map(Number);
-                return { year, month, quantity: monthlyStats[key] };
-            });
-
-
-            let monthlyStatsExportSort = Object.keys(monthlyStatsExport).map(key => {
-                const [year, month] = key.split('-').map(Number);
-                return { year, month, quantity: monthlyStatsExport[key] };
-            });
-
-
-            // Sắp xếp mảng các đối tượng theo tháng
-            monthlyStatsSort.sort((a, b) => {
-                if (a.year !== b.year) {
-                    return a.year - b.year; // Sắp xếp theo năm
-                } else {
-                    return a.month - b.month; // Nếu năm giống nhau, sắp xếp theo tháng
-                }
-            });
-
-
-            monthlyStatsExportSort.sort((a, b) => {
-                if (a.year !== b.year) {
-                    return a.year - b.year; // Sắp xếp theo năm
-                } else {
-                    return a.month - b.month; // Nếu năm giống nhau, sắp xếp theo tháng
-                }
-            });
-
-
-            console.log(monthlyStatsSort);
-
-
-            monthlyStatsSort = fillMissingMonths(monthlyStatsSort);
-            monthlyStatsExportSort = fillMissingMonths(monthlyStatsExportSort);
-
-
-            console.log(monthlyStatsSort);
-
-
-
-
-
-
-            // reset lại quantityImportOrder và dateImportOrder
-            let quantityDataImport = [];
-            let dateDataImport = [];
-
-
-            for (const item of monthlyStatsSort) {
-                if (item.year == selectedYear) {
-                    quantityDataImport.push(item.quantity);
-                    dateDataImport.push("T" + item.month);
-                }
-
-
-            }
-
-
-            let quantityDataExport = [];
-            let dateDataExport = [];
-
-
-            for (const item of monthlyStatsExportSort) {
-                if (item.year == selectedYear) {
-                    quantityDataExport.push(item.quantity);
-                    dateDataExport.push("T" + item.month);
-                }
-
-
-            }
-
-
-
-
-            setQuantityImportOrder(quantityDataImport);
-            setDateImportOrder(dateDataImport);
-
-
-
-
-            setQuantityExportOrder(quantityDataExport);
-            setDateExportOrder(dateDataExport);
         }
-
-
-
-
     }
 
 
-    // lấy số lượng và giá trị nhập hàng
+
+
     const getDataStatisticalImport = async () => {
-        let res = await fetchDataStatisticalImportOrder(selectedDateStart, selectedDateEnd, selectedStorageId);
-        setTotalImportOrderByDate(res.totalOrder);
-        setTotalCostImportOrderByDate(res.totalCost);
-    }
+        let res = await fetchInventoryImport(selectedDateStart, selectedDateEnd, selectedStorageId);
+        if (Array.isArray(res)) {
+            const totalQuantity = res.reduce((sum, item) => sum + item.quantity, 0);
+            setTotalImportOrderByDate(totalQuantity);
+            const quantityMap = res.reduce((acc, item) => {
+                if (item.productId !== 0 && item.productId !== null) {
+                    if (!acc[item.productId]) {
+                        acc[item.productId] = { quantity: 0, productName: item.productName };
+                    }
+                    acc[item.productId].quantity += item.quantity;
+                }
+                return acc;
+            }, {});
 
 
+            let maxProduct = null;
+            let maxQuantity = 0;
+
+
+            for (const [productId, data] of Object.entries(quantityMap)) {
+                if (data.quantity > maxQuantity) {
+                    maxQuantity = data.quantity;
+                    maxProduct = { productId, productName: data.productName, quantity: maxQuantity };
+                }
+            }
+            if (maxProduct) {
+                console.log(`Sản phẩm được nhập nhiều nhất: ${maxProduct.productName} với số lượng: ${maxProduct.quantity}`);
+                setMostGoodImportOrderByDate(maxProduct.productName);
+                setMostQuantityGoodImportOrderByDate(maxProduct.quantity);
+            }
+        }
+    };
     // lấy số lượng và giá trị xuất hàng
     const getDataStatisticalExport = async () => {
-        let res = await fetchDataStatisticalExortOrder(selectedDateStart, selectedDateEnd, selectedStorageId);
-        setTotalExportOrderByDate(res.totalOrder);
-        setTotalCostExportOrderByDate(res.totalCost);
+        let res = await fetchInventoryExport(selectedDateStart, selectedDateEnd, selectedStorageId);
+        if (Array.isArray(res)) {
+            const totalQuantity = res.reduce((sum, item) => sum + item.quantity, 0);
+            setTotalExportOrderByDate(totalQuantity);
+            const quantityMap = res.reduce((acc, item) => {
+                if (item.productId !== 0 && item.productId !== null) {
+                    if (!acc[item.productId]) {
+                        acc[item.productId] = { quantity: 0, productName: item.productName };
+                    }
+                    acc[item.productId].quantity += item.quantity;
+                }
+                return acc;
+            }, {});
+
+
+            let maxProduct = null;
+            let maxQuantity = 0;
+
+
+            for (const [productId, data] of Object.entries(quantityMap)) {
+                if (data.quantity > maxQuantity) {
+                    maxQuantity = data.quantity;
+                    maxProduct = { productId, productName: data.productName, quantity: maxQuantity };
+                }
+            }
+            if (maxProduct) {
+                console.log(`Sản phẩm được xuất nhiều nhất: ${maxProduct.productName} với số lượng: ${maxProduct.quantity}`);
+                setMostGoodExportOrderByDate(maxProduct.productName);
+                setMostQuantityGoodExportOrderByDate(maxProduct.quantity);
+            }
+        }
     }
 
 
-    // lấy thông tin sản phẩm
+
+
+
+
+
     const getAllGoods = async () => {
-        if (selectedStorageIdGood && selectedSupplierId) {
-            let res = await fetchGoodsWithStorageAndSupplier(selectedStorageIdGood, selectedSupplierId);
-            console.log(res);
+        if (selectedStorageIdGood) {
+            let res = await fetchAllGoodsInWarehouse(selectedStorageIdGood);
             setTotalGoods(res);
         }
-
-
     }
+
+
 
 
     const handleGoodClick = (good, event) => {
@@ -442,12 +280,13 @@ const exportChartTitle = 'Xuất kho';
     }
 
 
-    // lấy thông tin kho
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalStorages(res);
         setTotalStoragesGood(res);
     }
+
+
 
 
     const handleStorageClickTotal = () => {
@@ -456,10 +295,14 @@ const exportChartTitle = 'Xuất kho';
     }
 
 
+
+
     const handleStorageClick = (storage) => {
-        setSelectedStorage(storage.storageName);
-        setSelectedStorageId(storage.storageId);
+        setSelectedStorage(storage.warehouseName);
+        setSelectedStorageId(storage.warehouseId);
     }
+
+
 
 
     // lấy ngày tháng để filter order
@@ -468,35 +311,44 @@ const exportChartTitle = 'Xuất kho';
     };
 
 
+
+
     const handleDateEndChange = (event) => {
         setSelectedDateEnd(formatDateImport(event.target.value));
     };
 
 
-
-
-    // lấy thông tin nhà sản xuất
-    const getAllSuppliers = async () => {
-        let res = await fetchAllSuppliers();
-        setTotalSuppliers(res);
-    }
-
-
-    const handleSupplierClick = (supplier, event) => {
-        setSelectedSupplier(supplier.supplierName);
-        setSelectedSupplierId(supplier.supplierId)
-    }
-
-
     const handleStorageGoodClick = (storage) => {
-        setSelectedStorageGood(storage.storageName);
-        setSelectedStorageIdGood(storage.storageId);
+        setSelectedStorageGood(storage.warehouseName);
+        setSelectedStorageIdGood(storage.warehouseId);
     }
+
+
 
 
     const handleYearSelect = (year) => {
         setSelectedYear(year);
     };
+
+
+    //Demo Dashboard
+    const importDates = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+    const importQuantities = [100, 150, 120, 170, 140, 160, 100, 150, 120, 170, 140, 16];
+
+
+
+
+    // Dữ liệu giả lập cho thống kê xuất kho
+    const exportDates = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+    const exportQuantities = [80, 130, 110, 160, 150, 180];
+
+
+
+
+    // Mã sản phẩm và tiêu đề cho biểu đồ
+    const productCode = 'exampleGoodCode';
+    const importChartTitle = 'Nhập kho';
+    const exportChartTitle = 'Xuất kho';
 
 
     return (<>
@@ -510,12 +362,16 @@ const exportChartTitle = 'Xuất kho';
                             <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả"} variant="success" >
 
 
+
+
                                 <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả</Dropdown.Item>
                                 {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.storageName} onClick={(e) => handleStorageClick(c, e)}>{c.storageName}</Dropdown.Item>
+                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.warehouseName} onClick={(e) => handleStorageClick(c, e)}>{c.warehouseName}</Dropdown.Item>
                                 ))}
                             </DropdownButton>
                         </Col>
+
+
 
 
                         <Col md={2}>
@@ -523,9 +379,13 @@ const exportChartTitle = 'Xuất kho';
                             <div>
 
 
+
+
                                 <input type="date" className="datepickerCSS" id="datepicker" value={selectedDateStart} onChange={handleDateStartChange} />
                             </div>
                         </Col>
+
+
 
 
                         <Col md={2}>
@@ -536,124 +396,107 @@ const exportChartTitle = 'Xuất kho';
                         </Col>
 
 
+
+
                     </div>
                 </div>
                 <hr></hr>
             </div>
 
 
+
+
             <Row className='SolieuCSS'>
                 <Col md={3}>
                     <Card className=" text-white mb-4" style={{ backgroundImage: 'linear-gradient(to left, #6fb3fe, #4398ff)' }}>
                         <Card.Body>
-                            <Card.Title>Lô hàng nhập</Card.Title>
-                            <div className="d-flex align-items-center">
-                                <i className="fa-duotone fa-file-import fa-xl"></i> &nbsp;
-                                <Card.Text className="ml-2 h3">{totalImportOrderByDate}</Card.Text>
-                            </div>
+                            <Card.Title>Tổng số lượng hàng nhập</Card.Title>
+                            {totalImportOrderByDate === 0 ? '' : (
+                                <div className="d-flex align-items-center">
+                                    <i className="fa-duotone fa-file-import fa-xl"></i> &nbsp;
+                                    <Card.Text className="ml-2 h3">{totalImportOrderByDate}</Card.Text>
+                                </div>
+                            )}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md={3}>
                     <Card className=" text-white mb-4" style={{ backgroundImage: 'linear-gradient(to left, #52e2c8, #36dab8)' }}>
                         <Card.Body>
-                            <Card.Title>Tổng giá trị nhập hàng</Card.Title>
-                            <div className="d-flex align-items-center">
-                                <i className="fa-duotone fa-chart-simple fa-xl "></i> &nbsp;
-                                <Card.Text className="ml-2 h3"> {formattedAmount(totalCostImportOrderByDate)}</Card.Text>
-                            </div>
+                            <Card.Title>Sản phẩm nhập nhiều nhất</Card.Title>
+                            {mostGoodImportOrderByDate === '' ? '' : (
+                                <div className="d-flex align-items-center">
+                                    <i className="fa-duotone fa-chart-simple fa-xl "></i> &nbsp;
+                                    <Card.Text className="ml-2 h3">
+                                        {mostGoodImportOrderByDate}
+                                        &nbsp;&nbsp;&nbsp;
+                                        SL: {mostQuantityGoodImportOrderByDate}
+                                    </Card.Text>
+                                </div>
+                            )}
                         </Card.Body>
                     </Card>
                 </Col>
 
 
+
+
                 <Col md={3}>
                     <Card className="text-white mb-4" style={{ backgroundImage: 'linear-gradient(to left, #fbcf6e, #ffb751)' }}>
                         <Card.Body>
-                            <Card.Title>Lô hàng xuất</Card.Title>
-                            <div className="d-flex align-items-center">
-                                <i className="fa-duotone fa-file-export fa-xl"></i> &nbsp;
-                                <Card.Text className="ml-2 h3">  {totalExportOrderByDate}</Card.Text>
-                            </div>
+                            <Card.Title>Tổng số lượng hàng xuất</Card.Title>
+                            {totalExportOrderByDate === 0 ? '' : (
+                                <div className="d-flex align-items-center">
+                                    <i className="fa-duotone fa-file-export fa-xl"></i> &nbsp;
+                                    <Card.Text className="ml-2 h3">  {totalExportOrderByDate}</Card.Text>
+                                </div>
+                            )}
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col md={3}>
                     <Card className=" text-white mb-4" style={{ backgroundImage: 'linear-gradient(to left, #fe8398, #ff5774)' }}>
                         <Card.Body>
-                            <Card.Title>Tổng giá trị xuất hàng</Card.Title>
-                            <div className="d-flex align-items-center">
-                                <i className="fa-duotone fa-chart-simple fa-xl "></i> &nbsp;
-                                <Card.Text className="ml-2 h3">    {formattedAmount(totalCostExportOrderByDate)}</Card.Text>
-                            </div>
+                            <Card.Title>Sản phẩm xuất nhiều nhất</Card.Title>
+                            {mostGoodExportOrderByDate === '' ? '' : (
+                                <div className="d-flex align-items-center">
+                                    <i className="fa-duotone fa-chart-simple fa-xl "></i> &nbsp;
+                                    <Card.Text className="ml-2 h3">
+                                        {mostGoodExportOrderByDate}
+                                        &nbsp;&nbsp;&nbsp;
+                                        SL: {mostQuantityGoodExportOrderByDate}
+                                    </Card.Text>
+                                </div>
+                            )}
                         </Card.Body>
                     </Card>
                 </Col>
 
 
+
+
             </Row>
             <hr></hr>
             <Row>
-                <Col md={2}>
-
-
+                <Col md={3}>
                     <div>
-
-
-
-
-
-
                         <Dropdown style={{ position: 'relative', fontWeight: 'bold' }}>
                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                 <span style={{ color: 'white' }}>{selectedStorageGood !== null ? selectedStorageGood : "Kho"}</span>
                             </Dropdown.Toggle>
-
-
                             <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }} className='ButtonCSSDropdown'>
                                 {totalStoragesGood && totalStoragesGood.length > 0 && totalStoragesGood.map((g, index) => (
-                                    <Dropdown.Item key={`storageGood ${index}`} eventKey={g.storageName} onClick={(e) => handleStorageGoodClick(g, e)}>
-                                        {g.storageName}
+                                    <Dropdown.Item key={`storageGood ${index}`} eventKey={g.warehouseName} onClick={(e) => handleStorageGoodClick(g, e)}>
+                                        {g.warehouseName}
                                     </Dropdown.Item>
                                 ))}
                             </Dropdown.Menu>
                         </Dropdown>
-
-
-
-
                     </div>
                 </Col>
-                <Col md={2}>
+                <Col md={3}>
 
 
-                    <div>
-                        <Dropdown style={{ position: 'relative', fontWeight: 'bold' }}>
-                            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                <span style={{ color: 'white' }}>{selectedSupplier !== null ? selectedSupplier : "Nhà cung cấp"}</span>
-                            </Dropdown.Toggle>
-
-
-                            <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }} className='ButtonCSSDropdown'>
-                                {totalSuppliers && totalSuppliers.length > 0 && totalSuppliers.map((g, index) => (
-                                    <Dropdown.Item key={`supplier ${index}`} eventKey={g.supplierName} onClick={(e) => handleSupplierClick(g, e)}>
-                                        {g.supplierName}
-                                    </Dropdown.Item>
-                                ))}
-
-
-                                {totalGoods.length === 0 && (
-                                    <Dropdown.Item key="empty" disabled>
-                                        Không có mặt hàng
-                                    </Dropdown.Item>
-                                )}
-                            </Dropdown.Menu>
-                        </Dropdown>
-
-
-                    </div>
-                </Col>
-                <Col md={2}>
 
 
                     <div>
@@ -661,6 +504,8 @@ const exportChartTitle = 'Xuất kho';
                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components" className='DropdownButtonCSS'>
                                 <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Mã Sản phẩm"}</span>
                             </Dropdown.Toggle>
+
+
 
 
                             <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }} className='ButtonCSSDropdown'>
@@ -671,6 +516,8 @@ const exportChartTitle = 'Xuất kho';
                                 ))}
 
 
+
+
                                 {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
@@ -678,18 +525,18 @@ const exportChartTitle = 'Xuất kho';
                                 )}
                             </Dropdown.Menu>
                         </Dropdown>
-
-
                     </div>
                 </Col>
 
 
-                <Col md={2}>
+                <Col md={3}>
                     <div>
                         <Dropdown className='ButtonCSSDropdown'>
                             <Dropdown.Toggle variant="primary" id="dropdown-basic">
                                 {selectedYear ? selectedYear : 'Chọn năm'}
                             </Dropdown.Toggle>
+
+
 
 
                             <Dropdown.Menu >
@@ -705,37 +552,33 @@ const exportChartTitle = 'Xuất kho';
             <hr></hr>
             <Row>
                 <label>Tổng số lượng của sản phẩm {selectedGoodCode} trong kho: {selectedGoodCode ? dataGood.inStock : ''}</label>
-                <label>Giá trị tồn kho của {selectedGoodCode} trong kho: {selectedGoodCode ? formattedAmount(dataGood.inStock * dataGood.stockPrice) : ''}</label>
             </Row>
-
-
-
-
-
-
-
-
-            <div style={{ padding: '20px' }}>
             <Row>
-                <Col md={6}>
-                    <ChartComponent 
-                        selectedGoodCode={productCode}
-                        dateOrder={importDates}
-                        quantityOrder={importQuantities}
-                        title={importChartTitle} 
-                    />
-                </Col>
+                <div style={{ padding: '20px' }}>
+                    <Row>
+                        <Col md={6}>
+                            <ChartComponent
+                                selectedGoodCode={selectedGoodCode}
+                                dateOrder={importDates}
+                                quantityOrder={importQuantity}
+                                title={importChartTitle}
+                            />
+                        </Col>
 
-                <Col md={6}>
-                    <ChartComponent 
-                        selectedGoodCode={productCode}
-                        dateOrder={exportDates}
-                        quantityOrder={exportQuantities}
-                        title={exportChartTitle} 
-                    />
-                </Col>
+
+
+
+                        <Col md={6}>
+                            <ChartComponent
+                                selectedGoodCode={selectedGoodCode}
+                                dateOrder={exportDates}
+                                quantityOrder={exportQuantity}
+                                title={exportChartTitle}
+                            />
+                        </Col>
+                    </Row>
+                </div>
             </Row>
-        </div>
 
 
             <Modal show={isOpen} onHide={closePopup} size="lg">
@@ -750,8 +593,8 @@ const exportChartTitle = 'Xuất kho';
                                     style={{ listStyleType: '" __ "' }}>
                                     <p></p>
                                     {/* <p>Mã hàng: {alert.goodCode}</p>
-                        <p>Tên hàng: {alert.goodName}</p>
-                        <p>Số lượng: {alert.quantity}</p> */}
+                            <p>Tên hàng: {alert.goodName}</p>
+                            <p>Số lượng: {alert.quantity}</p> */}
                                     <p> <FontAwesomeIcon icon={faExclamationTriangle}
                                         style={{ color: 'red', fontSize: '24px' }}
                                     />Cảnh báo: {alert.alertType}</p>
@@ -775,7 +618,16 @@ const exportChartTitle = 'Xuất kho';
 }
 
 
+
+
 export default Doashboard
+
+
+
+
+
+
+
 
 
 
