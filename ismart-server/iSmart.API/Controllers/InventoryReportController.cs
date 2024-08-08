@@ -33,6 +33,20 @@ namespace iSmart.API.Controllers
             }
         }
 
+        [HttpGet("import-filter-by-good-code")]
+        public async Task<IActionResult> GetImportReport(DateTime? startDate, DateTime? endDate, int warehouseId, string goodCode)
+        {
+            try
+            {
+                var result = await _reportService.GetImportReportByGoodCode(startDate, endDate, warehouseId, goodCode);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
+
         [HttpGet("export")]
         public async Task<IActionResult> GetExportReport(DateTime? startDate, DateTime? endDate, int warehouseId)
         {
@@ -53,6 +67,20 @@ namespace iSmart.API.Controllers
             try
             {
                 var result = await _reportService.GetInventoryReport(startDate, endDate, warehouseId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("inventory-by-month")]
+        public async Task<IActionResult> GetInventoryReportByMonth(int warehouseId, string goodCode, int year)
+        {
+            try
+            {
+                var result = await _reportService.GetInventoryReportByMonth(warehouseId, goodCode, year);
                 return Ok(result);
             }
             catch (Exception ex)

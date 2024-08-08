@@ -535,9 +535,10 @@ function MyTable() {
                             <tbody >
                                 {listGoods && listGoods.length > 0 &&
                                     listGoods.map((g, index) => (
+                                       
                                         <tr key={`goods${index}`}>
 
-
+                                         
                                             <td className="align-middle text-color-primary">{startIndexOfPage + index}</td>
                                             <td className="align-middle text-color-primary">{g.goodsCode}</td>
                                             <td className="align-middle">{g.goodsName}</td>

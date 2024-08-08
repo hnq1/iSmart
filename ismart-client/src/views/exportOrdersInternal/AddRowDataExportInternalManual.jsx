@@ -27,6 +27,7 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
 
     useEffect(() => {
         setDataMethod();
+
     }, [selectedMethod, selectedGoodId])
 
     const getAllGoods = async () => {
@@ -227,7 +228,7 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
                             <td>{d.batchCode}</td>
                             <td>{new Date(d.manufactureDate).toLocaleDateString()}</td>
                             <td>{new Date(d.expiryDate).toLocaleDateString()}</td>
-                            <td>{d.quantity}</td>
+                            <td>{d.actualQuantity}</td>
                             <td>{d.location || 'N/A'}</td>
                             <td>
                                 <input

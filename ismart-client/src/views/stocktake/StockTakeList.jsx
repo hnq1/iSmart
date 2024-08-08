@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Form, Col, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Table, Form, Col, DropdownButton, Dropdown, Badge } from 'react-bootstrap';
 import { removeWhiteSpace } from '~/validate';
 import ReactPaginate from 'react-paginate';
 import { toast } from 'react-toastify';
 import { fetchUserByUserId } from '~/services/UserServices';
 import { fetchAllStorages } from '~/services/StorageServices';
-import { fetchInventoryByWarehouseId } from '~/services/StockTakeServices';
+import { cancelInventoryCheck, fetchInventoryByWarehouseId } from '~/services/StockTakeServices';
 import StockTakeDetail from './StockTakeDetail';
+import ModalAddStockTake from './ModalAddStockTake';
+import ConfirmStockTake from './ConfirmStockTake';
+import ModalCancelStockTake from './ModalCancelStockTake';
+import { downloadInventoryCheck } from '~/services/StockTakeServices';
+import { formatDate } from '~/validate';
+import { format } from 'date-fns';
 
 const StockTakeList = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
@@ -23,14 +29,32 @@ const StockTakeList = () => {
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(1);
     const [selectedWarehouse, setSelectedWarehouse] = useState();
 
+    const [isShowModalAddStock, setIsShowModalAddStock] = useState(false);
+
     const [isShowModalDetail, setIsShowModalDetail] = useState(false);
     const [detailData, setDetailData] = useState({});
 
+    const [isShowModelConfirm, setIsShowModelConfirm] = useState(false);
+    const [dataStock, setDataStock] = useState({});
+
+    const [isShowModalCancelStock, setIsShowModalCancelStock] = useState(false);
+    const [dataCancelStock, setDataCancelStock] = useState([]);
+
+    const [currentDate, setCurrentDate] = useState();
+
+    const formattedDate = (dateStr) => {
+        const date = new Date(dateStr);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
 
     useEffect(() => {
         getStorageIdByUser(userId);
         getAllStorages();
         getAllStockTake(warehouseId);
+        setCurrentDate(format(new Date(), 'dd/MM/yyyy'));
     }, [])
 
     const getStorageIdByUser = async () => {
@@ -42,7 +66,6 @@ const StockTakeList = () => {
     const getAllStockTake = async (warehouseId) => {
         let res = await fetchInventoryByWarehouseId(warehouseId);
         setListStockTake(res);
-        console.log(res);
     }
 
     const getAllStorages = async () => {
@@ -50,15 +73,45 @@ const StockTakeList = () => {
         setTotalWarehouse(res);
     }
 
+    const updateTableStock = (id) => {
+        getAllStockTake(id);
+    }
+
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
+        updateTableStock(warehouse.warehouseId);
     }
 
     const handleShowModalDetail = (detail) => {
-        console.log(detail);
         setIsShowModalDetail(true);
         setDetailData(detail);
+    }
+
+    const handlePrintStock = (detail) => {
+        window.location.href = `https://localhost:7033/api/inventory-check/export-inventory-check/${detail.inventoryCheckId}`;
+    }
+
+    const ShowModelConfirm = (s) => {
+        if (currentDate <= formatDate(s.checkDate)) {
+            setIsShowModelConfirm(true);
+            setDataStock(s);
+        } else {
+            toast.warning("Chưa đến ngày xác nhận");
+        }
+    }
+
+    const ShowModalCancelStock = (data) => {
+        setIsShowModalCancelStock(true);
+        setDataCancelStock(data);
+        console.log(dataCancelStock);
+    }
+
+    const ConfirmCancel = async (confirm) => {
+        if (confirm) {
+            await cancelInventoryCheck(dataCancelStock.inventoryCheckId);
+            getAllStockTake(selectedWarehouseId);
+        }
     }
 
     return (<>
@@ -121,12 +174,12 @@ const StockTakeList = () => {
                             </div>
                         </div>
                         {
-                            (roleId == 1) ?
+                            ((roleId == 1) || (roleId === 4)) ?
                                 <div className="col-auto ButtonCSSDropdown">
                                     <button
                                         className="btn btn-success border-left-0 rounded"
                                         type="button"
-                                    // onClick={() => setIsShowModelAddNew(true)}
+                                        onClick={() => setIsShowModalAddStock(true)}
                                     ><i className="fa-solid fa-plus"></i>
                                         &nbsp;
                                         Thêm đơn kiểm kê
@@ -143,25 +196,49 @@ const StockTakeList = () => {
                                     <th className="align-middle   text-nowrap" style={{ width: '100px' }}>STT</th>
                                     <th className="align-middle  text-nowrap" style={{ textAlign: 'left', paddingLeft: '10px' }}>Ngày kiểm hàng</th>
                                     <th className="align-middle  text-nowrap" style={{ width: '250px' }}>Tình trạng</th>
-                                    <th className="align-middle  text-nowrap" style={{ width: '250px' }}>Chi tiết</th>
-
-
-
+                                    <th className="align-middle  text-nowrap" style={{ width: '250px' }}>Tuỳ chọn</th>
+                                    {(roleId === 1) ? <th className="align-middle  text-nowrap position-sticky" style={{ right: 0, minWidth: '150px' }}>Hành động</th> : ''}
                                 </tr>
                             </thead>
                             <tbody>
-
                                 {listStockTake && listStockTake.length > 0 &&
                                     listStockTake.map((s, index) => (
                                         <tr key={`supplier${index}`}>
                                             <td className="align-middle text-color-primary">{index + 1}</td>
-                                            <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{s.checkDate}</td>
-                                            <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{s.status}</td>
+                                            <td className="align-middle" style={{ textAlign: 'left', paddingLeft: '10px' }}>{formattedDate(s.checkDate)}</td>
+                                            <td className="align-middle" style={{ color: s.status === "Cancel" ? "#ea5455" : "#2275b7" }}>
+                                                {s.status === "On Progress" ?
+                                                    <Badge style={{ backgroundColor: "#0c7a42" }}>Đang tiến hành</Badge> :
+                                                    s.status === "Completed" ?
+                                                        <Badge bg="success">Đã hoàn thành</Badge> :
+                                                        <Badge bg="danger">Đã huỷ</Badge>}                                                </td>
 
                                             <td className="align-middle" style={{ textAlign: 'center', paddingLeft: '10px' }}>
                                                 <i className="fa-solid fa-circle-info actionButtonCSS" title="Chi tiết" onClick={() => handleShowModalDetail(s)}></i>
+                                                {(roleId === 1 || roleId === 4) ? (
+                                                    s.status !== "On Progress" ? (
+                                                        <i
+                                                            className="fa-solid fa-ban"
+                                                            style={{ color: 'red', padding: '5px' }}
+                                                        ></i>
+                                                    ) : (
+                                                        <i
+                                                            className="fa-solid fa-ban actionButtonCSS"
+                                                            onClick={() => ShowModalCancelStock(s)}
+                                                        ></i>
+                                                    )
+                                                ) : ''}
+                                                <i className="fa-solid fa-download actionButtonCSS" title="Tải file về máy" onClick={() => handlePrintStock(s)}></i>
                                             </td>
-
+                                            {(roleId === 1) ? <td className='position-sticky ' style={{ right: 0, minWidth: '150px' }}> <button
+                                                className="btn btn-success "
+                                                type="button"
+                                                onClick={() => ShowModelConfirm(s)}
+                                                style={{ backgroundColor: s.status === "Completed" ? "#0c7a42" : s.status === "On Progress" ? "#2275b7" : "#ea5455", fontWeight: 'bold' }}
+                                                disabled={s.status === "Completed" || s.status === "Cancel" || (roleId !== 1 && roleId !== 3)}
+                                            >
+                                                {s.status === "Completed" ? "Đã xác nhận" : s.status === "On Progress" ? "Xác nhận" : "Đã huỷ"}
+                                            </button></td> : ''}
                                         </tr>
                                     ))
                                 }
@@ -195,7 +272,11 @@ const StockTakeList = () => {
         </div> */}
 
         <StockTakeDetail isShow={isShowModalDetail} handleClose={() => setIsShowModalDetail(false)}
-            detailData={detailData}/>
+            detailData={detailData} />
+        <ModalAddStockTake isShow={isShowModalAddStock} handleClose={() => setIsShowModalAddStock(false)} updateTableStock={updateTableStock} />
+        <ConfirmStockTake isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataStock={dataStock} updateTableStock={updateTableStock} />
+        <ModalCancelStockTake isShow={isShowModalCancelStock} handleClose={() => setIsShowModalCancelStock(false)}
+            title="Hủy đơn kiểm kê" ConfirmCancel={ConfirmCancel} />
     </>)
 }
 
