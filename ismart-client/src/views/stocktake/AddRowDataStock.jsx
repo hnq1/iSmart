@@ -9,7 +9,12 @@ import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
 
 
 
+
+
+
+
 const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) => {
+
 
     const [totalGoods, setTotalGoods] = useState([]);
     const [totalBatchs, setTotalBatchs] = useState([]);
@@ -20,26 +25,32 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
     const [selectedMethod, setSelectedMethod] = useState('');
     const [selectImportOrderDetailId, setSelectImportOrderDetailId] = useState(null);
     const [actualQuantity, setActualQuantity] = useState(0);
-    const [quantity, setQuantity] = useState('');
+    const [oldActualQuantity, setOldActualQuantity] = useState(0);
     const [totalActualQuantity, setTotalActualQuantity] = useState(0);
     const [totalQuantity, setTotalQuantity] = useState('');
     const [inputActualQuantity, setInputActualQuantity] = useState(0);
+
 
     useEffect(() => {
         getAllGoods();
     }, [selectedStorageId])
 
 
+
+
     useEffect(() => {
         setDataMethod();
     }, [selectedMethod])
 
+
     useEffect(() => {
         if (dataMethod) {
             setActualQuantity(dataMethod.actualQuantity);
+            setOldActualQuantity(dataMethod.actualQuantity);
             setInputActualQuantity(dataMethod.actualQuantity);
         }
     }, [dataMethod]);
+
 
     const getAllGoods = async () => {
         if (selectedStorageId !== null) {
@@ -48,23 +59,22 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
         }
     }
 
+
     const handleGoodClick = async (good, event) => {
         setDataMethod(null);
         setSelectedGoodCode(good.goodsCode);
         setSelectedGoodId(good.goodsId);
         let m = await getAvailableBatch(selectedStorageId, good.goodsId);
-        console.log("res: ", m);
         const totalActualGoodQuantity = m.reduce((sum, item) => sum + item.actualQuantity, 0);
         setTotalActualQuantity(totalActualGoodQuantity);
         const totalGoodQuantity = m.reduce((sum, item) => sum + item.quantity, 0);
         setTotalQuantity(totalGoodQuantity);
-        console.log(`Tổng số actualQuantity: ${totalActualGoodQuantity}`);
-        console.log(`Tổng số quantity: ${totalGoodQuantity}`);
         if (m.length === 0) {
             toast.warning("Không có lô hàng nào");
         } else {
             setTotalBatchs(m);
             // setDataMethod(m);
+
 
             // const importOrderDetailIds = m.map(item => ({
             //     importOrderDetailId: item.importOrderDetailId,
@@ -73,14 +83,17 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
             //     quantity: item.quantity
             // }));
 
+
             // setSelectImportOrderDetailId(importOrderDetailIds);
         }
     }
+
 
     const handleBatchClick = async (batch, event) => {
         setSelectedBatchCode(batch.batchCode);
         console.log("res: ", batch);
         setDataMethod(batch);
+
 
         const importOrderDetailIds = {
             goodId: selectedGoodId,
@@ -90,9 +103,10 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
             quantity: batch.quantity
         };
         setInputActualQuantity(batch.actualQuantity);
-        setQuantity(batch.quantity);
+        //setQuantity(batch.quantity);
         setSelectImportOrderDetailId(importOrderDetailIds);
     }
+
 
     const handleInputQuantityChange = (event) => {
         const numericValue = Number(event.target.value);
@@ -106,6 +120,8 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
         setInputActualQuantity(numericValue);
         console.log("Updated actualQuantity: ", numericValue); // Debugging line
     };
+
+
 
 
     const handleConfirmRowData = () => {
@@ -129,10 +145,13 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
                     {
                         batchCode: batchCode,
                         expectedQuantity: quantity,
-                        actualQuantity: actualQuantity
+                        actualQuantity: actualQuantity,
+                        oldActualQuantity: oldActualQuantity
                     }
                 ]
             };
+
+
 
 
             onChange(inputQuantitiesArray);
@@ -141,11 +160,14 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
         }
     }
 
+
     const handleCloseModal = () => {
         handleReset();
         handleClose();
 
+
     }
+
 
     const handleReset = () => {
         setSelectedMethod(null);
@@ -155,6 +177,7 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
         setSelectedBatchCode(null);
     }
     return (
+
 
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
@@ -170,6 +193,7 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
                                     <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Mã Sản phẩm"}</span>
                                 </Dropdown.Toggle>
 
+
                                 <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
                                     {totalGoods && totalGoods.length > 0 && totalGoods.map((g, index) => (
                                         <Dropdown.Item key={`good ${index}`} eventKey={g.goodsCode} onClick={(e) => handleGoodClick(g, e)}>
@@ -178,6 +202,7 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
                                     ))}
                                 </Dropdown.Menu>
                             </Dropdown>
+
 
                         </div>
                     </Col>
@@ -189,6 +214,7 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
                                     <span style={{ color: 'white' }}>{selectedBatchCode !== null ? selectedBatchCode : "Mã lô hàng"}</span>
                                 </Dropdown.Toggle>
 
+
                                 <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
                                     {totalBatchs && totalBatchs.length > 0 && totalBatchs.map((g, index) => (
                                         <Dropdown.Item key={`good ${index}`} eventKey={g.batchCode} onClick={(e) => handleBatchClick(g, e)}>
@@ -198,9 +224,11 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
                                 </Dropdown.Menu>
                             </Dropdown>
 
+
                         </div>
                     </Col>
                 </Row >
+
 
             </Modal.Body>
             <Table >
@@ -219,7 +247,7 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
                             <td>{dataMethod.batchCode}</td>
                             <td>{new Date(dataMethod.manufactureDate).toLocaleDateString()}</td>
                             <td>{new Date(dataMethod.expiryDate).toLocaleDateString()}</td>
-                            <td>{dataMethod.actualQuantity}</td>
+                            <td>{oldActualQuantity}</td>
                             <td>
                                 <input
                                     min="0"
@@ -247,7 +275,26 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
 
 
 
+
+
+
+
 export default AddRowDataStock
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -86,6 +86,7 @@ const StockTakeList = () => {
     const handleShowModalDetail = (detail) => {
         setIsShowModalDetail(true);
         setDetailData(detail);
+        console.log(detail);
     }
 
     const handlePrintStock = (detail) => {
@@ -104,7 +105,6 @@ const StockTakeList = () => {
     const ShowModalCancelStock = (data) => {
         setIsShowModalCancelStock(true);
         setDataCancelStock(data);
-        console.log(dataCancelStock);
     }
 
     const ConfirmCancel = async (confirm) => {
