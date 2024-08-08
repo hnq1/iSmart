@@ -74,5 +74,19 @@ namespace iSmart.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
+
+        [HttpGet("inventory-by-month")]
+        public async Task<IActionResult> GetInventoryReportByMonth(int warehouseId, string goodCode, int year)
+        {
+            try
+            {
+                var result = await _reportService.GetInventoryReportByMonth(warehouseId, goodCode, year);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
     }
 }
