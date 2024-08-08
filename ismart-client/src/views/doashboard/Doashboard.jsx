@@ -36,7 +36,19 @@ const Doashboard = () => {
 
     }, [roleId, navigate]);
 
+//Demo Dashboard
+const importDates = ['1','2','3','4','5','6','7','8','9','10','11','12','(Tháng)' ];
+const importQuantities = [100, 150, 120, 170, 140, 160,100, 150, 120, 170, 140, 16];
 
+// Dữ liệu giả lập cho thống kê xuất kho
+const exportDates = ['1','2','3','4','5','6','7','8','9','10','11','12','(Tháng)' ];
+const exportQuantities = [80, 130, 110, 160, 150, 180];
+
+// Mã sản phẩm và tiêu đề cho biểu đồ
+const productCode = 'exampleGoodCode';
+const importChartTitle = 'Nhập kho';
+const exportChartTitle = 'Xuất kho';
+//
     const [isOpen, setIsOpen] = useState(false);
     const [alerts, setAlerts] = useState([]);
 
@@ -703,20 +715,27 @@ const Doashboard = () => {
 
 
 
+            <div style={{ padding: '20px' }}>
             <Row>
                 <Col md={6}>
-
-
-                    <ChartComponent selectedGoodCode={selectedGoodCode} dateOrder={dateImportOrder} quantityOrder={quantityImportOrder} title="Nhập kho" />
+                    <ChartComponent 
+                        selectedGoodCode={productCode}
+                        dateOrder={importDates}
+                        quantityOrder={importQuantities}
+                        title={importChartTitle} 
+                    />
                 </Col>
-
 
                 <Col md={6}>
-                    <ChartComponent selectedGoodCode={selectedGoodCode} dateOrder={dateExportOrder} quantityOrder={quantityExportOrder} title="Xuất kho" />
+                    <ChartComponent 
+                        selectedGoodCode={productCode}
+                        dateOrder={exportDates}
+                        quantityOrder={exportQuantities}
+                        title={exportChartTitle} 
+                    />
                 </Col>
-
-
             </Row>
+        </div>
 
 
             <Modal show={isOpen} onHide={closePopup} size="lg">

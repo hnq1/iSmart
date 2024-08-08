@@ -3,25 +3,99 @@ import { useEffect, useState } from "react";
 import { Modal, Button, Col, Row } from "react-bootstrap";
 import { formatDate, formattedAmount } from '~/validate';
 import { toast } from 'react-toastify';
+import { fetchAllStorages } from "~/services/StorageServices";
 
 import ModalShipmentProduct from "./ModalShipmentProduct";
+import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
+import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 
 
 const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
     const [totalStockTake, setTotalStockTake] = useState([]);
-
+    const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [isShowDetailProduct, setIsShowDetailProduct] = useState(false);
-
     const [detailShipment, setDetailShipment] = useState([]);
+
+    const [totalGoods, setTotalGoods] = useState([]);
+    const [totalActualQuantity, setTotalActualQuantity] = useState(0);
+    const [totalQuantity, setTotalQuantity] = useState('');
+
+    const date = new Date(detailData.checkDate);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const formattedDate = `${day}-${month}-${year}`;
 
     useEffect(() => {
         setTotalStockTake(detailData.inventoryCheckDetails);
+        //getAllGoods();
+        getAllStorages();
+        console.log('total: ', detailData);
+        getAllBatch();
     }, [detailData])
+
+    const getAllStorages = async () => {
+        let res = await fetchAllStorages();
+        setTotalWarehouse(res);
+    }
+
+    const getAllBatch = async () => {
+        if (detailData.warehouseId !== null) {
+            let res = await fetchAllGoodsInWarehouse(detailData.warehouseId);
+            console.log("res", res);
+            if (detailData && Array.isArray(detailData.inventoryCheckDetails)) {
+                // Nhóm các đối tượng có cùng goodCode và gộp lại
+                const groupedDetails = detailData.inventoryCheckDetails.reduce((acc, item) => {
+                    if (!acc[item.goodCode]) {
+                        acc[item.goodCode] = { ...item, quantity: item.quantity || 0 };
+                    } else {
+                        acc[item.goodCode].quantity += item.quantity || 0;
+                    }
+                    return acc;
+                }, {});
+
+                const mergedDetails = Object.values(groupedDetails);
+                const goodCodes = mergedDetails.map(detail => detail.goodCode);
+                console.log("goodCodes", goodCodes);
+
+                const goodIds = res
+                    .filter(item => goodCodes.includes(item.goodsCode)) // Lọc các đối tượng có goodCode trùng khớp
+                    .map(item => item.goodsId);
+                console.log("filteredGoods", goodIds);
+
+                const promises = goodIds.map(goodId => getAvailableBatch(detailData.warehouseId, goodId));
+                const results = await Promise.all(promises);
+                console.log("getAvailableBatch", results);
+
+                // Tạo bản đồ để tra cứu totalsActualPerArray theo goodCode
+                const totalsActualPerMap = goodCodes.reduce((acc, code, index) => {
+                    acc[code] = results[index].reduce((total, item) => total + (item.actualQuantity || 0), 0);
+                    return acc;
+                }, {});
+
+                // Tạo updatedStockTake với totalActualQuantity từ totalsActualPerMap
+                const updatedStockTake = detailData.inventoryCheckDetails.map((item) => ({
+                    ...item,
+                    totalActualQuantity: totalsActualPerMap[item.goodCode] || 0
+                }));
+
+                console.log("updatedStockTake", updatedStockTake);
+                setTotalStockTake(updatedStockTake);
+
+                // Lấy totalsActualPerArray từ updatedStockTake
+                const totalsActualPerArray = updatedStockTake.map(item => item.totalActualQuantity);
+                setTotalActualQuantity(totalsActualPerArray);
+            }
+        }
+    }
 
 
     const handleCloseModal = () => {
         handleClose();
     }
+
+    const warehouse = totalWarehouse.find(wh => wh.warehouseId === detailData.warehouseId);
+    console.log("warehousewarehouse", totalWarehouse);
 
     const handleShowDetail = (data) => {
         setIsShowDetailProduct(true);
@@ -32,73 +106,68 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="lg">
             <Modal.Header closeButton>
-                <Modal.Title>Thông tin chi tiết đơn hàng nhập kho</Modal.Title>
+                <Modal.Title>Thông tin chi tiết đơn kiểm kê</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
                     <Row>
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Kho hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailData.warehouseId}</button>
+                                <br />
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{warehouse ? warehouse.warehouseName : "Kho không tồn tại"}</button>
                             </div>
-                        </Col>
-
-                        <Col md={2}>
-                            <div className="form-group mb-3">
-                                <label >Ngày kiểm tra</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailData.checkDate}</button>
-                            </div>
-                        </Col>
-
-                        <Col md={2}>
-
                         </Col>
 
                         <Col md={3}>
+                            <div className="form-group mb-3">
+                                <label >Ngày kiểm tra</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{formattedDate}</button>
+                            </div>
+                        </Col><Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Tình trạng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailData.status == "On Progress" ? "Đang tiến hành" : detailData.statusType == "Completed" ? "Đã hoàn thành" : "Đã hủy"}</button>
                             </div>
                         </Col>
                     </Row>
-
-
                     {totalStockTake && totalStockTake.length > 0
                         && totalStockTake.map((o, index) => (
 
                             <Row key={`stockTake${index}`}>
                                 <Col >
-
                                     <label >Mã hàng hóa</label>
                                     <input type="text" className="form-control inputCSS" value={o.goodCode} readOnly />
-
                                 </Col>
                                 <Col >
-
-                                    <label >Số lượng trên web</label>
-                                    <input type="number" className="form-control inputCSS" value={o.expectedQuantity} readOnly />
-
+                                    <label >Mã lô hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={o.batchDetails[0].batchCode} readOnly />
                                 </Col>
-
-                                <Col > <label >Số lượng thực tế</label>
-                                    <input type="text" className="form-control inputCSS" value={o.actualQuantity} readOnly />
+                                <Col >
+                                    <label >SL hệ thống</label>
+                                    <input type="number" className="form-control inputCSS" value={o.batchDetails[0].expectedQuantity} readOnly />
+                                </Col>
+                                <Col >
+                                    <label >SLTT thay đổi</label>
+                                    <input type="text" className="form-control inputCSS" value={o.batchDetails[0].actualQuantity} readOnly />
                                 </Col>
 
                                 <Col> <label >Ghi chú</label>
                                     <input type="text" className="form-control inputCSS" value={o.note} readOnly />
                                 </Col>
 
-                                <Col md={2}>
+                                {/* <Col md={2}>
                                     <label >Chi tiết</label>
                                     <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >
                                         <i className="fa-solid fa-circle-info actionButtonCSS" title="Chi tiết" onClick={() => handleShowDetail(o)}></i>
                                     </button>
-                                </Col>
+                                </Col> */}
                             </Row>
                         ))
                     }
-
+                    <br />
+                    <label >*SLTT: Số lượng thực tế</label><br />
+                    <label >*SL: Số lượng</label>
                 </div>
             </Modal.Body>
             <Modal.Footer>
@@ -109,7 +178,7 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
         </Modal >
 
         <ModalShipmentProduct isShow={isShowDetailProduct} handleClose={() => setIsShowDetailProduct(false)}
-            detailShipment={detailShipment} warehouseId={detailData.warehouseId}/>
+            detailShipment={detailShipment} warehouseId={detailData.warehouseId} />
     </>)
 }
 

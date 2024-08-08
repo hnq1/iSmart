@@ -69,7 +69,7 @@ const ModalShipmentProduct = ({ isShow, handleClose, detailShipment, warehouseId
                                 </Col>
                                 <Col >
 
-                                    <label >Số lượng trên hệ thống</label>
+                                    <label >S trên hệ thống</label>
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
@@ -78,13 +78,13 @@ const ModalShipmentProduct = ({ isShow, handleClose, detailShipment, warehouseId
                                     <input type="text" className="form-control inputCSS" value={o.actualQuantity} readOnly />
                                 </Col>
 
-                                <Col > <label >Ngày sản xuất</label>
+                                {/* <Col > <label >Ngày sản xuất</label>
                                     <input type="text" className="form-control inputCSS" value={o.manufactureDate} readOnly />
                                 </Col>
 
                                 <Col > <label >Ngày hết hạn</label>
                                     <input type="text" className="form-control inputCSS" value={o.expiryDate} readOnly />
-                                </Col>
+                                </Col> */}
 
                             </Row>
                         ))

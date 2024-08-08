@@ -59,7 +59,7 @@ const ModalGoodHistory = ({ isShow, dataGood, handleClose, warehouseId }) => {
                                 goodHistory.map((g, index) => (
                                     <tr style={{ backgroundColor: index % 2 === 0 ? "red" : "blue" }} key={`goodHistory${index}`} >
                                         <td className="align-middle text-color-primary">{g.batchCode}</td>
-                                        <td className="align-middle text-color-primary">{g.quantity}</td>
+                                        <td className="align-middle text-color-primary">{g.actualQuantity}</td>
                                         <td className="align-middle text-color-primary">{formatDate(g.manufactureDate)}</td>
                                         <td className="align-middle text-color-primary">{formatDate(g.expiryDate)}</td>
                                     </tr>

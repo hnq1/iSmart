@@ -147,7 +147,15 @@ namespace iSmart.Service
                             ExpectedQuantity = d.ExpectedQuantity,
                             ActualQuantity = d.ActualQuantity,
                             Note = d.note,
-
+                            BatchDetails = _context.BatchDetails
+                                       .Where(b => b.InventoryCheckDetailId == d.Id)
+                                       .Select(b => new CreateBatchDetailDTO
+                                       {
+                                           BatchCode = b.BatchCode,
+                                           ExpectedQuantity = b.ExpectedQuantity,
+                                           ActualQuantity = b.ActualQuantity,
+                                           Note = b.Note
+                                       }).ToList()
                         }).ToList()
                     })
                     .ToListAsync();

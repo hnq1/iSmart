@@ -111,7 +111,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
         const batchCode = selectImportOrderDetailId[index].batchCode;
 
         // Kiểm tra và điều chỉnh giá trị nếu vượt quá d.quantity
-        const adjustedValue = Math.min(Number(value), dataMethod[index].quantity);
+        const adjustedValue = Math.min(Number(value), dataMethod[index].actualQuantity);
 
         // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
         const newInputQuantities = {
@@ -126,7 +126,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
         console.log("newInputQuantities: ", newInputQuantities);
 
         // Hiển thị thông báo nếu giá trị nhập vào lớn hơn d.quantity
-        if (Number(value) > dataMethod[index].quantity) {
+        if (Number(value) > dataMethod[index].actualQuantity) {
             toast.warning("Phải nhập số lượng nhỏ hơn hoặc bằng số lượng hiện có!");
         }
     }
@@ -287,13 +287,13 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                             <td>{d.batchCode}</td>
                             <td>{new Date(d.manufactureDate).toLocaleDateString()}</td>
                             <td>{new Date(d.expiryDate).toLocaleDateString()}</td>
-                            <td>{d.quantity}</td>
+                            <td>{d.actualQuantity}</td>
                             <td>{d.location || 'N/A'}</td>
                             <td>
                                 <input
                                     type="number"
                                     min={0}
-                                    max={d.quantity}
+                                    max={d.actualQuantity}
                                     className="form-control"
                                     value={inputQuantities[index]?.quantity || 0}
                                     onChange={(e) => handleInputQuantityChange(index, e.target.value)}

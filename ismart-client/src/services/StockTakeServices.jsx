@@ -13,6 +13,15 @@ const createInventoryCheck = (warehouseId, checkDate, status, inventoryCheckDeta
     });
 };
 
+const updateInventoryCheck = (batch) => {
+    return axios.post(`api/inventory-check/update-batch-quantities`, batch)
+}
+
+const cancelInventoryCheck = (id) => {
+    return axios.post(`api/inventory-check/cancel-inventory-check?id=${id}`)
+}
 
 
-export { createInventoryCheck, fetchInventoryByWarehouseId }
+
+
+export { createInventoryCheck, fetchInventoryByWarehouseId, cancelInventoryCheck, updateInventoryCheck }
