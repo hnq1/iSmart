@@ -6,8 +6,12 @@ import EditRowDataStock from "./EditRowDataStock";
 
 
 
+
+
+
 const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
     const [isShowEditRowData, setIsShowEditRowData] = useState(false);
+
 
     const [goodsId, setGoodsId] = useState();
     const [goodsCode, setGoodsCode] = useState();
@@ -15,25 +19,30 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
     const [batchCode, setBatchCode] = useState();
     const [quantity, setQuantity] = useState();
     const [actualQuantity, setActualQuantity] = useState();
+    const [oldActualQuantity, setOldActualQuantity] = useState();
+
 
     useEffect(() => {
-        console.log("item: ", data.batchDetails[0].batchCode);
+        console.log("item: ", data.batchDetails[0].oldActualQuantity);
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
         setImportOrderDetail(data.importOrderDetailId);
-        setQuantity(data.batchDetails[0].actualQuantity);
+        setQuantity(data.batchDetails[0].expectedQuantity);
         setBatchCode(data.batchDetails[0].batchCode);
         setActualQuantity(data.batchDetails[0].actualQuantity);
-
+        setOldActualQuantity(data.batchDetails[0].oldActualQuantity);
     }, [data])
+
 
     const handleEditRowData = () => {
         setIsShowEditRowData(true);
     }
 
+
     const handleDeleteRowData = () => {
         deleteRowData(index);
     }
+
 
     const dataAfterEdit = (editedData) => {
         setActualQuantity(editedData.actualQuantity);
@@ -41,14 +50,18 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
             ...data,
             batchDetails: [{
                 ...data.batchDetails[0],
-                actualQuantity: editedData.actualQuantity
+                actualQuantity: editedData.actualQuantity,
+                oldActualQuantity: editedData.oldActualQuantity || oldActualQuantity
             }]
         });
     };
 
 
+
+
     return (<>
         <Row>
+
 
             <Col md={3}>
                 <div className="form-group mb-3">
@@ -57,12 +70,14 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
                 </div>
             </Col>
 
+
             <Col md={3}>
                 <div className="form-group mb-3">
                     <label >SL trên hệ thống</label>
-                    <input type="number" className="form-control" defaultValue={quantity} disabled />
+                    <input type="number" className="form-control" defaultValue={oldActualQuantity} disabled />
                 </div>
             </Col>
+
 
             <Col md={2}>
                 <div className="form-group mb-3">
@@ -70,6 +85,8 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
                     <input type="number" className="form-control" defaultValue={actualQuantity} disabled />
                 </div>
             </Col>
+
+
 
 
             <Col md={1}>
@@ -83,6 +100,7 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
                     </button>
                 </div>
             </Col>
+
 
             <Col md={1}>
                 <div className="form-group mb-3 ButtonCSSDropdown red">
@@ -98,7 +116,11 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
 
 
 
+
+
+
         </Row>
+
 
         <EditRowDataStock isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
     </>)
@@ -107,7 +129,26 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
 
 
 
+
+
+
+
 export default RowDataStock
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
