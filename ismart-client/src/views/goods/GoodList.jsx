@@ -278,14 +278,14 @@ function MyTable() {
     }
 
 
-    const handleStorageClick = async (warehouse) => {
+    const handleStorageClick = (warehouse) => {
 
 
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
         setShowInStock(true);
-        //const res = await getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
-        const res = await getGoods(warehouse.warehouseId);
+        const res = getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        // const res = await getGoods(warehouse.warehouseId);
         setListGoods(res);
         // console.log("selectedWarehouseId:", res);
     }
