@@ -84,33 +84,20 @@ namespace iSmart.API.Controllers
 
         }
 
-        [HttpPost("update-batch-quantities")]
-        public async Task<ActionResult> UpdateBatchQuantitiesAsync([FromBody] Dictionary<string, int> batchQuantities, int id)
-        {
-            var result = _context.InventoryChecks.FirstOrDefault(i => i.Id == id);
-            if (result != null && result.StatusId == 3)
-            {
-                result.StatusId = 4;
-                result.CheckDate = DateTime.Now;
-                _context.InventoryChecks.Update(result);
-                await _context.SaveChangesAsync();
 
-                try
-                {
-                    await _inventoryCheckService.UpdateBatchQuantitiesAsync(batchQuantities);
-                    return Ok(new { Message = "Cập nhật số lượng batch thành công." });
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { Message = $"Lỗi máy chủ nội bộ: {ex.Message}" });
-                }
-            }
-            else
+        [HttpPost("update-batch-quantities")]
+        public async Task<ActionResult> UpdateBatchQuantitiesAsync([FromBody] Dictionary<string, int> batchQuantities)
+        {
+            try
             {
-                return BadRequest("Không tồn tại hoặc trạng thái không hợp lệ.");
+                await _inventoryCheckService.UpdateBatchQuantitiesAsync(batchQuantities);
+                return Ok(new { Message = "Batch quantities updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
             }
         }
-
 
         [HttpGet("export-inventory-check/{id}")]
         public async Task<IActionResult> ExportInventoryCheckToPdf(int id)
