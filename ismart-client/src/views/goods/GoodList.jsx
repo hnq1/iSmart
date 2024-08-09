@@ -240,9 +240,11 @@ function MyTable() {
     const handleSupplierClick = (supplier) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
-        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch).then(res => {
-            setListGoods(res); // Cập nhật danh sách hàng hóa với dữ liệu mới
-        });
+        const res = getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch);
+        setListGoods(res);
+        // getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch).then(res => {
+        //     setListGoods(res); // Cập nhật danh sách hàng hóa với dữ liệu mới
+        // });
     }
 
 
@@ -251,10 +253,11 @@ function MyTable() {
     const handleSupplierClickTotal = () => {
         setSelectedSupplier("Nhà cung cấp");
         setSelectedSupplierId(null);
+        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch);
         // Gọi getGoods mà không có nhà cung cấp cụ thể
-        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch).then(res => {
-            setListGoods(res); // Cập nhật danh sách hàng hóa
-        });
+        // getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch).then(res => {
+        //     setListGoods(res); // Cập nhật danh sách hàng hóa
+        // });
     };
 
 
