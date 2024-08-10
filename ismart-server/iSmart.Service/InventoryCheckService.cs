@@ -178,7 +178,6 @@ namespace iSmart.Service
                 .Include(ic => ic.InventoryCheckDetails)
                 .ThenInclude(d => d.Good)
                 .Include(ic => ic.InventoryCheckDetails)
-<<<<<<< HEAD
                 .ThenInclude(d => d.BatchDetails)
                 .FirstOrDefaultAsync(ic => ic.Id == id);
 
@@ -186,15 +185,6 @@ namespace iSmart.Service
             {
                 throw new Exception($"Inventory Check with ID {id} not found.");
             }
-=======
-                .ThenInclude(d => d.BatchDetails) 
-                .FirstOrDefaultAsync(ic => ic.Id == id);
-
-            if (inventoryCheck == null)
-                {
-                    throw new Exception($"Inventory Check with ID {id} not found.");
-                }
->>>>>>> origin/anhddhe170353
 
             var groupedDetails = inventoryCheck.InventoryCheckDetails
                 .GroupBy(i => i.GoodId)

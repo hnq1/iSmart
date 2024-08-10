@@ -107,37 +107,6 @@ namespace iSmart.Entity.Migrations
                     b.ToTable("AvailableForReturns");
                 });
 
-            modelBuilder.Entity("iSmart.Entity.Models.BatchCheckingDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ActualQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BatchCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ExpectedQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InventoryCheckDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InventoryCheckDetailId");
-
-                    b.ToTable("BatchDetails");
-                });
-
             modelBuilder.Entity("iSmart.Entity.Models.Bill", b =>
                 {
                     b.Property<int>("BillId")
@@ -1112,17 +1081,6 @@ namespace iSmart.Entity.Migrations
                     b.Navigation("Import");
                 });
 
-            modelBuilder.Entity("iSmart.Entity.Models.BatchCheckingDetail", b =>
-                {
-                    b.HasOne("iSmart.Entity.Models.InventoryCheckDetail", "InventoryCheckDetail")
-                        .WithMany("BatchDetails")
-                        .HasForeignKey("InventoryCheckDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("InventoryCheckDetail");
-                });
-
             modelBuilder.Entity("iSmart.Entity.Models.Bill", b =>
                 {
                     b.HasOne("iSmart.Entity.Models.User", "CreatedNavigation")
@@ -1651,11 +1609,6 @@ namespace iSmart.Entity.Migrations
             modelBuilder.Entity("iSmart.Entity.Models.InventoryCheck", b =>
                 {
                     b.Navigation("InventoryCheckDetails");
-                });
-
-            modelBuilder.Entity("iSmart.Entity.Models.InventoryCheckDetail", b =>
-                {
-                    b.Navigation("BatchDetails");
                 });
 
             modelBuilder.Entity("iSmart.Entity.Models.ReturnsOrder", b =>
