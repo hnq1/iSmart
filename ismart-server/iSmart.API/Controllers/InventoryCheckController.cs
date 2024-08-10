@@ -123,6 +123,7 @@ namespace iSmart.API.Controllers
                 {
                     return NotFound($"Phiếu kiểm kê với ID {id} không tồn tại.");
                 }
+                Console.WriteLine("Check product", inventoryCheck.CheckDate);
 
                 using (var stream = new MemoryStream())
                 {
@@ -155,9 +156,9 @@ namespace iSmart.API.Controllers
                             document.Add(new Paragraph("\n"));
 
                             // Table Header
-                            var table = new iText.Layout.Element.Table(UnitValue.CreatePercentArray(new float[] { 3, 4, 3, 3, 3, 2, 4 }))
+                            var table = new iText.Layout.Element.Table(UnitValue.CreatePercentArray(new float[] {3, 3, 4, 3, 3, 3, 2, 4 }))
                                 .SetWidth(UnitValue.CreatePercentValue(100));
-
+                            table.AddHeaderCell("STT");
                             table.AddHeaderCell("Mã Hàng");
                             table.AddHeaderCell("Tên Hàng");
                             table.AddHeaderCell("Số Lượng Thực Tế");
@@ -165,10 +166,12 @@ namespace iSmart.API.Controllers
                             table.AddHeaderCell("Chênh Lệch");
                             table.AddHeaderCell("Đơn Vị Tính");
                             table.AddHeaderCell("Ghi Chú");
+                            int i = 1;
 
                             // Table Rows
                             foreach (var detail in inventoryCheck.Detail)
                             {
+                                table.AddCell(i + "");
                                 table.AddCell(detail.goodCode);
                                 table.AddCell(detail.goodName);
                                 table.AddCell(detail.ActualQuantity.ToString());
@@ -176,6 +179,7 @@ namespace iSmart.API.Controllers
                                 table.AddCell(detail.Difference.ToString());
                                 table.AddCell(detail.MeasureUnit);
                                 table.AddCell(detail.Note);
+                                i++;
                             }
 
                             document.Add(table);

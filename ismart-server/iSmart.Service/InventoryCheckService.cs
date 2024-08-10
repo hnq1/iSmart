@@ -73,7 +73,7 @@ namespace iSmart.Service
                 var inventoryCheck = new InventoryCheck
                 {
                     WarehouseId = inventoryCheckDTO.WarehouseId,
-                    CheckDate = inventoryCheckDTO.CheckDate,
+                    CheckDate = DateTime.Now,
                     StatusId = 3
                 };
                 _context.InventoryChecks.Add(inventoryCheck);
@@ -214,6 +214,7 @@ namespace iSmart.Service
                 WarehouseName = inventoryCheck.Warehouse.WarehouseName,
                 WarehouseAddress = inventoryCheck.Warehouse.WarehouseAddress,
                 WarehouseManagerName = inventoryCheck.Warehouse.UserWarehouses.FirstOrDefault(i => i.User.RoleId == 2)?.User.UserName,
+                CheckDate = inventoryCheck.CheckDate,
                 Detail = groupedDetails
             };
         }
