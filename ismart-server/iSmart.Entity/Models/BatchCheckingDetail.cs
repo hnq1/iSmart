@@ -16,4 +16,8 @@ namespace iSmart.Entity.Models
         public string? Note { get; set; }
         public InventoryCheckDetail InventoryCheckDetail { get; set; }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/anhddhe170353
