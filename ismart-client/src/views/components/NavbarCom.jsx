@@ -1,4 +1,4 @@
-import { Navbar, Nav, NavDropdown, Container, Dropdown } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -22,7 +22,6 @@ function NavbarCom() {
     const [isShowModelConfirm, setIsShowModelConfirm] = useState(false); // State để điều khiển hiển thị modal
     const [dataImportOrder, setDataImportOrder] = useState(null); // Dữ liệu đơn hàng cần nhập
     const [updateTable, setUpdateTable] = useState(false); // State để cập nhật bảng sau khi nhập đơn hàng
-
 
     const [webSocketMessages, setWebSocketMessages] = useState([]);
 
@@ -76,7 +75,7 @@ function NavbarCom() {
     const handleNotificationClick = (index) => {
         const selectedMessage = webSocketMessages[index];
         const importId = selectedMessage.importId; // Assuming the message contains importId
-        // navigate(`/confirm-import-order/${importId}`);
+        navigate(`/confirm-import-order/${importId}`);
         setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
         setWebSocketMessages(prevMessages => prevMessages.filter((_, i) => i !== index));
     };
@@ -88,7 +87,6 @@ function NavbarCom() {
         navigate('/dang-nhap');
 
     };
-
 
     return (
         <>
@@ -126,16 +124,6 @@ function NavbarCom() {
                                     show={showNotifications} // Hiển thị dropdown khi biểu tượng chuông được nhấp
                                     onMouseLeave={() => setShowNotifications(false)} // Tự động ẩn khi rời khỏi dropdown
                                 >
-
-                                    {/* Thêm tiêu đề H1 */}
-                                    <h3 style={{ color: 'red', margin: '10px ' }}>Thông báo</h3>
-                                    {/* Thêm các nút Đọc và Chưa đọc */}
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                                        <Dropdown.Item  >Chưa đọc</Dropdown.Item>
-                                        <Dropdown.Item  >Đã đọc</Dropdown.Item>
-                                    </div>
-
-
                                     {/* Render các thông báo từ WebSocket */}
                                     {webSocketMessages.length === 0 ? (
                                         <NavDropdown.Item>Không có thông báo mới</NavDropdown.Item>

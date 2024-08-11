@@ -34,7 +34,7 @@ const Doashboard = () => {
     }, [roleId, navigate]);
 
 
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [alerts, setAlerts] = useState([]);
 
 
@@ -92,7 +92,6 @@ const Doashboard = () => {
         let u = await getUserIdWarehouse(userId);
         if (u && u.length > 0) {
             const a = await fetchAlertsinGoods(u[0].warehouseId);
-            console.log("a:", a);
             setAlerts(a);
             setIsOpen(true);
         } else {
@@ -100,10 +99,7 @@ const Doashboard = () => {
         }
     };
 
-    useEffect(() => {
-        // Khi trang được tải lại, đặt lại trạng thái hiển thị cảnh báo
-        setIsOpen(true);
-    }, []);
+
 
 
     const closePopup = () => {
@@ -359,8 +355,7 @@ const Doashboard = () => {
         <div className="container" >
             <div className="">
                 <div className="">
-
-                    <h1 style={{ color: '#3b3bf5', marginTop: '20px' }}>Thống kê</h1>
+                    <h5 style={{ color: '#a5a2ad' }}>Thống kê</h5>
                     <div className="row d-flex align-items-center">
                         <Col md={2}>
                             <label className='text-muted'>Chọn kho:</label>
@@ -588,7 +583,7 @@ const Doashboard = () => {
 
             <Modal show={isOpen} onHide={closePopup} size="lg">
                 <Modal.Header closeButton>
-                    <Modal.Title style={{ color: 'red' }}>Cảnh báo kho hàng</Modal.Title>
+                    <Modal.Title>Cảnh báo kho hàng</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {Array.isArray(alerts) && alerts.length > 0 ? (
@@ -602,8 +597,7 @@ const Doashboard = () => {
                             <p>Số lượng: {alert.quantity}</p> */}
                                     <p> <FontAwesomeIcon icon={faExclamationTriangle}
                                         style={{ color: 'red', fontSize: '24px' }}
-
-                                    />&nbsp; Cảnh báo: {alert.alertType}</p>
+                                    />Cảnh báo: {alert.alertType}</p>
                                     <p>Thông báo: {alert.message}</p>
                                 </li>
                             ))}
