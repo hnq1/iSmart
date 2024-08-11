@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using iSmart.Entity.DTOs.ExportOrderDetailDTO;
 using iSmart.Entity.DTOs.ExportOrderDTO;
 using iSmart.Entity.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace iSmart.Service
 {
@@ -85,7 +84,7 @@ namespace iSmart.Service
         {
             try
             {
-                var details = _context.ExportOrderDetails.Include(e => e.ImportOrderDetail).Where(i => i.ExportId == oid)
+                var details = _context.ExportOrderDetails.Where(i => i.ExportId == oid)
                     .Select( i => new ExportDetailDTO
                 {
                         DetailId = i.DetailId,
@@ -94,8 +93,7 @@ namespace iSmart.Service
                         Price = i.Price,
                         Quantity = i.Quantity,
                         GoodsCode = i.Goods.GoodsCode,
-                        ImportOrderDetailId = i.ImportOrderDetailId,
-                        batchCode = i.ImportOrderDetail.BatchCode
+                        ImportOrderDetailId = i.ImportOrderDetailId
                     })      
                      .ToList();
                 return details;

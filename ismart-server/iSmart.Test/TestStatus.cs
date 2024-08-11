@@ -22,7 +22,7 @@ namespace iSmart.Test
         }
 
         [Test]
-        public void GetAllStatus_Test()
+        public void GetAllStatus_Test() 
         {
             var result = false;
             var statusRespone = statusService.GetAllStatus();

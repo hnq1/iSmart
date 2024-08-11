@@ -53,16 +53,6 @@ namespace iSmart.API.Controllers
             }
             return Ok(order);
         }
-        [HttpGet("get-batch-by-batchcode")]
-        public IActionResult GeBatchByBatchCode(string batchCode)
-        {
-            var order = _orderDetailService.GetBatchInventoryByBatchCode( batchCode);
-            if (order == null)
-            {
-                return NotFound("Don't have batch in warehouse");
-            }
-            return Ok(order);
-        }
 
         [HttpGet("get-batch-for-return")]
         public IActionResult GetBatchForReturn(int warehouseId, int goodId)

@@ -35,20 +35,17 @@ namespace iSmart.API.Controllers
         {
             try
             {
-                var user = await _context.Users.Include(u => u.UserWarehouses).SingleOrDefaultAsync(u => u.UserName == model.UserName);
-                
+                User user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == model.UserName);
                 if (user != null && HashHelper.Decrypt(user.Password, _configuration) == model.Password && user.StatusId == 1)
                 {
                     var tokenModel = GenerateToken(user);
                     return Ok(new
                     {
-                        token = tokenModel.AccessToken,
-                        refreshToken = tokenModel.RefreshToken,
-                        userName = user.UserName,
-                        roleId = user.RoleId,
-                        userId = user.UserId,
-                        warehouseId = user.UserWarehouses.FirstOrDefault()?.WarehouseId
-
+                        Token = tokenModel.AccessToken,
+                        RefreshToken = tokenModel.RefreshToken,
+                        UserName = user.UserName,
+                        RoleId = user.RoleId,
+                        UserId = user.UserId
                     });
                 }
                 else

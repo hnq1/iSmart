@@ -83,34 +83,21 @@ namespace iSmart.API.Controllers
             else return BadRequest("Không tồn tại");
 
         }
+    
 
         [HttpPost("update-batch-quantities")]
-        public async Task<ActionResult> UpdateBatchQuantitiesAsync([FromBody] Dictionary<string, int> batchQuantities, int id)
+        public async Task<ActionResult> UpdateBatchQuantitiesAsync([FromBody] Dictionary<string, int> batchQuantities)
         {
-            var result = _context.InventoryChecks.FirstOrDefault(i => i.Id == id);
-            if (result != null && result.StatusId == 3)
+            try
             {
-                result.StatusId = 4;
-                result.CheckDate = DateTime.Now;
-                _context.InventoryChecks.Update(result);
-                await _context.SaveChangesAsync();
-
-                try
-                {
-                    await _inventoryCheckService.UpdateBatchQuantitiesAsync(batchQuantities);
-                    return Ok(new { Message = "Cập nhật số lượng batch thành công." });
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { Message = $"Lỗi máy chủ nội bộ: {ex.Message}" });
-                }
+                await _inventoryCheckService.UpdateBatchQuantitiesAsync(batchQuantities);
+                return Ok(new { Message = "Batch quantities updated successfully." });
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest("Không tồn tại hoặc trạng thái không hợp lệ.");
+                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
             }
         }
-
 
         [HttpGet("export-inventory-check/{id}")]
         public async Task<IActionResult> ExportInventoryCheckToPdf(int id)
@@ -123,7 +110,6 @@ namespace iSmart.API.Controllers
                 {
                     return NotFound($"Phiếu kiểm kê với ID {id} không tồn tại.");
                 }
-                Console.WriteLine("Check product", inventoryCheck.CheckDate);
 
                 using (var stream = new MemoryStream())
                 {
@@ -156,9 +142,9 @@ namespace iSmart.API.Controllers
                             document.Add(new Paragraph("\n"));
 
                             // Table Header
-                            var table = new iText.Layout.Element.Table(UnitValue.CreatePercentArray(new float[] {3, 3, 4, 3, 3, 3, 2, 4 }))
+                            var table = new iText.Layout.Element.Table(UnitValue.CreatePercentArray(new float[] { 3, 4, 3, 3, 3, 2, 4 }))
                                 .SetWidth(UnitValue.CreatePercentValue(100));
-                            table.AddHeaderCell("STT");
+
                             table.AddHeaderCell("Mã Hàng");
                             table.AddHeaderCell("Tên Hàng");
                             table.AddHeaderCell("Số Lượng Thực Tế");
@@ -166,12 +152,10 @@ namespace iSmart.API.Controllers
                             table.AddHeaderCell("Chênh Lệch");
                             table.AddHeaderCell("Đơn Vị Tính");
                             table.AddHeaderCell("Ghi Chú");
-                            int i = 1;
 
                             // Table Rows
                             foreach (var detail in inventoryCheck.Detail)
                             {
-                                table.AddCell(i + "");
                                 table.AddCell(detail.goodCode);
                                 table.AddCell(detail.goodName);
                                 table.AddCell(detail.ActualQuantity.ToString());
@@ -179,7 +163,6 @@ namespace iSmart.API.Controllers
                                 table.AddCell(detail.Difference.ToString());
                                 table.AddCell(detail.MeasureUnit);
                                 table.AddCell(detail.Note);
-                                i++;
                             }
 
                             document.Add(table);

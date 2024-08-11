@@ -20,7 +20,7 @@ namespace iSmart.Test
             _context = context;
             var userWarehouseService = new UserWarehouseService(context);
             _userWarehouseService = userWarehouseService;
-            _goodsService = new GoodsService(context, _userWarehouseService);
+            _goodsService = new GoodsService(context,_userWarehouseService);
         }
         //Get all goods
         [Test]
@@ -28,13 +28,12 @@ namespace iSmart.Test
         {
             var result = false;
             var goods = _goodsService.GetAllGoods();
-            if (goods != null) result = true;
+            if(goods != null) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
         //Create new goods
         [Test]
-        public void CreateGoods_Test()
-        {
+        public void CreateGoods_Test() {
             var result = false;
             var goodsEntry = new CreateGoodsRequest
             {
@@ -52,10 +51,10 @@ namespace iSmart.Test
                 MaxStock = 1000,
                 MinStock = 1,
                 CreatedDate = DateTime.Now,
-                WarrantyTime = 12,
+                WarrantyTime = 12,                             
             };
-            var goodsResponse = _goodsService.AddGoods(goodsEntry, 11);
-            if (goodsResponse.IsSuccess is true) result = true;
+            var goodsResponse = _goodsService.AddGoods(goodsEntry,11);
+            if(goodsResponse.IsSuccess is true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
         //Update goods
@@ -87,7 +86,7 @@ namespace iSmart.Test
             Assert.That(result, Is.EqualTo(true));
         }
 
-
+       
 
         //get goods by id
         [Test]

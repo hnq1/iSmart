@@ -73,7 +73,7 @@ namespace iSmart.Service
                 var inventoryCheck = new InventoryCheck
                 {
                     WarehouseId = inventoryCheckDTO.WarehouseId,
-                    CheckDate = DateTime.Now,
+                    CheckDate = inventoryCheckDTO.CheckDate,
                     StatusId = 3
                 };
                 _context.InventoryChecks.Add(inventoryCheck);
@@ -137,7 +137,6 @@ namespace iSmart.Service
                 return await query
                     .Select(ic => new CreateInventoryCheckDTO
                     {
-                        InventoryCheckId = ic.Id,
                         WarehouseId = ic.WarehouseId,
                         CheckDate = ic.CheckDate,
                         status = ic.StatusId == 3 ? "On Progress" :
@@ -148,15 +147,7 @@ namespace iSmart.Service
                             ExpectedQuantity = d.ExpectedQuantity,
                             ActualQuantity = d.ActualQuantity,
                             Note = d.note,
-                            BatchDetails = _context.BatchDetails
-                                       .Where(b => b.InventoryCheckDetailId == d.Id)
-                                       .Select(b => new CreateBatchDetailDTO
-                                       {
-                                           BatchCode = b.BatchCode,
-                                           ExpectedQuantity = b.ExpectedQuantity,
-                                           ActualQuantity = b.ActualQuantity,
-                                           Note = b.Note
-                                       }).ToList()
+                            
                         }).ToList()
                     })
                     .ToListAsync();
@@ -178,13 +169,13 @@ namespace iSmart.Service
                 .Include(ic => ic.InventoryCheckDetails)
                 .ThenInclude(d => d.Good)
                 .Include(ic => ic.InventoryCheckDetails)
-                .ThenInclude(d => d.BatchDetails)
+                .ThenInclude(d => d.BatchDetails) 
                 .FirstOrDefaultAsync(ic => ic.Id == id);
 
             if (inventoryCheck == null)
-            {
-                throw new Exception($"Inventory Check with ID {id} not found.");
-            }
+                {
+                    throw new Exception($"Inventory Check with ID {id} not found.");
+                }
 
             var groupedDetails = inventoryCheck.InventoryCheckDetails
                 .GroupBy(i => i.GoodId)
@@ -214,7 +205,6 @@ namespace iSmart.Service
                 WarehouseName = inventoryCheck.Warehouse.WarehouseName,
                 WarehouseAddress = inventoryCheck.Warehouse.WarehouseAddress,
                 WarehouseManagerName = inventoryCheck.Warehouse.UserWarehouses.FirstOrDefault(i => i.User.RoleId == 2)?.User.UserName,
-                CheckDate = inventoryCheck.CheckDate,
                 Detail = groupedDetails
             };
         }

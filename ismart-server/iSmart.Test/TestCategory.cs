@@ -27,7 +27,7 @@ namespace iSmart.Test
         {
             var result = false;
             var categories = _categoryService.GetAllCategory();
-            if (categories != null) result = true;
+            if(categories != null) result = true;
             Assert.That(result, Is.EqualTo(true));
 
         }
@@ -36,8 +36,8 @@ namespace iSmart.Test
         public void GetCategoryWithFilter_Test()
         {
             var result = false;
-            var categories = _categoryService.GetCategoryByKeyword(1, "t");
-            if (categories.Data.Count > 0) result = true;
+            var categories = _categoryService.GetCategoryByKeyword(1,"t");
+            if(categories.Data.Count > 0) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
         //get category by id
@@ -60,7 +60,7 @@ namespace iSmart.Test
                 Description = "Test3",
             };
             var categoryResponse = _categoryService.AddCategory(categoryEntry);
-            if (categoryResponse.IsSuccess == true) result = true;
+            if(categoryResponse.IsSuccess == true) result = true;
             Assert.That(result, Is.EqualTo(true));
         }
         //update category

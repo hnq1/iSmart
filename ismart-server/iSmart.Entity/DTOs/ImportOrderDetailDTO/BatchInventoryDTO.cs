@@ -14,8 +14,6 @@ namespace iSmart.Entity.DTOs.ImportOrderDetailDTO
         public DateTime ManufactureDate { get; set; }
         public DateTime ExpiryDate { get; set; }
         public int Quantity { get; set; }
-
-        public int ActualQuantity { get; set; }
         public string? Location { get; set; }
     }
 }

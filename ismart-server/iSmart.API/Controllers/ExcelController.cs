@@ -153,7 +153,7 @@ namespace iSmart.API.Controllers
                     await file.CopyToAsync(stream);
                     using (var package = new ExcelPackage(stream))
                     {
-                        var worksheet = package.Workbook.Worksheets[0];
+                        var worksheet = package.Workbook.Worksheets[0]; 
                         int rowCount = worksheet.Dimension.Rows;
 
                         for (int row = 2; row <= rowCount; row++)
@@ -191,7 +191,7 @@ namespace iSmart.API.Controllers
                             if (errors.Count > 0)
                             {
                                 results.Add($"Lỗi ở hàng {row}: " + string.Join(", ", errors));
-                                continue;
+                                continue; 
                             }
 
                             string countryCode = "VN";
