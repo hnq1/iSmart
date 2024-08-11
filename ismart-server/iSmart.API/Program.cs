@@ -14,6 +14,7 @@ using iSmart.Service;
 using System.Net.WebSockets;
 using iSmart.API.Controllers;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json;
 
 internal class Program
 {
@@ -24,7 +25,6 @@ internal class Program
 
         // Add services to the container.
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddMemoryCache();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
@@ -91,7 +91,11 @@ internal class Program
             });
     });
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        });
 
         var openAiApiKey = builder.Configuration["OpenAI:ApiKey"];
         

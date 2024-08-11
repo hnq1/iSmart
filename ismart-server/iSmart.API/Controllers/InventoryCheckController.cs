@@ -83,7 +83,7 @@ namespace iSmart.API.Controllers
             else return BadRequest("Không tồn tại");
 
         }
-    
+
 
         [HttpPost("update-batch-quantities")]
         public async Task<ActionResult> UpdateBatchQuantitiesAsync([FromBody] Dictionary<string, int> batchQuantities)

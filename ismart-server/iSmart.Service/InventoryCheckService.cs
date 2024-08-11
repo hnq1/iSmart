@@ -147,7 +147,15 @@ namespace iSmart.Service
                             ExpectedQuantity = d.ExpectedQuantity,
                             ActualQuantity = d.ActualQuantity,
                             Note = d.note,
-                            
+                            BatchDetails = _context.BatchDetails
+                                       .Where(b => b.InventoryCheckDetailId == d.Id)
+                                       .Select(b => new CreateBatchDetailDTO
+                                       {
+                                           BatchCode = b.BatchCode,
+                                           ExpectedQuantity = b.ExpectedQuantity,
+                                           ActualQuantity = b.ActualQuantity,
+                                           Note = b.Note
+                                       }).ToList()
                         }).ToList()
                     })
                     .ToListAsync();
@@ -169,16 +177,6 @@ namespace iSmart.Service
                 .Include(ic => ic.InventoryCheckDetails)
                 .ThenInclude(d => d.Good)
                 .Include(ic => ic.InventoryCheckDetails)
-<<<<<<< HEAD
-                .ThenInclude(d => d.BatchDetails) 
-                .FirstOrDefaultAsync(ic => ic.Id == id);
-
-            if (inventoryCheck == null)
-                {
-                    throw new Exception($"Inventory Check with ID {id} not found.");
-                }
-=======
-<<<<<<< HEAD
                 .ThenInclude(d => d.BatchDetails)
                 .FirstOrDefaultAsync(ic => ic.Id == id);
 
@@ -186,16 +184,6 @@ namespace iSmart.Service
             {
                 throw new Exception($"Inventory Check with ID {id} not found.");
             }
-=======
-                .ThenInclude(d => d.BatchDetails) 
-                .FirstOrDefaultAsync(ic => ic.Id == id);
-
-            if (inventoryCheck == null)
-                {
-                    throw new Exception($"Inventory Check with ID {id} not found.");
-                }
->>>>>>> origin/anhddhe170353
->>>>>>> parent of d97da41 (Revert "Merge remote-tracking branch 'origin/anhddhe170353'")
 
             var groupedDetails = inventoryCheck.InventoryCheckDetails
                 .GroupBy(i => i.GoodId)

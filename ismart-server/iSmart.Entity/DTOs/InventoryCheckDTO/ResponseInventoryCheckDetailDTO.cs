@@ -17,17 +17,6 @@ namespace iSmart.Entity.DTOs.InventoryCheckDTO
         public int Difference { get; set; }
         public List<ResponseBatchDetailDTO> BatchDetails { get; set; }
 
-<<<<<<< HEAD
-=======
-    }
-
-    public class ResponseBatchDetailDTO
-    {
-        public string BatchCode { get; set; }
-        public int ExpectedQuantity { get; set; }
-        public int ActualQuantity { get; set; }
-        public string Note { get; set; }
->>>>>>> origin/anhddhe170353
     }
 
     public class ResponseBatchDetailDTO

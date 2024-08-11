@@ -16,12 +16,4 @@ namespace iSmart.Entity.Models
         public string? Note { get; set; }
         public InventoryCheckDetail InventoryCheckDetail { get; set; }
     }
-<<<<<<< HEAD
 }
-=======
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> origin/anhddhe170353
->>>>>>> parent of d97da41 (Revert "Merge remote-tracking branch 'origin/anhddhe170353'")

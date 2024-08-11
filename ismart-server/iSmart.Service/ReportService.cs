@@ -277,15 +277,6 @@ namespace iSmart.Service
         }
 
 
-<<<<<<< HEAD
-=======
-    }
-    public class MonthlyInventoryReportDto
-    {
-        public int Month { get; set; }
-        public int Imports { get; set; }
-        public int Exports { get; set; }
->>>>>>> origin/anhddhe170353
     }
     public class MonthlyInventoryReportDto
     {
