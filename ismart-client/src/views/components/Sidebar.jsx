@@ -138,7 +138,7 @@ const Sidebar = () => {
                                                     <i className="fa-solid fa-warehouse " style={{ fontSize: '14px' }}></i>
                                                 </div>
                                                 <div>
-                                                    <span className="ms-1 d-none d-sm-inline" style={{ fontSize: '14px' }}>Tồn kho nhập</span>
+                                                    <span className="ms-1 d-none d-sm-inline" style={{ fontSize: '14px' }}>Báo cáo hàng nhập</span>
                                                 </div>
                                             </div>
                                         </Nav.Link>
@@ -153,7 +153,7 @@ const Sidebar = () => {
                                                     <i className="fa-solid fa-warehouse " style={{ fontSize: '16px' }}></i>
                                                 </div>
                                                 <div>
-                                                    <span className="ms-1 d-none d-sm-inline" style={{ fontSize: '14px' }}  >Tồn kho xuất</span>
+                                                    <span className="ms-1 d-none d-sm-inline" style={{ fontSize: '14px' }}  >Báo cáo hàng xuất</span>
                                                 </div>
                                             </div>
                                         </Nav.Link>
@@ -168,7 +168,7 @@ const Sidebar = () => {
                                                     <i className="fa-solid fa-warehouse " style={{ fontSize: '14px' }}></i>
                                                 </div>
                                                 <div>
-                                                    <span className="ms-1 d-none d-sm-inline" style={{ fontSize: '14px' }} >Tồn kho tổng</span>
+                                                    <span className="ms-1 d-none d-sm-inline" style={{ fontSize: '14px' }} >Báo cáo xuất nhập </span>
                                                 </div>
                                             </div>
                                         </Nav.Link>
@@ -326,7 +326,7 @@ const Sidebar = () => {
                                         <i className="fa-solid fa-reply"></i>
                                     </div>
                                     <div>
-                                        <span className="ms-1 d-none d-sm-inline">Trả hàng </span>
+                                        <span className="ms-1 d-none d-sm-inline">Trả lại hàng nhà cung cấp </span>
                                     </div>
                                 </div>
                             </Nav.Link>
