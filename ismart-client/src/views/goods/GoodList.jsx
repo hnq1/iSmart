@@ -240,9 +240,7 @@ function MyTable() {
     const handleSupplierClick = (supplier) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
-        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch).then(res => {
-            setListGoods(res); // Cập nhật danh sách hàng hóa với dữ liệu mới
-        });
+        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, supplier.supplierId, sortedByPriceId, keywordSearch);
     }
 
 
@@ -252,9 +250,7 @@ function MyTable() {
         setSelectedSupplier("Nhà cung cấp");
         setSelectedSupplierId(null);
         // Gọi getGoods mà không có nhà cung cấp cụ thể
-        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch).then(res => {
-            setListGoods(res); // Cập nhật danh sách hàng hóa
-        });
+        getGoods(1, pageSize, selectedWarehouseId, selectedCategoryId, null, sortedByPriceId, keywordSearch);
     };
 
 
@@ -275,14 +271,14 @@ function MyTable() {
     }
 
 
-    const handleStorageClick = async (warehouse) => {
+    const handleStorageClick =  (warehouse) => {
 
 
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
         setShowInStock(true);
-        //const res = await getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
-        const res = await getGoods(warehouse.warehouseId);
+        const res =  getGoods(1, warehouse.warehouseId, selectedCategoryId, selectedSupplierId, sortedByPriceId, keywordSearch);
+        //const res = await getGoods(warehouse.warehouseId);
         setListGoods(res);
         // console.log("selectedWarehouseId:", res);
     }
