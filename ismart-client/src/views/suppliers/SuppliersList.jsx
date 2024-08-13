@@ -115,7 +115,7 @@ function SupplierList() {
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                        <h5 style={{ color: '#a5a2ad' }}>Quản lý nhà cung cấp</h5>
+                        <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý nhà cung cấp</h2>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <div className="col-2">
                                 <Form.Select aria-label="Default select example" className='formSelectCSS' onChange={(event) => handleFilterStatus(event)} value={selectOption}>
