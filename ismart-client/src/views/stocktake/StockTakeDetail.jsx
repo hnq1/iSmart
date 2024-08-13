@@ -8,6 +8,7 @@ import { fetchAllStorages } from "~/services/StorageServices";
 import ModalShipmentProduct from "./ModalShipmentProduct";
 import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
+import { getBatchByBatchCode } from "~/services/StockTakeServices";
 
 
 const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
@@ -30,7 +31,7 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
         setTotalStockTake(detailData.inventoryCheckDetails);
         //getAllGoods();
         getAllStorages();
-        console.log('total: ', detailData);
+        console.log('detailData.inventoryCheckDetails: ', detailData.inventoryCheckDetails);
         getAllBatch();
     }, [detailData])
 
@@ -42,7 +43,6 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
     const getAllBatch = async () => {
         if (detailData.warehouseId !== null) {
             let res = await fetchAllGoodsInWarehouse(detailData.warehouseId);
-            console.log("res", res);
             if (detailData && Array.isArray(detailData.inventoryCheckDetails)) {
                 // Nhóm các đối tượng có cùng goodCode và gộp lại
                 const groupedDetails = detailData.inventoryCheckDetails.reduce((acc, item) => {
@@ -74,11 +74,26 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
                 }, {});
 
                 // Tạo updatedStockTake với totalActualQuantity từ totalsActualPerMap
-                const updatedStockTake = detailData.inventoryCheckDetails.map((item) => ({
-                    ...item,
-                    totalActualQuantity: totalsActualPerMap[item.goodCode] || 0
-                }));
+                const updatedStockTakePromises = detailData.inventoryCheckDetails.map(async (item) => {
+                    const totalActualQuantity = totalsActualPerMap[item.goodCode] || 0;
 
+                    // Lấy batchCode từ item
+                    const batchCode = item.batchDetails[0].batchCode;
+                    console.log("batchCodebatchCode", batchCode);
+
+                    // Gọi API getBatchByBatchCode để lấy actualQuantity
+                    const response = await getBatchByBatchCode(batchCode);
+                    console.log("responseresponse", response);
+                    const oldActualQuantity = response.actualQuantity;
+                    console.log("oldActualQuantity", oldActualQuantity);
+                    return {
+                        ...item,
+                        totalActualQuantity,
+                        oldActualQuantity: oldActualQuantity || 0
+                    };
+                });
+
+                const updatedStockTake = await Promise.all(updatedStockTakePromises);
                 console.log("updatedStockTake", updatedStockTake);
                 setTotalStockTake(updatedStockTake);
 
@@ -95,7 +110,6 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
     }
 
     const warehouse = totalWarehouse.find(wh => wh.warehouseId === detailData.warehouseId);
-    console.log("warehousewarehouse", totalWarehouse);
 
     const handleShowDetail = (data) => {
         setIsShowDetailProduct(true);
@@ -145,7 +159,7 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
                                 </Col>
                                 <Col >
                                     <label >SL hệ thống</label>
-                                    <input type="number" className="form-control inputCSS" value={o.batchDetails[0].expectedQuantity} readOnly />
+                                    <input type="number" className="form-control inputCSS" value={o.oldActualQuantity} readOnly />
                                 </Col>
                                 <Col >
                                     <label >SLTT thay đổi</label>

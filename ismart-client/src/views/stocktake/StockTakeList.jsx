@@ -118,7 +118,7 @@ const StockTakeList = () => {
         <div className="container">
             <div className="row justify-content-center">
                 <div className="col-sm-12">
-                <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý kiểm kê</h2>
+                    <h5 style={{ color: '#a5a2ad' }}>Quản lý kiểm kê</h5>
                     <div className="row no-gutters my-3 d-flex justify-content-between">
                         <Col md={2}>
                             {(roleId == 1) ?

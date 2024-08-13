@@ -9,16 +9,21 @@ const EditRowDataStock = ({ isShow, handleClose, data, dataAfterEdit }) => {
 
     const [batchCode, setBatchCode] = useState();
     const [actualQuantity, setActualQuantity] = useState();
+    const [note, setNote] = useState();
 
     useEffect(() => {
-        if (data && data.batchDetails && data.batchDetails[0]) {
+        if (data) {
             setBatchCode(data.batchDetails[0].batchCode);
             setActualQuantity(data.batchDetails[0].actualQuantity);
+            setNote(data.batchDetails[0].note);
         }
     }, [data]);
 
     const handleChangeQuantity = (event) => {
         setActualQuantity(event.target.value);
+    }
+    const handleChangeNote = (event) => {
+        setNote(event.target.value);
     }
 
     const handleCloseModal = () => {
@@ -30,8 +35,8 @@ const EditRowDataStock = ({ isShow, handleClose, data, dataAfterEdit }) => {
             toast.warning("Số lượng phải lớn hơn 0");
         }
         else {
-            toast.info("Sửa số lượng thực tế thành công");
-            dataAfterEdit({ actualQuantity: actualQuantity });
+            toast.info("Sửa số lượng thực tế và ghi chú thành công");
+            dataAfterEdit({ actualQuantity: actualQuantity, note: note });
             handleClose();
         }
 
@@ -39,7 +44,7 @@ const EditRowDataStock = ({ isShow, handleClose, data, dataAfterEdit }) => {
     return (
         <Modal show={isShow} onHide={handleCloseModal} size="lg">
             <Modal.Header closeButton>
-                <Modal.Title>Xác nhận lô hàng xuất kho</Modal.Title>
+                <Modal.Title>Sửa lô hàng kiểm kê</Modal.Title>
             </Modal.Header>
             <Modal.Body><Row>
 
@@ -55,6 +60,13 @@ const EditRowDataStock = ({ isShow, handleClose, data, dataAfterEdit }) => {
                     <div className="form-group mb-3">
                         <label >Số lượng thực tế</label>
                         <input type="number" className="form-control inputCSS" value={actualQuantity} onChange={handleChangeQuantity} />
+                    </div>
+                </Col>
+                <Col md={3}>
+
+                    <div className="form-group mb-3">
+                        <label >Ghi chú</label>
+                        <input type="text" className="form-control inputCSS" value={note} onChange={handleChangeNote} />
                     </div>
                 </Col>
 

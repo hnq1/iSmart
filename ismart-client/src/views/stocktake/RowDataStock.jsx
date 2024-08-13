@@ -15,16 +15,26 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
     const [batchCode, setBatchCode] = useState();
     const [quantity, setQuantity] = useState();
     const [actualQuantity, setActualQuantity] = useState();
+    const [oldActualQuantity, setOldActualQuantity] = useState();
+    const [note, setNote] = useState();
+    const [odata, setOData] = useState([])
+
 
     useEffect(() => {
-        console.log("item: ", data.batchDetails[0].batchCode);
+        console.log("rowdata", data)
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
         setImportOrderDetail(data.importOrderDetailId);
-        setQuantity(data.batchDetails[0].actualQuantity);
         setBatchCode(data.batchDetails[0].batchCode);
         setActualQuantity(data.batchDetails[0].actualQuantity);
-
+        setOldActualQuantity(data.batchDetails[0].oldActualQuantity);
+        setNote(data.batchDetails[0].note);
+        // if (Array.isArray(data)) {
+        //     setOData(data);
+        // } else {
+        //     setOData(Object.values(data));
+        // }
+        console.log("data: ", data);
     }, [data])
 
     const handleEditRowData = () => {
@@ -36,20 +46,25 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
     }
 
     const dataAfterEdit = (editedData) => {
+        console.log("editedData", editedData)
         setActualQuantity(editedData.actualQuantity);
+        setNote(editedData.note)
         updateRowData(index, {
             ...data,
-            batchDetails: [{
-                ...data.batchDetails[0],
-                actualQuantity: editedData.actualQuantity
-            }]
+            batchDetails: [
+                {
+                    batchCode: batchCode,
+                    oldActualQuantity: oldActualQuantity,
+                    actualQuantity: editedData.actualQuantity || actualQuantity,
+                    note: editedData.note || note
+                }
+            ]
         });
     };
 
 
     return (<>
         <Row>
-
             <Col md={3}>
                 <div className="form-group mb-3">
                     <label >Mã lô hàng</label>
@@ -60,7 +75,7 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
             <Col md={3}>
                 <div className="form-group mb-3">
                     <label >SL trên hệ thống</label>
-                    <input type="number" className="form-control" defaultValue={quantity} disabled />
+                    <input type="number" className="form-control" defaultValue={oldActualQuantity} disabled />
                 </div>
             </Col>
 
@@ -68,6 +83,13 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
                 <div className="form-group mb-3">
                     <label >SL thực tế</label>
                     <input type="number" className="form-control" defaultValue={actualQuantity} disabled />
+                </div>
+            </Col>
+
+            <Col md={2}>
+                <div className="form-group mb-3">
+                    <label >Ghi chú</label>
+                    <input type="text" className="form-control" defaultValue={note} disabled />
                 </div>
             </Col>
 
@@ -99,7 +121,6 @@ const RowDataStock = ({ data, index, deleteRowData, updateRowData }) => {
 
 
         </Row>
-
         <EditRowDataStock isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={data} dataAfterEdit={dataAfterEdit} />
     </>)
 }

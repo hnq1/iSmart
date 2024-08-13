@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Col, Row } from "react-bootstrap";
 import { toast } from 'react-toastify';
-import { updateInventoryCheck } from "~/services/StockTakeServices";
+import { getBatchByBatchCode, updateInventoryCheck } from "~/services/StockTakeServices";
 import { fetchAllStorages } from "~/services/StorageServices";
+import axios from 'axios'; // import axios nếu chưa được import
+
 
 const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) => {
     const [totalStockTake, setTotalStockTake] = useState([]);
@@ -18,14 +20,35 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
 
     useEffect(() => {
         setTotalStockTake(dataStock.inventoryCheckDetails);
-        console.log('total: ', dataStock);
         getAllStorages();
-    }, [dataStock])
+        if (dataStock.inventoryCheckDetails) {
+            fetchOldActualQuantities(dataStock.inventoryCheckDetails);
+        }
+    }, [dataStock]);
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
     }
+
+    const fetchOldActualQuantities = async (inventoryCheckDetails) => {
+        const updatedDetails = await Promise.all(
+            inventoryCheckDetails.map(async (detail) => {
+                const batchCode = detail.batchDetails[0].batchCode;
+                const response = await getBatchByBatchCode(batchCode);
+                console.log("responseresponse", response)
+                const oldActualQuantity = response.actualQuantity; // Giả định cấu trúc trả về từ API
+                return {
+                    ...detail,
+                    batchDetails: [{
+                        ...detail.batchDetails[0],
+                        oldActualQuantity: oldActualQuantity
+                    }]
+                };
+            })
+        );
+        setTotalStockTake(updatedDetails);
+    };
 
     const handleCloseModal = () => {
         handleClose();
@@ -47,12 +70,10 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
             return convertedData;
         };
         const convertedBatchData = convertTotalStockTake(totalStockTake);
-        // Gọi hàm updateInventoryCheck và truyền dữ liệu tổng kiểm kê
-        console.log("convertedBatchData", convertedBatchData);
-        const res = await updateInventoryCheck(convertedBatchData);
-        console.log("resresres", res);
-        // Kiểm tra mã trạng thái của phản hồi
-        if (res.message === 'Batch quantities updated successfully.') {
+
+        const res = await updateInventoryCheck(dataStock.inventoryCheckId, convertedBatchData);
+
+        if (res.message === 'Cập nhật số lượng batch thành công.') {
             toast.success("Xác nhận kiểm kê thành công");
             updateTableStock(dataStock.warehouseId);
             handleClose();
@@ -103,7 +124,7 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
                                 </Col>
                                 <Col >
                                     <label >SL trên hệ thống</label>
-                                    <input type="number" className="form-control inputCSS" value={o.batchDetails[0].expectedQuantity} readOnly />
+                                    <input type="number" className="form-control inputCSS" value={o.batchDetails[0].oldActualQuantity} readOnly />
 
                                 </Col>
                                 <Col > <label >Số lượng thực tế</label>
@@ -126,5 +147,4 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
     </>)
 }
 
-
-export default ConfirmStockTake
+export default ConfirmStockTake;

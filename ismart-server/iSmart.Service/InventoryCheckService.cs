@@ -137,6 +137,7 @@ namespace iSmart.Service
                 return await query
                     .Select(ic => new CreateInventoryCheckDTO
                     {
+                        InventoryCheckId = ic.Id,
                         WarehouseId = ic.WarehouseId,
                         CheckDate = ic.CheckDate,
                         status = ic.StatusId == 3 ? "On Progress" :

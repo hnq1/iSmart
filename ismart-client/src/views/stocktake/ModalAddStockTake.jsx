@@ -74,31 +74,24 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             console.log("rowsDatarowsDatarowsDatarowsData", rowsData);
             if (rowsData && rowsData.length > 0) {
+                console.log("rowsData", rowsData)
                 const inventoryCheckDetailsArray = rowsData.map((data) => {
-                    let note = "";
-                    if (data.batchDetails[0].expectedQuantity < data.batchDetails[0].actualQuantity) {
-                        note = "Thừa hàng";
-                    } else if (data.batchDetails[0].expectedQuantity > data.batchDetails[0].actualQuantity) {
-                        note = "Thiếu hàng";
-                    } else {
-                        note = "Đã đủ";
-                    }
                     return {
-                        goodCode: data.goodCode,
+                        goodCode: data.goodsCode,
                         expectedQuantity: data.expectedQuantity,
-                        actualQuantity: data.actualQuantity,
-                        note: note,
+                        actualQuantity: data.totalActualQuantity,
+                        note: data.batchDetails[0].note,
                         batchDetails: [
                             {
                                 batchCode: data.batchDetails[0].batchCode,
-                                expectedQuantity: data.batchDetails[0].expectedQuantity,
+                                //expectedQuantity: data.batchDetails[0].expectedQuantity,
                                 actualQuantity: data.batchDetails[0].actualQuantity,
-                                note: note
+                                note: data.batchDetails[0].note
                             }
                         ]
                     };
                 });
-
+                console.log("inventoryCheckDetailsArray", inventoryCheckDetailsArray)
                 await createInventoryCheck(selectedWarehouseId, selectedDate, "", inventoryCheckDetailsArray);
 
                 toast.success("Thêm đơn kiểm kê thành công");
@@ -122,45 +115,58 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
 
 
     const takeRowDataStock = (stockData) => {
-        // Tạo một bản sao mới của rowsData
-        const updatedRows = rowsData.map(row => {
-            // Kiểm tra nếu batchCode trùng
-            if (row.batchDetails[0].batchCode === stockData.batchDetails[0].batchCode) {
-                // Tạo một bản sao mới của batchDetails với actualQuantity mới
+        // // Tạo một bản sao mới của rowsData
+        // const updatedRows = rowsData.map(row => {
+        //     // Kiểm tra nếu batchCode trùng
+        //     if (row.batchDetails[0].batchCode === stockData.batchDetails[0].batchCode) {
+        //         // Tạo một bản sao mới của batchDetails với actualQuantity mới
+        //         toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
+        //         return {
+        //             ...row,
+        //             batchDetails: [
+        //                 {
+        //                     ...row.batchDetails[0],
+        //                     actualQuantity: stockData.batchDetails[0].actualQuantity,
+        //                     note: stockData.batchDetails[0].expectedQuantity < stockData.batchDetails[0].actualQuantity
+        //                         ? "Thừa hàng"
+        //                         : stockData.batchDetails[0].expectedQuantity > stockData.batchDetails[0].actualQuantity
+        //                             ? "Thiếu hàng"
+        //                             : "Đã đủ"
+        //                 }
+        //             ]
+        //         };
+        //     }
+        //     return row;
+        // });
+
+        // // Nếu không tìm thấy batchCode trùng, thêm mới
+        // const batchCodeExists = updatedRows.some(row => row.batchDetails[0].batchCode === stockData.batchDetails[0].batchCode);
+        // if (!batchCodeExists) {
+        //     updatedRows.push(stockData);
+        // }
+
+        // // Cập nhật trạng thái với bản sao mới
+        // setRowsData(updatedRows);
+
+        const updateDataStock = [...rowsData];
+        for (var i = 0; i < stockData.length; i++) {
+            const existingIndex = updateDataStock.findIndex(item => item.batchDetails[0].batchCode === stockData[i].batchDetails[0].batchCode);
+            if (existingIndex !== -1) {
+                updateDataStock[existingIndex] = stockData[i];
                 toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
-                return {
-                    ...row,
-                    batchDetails: [
-                        {
-                            ...row.batchDetails[0],
-                            actualQuantity: stockData.batchDetails[0].actualQuantity,
-                            note: stockData.batchDetails[0].expectedQuantity < stockData.batchDetails[0].actualQuantity
-                                ? "Thừa hàng"
-                                : stockData.batchDetails[0].expectedQuantity > stockData.batchDetails[0].actualQuantity
-                                    ? "Thiếu hàng"
-                                    : "Đã đủ"
-                        }
-                    ]
-                };
+            } else {
+                updateDataStock.push(stockData[i]);
             }
-            return row;
-        });
-
-        // Nếu không tìm thấy batchCode trùng, thêm mới
-        const batchCodeExists = updatedRows.some(row => row.batchDetails[0].batchCode === stockData.batchDetails[0].batchCode);
-        if (!batchCodeExists) {
-            updatedRows.push(stockData);
         }
-
-        // Cập nhật trạng thái với bản sao mới
-        setRowsData(updatedRows);
+        console.log("stockData", stockData);
+        setRowsData(updateDataStock);
     };
 
 
 
 
     const updateRowData = (rowUpdate, updateData) => {
-        console.log(updateData);
+        console.log("updateData", updateData);
         const updateDataImport = [...rowsData];
         updateDataImport[rowUpdate] = updateData;
         setRowsData(updateDataImport);
@@ -168,7 +174,6 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
 
     const deleteRowData = (rowdel) => {
         const updateDataExport = rowsData.filter((item, index) => index !== rowdel);
-        const deletePrice = rowsData[rowdel].totalOneGoodPrice;
         setRowsData(updateDataExport);
     }
 
@@ -183,8 +188,6 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
             </>
 
         ))
-
-
     }
 
     return (
