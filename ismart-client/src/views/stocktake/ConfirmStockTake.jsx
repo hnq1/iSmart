@@ -72,7 +72,6 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
         const convertedBatchData = convertTotalStockTake(totalStockTake);
 
         const res = await updateInventoryCheck(dataStock.inventoryCheckId, convertedBatchData);
-
         if (res.message === 'Cập nhật số lượng batch thành công.') {
             toast.success("Xác nhận kiểm kê thành công");
             updateTableStock(dataStock.warehouseId);
