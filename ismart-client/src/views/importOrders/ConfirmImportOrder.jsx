@@ -9,16 +9,20 @@ import { useParams } from 'react-router-dom';
 const ConfirmImportOrder = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
     const [totalOrderDetail, setTotalOrderDetail] = useState([]);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-
+    const importOrderId = localStorage.getItem('importOrderId'); // Lấy importOrderId từ localStorage
+    
+    useEffect(() => {
+        if (dataImportOrder.importId) {
+            // console.log("dataImportOrder.importId:", dataImportOrder.importId);
+            getTotalOrderDetail(dataImportOrder.importId);
+        }
+    }, [dataImportOrder])
 
     useEffect(() => {
-
-        if (dataImportOrder.importId) {
-
-            getTotalOrderDetail(dataImportOrder.importId);
-            // console.log("dataImportOrder.importId:", dataImportOrder.importId);
+        if (importOrderId) {
+            getTotalOrderDetail(importOrderId);
         }
-    }, [dataImportOrder.importId])
+    }, [importOrderId]);
 
     const handleCloseModal = () => {
         handleClose();
@@ -88,7 +92,7 @@ const ConfirmImportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
-                               
+
                             </Row>
                         ))
                     }

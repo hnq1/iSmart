@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context/UserContext'
 import ProfileDetail from '../profiles/ProfileDetail';
-import ConfirmImportOrderN from '../importOrdersN/ConfirmImportOrderN';
+import Confirm from '../confirm/Confirm';
 
 
 function NavbarCom() {
@@ -20,8 +20,7 @@ function NavbarCom() {
     const [showNotifications, setShowNotifications] = useState(false);
     const [readNotifications, setReadNotifications] = useState(new Set());
     const [isShowModelConfirm, setIsShowModelConfirm] = useState(false); // State để điều khiển hiển thị modal
-    const [dataImportOrder, setDataImportOrder] = useState(null); // Dữ liệu đơn hàng cần nhập
-    const [updateTable, setUpdateTable] = useState(false); // State để cập nhật bảng sau khi nhập đơn hàng
+    const [dataImportOrder, setDataImportOrder] = useState({});
 
     const [webSocketMessages, setWebSocketMessages] = useState([]);
 
@@ -44,9 +43,22 @@ function NavbarCom() {
 
         socket.onmessage = (event) => {
             const message = event.data;
+            console.log('Received message from server:', event.data);
+            // Sử dụng regular expression để tìm ID trong thông báo
+            const idMatch = message.match(/ID (\d+)/);
+            if (idMatch) {
+                const importId = idMatch[1]; // Lấy giá trị của ID từ chuỗi
+                console.log("importId: ", importId);
 
-            console.log('Received message from server:', message);
-            setWebSocketMessages(prevMessages => [...prevMessages, message]);
+                // Lưu ID vào localStorage
+                localStorage.setItem('importOrderId', importId);
+
+                // Lưu thông báo vào state để hiển thị
+                setWebSocketMessages(prevMessages => [...prevMessages, message]);
+            } else {
+                console.warn("Message does not contain a valid ID: ", message);
+                setWebSocketMessages(prevMessages => [...prevMessages, message]);
+            }
 
         };
 
@@ -56,28 +68,27 @@ function NavbarCom() {
         // }
 
     }, []);
-    // cũ
-    // const handleNotificationClick = (index) => {
-    //     setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
-    //     // Xử lý khi người dùng nhấp vào thông báo ở vị trí index
-    //     const updatedMessages = [...webSocketMessages];
-    //     updatedMessages.splice(index, 1); // Xóa thông báo khỏi danh sách
-    //     const selectedMessage = updatedMessages[index];
-    //     setWebSocketMessages(updatedMessages);
 
-
-    //     setIsShowModelConfirm(true);
-    //     setDataImportOrder(selectedMessage);
-    // };
 
 
     //mới
     const handleNotificationClick = (index) => {
         const selectedMessage = webSocketMessages[index];
-        const importId = selectedMessage.importId; // Assuming the message contains importId
-        navigate(`/confirm-import-order/${importId}`);
-        setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
-        setWebSocketMessages(prevMessages => prevMessages.filter((_, i) => i !== index));
+        const idMatch = selectedMessage.match(/ID (\d+)/);
+        if (idMatch) {
+            const importId = idMatch[1];
+            localStorage.setItem('importOrderId', importId);
+
+            setIsShowModelConfirm(true);
+            setDataImportOrder({
+                importId: importId,
+                // Các dữ liệu khác bạn muốn truyền vào modal
+            });
+            setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
+            setWebSocketMessages(prevMessages => prevMessages.filter((_, i) => i !== index));
+        } else {
+            console.warn("Selected message does not contain a valid ID: ", selectedMessage);
+        }
     };
 
     const handleLogout = () => {
@@ -132,10 +143,7 @@ function NavbarCom() {
                                             <NavDropdown.Item key={index}
                                                 onClick={() => handleNotificationClick(index)}>{message}</NavDropdown.Item>
                                         ))
-                                    )}
-                                    {/* Thêm nút để xem tất cả thông báo */}
-                                    {/* <NavDropdown.Divider /> */}
-                                    {/* <NavDropdown.Item as={Link} to="/thong-bao">Xem tất cả thông báo</NavDropdown.Item> */}
+                                    )}                                   
                                 </NavDropdown>
                                 <span style={{ margin: '0 10px' }}></span> {/* Adjust the margin as needed */}
                                 <i className="fa-solid fa-user text-white"></i>
@@ -156,12 +164,7 @@ function NavbarCom() {
             </Navbar>
 
             <ProfileDetail isShow={isShowProfileDetail} handleClose={() => setIsShowProfileDetail(false)} userId={userId} />
-            {/* <ConfirmImportOrderN
-                isShow={isShowModelConfirm}
-                handleClose={() => setIsShowModelConfirm(false)}
-                dataImportOrder={dataImportOrder}
-                updateTable={() => setUpdateTable(prev => !prev)} // Cập nhật bảng sau khi nhập đơn hàng thành công
-            /> */}
+            <Confirm isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} />
         </>
     );
 };

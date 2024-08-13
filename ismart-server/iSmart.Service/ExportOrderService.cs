@@ -78,7 +78,7 @@ namespace iSmart.Service
                 {
                     _context.Add(exportOrder);
                     _context.SaveChanges();
-                    Task.Run(() => _webSocketService.SendMessageAsync("Đơn hàng xuất kho có mã " + exportOrder.ExportCode + " cần được xác nhận"));
+                    Task.Run(() => _webSocketService.SendMessageAsync($"Đơn hàng xuất kho có mã {exportOrder.ExportCode} và ID {exportOrder.ExportId} cần được xác nhận"));
                     return new CreateExportOrderResponse { IsSuccess = true, Message = "tao don hang xuat thanh cong" };
                 }
                 else return new CreateExportOrderResponse { IsSuccess = false, Message = "Ma xuat hang da ton tai" };

@@ -219,7 +219,7 @@ function ImportOrderList() {
         if (currentDate !== formatDate(i.importedDate)) {
             toast.warning("Chưa đến ngày nhập hàng trong hợp đồng bàn giao");
         } else {
-            console.log(i);
+            
             setIsShowModelConfirm(true);
             setDataImportOrder(i);
         }
