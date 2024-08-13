@@ -123,45 +123,54 @@ const Warehouse3D = () => {
     }, [dimensions]);
 
     return (
-        <div style={styles.container}>
-            <div style={styles.formContainer}>
-                <div style={styles.formGroup}>
-                    <label style={styles.label}>Length (meters):</label>
-                    <input
-                        type="number"
-                        name="length"
-                        value={inputs.length}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <div style={styles.formGroup}>
-                    <label style={styles.label}>Width (meters):</label>
-                    <input
-                        type="number"
-                        name="width"
-                        value={inputs.width}
-                        onChange={handleChange}
-                        style={styles.input}
-                    />
-                </div>
-                <button onClick={handleSubmit} style={styles.button}>Submit</button>
-                {dimensions && (
-                    <div style={styles.shelfCount}>
-                        <p>Số kệ mà bạn có thể thêm vào kho với diện tích bạn có:</p>
-                        <p style={styles.countNumber}>{shelfCount}</p>
-                    </div>
-                )}
+        <div>
+            <div>
+                <h2 style={{ color: '#3b3bf5', marginTop: '20px', marginLeft: '20px' }}>Tạo kho 3D</h2>
 
-                <div style={styles.description}>
-                    <h3>Hướng dẫn sử dụng:</h3>
-                    <p>Nhập độ dài và chiều rộng của kho của bạn vào các vị trí bên trên.</p>
-                    <p>Bấm vào nút "Submit" để xem số lượng kệ có thể thêm vào, ứng với diện tích kho của bạn.</p>
-                    <p>Ứng dụng này sẽ tính toán tự động và hiển thị số lượng kệ có thể thêm vào kho của bạn.</p>
-                </div>
             </div>
-            <div ref={mountRef} style={styles.scene} />
+            <div style={styles.container}>
+
+
+                <div style={styles.formContainer}>
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>Length (meters):</label>
+                        <input
+                            type="number"
+                            name="length"
+                            value={inputs.length}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </div>
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>Width (meters):</label>
+                        <input
+                            type="number"
+                            name="width"
+                            value={inputs.width}
+                            onChange={handleChange}
+                            style={styles.input}
+                        />
+                    </div>
+                    <button onClick={handleSubmit} style={styles.button}>Submit</button>
+                    {dimensions && (
+                        <div style={styles.shelfCount}>
+                            <p>Số kệ mà bạn có thể thêm vào kho với diện tích bạn có:</p>
+                            <p style={styles.countNumber}>{shelfCount}</p>
+                        </div>
+                    )}
+
+                    <div style={styles.description}>
+                        <h3>Hướng dẫn sử dụng:</h3>
+                        <p>Nhập độ dài và chiều rộng của kho của bạn vào các vị trí bên trên.</p>
+                        <p>Bấm vào nút "Submit" để xem số lượng kệ có thể thêm vào, ứng với diện tích kho của bạn.</p>
+                        <p>Ứng dụng này sẽ tính toán tự động và hiển thị số lượng kệ có thể thêm vào kho của bạn.</p>
+                    </div>
+                </div>
+                <div ref={mountRef} style={styles.scene} />
+            </div>
         </div>
+
     );
 };
 

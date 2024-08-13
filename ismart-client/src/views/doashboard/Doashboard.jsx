@@ -357,7 +357,7 @@ const Doashboard = () => {
         <div className="container" >
             <div className="">
                 <div className="">
-                    <h1 style={{ color: '#3b3bf5', marginTop: '20px' }}>Thống kê</h1>
+                    <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Thống kê</h2>
                     <div className="row d-flex align-items-center">
                         <Col md={2}>
                             <label className='text-muted'>Chọn kho:</label>

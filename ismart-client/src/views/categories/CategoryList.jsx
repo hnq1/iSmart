@@ -70,7 +70,7 @@ function CategoryList() {
             <div className="container" >
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                        <h5 style={{ color: '#a5a2ad' }}>Quản lý danh mục</h5>
+                        <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý danh mục</h2>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <div className="col">
 

@@ -7,32 +7,25 @@ import AddRowDataStock from "./AddRowDataStock";
 import RowDataStock from "./RowDataStock";
 import { createInventoryCheck } from "~/services/StockTakeServices";
 
-
 const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
     const warehouseId = parseInt(localStorage.getItem('warehouseId'), 10);
 
-
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState('');
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
-
     const [minDate, setMinDate] = useState();
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
-
     const [isShowRowDataStock, setIsShowRowDataStock] = useState(false);
 
-
     const [rowsData, setRowsData] = useState([]);
-
 
     useEffect(() => {
         getAllStorages();
     }, [])
-
 
     useEffect(() => {
         const currentDate = new Date();
@@ -40,29 +33,24 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
         setMinDate(formattedDate);
     }, [])
 
-
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
     }
-
 
     const handleStorageClickTotal = () => {
         setSelectedWarehouseId("");
         setSelectedWarehouse("Tất cả kho");
     }
 
-
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
     }
 
-
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
     };
-
 
     const handleAddRowDataStock = () => {
         if (selectedWarehouseId || warehouseId !== 1) {
@@ -71,9 +59,6 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
             toast.warning("Vui lòng điền kho")
         }
     }
-
-
-
 
 
 
@@ -91,14 +76,9 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
             if (rowsData && rowsData.length > 0) {
                 const inventoryCheckDetailsArray = rowsData.map((data) => {
                     let note = "";
-                    const oldActualQuantity = data.batchDetails[0].oldActualQuantity;
-                    const actualQuantity = data.batchDetails[0].actualQuantity;
-
-
-                    // Logic để ghi chú
-                    if (actualQuantity > oldActualQuantity) {
+                    if (data.batchDetails[0].expectedQuantity < data.batchDetails[0].actualQuantity) {
                         note = "Thừa hàng";
-                    } else if (actualQuantity < oldActualQuantity) {
+                    } else if (data.batchDetails[0].expectedQuantity > data.batchDetails[0].actualQuantity) {
                         note = "Thiếu hàng";
                     } else {
                         note = "Đã đủ";
@@ -119,9 +99,7 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
                     };
                 });
 
-
                 await createInventoryCheck(selectedWarehouseId, selectedDate, "", inventoryCheckDetailsArray);
-
 
                 toast.success("Thêm đơn kiểm kê thành công");
                 updateTableStock(selectedWarehouseId);
@@ -130,12 +108,10 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
         }
     };
 
-
     const handleCloseModal = () => {
         handleReset();
         handleClose();
     }
-
 
     const handleReset = () => {
         setRowsData([]);
@@ -143,8 +119,6 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
         setSelectedWarehouseId(null);
         setSelectedDate('');
     }
-
-
 
 
     const takeRowDataStock = (stockData) => {
@@ -172,21 +146,15 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
             return row;
         });
 
-
         // Nếu không tìm thấy batchCode trùng, thêm mới
         const batchCodeExists = updatedRows.some(row => row.batchDetails[0].batchCode === stockData.batchDetails[0].batchCode);
         if (!batchCodeExists) {
             updatedRows.push(stockData);
         }
 
-
         // Cập nhật trạng thái với bản sao mới
         setRowsData(updatedRows);
     };
-
-
-
-
 
 
 
@@ -198,13 +166,11 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
         setRowsData(updateDataImport);
     }
 
-
     const deleteRowData = (rowdel) => {
         const updateDataExport = rowsData.filter((item, index) => index !== rowdel);
         const deletePrice = rowsData[rowdel].totalOneGoodPrice;
         setRowsData(updateDataExport);
     }
-
 
     const renderStockData = () => {
         return rowsData.map((data, index) => (
@@ -216,14 +182,10 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
                 />
             </>
 
-
         ))
 
 
-
-
     }
-
 
     return (
         <>
@@ -255,7 +217,6 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
                                         <Dropdown.Item eventKey=""
                                             onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
 
-
                                         {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                             <Dropdown.Item
                                                 key={`warehouse ${index}`}
@@ -276,9 +237,7 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
                             }
                         </Row>
 
-
                         <Row>
-
 
                             <Col md={3} className="mt-3">
                                 <div className="ButtonCSSDropdown">
@@ -296,22 +255,15 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
 
 
 
-
-
-
                         <Row style={{ maxHeight: '400px', overflowY: 'auto' }}>
                             {renderStockData()}
                         </Row>
 
 
-
-
                     </div>
                 </Modal.Body>
 
-
                 <Modal.Footer>
-
 
                     <Button variant="primary" className="ButtonCSS" onClick={handleSave}>
                         Lưu
@@ -319,14 +271,10 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
                 </Modal.Footer>
             </Modal >
 
-
             <AddRowDataStock isShow={isShowRowDataStock} selectedStorageId={selectedWarehouseId}
                 onChange={(exportData) => takeRowDataStock(exportData)}
                 handleClose={() => setIsShowRowDataStock(false)} />
         </>)
 }
 
-
 export default ModalAddStockTake;
-
-

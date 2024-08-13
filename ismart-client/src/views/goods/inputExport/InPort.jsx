@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { fetchAllStorages } from '~/services/StorageServices';
 import { Modal, Button, Form, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 import { uploadExcel } from '~/services/ExcelService';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { toast } from 'react-toastify';
 import * as XLSX from "xlsx";
 

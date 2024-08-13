@@ -256,7 +256,7 @@ const ExportOrderListInternal = () => {
             <div className="container" style={{ maxWidth: "1600px" }}>
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                        <h5 style={{ color: '#a5a2ad' }}>Quản lý lô hàng xuất giữa các kho</h5>
+                    <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý lô hàng xuất giữa các kho</h2>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             {roleId == 1 ?
                                 <Col md={2}>
