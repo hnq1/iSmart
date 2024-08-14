@@ -73,14 +73,16 @@ const StockTakeList = () => {
         setTotalWarehouse(res);
     }
 
-    const updateTableStock = (id) => {
+    const updateTableStock = (id,warehouseName) => {
         getAllStockTake(id);
+        setSelectedWarehouseId(id);
+        setSelectedWarehouse(warehouseName);
     }
 
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
-        updateTableStock(warehouse.warehouseId);
+        updateTableStock(warehouse.warehouseId,warehouse.warehouseName);
     }
 
     const handleShowModalDetail = (detail) => {

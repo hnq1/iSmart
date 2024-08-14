@@ -95,7 +95,7 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
                 await createInventoryCheck(selectedWarehouseId, selectedDate, "", inventoryCheckDetailsArray);
 
                 toast.success("Thêm đơn kiểm kê thành công");
-                updateTableStock(selectedWarehouseId);
+                updateTableStock(selectedWarehouseId, selectedWarehouse);
                 handleCloseModal();
             }
         }
