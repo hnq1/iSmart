@@ -74,15 +74,19 @@ namespace iSmart.Service
                 {
                     ImportOrderDetailId = batch.ImportOrderDetailId,
                     BatchCode = batch.BatchCode,
-                    Quantity = batch.Quantity,
+                    Quantity = quantityToTake,
                     CostPrice = batch.CostPrice,
                     ManufactureDate = batch.ManufactureDate,
                     ExpiryDate = batch.ExpiryDate
+                    
                 };
 
                 selectedBatches.Add(selectedBatch);
 
                 quantity -= quantityToTake;
+
+                batch.Quantity -= quantityToTake;
+
             }
 
             return selectedBatches;

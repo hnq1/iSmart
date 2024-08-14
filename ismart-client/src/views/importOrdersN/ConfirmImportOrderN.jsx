@@ -4,27 +4,20 @@ import { addSuccessFullImportOrder } from "~/services/ImportOrderServices";
 import { updateImportOrder } from "~/services/ImportOrderServices";
 import { getImportOrderDetailByImportId } from "~/services/ImportOrderDetailServices";
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+
 
 
 const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
     const [totalOrderDetail, setTotalOrderDetail] = useState([]);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-    const { importId } = useParams();
+ 
 
     useEffect(() => {
         if (dataImportOrder.importId) {
-            console.log("dataImportOrder.importId:", dataImportOrder.importId);
+            
             getTotalOrderDetail(dataImportOrder.importId);
         }
     }, [dataImportOrder])
-
-    useEffect(() => {
-        if (importId) {
-            console.log("useEffectimportId:", importId);
-            getTotalOrderDetail(importId);
-        }
-    }, [importId])
 
     const handleCloseModal = () => {
         handleClose();

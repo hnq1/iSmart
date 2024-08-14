@@ -15,11 +15,13 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
 
     useEffect(() => {
         if (dataImportOrder.exportId) {
-            console.log("dataImportOrder; ",dataImportOrder);
+
             getTotalOrderDetail(dataImportOrder.exportId);
         }
     }, [dataImportOrder])
+    console.log("dataImportOrder; ", dataImportOrder);
 
+    
     const handleCloseModal = () => {
         handleClose();
     }
@@ -113,7 +115,6 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
                                         <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
                                     </div>
                                 </Col>
-                              
                             </Row>
                         ))
                     }

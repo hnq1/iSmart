@@ -123,7 +123,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             }
         };
         setInputQuantities(newInputQuantities);
-        console.log("newInputQuantities: ", newInputQuantities);
+        // console.log("newInputQuantities: ", newInputQuantities);
 
         // Hiển thị thông báo nếu giá trị nhập vào lớn hơn d.quantity
         if (Number(value) > dataMethod[index].actualQuantity) {

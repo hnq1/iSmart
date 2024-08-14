@@ -50,6 +50,7 @@ const ModalGoodHistory = ({ isShow, dataGood, handleClose, warehouseId }) => {
                             <tr>
                                 <th className="align-middle text-nowrap">Mã lô hàng</th>
                                 <th className="align-middle text-nowrap">Số lượng</th>
+                                {/* <th className="align-middle text-nowrap">Ngày nhập lô</th> */}
                                 <th className="align-middle text-nowrap">Ngày sản xuất</th>
                                 <th className="align-middle text-nowrap">Ngày hết hạn</th>
                             </tr>
@@ -60,6 +61,7 @@ const ModalGoodHistory = ({ isShow, dataGood, handleClose, warehouseId }) => {
                                     <tr style={{ backgroundColor: index % 2 === 0 ? "red" : "blue" }} key={`goodHistory${index}`} >
                                         <td className="align-middle text-color-primary">{g.batchCode}</td>
                                         <td className="align-middle text-color-primary">{g.actualQuantity}</td>
+                                        {/* <td className="align-middle text-color-primary">{formatDate(g.importDate)}</td> */}
                                         <td className="align-middle text-color-primary">{formatDate(g.manufactureDate)}</td>
                                         <td className="align-middle text-color-primary">{formatDate(g.expiryDate)}</td>
                                     </tr>

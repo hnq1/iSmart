@@ -85,7 +85,7 @@ function NavbarCom() {
                 // Các dữ liệu khác bạn muốn truyền vào modal
             });
             setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
-            setWebSocketMessages(prevMessages => prevMessages.filter((_, i) => i !== index));
+            // setWebSocketMessages(prevMessages => prevMessages.filter((_, i) => i !== index));
         } else {
             console.warn("Selected message does not contain a valid ID: ", selectedMessage);
         }
@@ -109,7 +109,7 @@ function NavbarCom() {
                             <Nav className="me-auto">
                             </Nav>
                             <Nav className="d-flex align-items-center">
-                                <div style={{ position: 'relative' }}>
+                                <div style={{ position: 'relative', display: 'inline-block' }}>
                                     <i className="fa-solid fa-bell text-white" style={{ cursor: 'pointer' }} onClick={() => setShowNotifications(!showNotifications)}></i>
                                     {webSocketMessages.length > 0 && (
                                         <span className="notification-count" style={{
@@ -125,26 +125,28 @@ function NavbarCom() {
                                             display: 'flex',
                                             justifyContent: 'center',
                                             alignItems: 'center',
-                                        }}>{webSocketMessages.length}</span> // Hiển thị số lượng thông báo
+                                        }}>{webSocketMessages.length}</span>
                                     )}
                                 </div>
-                                <NavDropdown
-                                    id="navbarDropdownMenuAvatar"
-                                    className='ButtonCSSDropdown'
-                                    style={{ color: 'white' }}
-                                    show={showNotifications} // Hiển thị dropdown khi biểu tượng chuông được nhấp
-                                    onMouseLeave={() => setShowNotifications(false)} // Tự động ẩn khi rời khỏi dropdown
-                                >
-                                    {/* Render các thông báo từ WebSocket */}
-                                    {webSocketMessages.length === 0 ? (
-                                        <NavDropdown.Item>Không có thông báo mới</NavDropdown.Item>
-                                    ) : (
-                                        webSocketMessages.map((message, index) => (
-                                            <NavDropdown.Item key={index}
-                                                onClick={() => handleNotificationClick(index)}>{message}</NavDropdown.Item>
-                                        ))
-                                    )}                                   
-                                </NavDropdown>
+
+                                <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+                                    <NavDropdown
+                                        id="navbarDropdownMenuAvatar"
+                                        className='ButtonCSSDropdown'
+                                        style={{ color: 'white' }}
+                                        show={showNotifications}
+                                        onMouseLeave={() => setShowNotifications(false)}
+                                    >
+                                        {webSocketMessages.length === 0 ? (
+                                            <NavDropdown.Item>Không có thông báo mới</NavDropdown.Item>
+                                        ) : (
+                                            webSocketMessages.map((message, index) => (
+                                                <NavDropdown.Item key={index}
+                                                    onClick={() => handleNotificationClick(index)}>{message}</NavDropdown.Item>
+                                            ))
+                                        )}
+                                    </NavDropdown>
+                                </div>
                                 <span style={{ margin: '0 10px' }}></span> {/* Adjust the margin as needed */}
                                 <i className="fa-solid fa-user text-white"></i>
                                 <NavDropdown

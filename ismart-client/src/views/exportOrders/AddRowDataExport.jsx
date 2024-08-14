@@ -62,7 +62,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         setSelectImportOrderDetailId(res[0].importOrderDetailId);
         // console.log("method:", res[0].importOrderDetailId);
 
-        // console.log("getBatchInventoryForExportgoods:", res);
+        console.log("getBatchInventoryForExportgoods:", res);
     };
 
 
@@ -194,6 +194,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                         <th>Mã Lô Hàng</th>
                         <th>Ngày Sản Xuất</th>
                         <th>Ngày Hết Hạn</th>
+                        <th>Ngày Nhập Lô</th>
                         <th>Số Lượng</th>
                         <th>Vị Trí Trong Kho</th>
                     </tr>
@@ -204,6 +205,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             <td>{d.batchCode}</td>
                             <td>{new Date(d.manufactureDate).toLocaleDateString()}</td>
                             <td>{new Date(d.expiryDate).toLocaleDateString()}</td>
+                            <td>{new Date(d.importDate).toLocaleDateString()}</td>
                             <td>{d.quantity}</td>
                             <td>{d.location || 'N/A'}</td>
                         </tr>

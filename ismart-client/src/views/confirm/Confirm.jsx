@@ -15,21 +15,22 @@ const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
             getTotalOrderDetail(dataImportOrder.importId);
         }
     }, [dataImportOrder])
-    console.log("dataImportOrder: ", dataImportOrder);
+    // console.log("dataImportOrder: ", dataImportOrder);
 
-    useEffect(() => {
-        if (importOrderId) {
-            getTotalOrderDetail(importOrderId);
-        }
-    }, [importOrderId]);
+    // useEffect(() => {
+    //     if (importOrderId) {
+    //         getTotalOrderDetail(importOrderId);
+    //     }
+    // }, [importOrderId]);
+    // console.log("importOrderId: ", importOrderId);
 
     const handleCloseModal = () => {
         handleClose();
     }
 
-    const getTotalOrderDetail = async (importId) => {
-        let res = await getImportOrderDetailByImportId(importId);
-        // console.log("r1: ", res);
+    const getTotalOrderDetail = async (importOrderId) => {
+        let res = await getImportOrderDetailByImportId(importOrderId);
+        console.log("getTotalOrderDetail: ", res);
         setTotalOrderDetail(res);
     }
 
@@ -50,7 +51,7 @@ const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
             </Modal.Header>
             <Modal.Body>
                 <div className="body-add-new">
-                    {/* <Row>
+                    <Row>
                         <Col md={2}>
                             <div className="form-group mb-3">
                                 <label >Kho hàng</label>
@@ -65,7 +66,7 @@ const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
                             </div>
                         </Col>
 
-                    </Row> */}
+                    </Row>
 
 
                     {totalOrderDetail && totalOrderDetail.length > 0
