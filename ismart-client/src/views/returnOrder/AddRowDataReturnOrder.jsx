@@ -57,15 +57,26 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
 
     const handleInputQuantityChange = (index, value) => {
         const importOrderDetailId = selectImportOrderDetailId[index];
+        let quantity = Number(value);
+    
+        // Ensure the quantity is within the allowed range
+        if (quantity > dataMethod[index].quantity) {
+            quantity = dataMethod[index].quantity;
+        } else if (quantity < 0) {
+            quantity = 0;
+        }
+    
         const newInputQuantities = {
             ...inputQuantities,
             [index]: {
-                quantity: Number(value),
+                quantity: quantity,
                 importOrderDetailId: importOrderDetailId
             }
         };
+    
         setInputQuantities(newInputQuantities);
     };
+    
 
     const handleInputReasonChange = (index, value) => {
         const importOrderDetailId = selectImportOrderDetailId[index];
@@ -173,12 +184,12 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
             <Table>
                 <thead>
                     <tr>
-                        <th>Batch Code</th>
-                        <th>Manufacture Date</th>
-                        <th>Expiry Date</th>
-                        <th>Quantity</th>
-                        <th>Location</th>
-                        <th>Input Quantity</th>
+                        <th>Mã lô hàng</th>
+                        <th>Ngày sản xuất</th>
+                        <th>Ngày hết hạn</th>
+                        <th>Số lượng</th>
+                        <th>Vị trí</th>
+                        <th>Nhập số lượng</th>
                         <th>Lý do</th>
                     </tr>
                 </thead>
@@ -191,10 +202,13 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
                             <td>{d.quantity}</td>
                             <td>{d.location || 'N/A'}</td>
                             <td>
+                           
                                 <input
                                     type="number"
                                     className="form-control"
-                                    value={inputQuantities[index]?.quantity || ''}
+                                    min={0}
+                                    max={d.quantity}
+                                    value={inputQuantities[index]?.quantity || 0}
                                     onChange={(e) => handleInputQuantityChange(index, e.target.value)}
                                 />
                             </td>

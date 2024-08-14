@@ -56,12 +56,10 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
 
                 const mergedDetails = Object.values(groupedDetails);
                 const goodCodes = mergedDetails.map(detail => detail.goodCode);
-                console.log("goodCodes", goodCodes);
 
                 const goodIds = res
                     .filter(item => goodCodes.includes(item.goodsCode)) // Lọc các đối tượng có goodCode trùng khớp
                     .map(item => item.goodsId);
-                console.log("filteredGoods", goodIds);
 
                 const promises = goodIds.map(goodId => getAvailableBatch(detailData.warehouseId, goodId));
                 const results = await Promise.all(promises);
@@ -79,13 +77,10 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
 
                     // Lấy batchCode từ item
                     const batchCode = item.batchDetails[0].batchCode;
-                    console.log("batchCodebatchCode", batchCode);
 
                     // Gọi API getBatchByBatchCode để lấy actualQuantity
                     const response = await getBatchByBatchCode(batchCode);
-                    console.log("responseresponse", response);
                     const oldActualQuantity = response.actualQuantity;
-                    console.log("oldActualQuantity", oldActualQuantity);
                     return {
                         ...item,
                         totalActualQuantity,
@@ -95,8 +90,26 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
 
                 const updatedStockTake = await Promise.all(updatedStockTakePromises);
                 console.log("updatedStockTake", updatedStockTake);
-                setTotalStockTake(updatedStockTake);
 
+                const groupedUpdatedStockTake = updatedStockTake.reduce((acc, item) => {
+                    if (!acc[item.goodCode]) {
+                        acc[item.goodCode] = {
+                            ...item,
+                            oldActualQuantity: 0,
+                            totalActualQuantity: 0,
+                            batchDetails: []
+                        };
+                    }
+
+                    acc[item.goodCode].oldActualQuantity += item.oldActualQuantity;
+                    acc[item.goodCode].totalActualQuantity += item.actualQuantity;
+                    acc[item.goodCode].batchDetails.push(...item.batchDetails);
+
+                    return acc;
+                }, {});
+                const finalStockTake = Object.values(groupedUpdatedStockTake);
+                setTotalStockTake(finalStockTake);
+                console.log("finalStockTake", finalStockTake)
                 // Lấy totalsActualPerArray từ updatedStockTake
                 const totalsActualPerArray = updatedStockTake.map(item => item.totalActualQuantity);
                 setTotalActualQuantity(totalsActualPerArray);
@@ -113,7 +126,7 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
 
     const handleShowDetail = (data) => {
         setIsShowDetailProduct(true);
-        console.log(data);
+        console.log("datadatadatadata", data);
         setDetailShipment(data);
     }
 
@@ -153,29 +166,29 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
                                     <label >Mã hàng hóa</label>
                                     <input type="text" className="form-control inputCSS" value={o.goodCode} readOnly />
                                 </Col>
-                                <Col >
+                                {/* <Col >
                                     <label >Mã lô hàng</label>
                                     <input type="text" className="form-control inputCSS" value={o.batchDetails[0].batchCode} readOnly />
-                                </Col>
+                                </Col> */}
                                 <Col >
                                     <label >SL hệ thống</label>
                                     <input type="number" className="form-control inputCSS" value={o.oldActualQuantity} readOnly />
                                 </Col>
                                 <Col >
                                     <label >SLTT thay đổi</label>
-                                    <input type="text" className="form-control inputCSS" value={o.batchDetails[0].actualQuantity} readOnly />
+                                    <input type="text" className="form-control inputCSS" value={o.totalActualQuantity} readOnly />
                                 </Col>
-
+                                {/* 
                                 <Col> <label >Ghi chú</label>
                                     <input type="text" className="form-control inputCSS" value={o.note} readOnly />
-                                </Col>
-
-                                {/* <Col md={2}>
-                                    <label >Chi tiết</label>
-                                    <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >
-                                        <i className="fa-solid fa-circle-info actionButtonCSS" title="Chi tiết" onClick={() => handleShowDetail(o)}></i>
-                                    </button>
                                 </Col> */}
+
+                                <Col md={2}>
+                                    <label ></label><br />
+                                    <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" onClick={() => handleShowDetail(o)}>
+                                        <i className="fa-solid fa-circle-info actionButtonCSS" title="Chi tiết"></i>
+                                    </button>
+                                </Col>
                             </Row>
                         ))
                     }

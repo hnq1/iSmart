@@ -36,7 +36,7 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
             inventoryCheckDetails.map(async (detail) => {
                 const batchCode = detail.batchDetails[0].batchCode;
                 const response = await getBatchByBatchCode(batchCode);
-                console.log("responseresponse", response)
+                console.log("response.actualQuantity", response.actualQuantity)
                 const oldActualQuantity = response.actualQuantity; // Giả định cấu trúc trả về từ API
                 return {
                     ...detail,
@@ -47,7 +47,26 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
                 };
             })
         );
-        setTotalStockTake(updatedDetails);
+        console.log("updatedDetails", updatedDetails);
+        const groupedUpdatedStockTake = updatedDetails.reduce((acc, item) => {
+            if (!acc[item.goodCode]) {
+                acc[item.goodCode] = {
+                    ...item,
+                    oldActualQuantity: 0,
+                    totalActualQuantity: 0,
+                    batchDetails: []
+                };
+            }
+
+            acc[item.goodCode].oldActualQuantity += item.batchDetails[0].oldActualQuantity;
+            acc[item.goodCode].totalActualQuantity += item.actualQuantity;
+            acc[item.goodCode].batchDetails.push(...item.batchDetails);
+
+            return acc;
+        }, {});
+        const finalStockTake = Object.values(groupedUpdatedStockTake);
+        console.log("finalStockTake", finalStockTake)
+        setTotalStockTake(finalStockTake);
     };
 
     const handleCloseModal = () => {
@@ -72,6 +91,7 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
         const convertedBatchData = convertTotalStockTake(totalStockTake);
 
         const res = await updateInventoryCheck(dataStock.inventoryCheckId, convertedBatchData);
+
         if (res.message === 'Cập nhật số lượng batch thành công.') {
             toast.success("Xác nhận kiểm kê thành công");
             updateTableStock(dataStock.warehouseId);
@@ -117,21 +137,21 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
                                     <label >Mã hàng hóa</label>
                                     <input type="text" className="form-control inputCSS" value={o.goodCode} readOnly />
                                 </Col>
-                                <Col >
+                                {/* <Col >
                                     <label >Mã lô hàng</label>
                                     <input type="text" className="form-control inputCSS" value={o.batchDetails[0].batchCode} readOnly />
-                                </Col>
+                                </Col> */}
                                 <Col >
                                     <label >SL trên hệ thống</label>
-                                    <input type="number" className="form-control inputCSS" value={o.batchDetails[0].oldActualQuantity} readOnly />
+                                    <input type="number" className="form-control inputCSS" value={o.oldActualQuantity} readOnly />
 
                                 </Col>
                                 <Col > <label >Số lượng thực tế</label>
-                                    <input type="text" className="form-control inputCSS" value={o.batchDetails[0].actualQuantity} readOnly />
+                                    <input type="text" className="form-control inputCSS" value={o.totalActualQuantity} readOnly />
                                 </Col>
-                                <Col> <label >Ghi chú</label>
+                                {/* <Col> <label >Ghi chú</label>
                                     <input type="text" className="form-control inputCSS" value={o.note} readOnly />
-                                </Col>
+                                </Col> */}
                             </Row>
                         ))
                     }

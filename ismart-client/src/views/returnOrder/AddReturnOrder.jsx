@@ -202,10 +202,25 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedDate('');
         setRowsData([]);
     }
+    const generateReturnCode = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `MTH${year}${month}${day}${hours}${minutes}${seconds}`;
+    };
+    const handleCreateReturnCode = () => {
+
+        setReturnCode(generateReturnCode());
+    }
     const handleCloseModal = () => {
         handleReset();
         handleClose();
     }
+
     return (
         <>
             <Modal show={isShow} onHide={handleCloseModal} size="xl">
@@ -217,11 +232,22 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                 <Modal.Body>
                     <div className="body-add-new">
                         <Row className="align-items-center">
-                            <Col md={2}>
+                            {/* <Col md={2}>
                                 <div className="form-group ">
                                     <input type="text" className="form-control inputCSS" placeholder="Mã đơn hàng" value={returnCode} onChange={(event) => setReturnCode(event.target.value)} />
                                 </div>
+                            </Col> */}
+                            <Col md={2}>
+                                <div className="form-group mb-3">
+                                    <label >Mã đơn hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={returnCode} disabled />
+                                </div>
                             </Col>
+                            <Col md={2} className="mb-3">
+                                <label >&nbsp;</label>
+                                <Button className='form-control ButtonCSS' type='submit'  onClick={handleCreateReturnCode} > Tạo mã đơn </Button>
+                            </Col>
+                            <div></div>
                             <Col md={2}>
                                 <DropdownButton
                                     className="DropdownButtonCSS ButtonCSSDropdown"
