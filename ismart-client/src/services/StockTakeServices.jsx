@@ -13,15 +13,17 @@ const createInventoryCheck = (warehouseId, checkDate, status, inventoryCheckDeta
     });
 };
 
-const updateInventoryCheck = (batch) => {
-    return axios.post(`api/inventory-check/update-batch-quantities`, batch)
+const updateInventoryCheck = (id, batch) => {
+    return axios.post(`api/inventory-check/update-batch-quantities?id=${id}`, batch)
 }
 
 const cancelInventoryCheck = (id) => {
     return axios.post(`api/inventory-check/cancel-inventory-check?id=${id}`)
 }
 
+const getBatchByBatchCode = (id) => {
+    return axios.get(`api/import-order-detail/get-batch-by-batchcode?batchCode=${id}`)
+}
 
 
-
-export { createInventoryCheck, fetchInventoryByWarehouseId, cancelInventoryCheck, updateInventoryCheck }
+export { createInventoryCheck, fetchInventoryByWarehouseId, cancelInventoryCheck, updateInventoryCheck, getBatchByBatchCode }

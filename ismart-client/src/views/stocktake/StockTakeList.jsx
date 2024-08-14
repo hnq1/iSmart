@@ -73,14 +73,16 @@ const StockTakeList = () => {
         setTotalWarehouse(res);
     }
 
-    const updateTableStock = (id) => {
+    const updateTableStock = (id,warehouseName) => {
         getAllStockTake(id);
+        setSelectedWarehouseId(id);
+        setSelectedWarehouse(warehouseName);
     }
 
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
-        updateTableStock(warehouse.warehouseId);
+        updateTableStock(warehouse.warehouseId,warehouse.warehouseName);
     }
 
     const handleShowModalDetail = (detail) => {
@@ -118,7 +120,7 @@ const StockTakeList = () => {
         <div className="container">
             <div className="row justify-content-center">
                 <div className="col-sm-12">
-                <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý kiểm kê</h2>
+                    <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý kiểm kê</h2>
                     <div className="row no-gutters my-3 d-flex justify-content-between">
                         <Col md={2}>
                             {(roleId == 1) ?

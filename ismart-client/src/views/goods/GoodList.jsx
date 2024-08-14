@@ -345,7 +345,7 @@ function MyTable() {
         <div className="container" style={{ maxWidth: "1600px" }}>
             <div className="row justify-content-center">
                 <div className="col-sm-12">
-                <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý hàng hoá</h2>
+                    <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý hàng hoá</h2>
                     <Row>
                         <div className="row no-gutters my-3 ">
                             <Col md={2}>
@@ -390,7 +390,7 @@ function MyTable() {
 
                                 }
                             </Col>
-                            <Col md={2}>
+                            <Col md={1}>
                                 <div className="input-group mb-3">
 
 
@@ -405,6 +405,13 @@ function MyTable() {
                                     />
                                 </div>
                             </Col>
+                            <Col md={2}>
+                                <div className="mt-1 mb-1" style={{ fontSize: '1.3rem', marginLeft: '-5px' }}>
+                                    ( Số hàng / trang )
+                                </div>
+                            </Col>
+
+
                             <div className="col">
                             </div>
 
@@ -538,10 +545,10 @@ function MyTable() {
                             <tbody >
                                 {listGoods && listGoods.length > 0 &&
                                     listGoods.map((g, index) => (
-                                       
+
                                         <tr key={`goods${index}`}>
 
-                                         
+
                                             <td className="align-middle text-color-primary">{startIndexOfPage + index}</td>
                                             <td className="align-middle text-color-primary">{g.goodsCode}</td>
                                             <td className="align-middle">{g.goodsName}</td>
