@@ -19,6 +19,8 @@ namespace iSmart.Service
         UpdateImportOrderDetailResponse UpdateOrderDetail(UpdateImportOrderDetailRequest detail);
         bool DeleteImportOrderDetail(int id);
         List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid);
+        BatchInventoryDTO GetBatchInventoryByBatchCode(string batchCode);
+
         List<BatchInventoryDTO> SelectBatchesForExport(int warehouseId, int goodId, int quantity, string method);
         List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int warehouseId, int goodId);
         List<BatchInventoryDTO> GetBatchForReturn(int warehouseId, int goodId);
@@ -189,6 +191,32 @@ namespace iSmart.Service
             }
         }
 
+        public BatchInventoryDTO GetBatchInventoryByBatchCode(string batchcode)
+        {
+            try
+            {
+                var batchGood = _context.ImportOrderDetails
+                    .Include(i => i.Import)
+                    .Where(i => i.Import.StatusId == 4 && i.BatchCode == batchcode)
+                    .Select(s => new BatchInventoryDTO
+                    {
+                        ImportOrderDetailId = s.DetailId,
+                        BatchCode = s.BatchCode,
+                        Quantity = s.Quantity,
+                        ActualQuantity = s.ActualQuantity,
+                        CostPrice = s.CostPrice,
+                        ManufactureDate = s.ManufactureDate,
+                        ExpiryDate = s.ExpiryDate
+                    })
+                    .FirstOrDefault(); // Lấy lô hàng đầu tiên khớp với điều kiện
+
+                return batchGood;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
 
         public bool DeleteImportOrderDetail(int id)
         {
