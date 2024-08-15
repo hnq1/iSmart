@@ -151,12 +151,8 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
                                 <label >Ngày kiểm tra</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{formattedDate}</button>
                             </div>
-                        </Col><Col md={3}>
-                            <div className="form-group mb-3">
-                                <label >Tình trạng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailData.status == "On Progress" ? "Đang tiến hành" : detailData.statusType == "Completed" ? "Đã hoàn thành" : "Đã hủy"}</button>
-                            </div>
                         </Col>
+                       
                     </Row>
                     {totalStockTake && totalStockTake.length > 0
                         && totalStockTake.map((o, index) => (
