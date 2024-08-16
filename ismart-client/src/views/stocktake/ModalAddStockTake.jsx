@@ -84,7 +84,7 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
                         batchDetails: [
                             {
                                 batchCode: data.batchDetails[0].batchCode,
-                                //expectedQuantity: data.batchDetails[0].expectedQuantity,
+                                expectedQuantity: data.batchDetails[0].oldActualQuantity,
                                 actualQuantity: data.batchDetails[0].actualQuantity,
                                 note: data.batchDetails[0].note
                             }

@@ -77,19 +77,22 @@ const ConfirmStockTake = ({ isShow, handleClose, dataStock, updateTableStock }) 
 
     const SaveAddStockTake = async () => {
         const convertTotalStockTake = (totalStockTake) => {
-            const batchData = totalStockTake.map(item => ({
-                batchCode: item.batchDetails[0].batchCode,
-                actualQuantity: item.batchDetails[0].actualQuantity
-            }));
-
             const convertedData = {};
-            batchData.forEach(({ batchCode, actualQuantity }) => {
-                convertedData[batchCode] = actualQuantity;
+        
+            totalStockTake.forEach(item => {
+                item.batchDetails.forEach(batch => {
+                    convertedData[batch.batchCode] = batch.actualQuantity;
+                });
             });
+        
             return convertedData;
         };
+        
+        
         const convertedBatchData = convertTotalStockTake(totalStockTake);
-
+        console.log("totalStockTake",totalStockTake);
+        console.log("id",dataStock.inventoryCheckId);
+        console.log("convertedbatchdata",convertedBatchData);
         const res = await updateInventoryCheck(dataStock.inventoryCheckId, convertedBatchData);
 
         if (res.message === 'Cập nhật số lượng batch thành công.') {
