@@ -60,9 +60,6 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
         let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
         setDataMethod(res);
         setSelectImportOrderDetailId(res[0].importOrderDetailId);
-        console.log("method:", res[0].importOrderDetailId);
-
-        // console.log("getBatchInventoryForExportgoods:", res);
     };
 
 
@@ -80,18 +77,27 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
         } else if (quantity > quantityInStock) {
             toast.warning("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
         } else {
-            onChange({
+            // Tạo mảng từ dataMethod để gửi đi
+            const inputQuantitiesArray = dataMethod.map(item => ({
+                importOrderDetailId: item.importOrderDetailId,
+                quantity: item.quantity,
+                batchCode: item.batchCode
+            }));
+
+            // Tạo mảng mới với thông tin sản phẩm cho mỗi importOrderDetailId
+            const exportDataArray = inputQuantitiesArray.map(item => ({
                 costPrice: 0,
-                quantity: quantity,
                 goodsId: selectedGoodId,
                 goodsCode: selectedGoodCode,
-                totalOneGoodPrice: 0,
-                importOrderDetailId: selectImportOrderDetailId
-            });
-            console.log("selectedGoodId: ", selectImportOrderDetailId);
+                quantity: item.quantity,
+                importOrderDetailId: item.importOrderDetailId,
+                batchCode: item.batchCode
+            }));
+
+            onChange(exportDataArray);
+            console.log("ExportOrderManual: ", exportDataArray);
             handleCloseModal();
         }
-
     }
 
     const handleCloseModal = () => {
@@ -195,6 +201,7 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
                         <th>Mã Lô Hàng</th>
                         <th>Ngày Sản Xuất</th>
                         <th>Ngày Hết Hạn</th>
+                        <th>Ngày Nhập Lô</th>
                         <th>Số Lượng</th>
                         <th>Vị Trí Trong Kho</th>
                     </tr>
@@ -205,6 +212,7 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
                             <td>{d.batchCode}</td>
                             <td>{new Date(d.manufactureDate).toLocaleDateString()}</td>
                             <td>{new Date(d.expiryDate).toLocaleDateString()}</td>
+                            <td>{new Date(d.importDate).toLocaleDateString()}</td>
                             <td>{d.quantity}</td>
                             <td>{d.location || 'N/A'}</td>
                         </tr>

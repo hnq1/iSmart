@@ -83,7 +83,6 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
     const handleDeliveryClick = (delivery, event) => {
         setSelectedDelivery(delivery.deliveryName);
         setSelectedDeliveryId(delivery.deliveyId);
-        console.log(delivery);
     }
 
     const getAllCustomer = async () => {
@@ -121,11 +120,21 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
 
     // nhận data từ AddRowDataExport
     const takeRowDataExportOrder = (exportData) => {
-        console.log(exportData);
-        const updateDataExport = [...rowsData, exportData];
-        setRowsData(updateDataExport);
 
-        setTotalPrice(x => x + exportData.totalOneGoodPrice);
+        const updateDataExport = [...rowsData];
+
+        console.log("exportData: ", exportData);
+
+        for (var i = 0; i < exportData.length; i++) {
+            const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === exportData[i].importOrderDetailId);
+
+            if (existingIndex !== -1) {
+                updateDataExport[existingIndex] = exportData[i];
+            } else {
+                updateDataExport.push(exportData[i]);
+            }
+        }
+        setRowsData(updateDataExport);
 
     }
 
@@ -141,7 +150,7 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
     // render rowsData
     const renderExportData = () => {
         return rowsData.map((data, index) => (
-            <RowDataExportOrder key={index} data={rowsData[index]} index={index}
+            <RowDataExportOrder key={`rdt${index}`} data={rowsData[index]} index={index}
                 updateRowData={updateRowData} deleteRowData={deleteRowData}
             />
         ))
@@ -207,9 +216,13 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
                 let resExportId = await fetchExportOrderNewest();
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
-                        await createNewExportOrderDetail(resExportId,
-                            data.costPrice, data.goodsId, data.quantity, data.importOrderDetailId);
-                    }));
+
+                        createNewExportOrderDetail(resExportId,
+                            data.costPrice,
+                            data.goodsId,
+                            data.quantity,
+                            data.importOrderDetailId);
+                    }))
                 }
                 toast.success("Thêm lô hàng xuất thành công");
                 updateTable();
@@ -373,7 +386,7 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
             </Modal.Body>
 
             <Modal.Footer>
-               
+
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
                 </Button>

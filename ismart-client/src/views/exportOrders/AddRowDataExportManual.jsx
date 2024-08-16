@@ -134,8 +134,6 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
     // mới
     const handleConfirmRowData = () => {
-
-
         if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm");
         } else if (!isManualClick) {
@@ -162,7 +160,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
 
             onChange(exportDataArray);
-            // console.log("exportDataArray: ", exportDataArray);
+            console.log("ExportOrderManual: ", exportDataArray);
             handleCloseModal();
         }
     }
