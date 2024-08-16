@@ -189,7 +189,6 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 0,
                 warrantyTime,
                 barCode,
-                selectedWarehouseId,
                 maxStock,
                 minStock);
             // console.log("RES UPDATE", res);
