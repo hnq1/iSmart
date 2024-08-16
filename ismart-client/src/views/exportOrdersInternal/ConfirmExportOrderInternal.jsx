@@ -15,7 +15,6 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
 
     useEffect(() => {
         if (dataImportOrder.exportId) {
-            console.log(dataImportOrder);
             getTotalOrderDetail(dataImportOrder.exportId);
         }
     }, [dataImportOrder])
@@ -26,8 +25,6 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
 
     const getTotalOrderDetail = async (exportId) => {
         let res = await getExportOrderDetailByExportId(exportId);
-        console.log(exportId);
-        console.log(res);
         setTotalOrderDetail(res);
     }
 
@@ -46,7 +43,7 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
             dataImportOrder.image,
             userId)
         let res = await addSuccessFullExportOrder(dataImportOrder.exportId);
-        console.log(res);
+        console.log("addSuccessFullExportOrder: ", res);
         if (res.status === 400) {
             toast.warning("Số lượng của mặt hàng lớn hơn số lượng trong kho");
 
@@ -87,7 +84,7 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.deliveryName}</button>
                             </div>
                         </Col>
-                       
+
                     </Row>
 
 
@@ -101,14 +98,14 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
                                         <input type="text" className="form-control inputCSS" value={o.goodsCode} readOnly />
                                     </div>
                                 </Col>
-                                
+
                                 <Col md={2}>
                                     <div className="form-group mb-3">
                                         <label >Số lượng</label>
                                         <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
                                     </div>
                                 </Col>
-                                
+
                             </Row>
                         ))
                     }
