@@ -80,7 +80,6 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
     const handleDeliveryClick = (delivery, event) => {
         setSelectedDelivery(delivery.deliveryName);
         setSelectedDeliveryId(delivery.deliveyId);
-        console.log(delivery);
     }
 
 
@@ -108,11 +107,21 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
 
     // nhận data từ AddRowDataExport
     const takeRowDataExportOrder = (exportData) => {
-        console.log(exportData);
-        const updateDataExport = [...rowsData, exportData];
-        setRowsData(updateDataExport);
 
-        setTotalPrice(x => x + exportData.totalOneGoodPrice);
+        const updateDataExport = [...rowsData];
+
+        console.log("exportData: ", exportData);
+
+        for (var i = 0; i < exportData.length; i++) {
+            const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === exportData[i].importOrderDetailId);
+
+            if (existingIndex !== -1) {
+                updateDataExport[existingIndex] = exportData[i];
+            } else {
+                updateDataExport.push(exportData[i]);
+            }
+        }
+        setRowsData(updateDataExport);
 
     }
 
@@ -128,7 +137,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
     // render rowsData
     const renderExportData = () => {
         return rowsData.map((data, index) => (
-            <RowDataExportOrderInternal key={index} data={rowsData[index]} index={index}
+            <RowDataExportOrderInternal key={`rdt${index}`} data={rowsData[index]} index={index}
                 updateRowData={updateRowData} deleteRowData={deleteRowData}
             />
         ))
@@ -215,14 +224,14 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
         //     toast.warning("Vui lòng nhập mã đơn hàng");
 
         // } else
-         if (!selectedDate) {
+        if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày xuất hàng");
             // } else if (totalPrice === 0) {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (rowsData.length === 0) {
             toast.warning("Hãy thêm lô hàng");
-        } 
-         else if (!selectedDelivery) {
+        }
+        else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
@@ -432,7 +441,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
             </Modal.Body>
 
             <Modal.Footer>
-              
+
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
                 </Button>

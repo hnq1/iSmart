@@ -19,6 +19,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     const [selectedMethod, setSelectedMethod] = useState('');
     const [selectImportOrderDetailId, setSelectImportOrderDetailId] = useState(null);
 
+
     useEffect(() => {
         getAllGoods();
     }, [selectedStorageId])
@@ -80,17 +81,27 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         } else if (quantity > quantityInStock) {
             toast.warning("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
         } else {
-            onChange({
+            // Tạo mảng từ dataMethod để gửi đi
+            const inputQuantitiesArray = dataMethod.map(item => ({
+                importOrderDetailId: item.importOrderDetailId,
+                quantity: item.quantity,
+                batchCode: item.batchCode
+            }));
+
+            // Tạo mảng mới với thông tin sản phẩm cho mỗi importOrderDetailId
+            const exportDataArray = inputQuantitiesArray.map(item => ({
                 costPrice: 0,
-                quantity: quantity,
                 goodsId: selectedGoodId,
                 goodsCode: selectedGoodCode,
-                totalOneGoodPrice: 0,
-                importOrderDetailId: selectImportOrderDetailId
-            });
+                quantity: item.quantity,
+                importOrderDetailId: item.importOrderDetailId,
+                batchCode: item.batchCode
+            }));
+
+            onChange(exportDataArray);
+            console.log("ExportOrderManual: ", exportDataArray);
             handleCloseModal();
         }
-
     }
 
     const handleCloseModal = () => {

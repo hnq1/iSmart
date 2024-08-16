@@ -134,9 +134,6 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 updateDataExport.push(exportData[i]);
             }
         }
-
-      
-
         setRowsData(updateDataExport);
 
     }
@@ -181,10 +178,6 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         return `${year}${month}${day}${hours}${minutes}${seconds}`;
     };
     const handleAddExportOrder = async () => {
-        // if (!exportCode.trim()) {
-        //     toast.warning("Vui lòng nhập mã đơn hàng");
-        // }
-        // else
         if (!selectedWarehouse) {
             toast.warning("Vui lòng chọn kho xuất hàng");
         } else if (!selectedDate) {
