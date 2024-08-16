@@ -68,7 +68,7 @@ const updateGood = (goodsId, goodsName, goodsCode,
         categoryId, description, supplierId,
         measuredUnit, inStock, image,
         statusId, stockPrice, warrantyTime, barcode,
-         maxStock, minStock
+        maxStock, minStock
     });
 }
 
