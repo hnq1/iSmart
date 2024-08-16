@@ -214,6 +214,7 @@ namespace iSmart.Service
                 WarehouseName = inventoryCheck.Warehouse.WarehouseName,
                 WarehouseAddress = inventoryCheck.Warehouse.WarehouseAddress,
                 WarehouseManagerName = inventoryCheck.Warehouse.UserWarehouses.FirstOrDefault(i => i.User.RoleId == 2)?.User.UserName,
+                CheckDate = inventoryCheck.CheckDate,
                 Detail = groupedDetails
             };
         }
