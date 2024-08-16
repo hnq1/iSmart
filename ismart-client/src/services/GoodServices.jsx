@@ -62,13 +62,13 @@ const updateGood = (goodsId, goodsName, goodsCode,
     categoryId, description, supplierId,
     measuredUnit, inStock, image,
     statusId, stockPrice, warrantyTime, barcode,
-    storageId, maxStock, minStock) => {
+     maxStock, minStock) => {
     return axios.put(`api/goods/update-goods`, {
         goodsId, goodsName, goodsCode,
         categoryId, description, supplierId,
         measuredUnit, inStock, image,
         statusId, stockPrice, warrantyTime, barcode,
-        storageId, maxStock, minStock
+        maxStock, minStock
     });
 }
 
