@@ -31,6 +31,9 @@ namespace iSmart.Entity.DTOs.ExportOrderDTO
         public int WarehouseId { get; set; }
 
         public string WarehouseName { get; set; }
+        public int? WarehouseDestinationId { get; set; }
+
+        public string? WarehouseDestinationName { get; set; }
 
         public DateTime? CancelDate { get; set; }
 

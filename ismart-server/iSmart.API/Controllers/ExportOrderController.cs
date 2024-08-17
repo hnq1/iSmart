@@ -26,7 +26,16 @@ namespace iSmart.API.Controllers
             _configuration = configuration;
             _context = context;
         }
-
+        [HttpGet("get-export-order-by-id/{id}")]
+        public IActionResult GetImportOrderById(int id)
+        {
+            var result = _exportService.GetExportOrderById(id);
+            if (result == null)
+            {
+                return NotFound(new { message = "Import order not found." });
+            }
+            return Ok(result);
+        }
         [HttpPost("add-export-order")]
         public IActionResult AddExportOrder(bool isInternalTransfer, CreateExportOrderRequest i, int staffId)
         {

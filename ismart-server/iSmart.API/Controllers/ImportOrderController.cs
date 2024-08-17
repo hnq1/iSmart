@@ -34,6 +34,17 @@ namespace iSmart.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("get-import-order-by-id/{id}")]
+        public IActionResult GetImportOrderById(int id) 
+        {
+            var result = _importService.GetImportOrderById(id);
+            if (result == null)
+            {
+                return NotFound(new { message = "Import order not found." });
+            }
+            return Ok(result);
+        }
+
         [HttpGet("get-newest-import-order")]
         public IActionResult GetNewestImportOrder()
         {
