@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Dropdown, DropdownButton, Col, Row, Badge } from 'react-bootstrap';
-
-
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
-
-
 import ModelAddImportOrder from './AddImportOrder';
 import ConfirmImportOrder from './ConfirmImportOrder';
 import { fetchImportOrdersWithfilter } from '~/services/ImportOrderServices';
@@ -118,12 +114,6 @@ function ImportOrderList() {
     }, [])
 
 
-    // useEffect(() => {
-    //     // Đảm bảo rằng getImportOrders được gọi mỗi khi có sự thay đổi cần thiết
-    //     if (selectedWarehouseId !== undefined || sortedByStatusId !== undefined || sortedByDateId !== undefined) {
-    //         getImportOrders(1, pageSize);
-    //     }
-    // }, [selectedWarehouseId, sortedByStatusId, sortedByDateId, pageSize]);
 
     // QH
     useEffect(() => {

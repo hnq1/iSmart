@@ -52,6 +52,7 @@ function NavbarCom() {
 
                 // Lưu ID vào localStorage
                 localStorage.setItem('importOrderId', importId);
+                
 
                 // Lưu thông báo vào state để hiển thị
                 setWebSocketMessages(prevMessages => [...prevMessages, message]);
@@ -129,7 +130,7 @@ function NavbarCom() {
                                     )}
                                 </div>
 
-                                <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+                                <div style={{ position: 'absolute', left: '70%', transform: 'translateX(-50%)' }}>
                                     <NavDropdown
                                         id="navbarDropdownMenuAvatar"
                                         className='ButtonCSSDropdown'
