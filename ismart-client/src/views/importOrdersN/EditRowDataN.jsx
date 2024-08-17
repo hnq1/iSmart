@@ -41,11 +41,6 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
         setQuantity(event.target.value);
         setTotalOneGoodPrice(event.target.value * costPrice);
     }
-
-    const handleChangePrice = (event) => {
-        setCostPrice(event.target.value);
-        setTotalOneGoodPrice(event.target.value * quantity);
-    }
     const handleChangeBatchCode = (event) => {
         setBatchCode(event.target.value);
 
@@ -79,7 +74,7 @@ const EditRowDataOrderN = ({ isShow, handleClose, data, dataAfterEdit }) => {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
         // } else if (costPrice <= 0) {
         //     toast.warning("Vui lòng nhập giá tiền lớn hơn 0")
-        // } else {
+         } else {
             dataAfterEdit({
                 // ...data,
                 batchCode: batchCode,

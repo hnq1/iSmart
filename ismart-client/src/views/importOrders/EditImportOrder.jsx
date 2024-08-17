@@ -123,65 +123,69 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
     const updateRowData = (rowUpdate, updateData) => {
         // console.log(updateData);
         const updateDataImport = [...rowsData];
+        console.log(rowsData)
         updateDataImport[rowUpdate] = updateData;
         // setTotalPrice(x => x - rowsData[rowUpdate].costPrice * rowsData[rowUpdate].quantity + updateData.costPrice * updateData.quantity);
         setRowsData(updateDataImport);
     }
 
     const handleUpdateImportOrder = async () => {
-       
-            console.log(detailOrderEdit.importId);
-            let res = await updateImportOrder(detailOrderEdit.importId,
-                userId,
-                selectedSupplierId,
-                0,
-                "",
-                detailOrderEdit.createdDate,
-                detailOrderEdit.importedDate,
-                3,
-                importCode,
-                selectedStorageId,
-                selectedDeliveryId,
-                detailOrderEdit.image,
-                null);
-            console.log("handleUpdateImportOrder: ", res);
-            console.log(rowsData);
 
-            if (deleteData && deleteData.length > 0) {
-                await Promise.all(deleteData.map(async (data, index) => {
-                    let result = await deleteImportOrderDetail(data.detailId);
-                    console.log(result);
-                }))
-            }
+        console.log(detailOrderEdit.importId);
+        let res = await updateImportOrder(detailOrderEdit.importId,
+            userId,
+            selectedSupplierId,
+            0,
+            "",
+            detailOrderEdit.createdDate,
+            detailOrderEdit.importedDate,
+            3,
+            importCode,
+            selectedStorageId,
+            selectedDeliveryId,
+            detailOrderEdit.image,
+            null);
+        console.log("handleUpdateImportOrder: ", res);
+        console.log("rowdata", rowsData);
 
-            if (rowsData && rowsData.length > 0) {
-                await Promise.all(rowsData.map(async (data, index) => {
-                    let res = await updateImportOrderDetail(
-                        detailOrderEdit.importId,
-                        data.costPrice,
-                        data.detailId,
-                        data.goodsId,
-                        data.quantity,                        
-                        data.manufactureDate,
-                        data.expiryDate,
-                        data.batchCode                      
-                    );
-                    console.log("data1:", res);
-                }));
-            }
+        if (deleteData && deleteData.length > 0) {
+            await Promise.all(deleteData.map(async (data, index) => {
+                let result = await deleteImportOrderDetail(data.detailId);
+                console.log(result);
+            }))
+        }
 
-            if (deleteData && deleteData.length > 0) {
-                await Promise.all(deleteData.map(async (data, index) => {
-                    let result = await deleteImportOrderDetail(data.detailId);
-                    console.log(result);
-                }))
-            }
-            toast.success("Sửa lô hàng nhập thành công");
-            updateTable();
-            handleReset();
-            handleClose();
-            // }
-        
+        if (rowsData && rowsData.length > 0) {
+            await Promise.all(rowsData.map(async (data, index) => {
+                let res = await updateImportOrderDetail(
+                    detailOrderEdit.importId,
+                    data.costPrice,
+                    data.detailId,
+                    data.goodsId,
+                    data.quantity,
+                    data.manufactureDate,
+                    data.expiryDate,
+                    data.batchCode
+                );
+                console.log("data1:", res);
+                console.log("detailOrderEdit.importId:", detailOrderEdit.importId);
+                console.log("data.detailId:", data.detailId);
+
+            }));
+        }
+
+        if (deleteData && deleteData.length > 0) {
+            await Promise.all(deleteData.map(async (data, index) => {
+                let result = await deleteImportOrderDetail(data.detailId);
+                console.log(result);
+            }))
+        }
+        toast.success("Sửa lô hàng nhập thành công");
+        updateTable();
+        handleReset();
+        handleClose();
+        // }
+
 
 
     }

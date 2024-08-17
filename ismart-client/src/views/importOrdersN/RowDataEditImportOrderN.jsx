@@ -32,6 +32,7 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
     }, [data])
 
     const handleEditRowData = () => {
+        console.log("aa")
         setIsShowEditRowData(true);
     }
 
