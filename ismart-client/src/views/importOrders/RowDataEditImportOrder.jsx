@@ -3,7 +3,7 @@ import { Row, Col, Dropdown } from "react-bootstrap";
 import EditRowDataOrder from "./EditRowData";
 import { formatDate } from "date-fns";
 
-const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) => {
+const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData, detailId }) => {
 
     const [isShowEditRowData, setIsShowEditRowData] = useState(false);
 
@@ -11,7 +11,6 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
     const [goodsCode, setGoodsCode] = useState();
     const [quantity, setQuantity] = useState();
     const [costPrice, setCostPrice] = useState();
-    const [detailId, setDetailId] = useState();
     const [importId, setImportId] = useState();
     const [batchCode, setBatchCode] = useState();
     const [expiryDate, setExpiryDate] = useState();
@@ -23,7 +22,6 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
         setGoodsCode(data.goodsCode);
         setQuantity(data.quantity);
         setCostPrice(data.costPrice);
-        setDetailId(data.detailId);
         setImportId(data.importId);
         setBatchCode(data.batchCode);
         setExpiryDate(data.expiryDate);
@@ -41,6 +39,7 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
 
     const handleEditRowData = () => {
         setIsShowEditRowData(true);
+        console.log(data.detailId)
     }
 
     const handleDeleteRowData = () => {
@@ -61,8 +60,8 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
         setManufactureDate(newData.manufactureDate);
 
         updateRowData(index, {
+            detailId: detailId,
             costPrice: newData.costPrice,
-
             goodsId: newData.goodsId,
             goodsCode: newData.goodsCode,
             quantity: newData.quantity,
@@ -112,7 +111,7 @@ const RowDataEditImportOrder = ({ data, index, deleteRowData, updateRowData }) =
                 </div>
             </Col>
 
-         
+
 
             <Col md={1}>
                 <div className="form-group mb-3 ButtonCSSDropdown">
