@@ -22,11 +22,20 @@ namespace iSmart.API.Controllers
 
         public ExportOrderController(IExportOrderService exportOrderService, IConfiguration configuration, iSmartContext context)
         {
-            _exportService = exportOrderService;           
+            _exportService = exportOrderService;
             _configuration = configuration;
             _context = context;
         }
-
+        [HttpGet("get-export-order-by-id/{id}")]
+        public IActionResult GetImportOrderById(int id)
+        {
+            var result = _exportService.GetExportOrderById(id);
+            if (result == null)
+            {
+                return NotFound(new { message = "Import order not found." });
+            }
+            return Ok(result);
+        }
         [HttpPost("add-export-order")]
         public IActionResult AddExportOrder(bool isInternalTransfer, CreateExportOrderRequest i, int staffId)
         {
@@ -53,7 +62,7 @@ namespace iSmart.API.Controllers
         [HttpGet("get-export-orders")]
         public IActionResult GetOrdersByKeyword(int pageSize, int page, int? warehouseId, int? userId, int? managerId, int? status, int? sortDate, string? keyword = "")
         {
-            var reult = _exportService.ExportOrderFilterPaging(pageSize,page, warehouseId, userId, managerId, status, sortDate, keyword);
+            var reult = _exportService.ExportOrderFilterPaging(pageSize, page, warehouseId, userId, managerId, status, sortDate, keyword);
             return Ok(reult);
         }
 
@@ -118,7 +127,7 @@ namespace iSmart.API.Controllers
                         _context.ImportOrderDetails.FirstOrDefault(i => i.DetailId == detail.ImportOrderDetailId).ActualQuantity -= total;
                         _context.SaveChanges();
                         goodWarehouse.Quantity -= total;
-                        
+
 
                         var history = new GoodsHistory
                         {

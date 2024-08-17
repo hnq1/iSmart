@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using iSmart.Entity.DTOs.ReturnOrderDTO;
 using iSmart.Entity.Models;
+using iSmart.Entity.DTOs.ImportOrderDTO;
 
 namespace iSmart.Service
 {
@@ -12,6 +13,7 @@ namespace iSmart.Service
     {
         CreateReturnOrderResponse CreateReturnOrder(CreateReturnOrderRequest request, int staffId);
         List<ReturnOrderDTO> GetAllReturnOrders();
+        ReturnOrderDTO GetReturnOrderById(int id);
         int GetReturnOrderNewest();
         ReturnOrderFilterPaging ReturnOrderFilterPaging(int pageSize, int page, int? warehouseId, int? userId, int? approvedById, int? status, int? sortDate, string? keyword = "");
         UpdateReturnOrderResponse UpdateOrder(UpdateReturnOrderRequest request);
@@ -94,6 +96,47 @@ namespace iSmart.Service
                     })
                     .ToList();
                 return returnOrders;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public ReturnOrderDTO GetReturnOrderById(int id)
+        {
+            try
+            {
+                var importOrder = _context.ReturnsOrders
+                    .Include(i => i.Status).Include(i => i.User).Include(i => i.Warehouse).ThenInclude(i => i.UserWarehouses).Where(i => i.ReturnOrderId == id)
+                     .Select(i => new ReturnOrderDTO
+                     {
+                         ReturnOrderId = i.ReturnOrderId,
+                         ReturnOrderCode = i.ReturnOrderCode,
+                         CreatedBy = i.CreatedBy,
+                         CreatedByName = i.User.FullName,
+                         ReturnedDate = i.ReturnedDate,
+                         WarehouseId = i.WarehouseId,
+                         WarehouseName = i.Warehouse.WarehouseName,
+                         SupplierId = i.SupplierId,
+                         SupplierName = i.Supplier.SupplierName,
+                         StatusId = i.StatusId,
+                         StatusType = i.Status.StatusType,
+                         ApprovedBy = i.ApprovedBy,
+                         ApprovedByName = i.ApprovedByUser.FullName,
+                         ReturnOrderDetails = i.ReturnsOrderDetails
+                            .Select(d => new ReturnOrderDetailDto
+                            {
+                                ReturnOrderDetailId = d.ReturnOrderDetailId,
+                                ReturnOrderId = d.ReturnOrderId,
+                                GoodsId = d.GoodsId,
+                                GoodsCode = d.Goods.GoodsCode,
+                                Reason = d.Reason,
+                                Quantity = d.Quantity,
+                                BatchCode = d.BatchCode
+                            }).ToList()
+                     }).FirstOrDefault();
+                return importOrder ?? null;
             }
             catch (Exception e)
             {

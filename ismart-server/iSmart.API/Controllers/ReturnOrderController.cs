@@ -19,7 +19,16 @@ namespace iSmart.API.Controllers
             _returnOrderService = returnOrderService;
             _context = context;
         }
-
+        [HttpGet("get-export-order-by-id/{id}")]
+        public IActionResult GetImportOrderById(int id)
+        {
+            var result = _returnOrderService.GetReturnOrderById(id);
+            if (result == null)
+            {
+                return NotFound(new { message = "Import order not found." });
+            }
+            return Ok(result);
+        }
         [HttpPost("create-return-order")]
         public ActionResult<CreateReturnOrderResponse> CreateReturnOrder(CreateReturnOrderRequest request, int staffId)
         {
