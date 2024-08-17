@@ -18,13 +18,12 @@ namespace iSmart.Service
         CreateImportOrderDetailResponse AddOrderDetail(CreateImportOrderDetailRequest detail);
         UpdateImportOrderDetailResponse UpdateOrderDetail(UpdateImportOrderDetailRequest detail);
         bool DeleteImportOrderDetail(int id);
-<<<<<<< HEAD
-        List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid);
+
         BatchInventoryDTO GetBatchInventoryByBatchCode(string batchCode);
 
-=======
+
         List<ImportOrderDetailResponse> GetOrderDetailsByOrderID(int oid);
->>>>>>> origin/anhddhe170353
+
         List<BatchInventoryDTO> SelectBatchesForExport(int warehouseId, int goodId, int quantity, string method);
         List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int warehouseId, int goodId);
         List<BatchInventoryDTO> GetBatchForReturn(int warehouseId, int goodId);

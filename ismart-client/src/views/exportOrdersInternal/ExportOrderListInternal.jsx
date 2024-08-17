@@ -256,7 +256,7 @@ const ExportOrderListInternal = () => {
             <div className="container" style={{ maxWidth: "1600px" }}>
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                    <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý lô hàng xuất giữa các kho</h2>
+                        <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý lô hàng xuất giữa các kho</h2>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             {roleId == 1 ?
                                 <Col md={2}>
@@ -376,7 +376,9 @@ const ExportOrderListInternal = () => {
                                         {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />xuất hàng</th>
+                                        <th className="align-middle  text-nowrap">Kho<br />nhận hàng</th>
                                         <th className="align-middle  text-nowrap">Kho<br /> xuất hàng</th>
+
                                         <th className="align-middle  text-nowrap">Bên <br />giao hàng</th>
                                         <th className="align-middle  text-nowrap">Hình ảnh</th>
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
@@ -403,6 +405,7 @@ const ExportOrderListInternal = () => {
                                                 {/* <td className="align-middle">{formattedAmount(i.totalPrice)}</td> */}
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{i.exportedDate ? formatDate(i.exportedDate) : ""}</td>
+                                                <td className="align-middle">{i.warehouseExportName}</td>
                                                 <td className="align-middle">{i.warehouseName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
 

@@ -21,6 +21,7 @@ function NavbarCom() {
     const [readNotifications, setReadNotifications] = useState(new Set());
     const [isShowModelConfirm, setIsShowModelConfirm] = useState(false); // State để điều khiển hiển thị modal
     const [dataImportOrder, setDataImportOrder] = useState({});
+    const [dataExportOrder, setDataExportOrder] = useState({});
 
     const [webSocketMessages, setWebSocketMessages] = useState([]);
 
@@ -52,7 +53,7 @@ function NavbarCom() {
 
                 // Lưu ID vào localStorage
                 localStorage.setItem('importOrderId', importId);
-                
+
 
                 // Lưu thông báo vào state để hiển thị
                 setWebSocketMessages(prevMessages => [...prevMessages, message]);
@@ -167,7 +168,10 @@ function NavbarCom() {
             </Navbar>
 
             <ProfileDetail isShow={isShowProfileDetail} handleClose={() => setIsShowProfileDetail(false)} userId={userId} />
-            <Confirm isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} />
+            <Confirm isShow={isShowModelConfirm}
+                handleClose={() => setIsShowModelConfirm(false)}
+                dataImportOrder={dataImportOrder}
+            />
         </>
     );
 };

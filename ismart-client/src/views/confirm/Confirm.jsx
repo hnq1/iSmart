@@ -8,13 +8,13 @@ import { toast } from 'react-toastify';
 const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
     const [totalOrderDetail, setTotalOrderDetail] = useState([]);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-    const importOrderId = localStorage.getItem('importOrderId'); // Lấy importOrderId từ localStorage
+    const importOrderId = parseInt(localStorage.getItem('importOrderId'), 10); // Lấy importOrderId từ localStorage
 
     useEffect(() => {
         if (dataImportOrder.importId) {
             getTotalOrderDetail(dataImportOrder.importId);
         }
-    }, [dataImportOrder])
+    }, [dataImportOrder, dataImportOrder.importId]);
     // console.log("dataImportOrder: ", dataImportOrder);
 
     // useEffect(() => {
@@ -28,8 +28,8 @@ const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
         handleClose();
     }
 
-    const getTotalOrderDetail = async (importOrderId) => {
-        let res = await getImportOrderDetailByImportId(importOrderId);
+    const getTotalOrderDetail = async (importId) => {
+        let res = await getImportOrderDetailByImportId(importId);
         console.log("getTotalOrderDetail: ", res);
         setTotalOrderDetail(res);
     }
@@ -50,29 +50,26 @@ const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
                 <Modal.Title>Xác nhận lô hàng nhập kho</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div className="body-add-new">
-                    <Row>
-                        <Col md={2}>
-                            <div className="form-group mb-3">
-                                <label >Kho hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.storageName}</button>
-                            </div>
-                        </Col>
-
-                        <Col md={2}>
-                            <div className="form-group mb-3">
-                                <label >Nhà cung cấp</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.supplierName}</button>
-                            </div>
-                        </Col>
-
-                    </Row>
-
-
+                <div className="body-add-new">                   
                     {totalOrderDetail && totalOrderDetail.length > 0
                         && totalOrderDetail.map((o, index) => (
 
                             <Row key={`orderDetail${index}`}>
+                                <Row>
+                                    <Col md={2}>
+                                        <div className="form-group mb-3">
+                                            <label >Kho hàng</label>
+                                            <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{o.warehouseName}</button>
+                                        </div>
+                                    </Col>
+                                    <Col md={2}>
+                                        <div className="form-group mb-3">
+                                            <label >Nhà cung cấp</label>
+                                            <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{o.supplierName}</button>
+                                        </div>
+                                    </Col>
+                                </Row>
+
                                 <Col >
 
                                     <label >Mã hàng hóa</label>

@@ -236,24 +236,9 @@ namespace iSmart.Service
                     {
                         throw new Exception($"Batch with code {batchCode} not found.");
                     }
-                    var goodsWarehouse = await _context.GoodsWarehouses
-                       .FirstOrDefaultAsync(gw => gw.GoodsId == inventoryBatch.GoodsId && gw.WarehouseId == inventoryBatch.Import.WarehouseId);
-
-                    if (goodsWarehouse == null)
-                    {
-                        throw new Exception($"Goods with ID {inventoryBatch.GoodsId} not found in warehouse {inventoryBatch.Import.WarehouseId}.");
-                    }
-
-                    // Cập nhật số lượng hàng hóa trong kho
-                    goodsWarehouse.Quantity += (quantity - inventoryBatch.ActualQuantity); // Adjust based on difference
-
-                    _context.GoodsWarehouses.Update(goodsWarehouse);
 
                     inventoryBatch.ActualQuantity = quantity;
 
-<<<<<<< HEAD
-                   
-=======
                     var goodsWarehouse = await _context.GoodsWarehouses
                         .FirstOrDefaultAsync(gw => gw.GoodsId == inventoryBatch.GoodsId && gw.WarehouseId == inventoryBatch.Import.WarehouseId);
 
@@ -266,7 +251,6 @@ namespace iSmart.Service
                     goodsWarehouse.Quantity += (quantity - inventoryBatch.Quantity); // Adjust based on difference
 
                     _context.GoodsWarehouses.Update(goodsWarehouse);
->>>>>>> origin/anhddhe170353
                 }
 
                 await _context.SaveChangesAsync();
@@ -276,6 +260,9 @@ namespace iSmart.Service
                 throw new Exception($"Update failed: {ex.Message}");
             }
         }
+
+
+
 
 
 
