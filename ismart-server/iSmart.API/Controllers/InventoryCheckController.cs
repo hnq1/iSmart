@@ -139,44 +139,54 @@ namespace iSmart.API.Controllers
 
                             document.SetFont(font);
 
-                            // Title
+                            // Title (Center)
                             document.Add(new Paragraph("Báo Cáo Kiểm Kê Kho")
                                 .SetFontSize(18)
                                 .SetBold()
-                                .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
+                                .SetTextAlignment(TextAlignment.CENTER));  // Căn giữa
 
-                            // Warehouse Info
-                            document.Add(new Paragraph($"Tên Kho: {inventoryCheck.WarehouseName}"));
-                            document.Add(new Paragraph($"Địa Chỉ Kho: {inventoryCheck.WarehouseAddress}"));
-                            document.Add(new Paragraph($"Tên Kế Toán: {inventoryCheck.AccountantName}"));
-                            document.Add(new Paragraph($"Tên Quản Lý Kho: {inventoryCheck.WarehouseManagerName}"));
-                            document.Add(new Paragraph($"Ngày Kiểm Kê: {inventoryCheck.CheckDate:dd/MM/yyyy}"));
-
+                            // Warehouse Info (Left)
+                            document.Add(new Paragraph($"Tên Kho: {inventoryCheck.WarehouseName}")
+                                .SetTextAlignment(TextAlignment.LEFT));  // Căn trái
+                            document.Add(new Paragraph($"Địa Chỉ Kho: {inventoryCheck.WarehouseAddress}")
+                                .SetTextAlignment(TextAlignment.LEFT));  // Căn trái
+                            document.Add(new Paragraph($"Tên Kế Toán: {inventoryCheck.AccountantName}")
+                                .SetTextAlignment(TextAlignment.LEFT));  // Căn trái
+                            document.Add(new Paragraph($"Tên Quản Lý Kho: {inventoryCheck.WarehouseManagerName}")
+                                .SetTextAlignment(TextAlignment.LEFT));  // Căn trái
+                            document.Add(new Paragraph($"Ngày Kiểm Kê: {inventoryCheck.CheckDate:dd/MM/yyyy}")
+                                .SetTextAlignment(TextAlignment.LEFT));  // Căn trái
                             document.Add(new Paragraph("\n"));
 
-                            // Table Header
-                            var table = new iText.Layout.Element.Table(UnitValue.CreatePercentArray(new float[] { 3, 4, 3, 3, 3, 2, 4 }))
-                                .SetWidth(UnitValue.CreatePercentValue(100));
+                            var table = new iText.Layout.Element.Table(UnitValue.CreatePercentArray(new float[] { 1, 3, 4, 3, 3, 3, 2, 4 }))
+                             .SetWidth(UnitValue.CreatePercentValue(100))
+                             .SetFixedLayout();  // Thiết lập bảng ở chế độ bố cục cố định
 
-                            table.AddHeaderCell("Mã Hàng");
-                            table.AddHeaderCell("Tên Hàng");
-                            table.AddHeaderCell("Số Lượng Thực Tế");
-                            table.AddHeaderCell("Số Lượng Trong App");
-                            table.AddHeaderCell("Chênh Lệch");
-                            table.AddHeaderCell("Đơn Vị Tính");
-                            table.AddHeaderCell("Ghi Chú");
+                            // Add table headers with alignment
+                            table.AddHeaderCell(new Cell().Add(new Paragraph("STT").SetTextAlignment(TextAlignment.CENTER)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                            table.AddHeaderCell(new Cell().Add(new Paragraph("Mã Hàng").SetTextAlignment(TextAlignment.CENTER)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                            table.AddHeaderCell(new Cell().Add(new Paragraph("Tên Hàng").SetTextAlignment(TextAlignment.CENTER)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                            table.AddHeaderCell(new Cell().Add(new Paragraph("Số Lượng Thực Tế").SetTextAlignment(TextAlignment.CENTER)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                            table.AddHeaderCell(new Cell().Add(new Paragraph("Số Lượng Trong App").SetTextAlignment(TextAlignment.CENTER)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                            table.AddHeaderCell(new Cell().Add(new Paragraph("Chênh Lệch").SetTextAlignment(TextAlignment.CENTER)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                            table.AddHeaderCell(new Cell().Add(new Paragraph("Đơn Vị Tính").SetTextAlignment(TextAlignment.CENTER)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                            table.AddHeaderCell(new Cell().Add(new Paragraph("Ghi Chú").SetTextAlignment(TextAlignment.CENTER)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
 
                             // Table Rows
+                            int stt = 1;
                             foreach (var detail in inventoryCheck.Detail)
                             {
-                                table.AddCell(detail.goodCode);
-                                table.AddCell(detail.goodName);
-                                table.AddCell(detail.ActualQuantity.ToString());
-                                table.AddCell(detail.InAppQuantity.ToString());
-                                table.AddCell(detail.Difference.ToString());
-                                table.AddCell(detail.MeasureUnit);
-                                table.AddCell(detail.Note);
+                                table.AddCell(new Cell().Add(new Paragraph(stt++.ToString()).SetTextAlignment(TextAlignment.CENTER)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                                table.AddCell(new Cell().Add(new Paragraph(detail.goodCode).SetTextAlignment(TextAlignment.LEFT)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                                table.AddCell(new Cell().Add(new Paragraph(detail.goodName).SetTextAlignment(TextAlignment.LEFT)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                                table.AddCell(new Cell().Add(new Paragraph(detail.ActualQuantity.ToString()).SetTextAlignment(TextAlignment.RIGHT)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                                table.AddCell(new Cell().Add(new Paragraph(detail.InAppQuantity.ToString()).SetTextAlignment(TextAlignment.RIGHT)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                                table.AddCell(new Cell().Add(new Paragraph(detail.Difference.ToString()).SetTextAlignment(TextAlignment.RIGHT)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                                table.AddCell(new Cell().Add(new Paragraph(detail.MeasureUnit).SetTextAlignment(TextAlignment.LEFT)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
+                                table.AddCell(new Cell().Add(new Paragraph(detail.Note).SetTextAlignment(TextAlignment.LEFT)).SetVerticalAlignment(VerticalAlignment.MIDDLE));
                             }
+
+
 
                             document.Add(table);
 

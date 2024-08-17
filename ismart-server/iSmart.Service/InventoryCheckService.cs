@@ -73,7 +73,7 @@ namespace iSmart.Service
                 var inventoryCheck = new InventoryCheck
                 {
                     WarehouseId = inventoryCheckDTO.WarehouseId,
-                    CheckDate = inventoryCheckDTO.CheckDate,
+                    CheckDate = DateTime.Now,
                     StatusId = 3
                 };
                 _context.InventoryChecks.Add(inventoryCheck);
@@ -251,7 +251,22 @@ namespace iSmart.Service
 
                     inventoryBatch.ActualQuantity = quantity;
 
+<<<<<<< HEAD
                    
+=======
+                    var goodsWarehouse = await _context.GoodsWarehouses
+                        .FirstOrDefaultAsync(gw => gw.GoodsId == inventoryBatch.GoodsId && gw.WarehouseId == inventoryBatch.Import.WarehouseId);
+
+                    if (goodsWarehouse == null)
+                    {
+                        throw new Exception($"Goods with ID {inventoryBatch.GoodsId} not found in warehouse {inventoryBatch.Import.WarehouseId}.");
+                    }
+
+                    // Cập nhật số lượng hàng hóa trong kho
+                    goodsWarehouse.Quantity += (quantity - inventoryBatch.Quantity); // Adjust based on difference
+
+                    _context.GoodsWarehouses.Update(goodsWarehouse);
+>>>>>>> origin/anhddhe170353
                 }
 
                 await _context.SaveChangesAsync();

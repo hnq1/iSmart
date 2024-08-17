@@ -18,9 +18,13 @@ namespace iSmart.Service
         CreateImportOrderDetailResponse AddOrderDetail(CreateImportOrderDetailRequest detail);
         UpdateImportOrderDetailResponse UpdateOrderDetail(UpdateImportOrderDetailRequest detail);
         bool DeleteImportOrderDetail(int id);
+<<<<<<< HEAD
         List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid);
         BatchInventoryDTO GetBatchInventoryByBatchCode(string batchCode);
 
+=======
+        List<ImportOrderDetailResponse> GetOrderDetailsByOrderID(int oid);
+>>>>>>> origin/anhddhe170353
         List<BatchInventoryDTO> SelectBatchesForExport(int warehouseId, int goodId, int quantity, string method);
         List<BatchInventoryDTO> GetBatchInventoryByGoodsId(int warehouseId, int goodId);
         List<BatchInventoryDTO> GetBatchForReturn(int warehouseId, int goodId);
@@ -236,13 +240,12 @@ namespace iSmart.Service
 
 
 
-        public List<ImportDetailDTO> GetOrderDetailsByOrderID(int oid)
+        public List<ImportOrderDetailResponse> GetOrderDetailsByOrderID(int oid)
         {
             try
             {
-                var details = _context.ImportOrderDetails.Where(i => i.ImportId == oid)
-
-                  .Select(i => new ImportDetailDTO
+                var details = _context.ImportOrderDetails.Include(iod => iod.Import).ThenInclude(iod => iod.Supplier).Include(iod => iod.Import).ThenInclude(iod => iod.Warehouse).Where(i => i.ImportId == oid)
+                  .Select(i => new ImportOrderDetailResponse
                   {
                       DetailId = i.DetailId,
                       ImportId = i.ImportId,
@@ -253,6 +256,8 @@ namespace iSmart.Service
                       BatchCode = i.BatchCode,
                       ExpiryDate = i.ExpiryDate,
                       ManufactureDate = i.ManufactureDate,
+                      SupplierName = i.Import.Supplier.SupplierName,
+                      WarehouseName = i.Import.Warehouse.WarehouseName, 
                   }).ToList();
                 return details;
 
