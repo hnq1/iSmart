@@ -21,7 +21,6 @@ function NavbarCom() {
     const [readNotifications, setReadNotifications] = useState(new Set());
     const [isShowModelConfirm, setIsShowModelConfirm] = useState(false); // State để điều khiển hiển thị modal
     const [dataImportOrder, setDataImportOrder] = useState({});
-    const [dataExportOrder, setDataExportOrder] = useState({});
 
     const [webSocketMessages, setWebSocketMessages] = useState([]);
 
@@ -77,19 +76,30 @@ function NavbarCom() {
     const handleNotificationClick = (index) => {
         const selectedMessage = webSocketMessages[index];
         const idMatch = selectedMessage.match(/ID (\d+)/);
-        if (idMatch) {
-            const importId = idMatch[1];
-            localStorage.setItem('importOrderId', importId);
-
-            setIsShowModelConfirm(true);
-            setDataImportOrder({
-                importId: importId,
-                // Các dữ liệu khác bạn muốn truyền vào modal
-            });
+        const codeMatch = selectedMessage.match(/mã (\w+)/); // Tìm mã thông báo
+    
+        if (idMatch && codeMatch) {
+            const Id = idMatch[1];
+            const code = codeMatch[1]; // Lấy giá trị của mã từ chuỗi
+    
+            localStorage.setItem('importOrderId', Id);
+    
+            if (code.startsWith('IM')) {
+                setIsShowModelConfirm(true);
+                setDataImportOrder({
+                    importId: Id,
+                    // Các dữ liệu khác bạn muốn truyền vào modal
+                });
+            } else if (code.startsWith('XH')) {
+                // Thực hiện hành động khác, ví dụ: hiển thị modal khác hoặc điều hướng
+                // Ví dụ: setIsShowOtherConfirm(true);
+                // Hoặc: navigate('/other-confirm-page');
+                
+            }
+    
             setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
-            // setWebSocketMessages(prevMessages => prevMessages.filter((_, i) => i !== index));
         } else {
-            console.warn("Selected message does not contain a valid ID: ", selectedMessage);
+            console.warn("Selected message does not contain a valid ID or code: ", selectedMessage);
         }
     };
 
