@@ -1,37 +1,49 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Col, Row } from "react-bootstrap";
-import { addSuccessFullImportOrder } from "~/services/ImportOrderServices";
-import { updateImportOrder } from "~/services/ImportOrderServices";
-import { getImportOrderByImportId } from "~/services/ImportOrderServices";
 import { toast } from 'react-toastify';
+import { addSuccessFullExportOrder } from "~/services/ExportOrderService";
 import { formatDate } from '~/validate';
+import {fetchExportOrderByExportId } from "~/services/ExportOrderService";
 
-const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
-    const [totalOrder, setTotalOrder] = useState(null);
+const ConfirmExport = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
+    const [totalOrder, setTotalOrder] = useState([]);
+
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
+
     useEffect(() => {
-        getTotalOrderDetail(dataImportOrder.importId);
-    }, [dataImportOrder.importId]);
+        if (dataImportOrder.exportId) {
+
+            getTotalOrderDetail(dataImportOrder.exportId);
+        }
+    }, [dataImportOrder])
 
 
-
+    
     const handleCloseModal = () => {
         handleClose();
     }
 
-    const getTotalOrderDetail = async (importId) => {
-        let res = await getImportOrderByImportId(importId);
-
+    const getTotalOrderDetail = async (exportId) => {
+        let res = await fetchExportOrderByExportId(exportId);
         setTotalOrder(res);
     }
 
     const SaveAddImportOrder = async () => {
-        let res = await addSuccessFullImportOrder(dataImportOrder.importId);
-        toast.success("Xác nhận nhập kho thành công");
-        updateTable();
-        handleClose();
+        let res = await addSuccessFullExportOrder(dataImportOrder.exportId);
+        console.log(res);
+        if (res.status === 400) {
+            toast.warning("Số lượng của mặt hàng lớn hơn số lượng trong kho");
+
+        } else {
+            toast.success("Xác nhận xuất kho thành công");
+            updateTable();
+            handleClose();
+        }
+
+
     }
+
 
     return (
         <>
@@ -99,4 +111,5 @@ const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
     );
 }
 
-export default ConfirmImport;
+
+export default ConfirmExport;

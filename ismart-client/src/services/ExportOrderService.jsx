@@ -44,4 +44,8 @@ const cancelExportOrder = (exportId) => {
     return axios.post(`api/export-order/cancel-export?exportId=${exportId}`)
 }
 
-export { cancelExportOrder, addNewExportOrder, fetchAllExportOrders, fetchExportOrdersWithFilter, fetchExportOrderNewest, addSuccessFullExportOrder, updateExportOrder }
+const fetchExportOrderByExportId = (exportId) => {
+    return axios.get(`api/export-order/get-export-order-by-id/${exportId}`)
+
+}
+export {fetchExportOrderByExportId, cancelExportOrder, addNewExportOrder, fetchAllExportOrders, fetchExportOrdersWithFilter, fetchExportOrderNewest, addSuccessFullExportOrder, updateExportOrder }

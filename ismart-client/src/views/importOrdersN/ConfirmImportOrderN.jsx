@@ -18,7 +18,6 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
             getTotalOrderDetail(dataImportOrder.importId);
         }
     }, [dataImportOrder])
-    console.log("dataImportOrder: ", dataImportOrder);
 
     
     const handleCloseModal = () => {
@@ -27,7 +26,6 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
 
     const getTotalOrderDetail = async (importId) => {
         let res = await getImportOrderDetailByImportId(importId);
-        console.log("getTotalOrderDetail: ", res);
         setTotalOrderDetail(res);
     }
 

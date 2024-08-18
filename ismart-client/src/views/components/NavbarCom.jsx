@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context/UserContext'
 import ProfileDetail from '../profiles/ProfileDetail';
 import ConfirmImport from '../confirm/ConfirmImport';
+import ConfirmExport from '../confirm/ConfirmExport';
 
 
 function NavbarCom() {
@@ -19,7 +20,8 @@ function NavbarCom() {
     const userId = parseInt(localStorage.getItem('userId'), 10);
     const [showNotifications, setShowNotifications] = useState(false);
     const [readNotifications, setReadNotifications] = useState(new Set());
-    const [isShowModelConfirmImport, setIsShowModelConfirmImport] = useState(false); // State để điều khiển hiển thị modal
+    const [isShowModelConfirmEmport, setIsShowModelConfirmEmport] = useState(false); 
+    const [isShowModelConfirmImport, setIsShowModelConfirmImport] = useState(false);// State để điều khiển hiển thị modal
     const [dataImportOrder, setDataImportOrder] = useState({});
 
     const [webSocketMessages, setWebSocketMessages] = useState([]);
@@ -180,6 +182,12 @@ function NavbarCom() {
             <ConfirmImport isShow={isShowModelConfirmImport}
                 handleClose={() => setIsShowModelConfirmImport(false)}
                 dataImportOrder={dataImportOrder}
+                // updateTable={updateTable}
+            />
+            <ConfirmExport isShow={isShowModelConfirmEmport}
+                handleClose={() => setIsShowModelConfirmEmport(false)}
+                dataImportOrder={dataImportOrder}
+                // updateTable={updateTable}
             />
         </>
     );
