@@ -220,20 +220,24 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
 
 
     // mở addRowDataImport
-    const handleAddRowDataImport = () => {
-        if ( (selectedWarehouseExportId && selectedSupplierId)) {
-            setIsShowRowDataImport(true);
-            // setRowsData([
-            //     ...rowsData,
-            //     { id: rowsData.length + 1, warehouseSelectable: roleId === 1 }, // Row 1 with warehouse selectable if roleId is 1
-            //     { id: rowsData.length + 2 }, // Row 2
-            //     { id: rowsData.length + 3 }  // Row 3
-            // ]);
-        } else {
-            toast.info("Vui lòng điền kho hoặc nhà cung cấp");
-        }
-    }
 
+    const handleAddRowDataImport = async () => {
+        if (roleId === 1 ) {
+            if (selectedWarehouseExportId && selectedSupplierId) {
+                setIsShowRowDataImport(true);
+            } else {
+                toast.info("Vui lòng điền kho hoặc nhà cung cấp");
+            }
+        } else if (roleId === 3 && selectedSupplierId) {
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+            if (warehouse) {
+                setIsShowRowDataImport(true);
+            } else {
+                toast.info("Không tìm thấy kho cho người dùng này");
+            }
+        }
+    };
 
     //render rowsData
 

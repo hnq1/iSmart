@@ -1,13 +1,12 @@
-﻿using iSmart.Entity.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace iSmart.Entity.DTOs.ImportOrderDTO
+namespace iSmart.Entity.DTOs.ImportOrderDetailDTO
 {
-    public class ImportDetailDTO
+    public class ImportOrderDetailResponse
     {
         public int ImportId { get; set; }
 
@@ -21,10 +20,12 @@ namespace iSmart.Entity.DTOs.ImportOrderDTO
         public int? Quantity { get; set; }
 
         public string GoodsCode { get; set; }
+        public string WarehouseName { get; set; }
+
+        public string SupplierName { get; set; }
 
         public string BatchCode { get; set; }
         public DateTime ManufactureDate { get; set; }
         public DateTime ExpiryDate { get; set; }
-
     }
 }

@@ -20,21 +20,12 @@ const RowDataExportOrderManual = ({ data, index, deleteRowData, updateRowData })
 
         // // Thiết lập tổng số lượng
         // setQuantity(totalQuantity);
-
-
-        console.log("item: ", data);
         setGoodsCode(data.goodsCode);
         setGoodsId(data.goodsId);
         setImportOrderDetail(data.importOrderDetailId);
         setCostPrice(data.costPrice);
         setQuantity(data.quantity);
         setBatchCode(data.batchCode);
-
-
-
-
-
-
     }, [data])
 
     const handleEditRowData = () => {

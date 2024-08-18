@@ -176,6 +176,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
         }
         else {
             let finalImage = imageGood || dataGoodEdit.image;
+            
             let res = await updateGood(dataGoodEdit.goodsId,
                 goodName,
                 goodCode,
@@ -191,7 +192,7 @@ function ModalEditGood({ isShow, handleClose, dataGoodEdit, updateTable }) {
                 barCode,
                 maxStock,
                 minStock);
-            // console.log("RES UPDATE", res);
+           //  console.log("RES UPDATE", res);
             if (res.isSuccess) {
                 updateTable();
                 toast.success("Sửa mặt hàng thành công");

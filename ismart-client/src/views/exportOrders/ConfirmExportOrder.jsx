@@ -19,7 +19,7 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
             getTotalOrderDetail(dataImportOrder.exportId);
         }
     }, [dataImportOrder])
-    console.log("dataImportOrder; ", dataImportOrder);
+
 
     
     const handleCloseModal = () => {
@@ -28,8 +28,6 @@ const ConfirmExportOrder = ({ isShow, handleClose, dataImportOrder, updateTable 
 
     const getTotalOrderDetail = async (exportId) => {
         let res = await getExportOrderDetailByExportId(exportId);
-        console.log("exportId:", exportId);
-        console.log("getTotalOrderDetail: ", res);
         setTotalOrderDetail(res);
     }
 

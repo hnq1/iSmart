@@ -18,7 +18,7 @@ namespace iSmart.API.Controllers
     {
         public IConfiguration _configuration;
         private readonly IImportOrderService _importService;
-   
+
         private readonly iSmartContext _context;
 
         public ImportOrderController(IImportOrderService ImportOrderService, iSmartContext context)
@@ -26,11 +26,22 @@ namespace iSmart.API.Controllers
             _importService = ImportOrderService;
             _context = context;
         }
-       
+
         [HttpGet("get-all-import-orders")]
         public IActionResult GetAllOrders()
         {
             var result = _importService.GetAllImportOrder();
+            return Ok(result);
+        }
+
+        [HttpGet("get-import-order-by-id/{id}")]
+        public IActionResult GetImportOrderById(int id)
+        {
+            var result = _importService.GetImportOrderById(id);
+            if (result == null)
+            {
+                return NotFound(new { message = "Import order not found." });
+            }
             return Ok(result);
         }
 
@@ -44,12 +55,12 @@ namespace iSmart.API.Controllers
         [HttpGet("get-import-orders")]
         public IActionResult ImportOrderFilterPaging(int pageSize, int page, int? warehouseId, int? status, int? sortDate, string? keyword = "")
         {
-            var reult = _importService.ImportOrderFilterPaging(pageSize,page, warehouseId, status, sortDate, keyword);
+            var reult = _importService.ImportOrderFilterPaging(pageSize, page, warehouseId, status, sortDate, keyword);
             return Ok(reult);
         }
 
         [HttpPost("add-import-order")]
-        public IActionResult AddImportOrder(bool isInternalTransfer,CreateImportOrderRequest i, int staffId)
+        public IActionResult AddImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId)
         {
             var result = _importService.CreateImportOrder(isInternalTransfer, i, staffId);
             return Ok(result);
@@ -72,7 +83,7 @@ namespace iSmart.API.Controllers
                 return Ok(result);
             }
             else if (result == "Không có dữ liệu")
-            { 
+            {
                 return BadRequest(result);
             }
             else
@@ -100,4 +111,3 @@ namespace iSmart.API.Controllers
 
     }
 }
-

@@ -1,5 +1,6 @@
 ﻿using iSmart.Entity.DTOs.ReportDTO;
 using iSmart.Entity.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System;
@@ -26,7 +27,6 @@ namespace iSmart.Service
         {
             _context = context;
         }
-
         public async Task<IEnumerable<ExportReportDto>> GetExportReport(DateTime? startDate, DateTime? endDate, int warehouseId)
         {
             try
@@ -63,6 +63,8 @@ namespace iSmart.Service
                 throw new Exception(e.Message);
             }
         }
+
+      
 
 
         public async Task<IEnumerable<ImportReportDto>> GetImportReport(DateTime? startDate, DateTime? endDate, int warehouseId)

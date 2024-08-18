@@ -5,7 +5,8 @@ import { toast } from 'react-toastify';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context/UserContext'
 import ProfileDetail from '../profiles/ProfileDetail';
-import Confirm from '../confirm/Confirm';
+import ConfirmImport from '../confirm/ConfirmImport';
+import ConfirmExport from '../confirm/ConfirmExport';
 
 
 function NavbarCom() {
@@ -19,7 +20,8 @@ function NavbarCom() {
     const userId = parseInt(localStorage.getItem('userId'), 10);
     const [showNotifications, setShowNotifications] = useState(false);
     const [readNotifications, setReadNotifications] = useState(new Set());
-    const [isShowModelConfirm, setIsShowModelConfirm] = useState(false); // State để điều khiển hiển thị modal
+    const [isShowModelConfirmEmport, setIsShowModelConfirmEmport] = useState(false); 
+    const [isShowModelConfirmImport, setIsShowModelConfirmImport] = useState(false);// State để điều khiển hiển thị modal
     const [dataImportOrder, setDataImportOrder] = useState({});
 
     const [webSocketMessages, setWebSocketMessages] = useState([]);
@@ -53,6 +55,7 @@ function NavbarCom() {
                 // Lưu ID vào localStorage
                 localStorage.setItem('importOrderId', importId);
 
+
                 // Lưu thông báo vào state để hiển thị
                 setWebSocketMessages(prevMessages => [...prevMessages, message]);
             } else {
@@ -75,19 +78,29 @@ function NavbarCom() {
     const handleNotificationClick = (index) => {
         const selectedMessage = webSocketMessages[index];
         const idMatch = selectedMessage.match(/ID (\d+)/);
-        if (idMatch) {
-            const importId = idMatch[1];
-            localStorage.setItem('importOrderId', importId);
-
-            setIsShowModelConfirm(true);
-            setDataImportOrder({
-                importId: importId,
-                // Các dữ liệu khác bạn muốn truyền vào modal
-            });
+        const codeMatch = selectedMessage.match(/mã (\w+)/); // Tìm mã thông báo
+    
+        if (idMatch && codeMatch) {
+            const Id = idMatch[1];
+            const code = codeMatch[1]; // Lấy giá trị của mã từ chuỗi
+    
+            localStorage.setItem('importOrderId', Id);
+    
+            if (code.startsWith('IM')) {
+                setIsShowModelConfirmImport(true);
+                setDataImportOrder({
+                    importId: Id,
+                    
+                });
+            } else if (code.startsWith('XH')) {
+                // Thực hiện hành động khác, ví dụ: hiển thị modal khác hoặc điều hướng
+                // Ví dụ: setIsShowOtherConfirm(true);
+                // Hoặc: navigate('/other-confirm-page');
+            }
+    
             setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
-            // setWebSocketMessages(prevMessages => prevMessages.filter((_, i) => i !== index));
         } else {
-            console.warn("Selected message does not contain a valid ID: ", selectedMessage);
+            console.warn("Selected message does not contain a valid ID or code: ", selectedMessage);
         }
     };
 
@@ -129,7 +142,7 @@ function NavbarCom() {
                                     )}
                                 </div>
 
-                                <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+                                <div style={{ position: 'absolute', left: '70%', transform: 'translateX(-50%)' }}>
                                     <NavDropdown
                                         id="navbarDropdownMenuAvatar"
                                         className='ButtonCSSDropdown'
@@ -166,7 +179,16 @@ function NavbarCom() {
             </Navbar>
 
             <ProfileDetail isShow={isShowProfileDetail} handleClose={() => setIsShowProfileDetail(false)} userId={userId} />
-            <Confirm isShow={isShowModelConfirm} handleClose={() => setIsShowModelConfirm(false)} dataImportOrder={dataImportOrder} />
+            <ConfirmImport isShow={isShowModelConfirmImport}
+                handleClose={() => setIsShowModelConfirmImport(false)}
+                dataImportOrder={dataImportOrder}
+                // updateTable={updateTable}
+            />
+            <ConfirmExport isShow={isShowModelConfirmEmport}
+                handleClose={() => setIsShowModelConfirmEmport(false)}
+                dataImportOrder={dataImportOrder}
+                // updateTable={updateTable}
+            />
         </>
     );
 };

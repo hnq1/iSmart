@@ -11,8 +11,6 @@ import { createNewImportOrderDetail } from "~/services/ImportOrderDetailServices
 import { formatDateImport, formattedAmount } from "~/validate";
 import AddRowDataImportOrder from "./AddRowDataImport";
 import { format, addDays } from 'date-fns';
-
-
 import RowDataImportOrder from "./RowDataImport";
 import { toast } from "react-toastify";
 
@@ -29,17 +27,9 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
     const [importCode, setImportCode] = useState('');
 
-
-
-
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
-
-
-
-
-
 
     const [totalSuppliers, setTotalSuppliers] = useState([]);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
@@ -210,20 +200,23 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
 
     // mở addRowDataImport
-    const handleAddRowDataImport = () => {
-        if ( (selectedWarehouseId && selectedSupplierId)) {
-            setIsShowRowDataImport(true);
-            // setRowsData([
-            //     ...rowsData,
-            //     { id: rowsData.length + 1, warehouseSelectable: roleId === 1 }, // Row 1 with warehouse selectable if roleId is 1
-            //     { id: rowsData.length + 2 }, // Row 2
-            //     { id: rowsData.length + 3 }  // Row 3
-            // ]);
-        } else {
-
-
+    const handleAddRowDataImport = async () => {
+        if (roleId === 1 ) {
+            if (selectedWarehouseId && selectedSupplierId) {
+                setIsShowRowDataImport(true);
+            } else {
+                toast.info("Vui lòng điền kho hoặc nhà cung cấp");
+            }
+        } else if (roleId === 3 && selectedSupplierId) {
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+            if (warehouse) {
+                setIsShowRowDataImport(true);
+            } else {
+                toast.info("Không tìm thấy kho cho người dùng này");
+            }
         }
-    }
+    };
 
 
 
@@ -294,9 +287,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng!");
         }
-        else if (!selectedWarehouseId) {
-            toast.warning("Vui lòng chọn kho hàng!");
-        }
+
         else if (!selectedSupplier) {
             toast.warning("Vui lòng chọn nhà cung cấp!");
         }
@@ -311,10 +302,13 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
         }
         else {
             const newImportCode = generateImportCode();
-            console.log(newImportCode);
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
+            if (!warehouseIdToUse) {
+                toast.warning("Vui lòng chọn kho hàng!");
+            }
+            console.log("warehouseIdToUse: ", warehouseIdToUse);
             let isInternalTransfer = false;
              console.log("warehouseIdToUse: ", warehouseIdToUse);
             let res = await addNewImportOrder(isInternalTransfer,
@@ -500,6 +494,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
                             </div>
                         </Col>
                         <Col md={7}></Col>
+
                         <Col md={3} className="mt-3">
                             <div className="ButtonCSSDropdown">
                                 <button
@@ -525,7 +520,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
 
                     </Row>
-                  
+
 
 
                 </div>

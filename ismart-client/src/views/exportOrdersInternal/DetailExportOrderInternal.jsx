@@ -12,8 +12,6 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
         if (detailOrder.exportId) {
             getTotalOrderDetail(detailOrder.exportId);
         }
-        console.log(detailOrder);
-
     }, [detailOrder])
 
     const handleCloseModal = () => {
@@ -22,9 +20,9 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
 
     const getTotalOrderDetail = async (exportId) => {
         let res = await getExportOrderDetailByExportId(exportId);
-        console.log(res);
         setTotalOrderDetail(res);
     }
+
     return (<>
         <Modal show={isShow} onHide={handleCloseModal} size="lg">
             <Modal.Header closeButton>
@@ -33,20 +31,27 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
             <Modal.Body>
                 <div className="body-add-new">
                     <Row>
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
-                                <label >Kho hàng</label>
+                                <label >Kho nhập hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseDestinationName}</button>
+                            </div>
+                        </Col>
+
+                        <Col md={3}>
+                            <div className="form-group mb-3">
+                                <label >Kho xuất hàng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseName}</button>
                             </div>
                         </Col>
 
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Tình trạng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.statusType == "On Progress" ? "Đang tiến hành" : detailOrder.statusType == "Completed" ? "Đã hoàn thành" : "Đã hủy"}</button>
                             </div>
                         </Col>
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
 
                                 <label >Giao hàng</label>
@@ -86,7 +91,7 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" className=" ButtonRed">
+                <Button variant="primary" className=" ButtonRed" onClick={handleCloseModal}>
                     Đóng
                 </Button>
             </Modal.Footer>

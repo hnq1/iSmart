@@ -18,7 +18,7 @@ namespace iSmart.Service
 
         int GetImportOrderNewest();
         List<ImportOrderDTO> GetAllImportOrder();
-        ImportOrder? GetImportOrderByOrderCode(string code);
+        ImportOrderDTO GetImportOrderById(int id);
 
         CreateImportOrderResponse CreateImportOrder(bool isInternalTransfer, CreateImportOrderRequest i, int staffId);
         ImportOrderFilterPaging ImportOrderFilterPaging(int pageSize, int page, int? storage, int? status, int? sortDate, string? keyword = "");
@@ -220,7 +220,7 @@ namespace iSmart.Service
                     _context.Add(importOrder);
                     _context.SaveChanges();
                     // Gửi thông điệp qua WebSocket
-                    Task.Run(() => _webSocketService.SendMessageAsync($"Đơn hàng xuất kho có mã {importOrder.ImportCode} và ID { importOrder.ImportId} cần được xác nhận"));
+                    Task.Run(() => _webSocketService.SendMessageAsync($"Đơn hàng xuất kho có mã {importOrder.ImportCode} và ID {importOrder.ImportId} cần được xác nhận"));
                     return new CreateImportOrderResponse { IsSuccess = true, Message = "Tạo đơn hàng nhập kho thành công" };
                 }
                 else
@@ -236,13 +236,48 @@ namespace iSmart.Service
 
 
 
-        public ImportOrder? GetImportOrderByOrderCode(string code)
+        public ImportOrderDTO GetImportOrderById(int id)
         {
             try
             {
                 var importOrder = _context.ImportOrders
-                    .Include(i => i.Status).Include(i => i.User).Include(i => i.Warehouse).ThenInclude(i => i.UserWarehouses)
-                    .FirstOrDefault(i => i.ImportCode.ToLower().Contains(code.ToLower()));
+                    .Include(i => i.Status).Include(i => i.User).Include(i => i.Warehouse).ThenInclude(i => i.UserWarehouses).Where(i => i.ImportId == id)
+                     .Select(i => new ImportOrderDTO
+                     {
+                         ImportId = i.ImportId,
+                         ImportCode = i.ImportCode,
+                         UserId = i.UserId,
+                         UserName = i.User.UserName,
+                         SupplierId = (int)i.SupplierId,
+                         SupplierName = i.Supplier.SupplierName,
+                         TotalCost = i.TotalCost,
+                         Note = i.Note,
+                         CreatedDate = i.CreatedDate,
+                         ImportedDate = i.ImportedDate,
+                         StatusId = i.StatusId,
+                         StatusType = i.Status.StatusType,
+                         StorageId = i.WarehouseId,
+                         StorageName = i.Warehouse.WarehouseName,
+                         DeliveryId = i.DeliveryId,
+                         DeliveryName = i.Delivery.DeliveryName,
+                         Image = i.Image,
+                         StorekeeperId = i.StaffId,
+                         StorekeeperName = _context.Users.FirstOrDefault(u => u.UserId == i.StaffId).UserName,
+                         WarehouseDestinationId = i.WarehouseDestinationId,
+                         WarehouseDestinationName = _context.Warehouses.FirstOrDefault(u => u.WarehouseId == i.WarehouseDestinationId).WarehouseName,
+                         ImportOrderDetails = i.ImportOrderDetails
+                            .Select(id => new ImportDetailDTO
+                            {
+                                ImportId = id.ImportId,
+                                CostPrice = id.CostPrice,
+                                GoodsId = id.GoodsId,
+                                GoodsCode = id.Goods.GoodsCode,
+                                Quantity = id.Quantity,
+                                BatchCode = id.BatchCode,
+                                ManufactureDate = id.ManufactureDate,
+                                ExpiryDate = id.ExpiryDate
+                            }).ToList()
+                     }).FirstOrDefault();
                 return importOrder ?? null;
             }
             catch (Exception e)

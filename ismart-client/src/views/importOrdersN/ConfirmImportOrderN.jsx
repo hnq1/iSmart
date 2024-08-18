@@ -10,21 +10,21 @@ import { toast } from 'react-toastify';
 const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
     const [totalOrderDetail, setTotalOrderDetail] = useState([]);
     const userId = parseInt(localStorage.getItem('userId'), 10);
- 
+
 
     useEffect(() => {
         if (dataImportOrder.importId) {
-            
+
             getTotalOrderDetail(dataImportOrder.importId);
         }
     }, [dataImportOrder])
 
+    
     const handleCloseModal = () => {
         handleClose();
     }
 
     const getTotalOrderDetail = async (importId) => {
-
         let res = await getImportOrderDetailByImportId(importId);
         setTotalOrderDetail(res);
     }
@@ -46,10 +46,17 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
             <Modal.Body>
                 <div className="body-add-new">
                     <Row>
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
-                                <label >Kho hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.storageName}</button>
+                                <label >Kho nhập hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseDestinationName}</button>
+                            </div>
+                        </Col>
+
+                        <Col md={3}>
+                            <div className="form-group mb-3">
+                                <label >Kho xuất hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseName}</button>
                             </div>
                         </Col>
 
@@ -85,7 +92,7 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
-                                
+
                             </Row>
                         ))
                     }

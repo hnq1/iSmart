@@ -26,18 +26,12 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                 setSelectedImportId(data.importId);
                 setManufactureDate(data.manufactureDate);
                 setQuantity(data.quantity);
-                setImportOrderDetailId(data.importOrderDetailId);
-                
-        
-            
+                setImportOrderDetailId(data.importOrderDetailId);          
         }
-       
         
     }, [isShow,data])
-     console.log("dataEditRowDataOrder: ", data);
 
     
-   
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
     }
