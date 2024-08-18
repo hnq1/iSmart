@@ -316,7 +316,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
             let isInternalTransfer = false;
-            // console.log("warehouseIdToUse: ", warehouseIdToUse);
+             console.log("warehouseIdToUse: ", warehouseIdToUse);
             let res = await addNewImportOrder(isInternalTransfer,
                 userId,
                 1,
@@ -333,7 +333,8 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
 
 
             );
-            // console.log("isInternalTransfer: ", isInternalTransfer);
+            console.log("res",res);
+             console.log("isInternalTransfer: ", isInternalTransfer);
             if (res.isSuccess == true) {
                 let resImportId = await fetchImportOrderNewest();
                 console.log("ResImportID :", resImportId);
