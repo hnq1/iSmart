@@ -3,23 +3,21 @@ import { Modal, Button, Col, Row } from "react-bootstrap";
 import { toast } from 'react-toastify';
 import { addSuccessFullExportOrder } from "~/services/ExportOrderService";
 import { formatDate } from '~/validate';
-import {fetchExportOrderByExportId } from "~/services/ExportOrderService";
+import { fetchExportOrderByExportId } from "~/services/ExportOrderService";
 
-const ConfirmExport = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
+const ConfirmExport = ({ isShow, handleClose, dataEmportOrder, updateTable }) => {
     const [totalOrder, setTotalOrder] = useState([]);
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
 
     useEffect(() => {
-        if (dataImportOrder.exportId) {
-
-            getTotalOrderDetail(dataImportOrder.exportId);
+        if (dataEmportOrder && dataEmportOrder.exportId) {
+            getTotalOrderDetail(dataEmportOrder.exportId);
         }
-    }, [dataImportOrder])
+    }, [dataEmportOrder]);
 
 
-    
     const handleCloseModal = () => {
         handleClose();
     }
@@ -30,7 +28,7 @@ const ConfirmExport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
     }
 
     const SaveAddImportOrder = async () => {
-        let res = await addSuccessFullExportOrder(dataImportOrder.exportId);
+        let res = await addSuccessFullExportOrder(dataEmportOrder.exportId);
         console.log(res);
         if (res.status === 400) {
             toast.warning("Số lượng của mặt hàng lớn hơn số lượng trong kho");
@@ -60,7 +58,7 @@ const ConfirmExport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
                                         <div className="form-group mb-3">
                                             <label>Kho hàng</label>
                                             <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS">
-                                                {totalOrder.storageName}
+                                                {totalOrder.warehouseName}
                                             </button>
                                         </div>
                                     </Col>
@@ -68,22 +66,22 @@ const ConfirmExport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
                                         <div className="form-group mb-3">
                                             <label>Nhà cung cấp</label>
                                             <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS">
-                                                {totalOrder.supplierName}
+                                                {totalOrder.customerName}
                                             </button>
                                         </div>
                                     </Col>
                                 </Row>
-                                {totalOrder.importOrderDetails && totalOrder.importOrderDetails.map((detail, index) => (
+                                {totalOrder.exportOrderDetails && totalOrder.exportOrderDetails.map((detail, index) => (
                                     <Row key={index}>
-                                        <Col md={3}>
+                                        <Col >
                                             <label>Mã hàng hóa</label>
                                             <input type="text" className="form-control inputCSS" value={detail.goodsCode} readOnly />
                                         </Col>
-                                        <Col md={2}>
+                                        <Col >
                                             <label>Số lượng</label>
                                             <input type="number" className="form-control inputCSS" value={detail.quantity} readOnly />
                                         </Col>
-                                        <Col md={4}> <label >Mã đơn hàng</label>
+                                        {/* <Col md={4}> <label >Mã đơn hàng</label>
                                             <input type="text" className="form-control inputCSS" value={detail.batchCode} readOnly />
                                         </Col>
 
@@ -94,7 +92,7 @@ const ConfirmExport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
 
                                         <Col md={3}> <label >Ngày hết hạn </label>
                                             <input type="text" className="form-control inputCSS" value={formatDate(detail.expiryDate)} readOnly />
-                                        </Col>
+                                        </Col> */}
                                     </Row>
                                 ))}
                             </Row>

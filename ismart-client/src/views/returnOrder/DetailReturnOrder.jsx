@@ -12,8 +12,6 @@ const ModalDetailReturnOrder = ({ isShow, handleClose, detailOrder }) => {
         if (detailOrder.returnOrderId) {
             getTotalOrderDetail(detailOrder.returnOrderId);
         }
-        console.log("detailOrder:", detailOrder);
-
     }, [detailOrder])
 
     const handleCloseModal = () => {
@@ -22,7 +20,7 @@ const ModalDetailReturnOrder = ({ isShow, handleClose, detailOrder }) => {
 
     const getTotalOrderDetail = async (returnOrderId) => {
         let res = await getReturnOrderDetailByOrderId(returnOrderId);
-        console.log(res);
+        // console.log(res);
         setTotalOrderDetail(res);
     }
     return (<>
