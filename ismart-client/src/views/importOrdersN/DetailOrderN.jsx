@@ -4,7 +4,7 @@ import { Modal, Button, Col, Row } from "react-bootstrap";
 import { addSuccessFullImportOrder } from "~/services/ImportOrderServices";
 import { fetchGoodById } from "~/services/GoodServices";
 import { getImportOrderDetailByImportId } from "~/services/ImportOrderDetailServices";
-import { formatDate,formattedAmount } from "~/validate";
+import { formatDate, formattedAmount } from "~/validate";
 import { toast } from 'react-toastify';
 
 const ModalDetailOrderN = ({ isShow, handleClose, detailOrder }) => {
@@ -14,7 +14,6 @@ const ModalDetailOrderN = ({ isShow, handleClose, detailOrder }) => {
         if (detailOrder.importId) {
             getTotalOrderDetail(detailOrder.importId);
         }
-        console.log(detailOrder);
 
     }, [detailOrder])
 
@@ -35,10 +34,17 @@ const ModalDetailOrderN = ({ isShow, handleClose, detailOrder }) => {
             <Modal.Body>
                 <div className="body-add-new">
                     <Row>
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
-                                <label >Kho hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.storageName}</button>
+                                <label >Kho nhập hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseDestinationName}</button>
+                            </div>
+                        </Col>
+
+                        <Col md={3}>
+                            <div className="form-group mb-3">
+                                <label >Kho xuất hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseName}</button>
                             </div>
                         </Col>
 

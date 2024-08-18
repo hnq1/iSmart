@@ -51,4 +51,7 @@ const cancelImport = (importId) => {
     return axios.post(`api/import-order/cancel-import?importId=${importId}`)
 }
 
-export { addNewImportOrder, updateImportOrder, fetchImportOrderNewest, fetchAllImportOrders, fetchImportOrdersWithfilter, addSuccessFullImportOrder, cancelImport }
+const getImportOrderByImportId = (importId) => {
+    return axios.get(`api/import-order/get-import-order-by-id/${importId}`)
+}
+export { addNewImportOrder, updateImportOrder, fetchImportOrderNewest, fetchAllImportOrders, fetchImportOrdersWithfilter, addSuccessFullImportOrder, cancelImport, getImportOrderByImportId }

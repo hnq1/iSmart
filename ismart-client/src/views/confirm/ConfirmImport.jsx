@@ -3,9 +3,10 @@ import { Modal, Button, Col, Row } from "react-bootstrap";
 import { addSuccessFullImportOrder } from "~/services/ImportOrderServices";
 import { updateImportOrder } from "~/services/ImportOrderServices";
 import { getImportOrderDetailByImportId } from "~/services/ImportOrderDetailServices";
+import { getImportOrderByImportId } from "~/services/ImportOrderServices";
 import { toast } from 'react-toastify';
 
-const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
+const ConfirmImport = ({ isShow, handleClose, dataImportOrder }) => {
     const [totalOrderDetail, setTotalOrderDetail] = useState([]);
     const userId = parseInt(localStorage.getItem('userId'), 10);
     const importOrderId = parseInt(localStorage.getItem('importOrderId'), 10); // Lấy importOrderId từ localStorage
@@ -14,22 +15,16 @@ const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
         if (dataImportOrder.importId) {
             getTotalOrderDetail(dataImportOrder.importId);
         }
-    }, [dataImportOrder, dataImportOrder.importId]);
-    // console.log("dataImportOrder: ", dataImportOrder);
+    }, [dataImportOrder]);
 
-    // useEffect(() => {
-    //     if (importOrderId) {
-    //         getTotalOrderDetail(importOrderId);
-    //     }
-    // }, [importOrderId]);
-    // console.log("importOrderId: ", importOrderId);
+
 
     const handleCloseModal = () => {
         handleClose();
     }
 
     const getTotalOrderDetail = async (importId) => {
-        let res = await getImportOrderDetailByImportId(importId);
+        let res = await getImportOrderByImportId(importId);
         console.log("getTotalOrderDetail: ", res);
         setTotalOrderDetail(res);
     }
@@ -50,25 +45,28 @@ const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
                 <Modal.Title>Xác nhận lô hàng nhập kho</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div className="body-add-new">                   
+                <div className="body-add-new">
+
+                    <Row>
+                        <Col md={2}>
+                            <div className="form-group mb-3">
+                                <label >Kho hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.storageName}</button>
+                            </div>
+                        </Col>
+                        <Col md={2}>
+                            <div className="form-group mb-3">
+                                <label >Nhà cung cấp</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.supplierName}</button>
+                            </div>
+                        </Col>
+                    </Row>
+
                     {totalOrderDetail && totalOrderDetail.length > 0
                         && totalOrderDetail.map((o, index) => (
 
                             <Row key={`orderDetail${index}`}>
-                                <Row>
-                                    <Col md={2}>
-                                        <div className="form-group mb-3">
-                                            <label >Kho hàng</label>
-                                            <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{o.warehouseName}</button>
-                                        </div>
-                                    </Col>
-                                    <Col md={2}>
-                                        <div className="form-group mb-3">
-                                            <label >Nhà cung cấp</label>
-                                            <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{o.supplierName}</button>
-                                        </div>
-                                    </Col>
-                                </Row>
+
 
                                 <Col >
 
@@ -99,4 +97,4 @@ const Confirm = ({ isShow, handleClose, dataImportOrder }) => {
 }
 
 
-export default Confirm
+export default ConfirmImport

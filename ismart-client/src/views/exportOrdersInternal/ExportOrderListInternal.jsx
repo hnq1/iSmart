@@ -151,7 +151,7 @@ const ExportOrderListInternal = () => {
 
             setTotalExportOrder(res.data);
             setTotalPages(res.totalPages);
-            // console.log("fetchExportOrdersWithFilter: ", res.data);
+            console.log("fetchExportOrdersWithFilter: ", res.data);
         }
         if (roleId === 2 || roleId === 3) {
             setcurrentPage(page - 1);
@@ -405,7 +405,7 @@ const ExportOrderListInternal = () => {
                                                 {/* <td className="align-middle">{formattedAmount(i.totalPrice)}</td> */}
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{i.exportedDate ? formatDate(i.exportedDate) : ""}</td>
-                                                <td className="align-middle">{i.warehouseExportName}</td>
+                                                <td className="align-middle">{i.warehouseDestinationName}</td>
                                                 <td className="align-middle">{i.warehouseName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
 

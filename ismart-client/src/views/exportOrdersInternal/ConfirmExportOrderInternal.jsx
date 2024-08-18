@@ -43,7 +43,6 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
             dataImportOrder.image,
             userId)
         let res = await addSuccessFullExportOrder(dataImportOrder.exportId);
-        console.log("addSuccessFullExportOrder: ", res);
         if (res.status === 400) {
             toast.warning("Số lượng của mặt hàng lớn hơn số lượng trong kho");
 
@@ -65,19 +64,26 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
             <Modal.Body>
                 <div className="body-add-new">
                     <Row>
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
-                                <label >Kho hàng</label>
+                                <label >Kho nhập hàng</label>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseDestinationName}</button>
+                            </div>
+                        </Col>
+
+                        <Col md={3}>
+                            <div className="form-group mb-3">
+                                <label >Kho xuất hàng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseName}</button>
                             </div>
                         </Col>
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Khách hàng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.customerName}</button>
                             </div>
                         </Col>
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
 
                                 <label >Giao hàng</label>

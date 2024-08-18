@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context/UserContext'
 import ProfileDetail from '../profiles/ProfileDetail';
-import Confirm from '../confirm/Confirm';
+import ConfirmImport from '../confirm/ConfirmImport';
 
 
 function NavbarCom() {
@@ -19,7 +19,7 @@ function NavbarCom() {
     const userId = parseInt(localStorage.getItem('userId'), 10);
     const [showNotifications, setShowNotifications] = useState(false);
     const [readNotifications, setReadNotifications] = useState(new Set());
-    const [isShowModelConfirm, setIsShowModelConfirm] = useState(false); // State để điều khiển hiển thị modal
+    const [isShowModelConfirmImport, setIsShowModelConfirmImport] = useState(false); // State để điều khiển hiển thị modal
     const [dataImportOrder, setDataImportOrder] = useState({});
 
     const [webSocketMessages, setWebSocketMessages] = useState([]);
@@ -85,16 +85,15 @@ function NavbarCom() {
             localStorage.setItem('importOrderId', Id);
     
             if (code.startsWith('IM')) {
-                setIsShowModelConfirm(true);
+                setIsShowModelConfirmImport(true);
                 setDataImportOrder({
                     importId: Id,
-                    // Các dữ liệu khác bạn muốn truyền vào modal
+                    
                 });
             } else if (code.startsWith('XH')) {
                 // Thực hiện hành động khác, ví dụ: hiển thị modal khác hoặc điều hướng
                 // Ví dụ: setIsShowOtherConfirm(true);
                 // Hoặc: navigate('/other-confirm-page');
-                
             }
     
             setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
@@ -178,8 +177,8 @@ function NavbarCom() {
             </Navbar>
 
             <ProfileDetail isShow={isShowProfileDetail} handleClose={() => setIsShowProfileDetail(false)} userId={userId} />
-            <Confirm isShow={isShowModelConfirm}
-                handleClose={() => setIsShowModelConfirm(false)}
+            <ConfirmImport isShow={isShowModelConfirmImport}
+                handleClose={() => setIsShowModelConfirmImport(false)}
                 dataImportOrder={dataImportOrder}
             />
         </>
