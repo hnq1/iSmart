@@ -87,7 +87,7 @@ function ReturnOrderList() {
             await updateReturnOrder(completed.returnOrderId, completed.returnOrderCode, completed.returnedDate, completed.warehouseId
                 , completed.supplierId, 5, completed.createdBy, completed.approvedBy)
                 .then((data) => {
-                    console.log(data);
+                    // console.log(data);
                     toast.success("Hủy đơn hàng thành công");
                     setUpdate(!update);
                 })

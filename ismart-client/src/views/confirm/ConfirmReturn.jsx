@@ -1,34 +1,33 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Col, Row } from "react-bootstrap";
-import { addSuccessFullImportOrder } from "~/services/ImportOrderServices";
+import { confirmReturnOrder } from "~/services/ReturnOrderService";
 import { updateImportOrder } from "~/services/ImportOrderServices";
-import { getImportOrderByImportId } from "~/services/ImportOrderServices";
+import { getReturnOrderById } from "~/services/ReturnOrderService";
 import { toast } from 'react-toastify';
-import { formatDate } from '~/validate';
 
-const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
+
+const ConfirmReturn = ({ isShow, handleClose, dataReturnOrder }) => {
     const [totalOrder, setTotalOrder] = useState(null);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
     useEffect(() => {
-        getTotalOrderDetail(dataImportOrder.importId);
-    }, [dataImportOrder.importId]);
-
-
+        getTotalOrderDetail(dataReturnOrder.returnId);
+    }, [dataReturnOrder]);
 
     const handleCloseModal = () => {
         handleClose();
     }
 
-    const getTotalOrderDetail = async (importId) => {
-        let res = await getImportOrderByImportId(importId);
+    const getTotalOrderDetail = async (returnId) => {
+        let res = await getReturnOrderById(returnId);
+        // console.log("getTotalOrderDetail: ",res);
         setTotalOrder(res);
     }
 
     const SaveAddImportOrder = async () => {
-        let res = await addSuccessFullImportOrder(dataImportOrder.importId);
+        let res = await confirmReturnOrder(dataReturnOrder.returnId);
         toast.success("Xác nhận nhập kho thành công");
-        updateTable();
+        
         handleClose();
     }
 
@@ -36,7 +35,7 @@ const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
         <>
             <Modal show={isShow} onHide={handleCloseModal} size="lg">
                 <Modal.Header closeButton>
-                    <Modal.Title>Xác nhận lô hàng nhập kho</Modal.Title>
+                    <Modal.Title>Thông tin chi tiết đơn trả hàng</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="body-add-new">
@@ -47,7 +46,7 @@ const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
                                         <div className="form-group mb-3">
                                             <label>Kho hàng</label>
                                             <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS">
-                                                {totalOrder.storageName}
+                                                {totalOrder.warehouseName}
                                             </button>
                                         </div>
                                     </Col>
@@ -60,7 +59,7 @@ const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
                                         </div>
                                     </Col>
                                 </Row>
-                                {totalOrder.importOrderDetails && totalOrder.importOrderDetails.map((detail, index) => (
+                                {totalOrder.returnOrderDetails && totalOrder.returnOrderDetails.map((detail, index) => (
                                     <Row key={index}>
                                         <Col md={3}>
                                             <label>Mã hàng hóa</label>
@@ -74,14 +73,7 @@ const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
                                             <input type="text" className="form-control inputCSS" value={detail.batchCode} readOnly />
                                         </Col>
 
-                                        <Col md={3}> <label >Ngày sản xuất</label>
-                                            <input type="text" className="form-control inputCSS" value={formatDate(detail.manufactureDate)} readOnly />
-                                        </Col>
-
-
-                                        <Col md={3}> <label >Ngày hết hạn </label>
-                                            <input type="text" className="form-control inputCSS" value={formatDate(detail.expiryDate)} readOnly />
-                                        </Col>
+                                        
                                     </Row>
                                 ))}
                             </Row>
@@ -98,4 +90,4 @@ const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
     );
 }
 
-export default ConfirmImport;
+export default ConfirmReturn;

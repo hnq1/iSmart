@@ -7,6 +7,8 @@ import { UserContext } from '../../context/UserContext'
 import ProfileDetail from '../profiles/ProfileDetail';
 import ConfirmImport from '../confirm/ConfirmImport';
 import ConfirmExport from '../confirm/ConfirmExport';
+import ConfirmReturn from '../confirm/ConfirmReturn';
+// import ModalConfirm from '../returnOrder/ModalConfirm';
 
 
 function NavbarCom() {
@@ -20,9 +22,13 @@ function NavbarCom() {
     const userId = parseInt(localStorage.getItem('userId'), 10);
     const [showNotifications, setShowNotifications] = useState(false);
     const [readNotifications, setReadNotifications] = useState(new Set());
-    const [isShowModelConfirmEmport, setIsShowModelConfirmEmport] = useState(false); 
-    const [isShowModelConfirmImport, setIsShowModelConfirmImport] = useState(false);// State để điều khiển hiển thị modal
+    const [isShowModelConfirmEmport, setIsShowModelConfirmEmport] = useState(false);
+    const [isShowModelConfirmImport, setIsShowModelConfirmImport] = useState(false);
+    const [isShowModelConfirmReturn, setIsShowModelConfirmReturn] = useState(false);
+
     const [dataImportOrder, setDataImportOrder] = useState({});
+    const [dataEmportOrder, setDataEmportOrder] = useState({});
+    const [dataReturnOrder, setDataReturnOrder] = useState({});
 
     const [webSocketMessages, setWebSocketMessages] = useState([]);
 
@@ -79,25 +85,31 @@ function NavbarCom() {
         const selectedMessage = webSocketMessages[index];
         const idMatch = selectedMessage.match(/ID (\d+)/);
         const codeMatch = selectedMessage.match(/mã (\w+)/); // Tìm mã thông báo
-    
+
         if (idMatch && codeMatch) {
             const Id = idMatch[1];
             const code = codeMatch[1]; // Lấy giá trị của mã từ chuỗi
-    
+
             localStorage.setItem('importOrderId', Id);
-    
+
             if (code.startsWith('IM')) {
                 setIsShowModelConfirmImport(true);
                 setDataImportOrder({
                     importId: Id,
-                    
+
                 });
             } else if (code.startsWith('XH')) {
-                // Thực hiện hành động khác, ví dụ: hiển thị modal khác hoặc điều hướng
-                // Ví dụ: setIsShowOtherConfirm(true);
-                // Hoặc: navigate('/other-confirm-page');
+                setIsShowModelConfirmEmport(true);
+                setDataEmportOrder({
+                    exportId: Id,
+                })
             }
-    
+            else if (code.startsWith('RO')) {
+                setIsShowModelConfirmReturn(true);
+                setDataReturnOrder({
+                    returnId: Id,
+                })
+            }
             setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
         } else {
             console.warn("Selected message does not contain a valid ID or code: ", selectedMessage);
@@ -182,13 +194,23 @@ function NavbarCom() {
             <ConfirmImport isShow={isShowModelConfirmImport}
                 handleClose={() => setIsShowModelConfirmImport(false)}
                 dataImportOrder={dataImportOrder}
-                // updateTable={updateTable}
+            // updateTable={updateTable}
             />
             <ConfirmExport isShow={isShowModelConfirmEmport}
                 handleClose={() => setIsShowModelConfirmEmport(false)}
-                dataImportOrder={dataImportOrder}
-                // updateTable={updateTable}
+                dataEmportOrder={dataEmportOrder}
+            // updateTable={updateTable}
             />
+            <ConfirmReturn isShow={isShowModelConfirmReturn}
+                handleClose={() => setIsShowModelConfirmReturn(false)}
+                dataReturnOrder={dataReturnOrder}
+            // updateTable={updateTable}
+            />
+            {/* <ConfirmReturn isShow={isShowModelConfirmReturn}
+                handleClose={() => setIsShowModelConfirmReturn(false)}
+                // dataEmportOrder={dataEmportOrder}
+            // updateTable={updateTable}
+            /> */}
         </>
     );
 };

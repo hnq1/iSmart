@@ -36,5 +36,9 @@ const confirmReturnOrder = (returnOrderId) => {
 const getReturnOrderNewest = () => {
     return axios.get(`api/return-order/get-return-order-newest`)
 }
+const getReturnOrderById = (returnOrderId) => {
+    return axios.get(`api/return-order/get-export-order-by-id/${returnOrderId}`)
+}
 
-export { cancelExportOrder, fetchReturnOrdersWithFilter, addNewReturnOrder, updateReturnOrder, getReturnOrderNewest, confirmReturnOrder }
+
+export {getReturnOrderById, cancelExportOrder, fetchReturnOrdersWithFilter, addNewReturnOrder, updateReturnOrder, getReturnOrderNewest, confirmReturnOrder }
