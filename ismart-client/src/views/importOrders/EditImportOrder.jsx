@@ -148,13 +148,6 @@ const ModalEditImportOrder = ({ isShow, handleClose, detailOrderEdit, updateTabl
         console.log("handleUpdateImportOrder: ", res);
         console.log("rowdata", rowsData);
 
-        if (deleteData && deleteData.length > 0) {
-            await Promise.all(deleteData.map(async (data, index) => {
-                let result = await deleteImportOrderDetail(data.detailId);
-                console.log(result);
-            }))
-        }
-
         if (rowsData && rowsData.length > 0) {
             await Promise.all(rowsData.map(async (data, index) => {
                 let res = await updateImportOrderDetail(

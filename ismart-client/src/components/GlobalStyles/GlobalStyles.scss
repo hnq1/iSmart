@@ -177,6 +177,18 @@ body {
     color: white !important;
     font-weight: bold;
 }
+a#navbarDropdownMenuAvatarNoti.dropdown-toggle.nav-link {
+    background-color: #2275b7; /* Màu nền */
+    opacity: 1; /* Độ trong suốt */
+    width: 100px; /* Chiều rộng */
+    height: 50px; /* Chiều cao */
+    cursor: pointer; /* Thay đổi con trỏ chuột */
+    transition: opacity 0.3s ease; /* Hiệu ứng chuyển đổi khi thay đổi độ trong suốt */
+}
+a#navbarDropdownMenuAvatarNoti.dropdown-toggle.nav-link::after {
+    opacity: 0; /* Hiển thị hoàn toàn khi di chuột qua */
+}
+
 .ButtonCSS {
     background-color: #2275b7 !important;
     border: white !important;

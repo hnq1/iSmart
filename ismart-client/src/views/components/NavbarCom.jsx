@@ -156,17 +156,17 @@ function NavbarCom() {
 
                                 <div style={{ position: 'absolute', left: '70%', transform: 'translateX(-50%)' }}>
                                     <NavDropdown
-                                        id="navbarDropdownMenuAvatar"
-                                        className='ButtonCSSDropdown'
-                                        style={{ color: 'white' }}
+                                        id="navbarDropdownMenuAvatarNoti"
+                                        className='ButtonCSSDropdownnoti'
                                         show={showNotifications}
-                                        onMouseLeave={() => setShowNotifications(false)}
+                                     //   onMouseLeave={() => setShowNotifications(false)}
                                     >
                                         {webSocketMessages.length === 0 ? (
                                             <NavDropdown.Item>Không có thông báo mới</NavDropdown.Item>
                                         ) : (
                                             webSocketMessages.map((message, index) => (
                                                 <NavDropdown.Item key={index}
+                                                className='ButtonCSSDropdownnotify'
                                                     onClick={() => handleNotificationClick(index)}>{message}</NavDropdown.Item>
                                             ))
                                         )}

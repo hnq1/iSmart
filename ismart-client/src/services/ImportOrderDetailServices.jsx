@@ -14,7 +14,7 @@ const updateImportOrderDetail = (importId, costPrice, detailId, goodsId, quantit
 }
 
 const deleteImportOrderDetail = (id) => {
-    return axios.delete(`api/ImportOrderDetail/delete-import-order-detail?detailId=${id}`)
+    return axios.delete(`api/import-order-detail/delete-import-order-detail/${id}`)
 }
 const getImportOrderDetailByImportId = (oid) => {
     return axios.get(`api/import-order-detail/get-import-order-details?oid=${oid}`)
@@ -32,4 +32,4 @@ const getBatchByReturnOrder = (warehouseId, goodId) => {
 const getBatchForReturn = (warehouseId, goodId) => {
     return axios.get(`api/import-order-detail/get-batch-for-return?warehouseId=${warehouseId}&goodId=${goodId}`)
 }
-export { getAllImportOrderDetails, getBatchByReturnOrder,createNewImportOrderDetail, updateImportOrderDetail, deleteImportOrderDetail, getImportOrderDetailByImportId, getBatchInventoryForExportgoods, getAvailableBatch, getBatchForReturn }
+export { getAllImportOrderDetails, getBatchByReturnOrder, createNewImportOrderDetail, updateImportOrderDetail, deleteImportOrderDetail, getImportOrderDetailByImportId, getBatchInventoryForExportgoods, getAvailableBatch, getBatchForReturn }
