@@ -1,15 +1,13 @@
-import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../context/UserContext'
+import { UserContext } from '../../context/UserContext';
 import ProfileDetail from '../profiles/ProfileDetail';
 import ConfirmImport from '../confirm/ConfirmImport';
 import ConfirmExport from '../confirm/ConfirmExport';
 import ConfirmReturn from '../confirm/ConfirmReturn';
-// import ModalConfirm from '../returnOrder/ModalConfirm';
-
 
 function NavbarCom() {
 
@@ -17,11 +15,15 @@ function NavbarCom() {
     const [hideHeader, setHideHeader] = useState(false);
 
     const [isShowProfileDetail, setIsShowProfileDetail] = useState(false);
-    const [dataProfile, setDataProfile] = useState([]);
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
+    const roleId = parseInt(localStorage.getItem('roleId'), 10); // Lấy roleId từ localStorage
     const [showNotifications, setShowNotifications] = useState(false);
-    const [readNotifications, setReadNotifications] = useState(new Set());
+
+    const [unreadMessages, setUnreadMessages] = useState([]);  // Chứa các thông báo chưa đọc
+    const [readMessages, setReadMessages] = useState([]);  // Chứa các thông báo đã đọc
+    const [showUnread, setShowUnread] = useState(true);  // Quản lý việc hiển thị thông báo "Chưa đọc" hoặc "Đã đọc"
+
     const [isShowModelConfirmEmport, setIsShowModelConfirmEmport] = useState(false);
     const [isShowModelConfirmImport, setIsShowModelConfirmImport] = useState(false);
     const [isShowModelConfirmReturn, setIsShowModelConfirmReturn] = useState(false);
@@ -29,8 +31,6 @@ function NavbarCom() {
     const [dataImportOrder, setDataImportOrder] = useState({});
     const [dataEmportOrder, setDataEmportOrder] = useState({});
     const [dataReturnOrder, setDataReturnOrder] = useState({});
-
-    const [webSocketMessages, setWebSocketMessages] = useState([]);
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -40,10 +40,7 @@ function NavbarCom() {
     }, []);
 
     useEffect(() => {
-
-        const roleId = parseInt(localStorage.getItem('roleId'), 10); // Lấy roleId từ localStorage
-        // if (roleId === 2) { // Chỉ thiết lập WebSocket nếu roleId là 2
-        const socket = new WebSocket('wss://localhost:7033/ws'); // Thay đổi URL và port tương ứng với server của bạn
+        const socket = new WebSocket('wss://localhost:7033/ws');
 
         socket.onopen = () => {
             console.log('WebSocket connected');
@@ -51,77 +48,60 @@ function NavbarCom() {
 
         socket.onmessage = (event) => {
             const message = event.data;
-            console.log('Received message from server:', event.data);
-            // Sử dụng regular expression để tìm ID trong thông báo
             const idMatch = message.match(/ID (\d+)/);
-            if (idMatch) {
-                const importId = idMatch[1]; // Lấy giá trị của ID từ chuỗi
-                console.log("importId: ", importId);
 
-                // Lưu ID vào localStorage
+            if (idMatch) {
+                const importId = idMatch[1];
                 localStorage.setItem('importOrderId', importId);
 
-
-                // Lưu thông báo vào state để hiển thị
-                setWebSocketMessages(prevMessages => [...prevMessages, message]);
+                setUnreadMessages(prevMessages => [...prevMessages, message]);
             } else {
                 console.warn("Message does not contain a valid ID: ", message);
-                setWebSocketMessages(prevMessages => [...prevMessages, message]);
+                setUnreadMessages(prevMessages => [...prevMessages, message]);
             }
-
         };
 
         return () => {
             socket.close();
         };
-        // }
-
     }, []);
 
-
-
-    //mới
     const handleNotificationClick = (index) => {
-        const selectedMessage = webSocketMessages[index];
+        const selectedMessage = unreadMessages[index];
         const idMatch = selectedMessage.match(/ID (\d+)/);
-        const codeMatch = selectedMessage.match(/mã (\w+)/); // Tìm mã thông báo
+        const codeMatch = selectedMessage.match(/mã (\w+)/);
 
         if (idMatch && codeMatch) {
             const Id = idMatch[1];
-            const code = codeMatch[1]; // Lấy giá trị của mã từ chuỗi
-
+            const code = codeMatch[1];
             localStorage.setItem('importOrderId', Id);
 
             if (code.startsWith('IM')) {
                 setIsShowModelConfirmImport(true);
-                setDataImportOrder({
-                    importId: Id,
-
-                });
+                setDataImportOrder({ importId: Id });
             } else if (code.startsWith('XH')) {
                 setIsShowModelConfirmEmport(true);
-                setDataEmportOrder({
-                    exportId: Id,
-                })
-            }
-            else if (code.startsWith('RO')) {
+                setDataEmportOrder({ exportId: Id });
+            } else if (code.startsWith('RO')) {
                 setIsShowModelConfirmReturn(true);
-                setDataReturnOrder({
-                    returnId: Id,
-                })
+                setDataReturnOrder({ returnId: Id });
             }
-            setReadNotifications(prevReadNotifications => new Set(prevReadNotifications).add(index));
+
+            setReadMessages(prevMessages => [...prevMessages, selectedMessage]);
+            setUnreadMessages(prevMessages => prevMessages.filter((_, i) => i !== index));
         } else {
             console.warn("Selected message does not contain a valid ID or code: ", selectedMessage);
         }
     };
 
-    const handleLogout = () => {
+    const renderNotificationMessage = (message) => {
+        return message.replace(/ID \d+/, '').trim();
+    };
 
+    const handleLogout = () => {
         logout();
         toast.success("Đăng xuất thành công");
         navigate('/dang-nhap');
-
     };
 
     return (
@@ -134,45 +114,70 @@ function NavbarCom() {
                             <Nav className="me-auto">
                             </Nav>
                             <Nav className="d-flex align-items-center">
-                                <div style={{ position: 'relative', display: 'inline-block' }}>
-                                    <i className="fa-solid fa-bell text-white" style={{ cursor: 'pointer' }} onClick={() => setShowNotifications(!showNotifications)}></i>
-                                    {webSocketMessages.length > 0 && (
-                                        <span className="notification-count" style={{
-                                            position: 'absolute',
-                                            top: '-5px',
-                                            right: '-5px',
-                                            background: 'red',
-                                            borderRadius: '50%',
-                                            color: 'white',
-                                            fontSize: '10px',
-                                            width: '15px',
-                                            height: '15px',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                        }}>{webSocketMessages.length}</span>
-                                    )}
-                                </div>
-
-                                <div style={{ position: 'absolute', left: '70%', transform: 'translateX(-50%)' }}>
+                                {(roleId === 1 || roleId === 2) && (
+                                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                                        <i className="fa-solid fa-bell text-white" style={{ cursor: 'pointer' }} onClick={() => setShowNotifications(!showNotifications)}></i>
+                                        {unreadMessages.length > 0 && (
+                                            <span className="notification-count" style={{
+                                                position: 'absolute',
+                                                top: '-5px',
+                                                right: '-5px',
+                                                background: 'red',
+                                                borderRadius: '50%',
+                                                color: 'white',
+                                                fontSize: '10px',
+                                                width: '15px',
+                                                height: '15px',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                            }}>{unreadMessages.length}</span>
+                                        )}
+                                    </div>
+                                )}
+                                <div style={{ position: 'absolute', left: '65%', transform: 'translateX(-50%)' }}>
                                     <NavDropdown
                                         id="navbarDropdownMenuAvatarNoti"
                                         className='ButtonCSSDropdownnoti'
                                         show={showNotifications}
-                                     //   onMouseLeave={() => setShowNotifications(false)}
                                     >
-                                        {webSocketMessages.length === 0 ? (
-                                            <NavDropdown.Item>Không có thông báo mới</NavDropdown.Item>
+                                        <h5>Thông báo</h5>
+
+                                        {/* Thêm nút "Chưa đọc" và "Đã đọc" bên trong NavDropdown */}
+                                        <div className="d-flex justify-content-center">
+                                            <Button variant={showUnread ? "primary" : "light"} onClick={() => setShowUnread(true)}>Chưa đọc</Button>
+                                            <Button variant={!showUnread ? "primary" : "light"} onClick={() => setShowUnread(false)}>Đã đọc</Button>
+                                        </div>
+                                        <hr />
+
+                                        {/* Hiển thị thông báo dựa trên trạng thái "Chưa đọc" hoặc "Đã đọc" */}
+                                        {showUnread ? (
+                                            unreadMessages.length === 0 ? (
+                                                <NavDropdown.Item>Không có thông báo chưa đọc</NavDropdown.Item>
+                                            ) : (
+                                                unreadMessages.map((message, index) => (
+                                                    <NavDropdown.Item key={index}
+                                                        className='ButtonCSSDropdownnotify'
+                                                        onClick={() => handleNotificationClick(index)}>
+                                                        {renderNotificationMessage(message)}
+                                                    </NavDropdown.Item>
+                                                ))
+                                            )
                                         ) : (
-                                            webSocketMessages.map((message, index) => (
-                                                <NavDropdown.Item key={index}
-                                                className='ButtonCSSDropdownnotify'
-                                                    onClick={() => handleNotificationClick(index)}>{message}</NavDropdown.Item>
-                                            ))
+                                            readMessages.length === 0 ? (
+                                                <NavDropdown.Item>Không có thông báo đã đọc</NavDropdown.Item>
+                                            ) : (
+                                                readMessages.map((message, index) => (
+                                                    <NavDropdown.Item key={index}
+                                                        className='ButtonCSSDropdownnotify'>
+                                                        {renderNotificationMessage(message)}
+                                                    </NavDropdown.Item>
+                                                ))
+                                            )
                                         )}
                                     </NavDropdown>
                                 </div>
-                                <span style={{ margin: '0 10px' }}></span> {/* Adjust the margin as needed */}
+                                <span style={{ margin: '0 10px' }}></span>
                                 <i className="fa-solid fa-user text-white"></i>
                                 <NavDropdown
                                     title={<span className="text-white">Chào bạn {user.userName}</span>}
@@ -194,23 +199,15 @@ function NavbarCom() {
             <ConfirmImport isShow={isShowModelConfirmImport}
                 handleClose={() => setIsShowModelConfirmImport(false)}
                 dataImportOrder={dataImportOrder}
-            // updateTable={updateTable}
             />
             <ConfirmExport isShow={isShowModelConfirmEmport}
                 handleClose={() => setIsShowModelConfirmEmport(false)}
                 dataEmportOrder={dataEmportOrder}
-            // updateTable={updateTable}
             />
             <ConfirmReturn isShow={isShowModelConfirmReturn}
                 handleClose={() => setIsShowModelConfirmReturn(false)}
                 dataReturnOrder={dataReturnOrder}
-            // updateTable={updateTable}
             />
-            {/* <ConfirmReturn isShow={isShowModelConfirmReturn}
-                handleClose={() => setIsShowModelConfirmReturn(false)}
-                // dataEmportOrder={dataEmportOrder}
-            // updateTable={updateTable}
-            /> */}
         </>
     );
 };
