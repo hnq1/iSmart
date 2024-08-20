@@ -41,21 +41,15 @@ const ModalDetailOrderN = ({ isShow, handleClose, detailOrder }) => {
                             </div>
                         </Col>
 
+                       
                         <Col md={3}>
-                            <div className="form-group mb-3">
-                                <label >Kho xuất hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseName}</button>
-                            </div>
-                        </Col>
-
-                        <Col md={2}>
                             <div className="form-group mb-3">
                                 <label >Nhà cung cấp</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.supplierName}</button>
                             </div>
                         </Col>
 
-                        <Col md={2}>
+                        <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Tình trạng</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.statusType == "On Progress" ? "Đang tiến hành" : detailOrder.statusType == "Completed" ? "Đã hoàn thành" : "Đã hủy"}</button>
@@ -92,6 +86,9 @@ const ModalDetailOrderN = ({ isShow, handleClose, detailOrder }) => {
 
                                 <Col > <label >Ngày hết hạn </label>
                                     <input type="text" className="form-control inputCSS" value={formatDate(o.expiryDate)} readOnly />
+                                </Col>
+                                <Col > <label >Kho xuất hàng </label>
+                                    <input type="text" className="form-control inputCSS" value={o.warehouseName} readOnly />
                                 </Col>
                             </Row>
                         ))

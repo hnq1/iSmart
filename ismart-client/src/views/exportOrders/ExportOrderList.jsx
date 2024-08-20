@@ -157,7 +157,7 @@ const ExportOrderList = () => {
 
             setTotalExportOrder(res.data);
             setTotalPages(res.totalPages);
-            // console.log("fetchExportOrdersWithFilter: ", res.data);
+             console.log("fetchExportOrdersWithFilter: ", res.data);
         }
         if (roleId === 2 || roleId === 3) {
             setcurrentPage(page - 1);
@@ -424,7 +424,7 @@ const ExportOrderList = () => {
                                                         i.statusType === "Completed" ?
                                                             <Badge bg="success">Đã hoàn thành</Badge> :
                                                             <Badge bg="danger">Đã huỷ</Badge>}                                                </td>
-                                                <td className="align-middle">{i.storekeeperName}</td>
+                                                <td className="align-middle">{i.customerName}</td>
                                                 <td className="align-middle " style={{ padding: '10px' }}>
                                                     <i className="fa-duotone fa-circle-info actionButtonCSS" onClick={() => ShowDetailOrder(i)}></i>
                                                 </td>

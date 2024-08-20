@@ -19,7 +19,7 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
         }
     }, [dataImportOrder])
 
-    
+
     const handleCloseModal = () => {
         handleClose();
     }
@@ -53,14 +53,9 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
                             </div>
                         </Col>
 
-                        <Col md={3}>
-                            <div className="form-group mb-3">
-                                <label >Kho xuất hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseName}</button>
-                            </div>
-                        </Col>
 
-                        <Col md={2}>
+
+                        <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Nhà cung cấp</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.supplierName}</button>
@@ -82,6 +77,12 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
                             <Row key={`orderDetail${index}`}>
                                 <Col >
 
+                                    <label >Mã lô hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={o.batchCode} readOnly />
+
+                                </Col>
+                                <Col >
+
                                     <label >Mã hàng hóa</label>
                                     <input type="text" className="form-control inputCSS" value={o.goodsCode} readOnly />
 
@@ -92,7 +93,12 @@ const ConfirmImportOrderN = ({ isShow, handleClose, dataImportOrder, updateTable
                                     <input type="number" className="form-control inputCSS" value={o.quantity} readOnly />
 
                                 </Col>
+                                <Col >
 
+                                    <label >Kho xuất hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={o.warehouseName} readOnly />
+
+                                </Col>
                             </Row>
                         ))
                     }

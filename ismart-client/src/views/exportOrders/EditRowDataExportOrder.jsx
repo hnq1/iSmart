@@ -93,7 +93,7 @@ const EditRowDataExportOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                     <div className="form-group mb-3">
                         <label >Số lượng</label>
                         <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
-                        <button onClick={() => console.log(data)}>aaa</button>
+                        {/* <button onClick={() => console.log(data)}>aaa</button> */}
 
                     </div>
                 </Col>

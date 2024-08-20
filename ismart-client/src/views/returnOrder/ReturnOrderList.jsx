@@ -78,8 +78,14 @@ function ReturnOrderList() {
     }
 
     const openModalCancel = (i) => {
-        setIsShowModalCancelOrder(true);
-        setCompleted(i);
+        if (i.statusType == "Completed" || i.statusType == "Cancel") {
+
+            toast.warning("Không thể hủy đơn hàng đã nhập hoặc đã hủy");
+        }
+        else {
+            setIsShowModalCancelOrder(true);
+            setCompleted(i);
+        }
     }
 
     const CancelOrder = async () => {
@@ -156,9 +162,14 @@ function ReturnOrderList() {
     }
 
     const ShowEditDetailOrder = (order) => {
-        setIsShowEditOrder(true);
-        // console.log(order);
-        setDataEditOrder(order);
+        if (order.statusType == "Completed" || order.statusType == "Cancel") {
+
+            toast.warning("Không thể sửa đơn hàng đã nhập hoặc đã hủy");
+        } else {
+            setIsShowEditOrder(true);
+            // console.log(order);
+            setDataEditOrder(order);
+        }
     }
 
     const handleSortDateClick = (sort) => {
@@ -184,7 +195,7 @@ function ReturnOrderList() {
             <div className="container" style={{ maxWidth: "1600px" }}>
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                   
+
                         <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý đơn hàng trả lại</h2>
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <Row>
