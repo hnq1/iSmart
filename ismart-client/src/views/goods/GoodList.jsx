@@ -183,7 +183,7 @@ function MyTable() {
             setListGoods(res.data);
             setTotalPages(res.totalPages);
             setcurrentPage(page - 1);
-        } else if (roleId === 2) {
+        } else if (roleId === 2 || roleId === 3 || roleId === 4) {
             let warehouse = await getWarehouseById(userId);
             let goods = await fetchGoodsWithFilter(pageSize, page, warehouse.warehouseId, categoryId, supplierId,
                 sortPrice, wordSearch);
