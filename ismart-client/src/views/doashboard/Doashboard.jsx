@@ -236,7 +236,7 @@ const Doashboard = () => {
         if (roleId === 1) {
             if (selectedStorageIdGood && selectedGoodCode && selectedYear) {
                 let res = await fetchDataAddChart(selectedStorageIdGood, selectedGoodCode, selectedYear);
-                console.log("getHistoryGood: ", res);
+                
                 if (Array.isArray(res)) {
                     const importQuantities = res.map(item => item.imports || 0);
                     setImportQuantity(importQuantities);
@@ -249,8 +249,9 @@ const Doashboard = () => {
         }
         else if (roleId === 2 || roleId === 4) {
             let warehouse = await getWarehouseById(userId);
-            if (warehouse.warehouseId && selectedGoodId && selectedYear) {
-                let res = await fetchDataAddChart(warehouse.warehouseId, selectedGoodId, selectedYear);
+            if (warehouse.warehouseId && selectedGoodCode && selectedYear) {
+                let res = await fetchDataAddChart(warehouse.warehouseId, selectedGoodCode, selectedYear);
+                
                 if (Array.isArray(res)) {
                     const importQuantities = res.map(item => item.imports || 0);
                     setImportQuantity(importQuantities);
