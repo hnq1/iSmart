@@ -135,13 +135,13 @@ function NavbarCom() {
                                         )}
                                     </div>
                                 )}
-                                <div style={{ position: 'absolute', left: '65%', transform: 'translateX(-50%)' }}>
+                                <div style={{ position: 'absolute', left: '65%', transform: 'translateX(-50%)', zIndex: '3' }}>
                                     <NavDropdown
                                         id="navbarDropdownMenuAvatarNoti"
                                         className='ButtonCSSDropdownnoti'
                                         show={showNotifications}
                                     >
-                                        <h5>Thông báo</h5>
+                                        <h5 style={{ marginLeft: '10px' }}>Thông báo</h5>
 
                                         {/* Thêm nút "Chưa đọc" và "Đã đọc" bên trong NavDropdown */}
                                         <div className="d-flex justify-content-center">
