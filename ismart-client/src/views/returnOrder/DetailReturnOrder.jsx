@@ -52,6 +52,11 @@ const ModalDetailReturnOrder = ({ isShow, handleClose, detailOrder }) => {
                         && totalOrderDetail.map((o, index) => (
 
                             <Row key={`orderDetail${index}`}>
+                                 <Col >
+                                    <label >Mã lô hàng</label>
+                                    <input type="text" className="form-control inputCSS" value={o.batchCode} readOnly />
+                                </Col>
+
                                 <Col >
                                     <label >Mã hàng hóa</label>
                                     <input type="text" className="form-control inputCSS" value={o.goodsCode} readOnly />
@@ -64,11 +69,7 @@ const ModalDetailReturnOrder = ({ isShow, handleClose, detailOrder }) => {
                                     <label >Lí do</label>
                                     <input type="text" className="form-control inputCSS" value={o.reason} readOnly />
                                 </Col>
-                                <Col >
-                                    <label >Barcode</label>
-                                    <input type="text" className="form-control inputCSS" value={o.batchCode} readOnly />
-                                </Col>
-
+                               
                             </Row>
                         ))
                     }
