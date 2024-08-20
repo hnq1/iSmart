@@ -133,7 +133,7 @@ function ImportOrderList() {
             // console.log("res:", res);
             setTotalImportOrder(res.data);
             setTotalPages(res.totalPages);
-        } if (roleId === 2 || roleId === 3) {
+        } if (roleId === 2 || roleId === 3 || roleId === 4) {
             let wh = await getUserIdWarehouse(userId);
             setcurrentPage(page - 1);
             let res = await fetchImportOrdersWithfilter(pageSize, page, wh[0].warehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
@@ -418,7 +418,7 @@ function ImportOrderList() {
                                             : ''} */}
                                         <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Tuỳ Chọn</th>
 
-                                        <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>
+                                        {(roleId === 1 || roleId === 2) ?  <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th> : ''}
 
 
 

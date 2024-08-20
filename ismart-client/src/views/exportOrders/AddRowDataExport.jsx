@@ -5,12 +5,18 @@ import { toast } from "react-toastify";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
+
+
+
 
 const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
-
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
     const [quantityInStock, setQuantityInStock] = useState(0);
+
 
     const [totalGoods, setTotalGoods] = useState([]);
     const [selectedGoodCode, setSelectedGoodCode] = useState(null);
@@ -20,56 +26,97 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     const [selectImportOrderDetailId, setSelectImportOrderDetailId] = useState(null);
 
 
+
+
     useEffect(() => {
         getAllGoods();
     }, [selectedStorageId])
+
 
     // useEffect(() => {
     //     if (selectedGoodId) {
     //         let res = getGoodinWarehouseById(selectedGoodId);
     //     }
 
+
     // }, [selectedGoodId])
+
 
     useEffect(() => {
         setDataMethod();
     }, [selectedMethod])
     const getAllGoods = async () => {
-        if (selectedStorageId !== null) {
-            let res = await fetchAllGoodsInWarehouse(selectedStorageId);
-            // console.log("getAllGoods: ", res);
-            setTotalGoods(res);
+        if (roleId === 1) {
+            if (selectedStorageId !== null) {
+                let res = await fetchAllGoodsInWarehouse(selectedStorageId);
+                setTotalGoods(res);
+            }
+        } else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            let rs = await getUserIdWarehouse(userId);
+            if (rs !== null) {
+                let res = await fetchAllGoodsInWarehouse(rs[0].warehouseId);
+                setTotalGoods(res);
+            }
         }
     }
 
+
     const handleGoodClick = async (good, event) => {
-        setSelectedGoodCode(good.goodsCode);
-        setSelectedGoodId(good.goodsId);
-        let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
-        setQuantityInStock(res.inStock);
-        // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
+        if (roleId === 1) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
+        else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let rs = await getUserIdWarehouse(userId);
+            let res = await fetchGoodinWarehouseById(rs[0].warehouseId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
     }
+
+
+
 
 
 
     const handleSelectMethod = async (method) => {
-        if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
-            toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
-            return;
+        if (roleId === 1) {
+            if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
+                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                return;
+            }
+            setSelectedMethod(method);
+            let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
+            setDataMethod(res);
+            setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            // console.log("method:", res[0].importOrderDetailId);
         }
-        setSelectedMethod(method);
-        let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
-        setDataMethod(res);
-        setSelectImportOrderDetailId(res[0].importOrderDetailId);
-        // console.log("method:", res[0].importOrderDetailId);
-
-        console.log("getBatchInventoryForExportgoods:", res);
+        if (roleId === 4 || roleId === 3 || roleId === 2) {
+            let rs = await getUserIdWarehouse(userId);
+            if (!selectedGoodId || !rs[0].warehouseId || quantity <= 0) {
+                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                return;
+            }
+            setSelectedMethod(method);
+            let res = await getBatchInventoryForExportgoods(rs[0].warehouseId, selectedGoodId, quantity, method);
+            setDataMethod(res);
+            setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            // console.log("method:", res[0].importOrderDetail
+        }
     };
+
+
 
 
     const handleChangeQuantity = (event) => {
         setQuantity(event.target.value);
     }
+
+
+
 
 
 
@@ -88,6 +135,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                 batchCode: item.batchCode
             }));
 
+
             // Tạo mảng mới với thông tin sản phẩm cho mỗi importOrderDetailId
             const exportDataArray = inputQuantitiesArray.map(item => ({
                 costPrice: 0,
@@ -98,17 +146,20 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                 batchCode: item.batchCode
             }));
 
+
             onChange(exportDataArray);
-            console.log("ExportOrderManual: ", exportDataArray);
             handleCloseModal();
         }
     }
+
 
     const handleCloseModal = () => {
         handleReset();
         handleClose();
 
+
     }
+
 
     const handleReset = () => {
         setSelectedMethod(null);
@@ -121,13 +172,16 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         setCostPrice(0);
     }
 
+
     return (
+
 
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
             <Modal.Header closeButton>
                 <Modal.Title>Chọn sản phẩm</Modal.Title>
             </Modal.Header>
             <Modal.Body><Row>
+
 
                 <Col md={3}>
                     <label>Mã sản phẩm</label>
@@ -137,12 +191,14 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                                 <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Mã Sản phẩm"}</span>
                             </Dropdown.Toggle>
 
+
                             <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
                                 {totalGoods && totalGoods.length > 0 && totalGoods.map((g, index) => (
                                     <Dropdown.Item key={`good ${index}`} eventKey={g.goodsCode} onClick={(e) => handleGoodClick(g, e)}>
                                         {g.goodsCode}
                                     </Dropdown.Item>
                                 ))}
+
 
                                 {/* {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
@@ -152,8 +208,10 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             </Dropdown.Menu>
                         </Dropdown>
 
+
                     </div>
                 </Col>
+
 
                 <Col md={3}>
                     <div className="form-group mb-3">
@@ -165,6 +223,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                                 <span style={{ color: 'white' }}>{selectedMethod ? selectedMethod : "Chọn phương thức"}</span>
                             </Dropdown.Toggle>
 
+
                             <Dropdown.Menu style={{ position: 'absolute', zIndex: '9999' }}>
                                 <Dropdown.Item
                                     onClick={() => handleSelectMethod('LIFO')}
@@ -175,12 +234,16 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                             </Dropdown.Menu>
                         </Dropdown>
 
+
                     </div>
                 </Col>
 
 
+
+
             </Row >
                 <Row style={{ marginTop: "20px" }}>
+
 
                     <Col md={2}>
                         <div className="form-group mb-3">
@@ -189,12 +252,15 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                         </div>
                     </Col>
 
+
                     <Col md={2}>
                         <div className="form-group mb-3">
                             <label >Số lượng</label>
                             <input type="number" className="form-control inputCSS" value={quantity} onChange={handleChangeQuantity} />
                         </div>
                     </Col>
+
+
 
 
                 </Row>
@@ -232,4 +298,8 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
     )
 }
 
+
 export default AddRowDataExportOrder
+
+
+
