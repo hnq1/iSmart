@@ -23,9 +23,19 @@ import { fetchInventoryExport, fetchInventoryImport } from '~/services/Inventory
 
 
 
+
+
+
+
+
+
 const Doashboard = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
+
+
+
+
 
 
 
@@ -42,8 +52,16 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     const [isOpen, setIsOpen] = useState(true);
     const [alerts, setAlerts] = useState([]);
+
+
+
+
 
 
 
@@ -55,8 +73,16 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     const [selectedDateStart, setSelectedDateStart] = useState(formatDateImport(new Date()));
     const [selectedDateEnd, setSelectedDateEnd] = useState(formatDateImport(new Date()));
+
+
+
+
 
 
 
@@ -68,9 +94,17 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     const [totalExportOrderByDate, setTotalExportOrderByDate] = useState(0);
     const [mostGoodExportOrderByDate, setMostGoodExportOrderByDate] = useState('');
     const [mostQuantityGoodExportOrderByDate, setMostQuantityGoodExportOrderByDate] = useState('');
+
+
+
+
 
 
 
@@ -82,8 +116,20 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     // thông tin của hàng đang được hiển thị trên chart
     const [dataGood, setDataGood] = useState([]);
+
+
+
+
+
+
+
+
 
 
 
@@ -102,9 +148,17 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     // dữ liệu truyền vào chart
     const [dateExportOrder, setDateExportOrder] = useState([]);
     const [quantityExportOrder, setQuantityExportOrder] = useState([]);
+
+
+
+
 
 
 
@@ -134,9 +188,21 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
     const closePopup = () => {
         setIsOpen(false);
     };
+
+
+
+
 
 
 
@@ -145,10 +211,16 @@ const Doashboard = () => {
         setIsOpen(true);
 
 
+
+
         getAllStorages();
         getDataStatisticalImport();
         getDataStatisticalExport();
     }, [])
+
+
+
+
 
 
 
@@ -166,10 +238,18 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     useEffect(() => {
         getDataStatisticalExport();
         getDataStatisticalImport();
     }, [selectedDateStart, selectedDateEnd, selectedStorageId])
+
+
+
+
 
 
 
@@ -185,7 +265,19 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
     }, [selectedGoodId, selectedYear])
+
+
+
+
 
 
 
@@ -208,10 +300,26 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
     function fillMissingMonths(data) {
         const monthsWithQuantities = data.map(item => item.month);
         const allMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         const missingMonths = allMonths.filter(month => !monthsWithQuantities.includes(month));
+
+
+
+
+
+
+
+
 
 
 
@@ -232,11 +340,14 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     const getHistoryGood = async () => {
         if (roleId === 1) {
             if (selectedStorageIdGood && selectedGoodCode && selectedYear) {
                 let res = await fetchDataAddChart(selectedStorageIdGood, selectedGoodCode, selectedYear);
-                console.log("getHistoryGood: ", res);
                 if (Array.isArray(res)) {
                     const importQuantities = res.map(item => item.imports || 0);
                     setImportQuantity(importQuantities);
@@ -249,8 +360,8 @@ const Doashboard = () => {
         }
         else if (roleId === 2 || roleId === 4) {
             let warehouse = await getWarehouseById(userId);
-            if (warehouse.warehouseId && selectedGoodId && selectedYear) {
-                let res = await fetchDataAddChart(warehouse.warehouseId, selectedGoodId, selectedYear);
+            if (warehouse.warehouseId && selectedGoodCode && selectedYear) {
+                let res = await fetchDataAddChart(warehouse.warehouseId, selectedGoodCode, selectedYear);
                 if (Array.isArray(res)) {
                     const importQuantities = res.map(item => item.imports || 0);
                     setImportQuantity(importQuantities);
@@ -262,6 +373,14 @@ const Doashboard = () => {
             }
         }
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -289,8 +408,16 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                 let maxProduct = null;
                 let maxQuantity = 0;
+
+
+
+
 
 
 
@@ -327,8 +454,16 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                 let maxProduct = null;
                 let maxQuantity = 0;
+
+
+
+
 
 
 
@@ -347,6 +482,10 @@ const Doashboard = () => {
             }
         }
     };
+
+
+
+
 
 
 
@@ -371,8 +510,16 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                 let maxProduct = null;
                 let maxQuantity = 0;
+
+
+
+
 
 
 
@@ -410,8 +557,16 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                 let maxProduct = null;
                 let maxQuantity = 0;
+
+
+
+
 
 
 
@@ -438,10 +593,22 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
     const getWarehouseById = async (userId) => {
         let res = await getUserIdWarehouse(userId);
         return res[0];
     }
+
+
+
+
 
 
 
@@ -467,10 +634,22 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
     const handleGoodClick = (good, event) => {
         setSelectedGoodCode(good.goodsCode);
         setSelectedGoodId(good.goodsId);
     }
+
+
+
+
 
 
 
@@ -480,6 +659,14 @@ const Doashboard = () => {
         setTotalStorages(res);
         setTotalStoragesGood(res);
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -500,10 +687,26 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
     const handleStorageClick = (storage) => {
         setSelectedStorage(storage.warehouseName);
         setSelectedStorageId(storage.warehouseId);
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -524,9 +727,21 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
     const handleDateEndChange = (event) => {
         setSelectedDateEnd(formatDateImport(event.target.value));
     };
+
+
+
+
 
 
 
@@ -543,6 +758,14 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
     const handleYearSelect = (year) => {
         setSelectedYear(year);
     };
@@ -550,9 +773,21 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     //Demo Dashboard
     const importDates = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     const importQuantities = [100, 150, 120, 170, 140, 160, 100, 150, 120, 170, 140, 16];
+
+
+
+
+
+
+
+
 
 
 
@@ -572,10 +807,22 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
     // Mã sản phẩm và tiêu đề cho biểu đồ
     const productCode = 'exampleGoodCode';
     const importChartTitle = 'Nhập kho';
     const exportChartTitle = 'Xuất kho';
+
+
+
+
 
 
 
@@ -590,9 +837,19 @@ const Doashboard = () => {
                             (roleId == 1) ?
 
 
+
+
                                 <Col md={2}>
                                     <label className='text-muted'>Chọn kho:</label>
                                     <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả"} variant="success" >
+
+
+
+
+
+
+
+
 
 
 
@@ -615,6 +872,12 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
                         <Col md={2}>
                             <label className='text-muted'>Từ ngày: &nbsp;</label>
                             <div>
@@ -626,9 +889,25 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
                                 <input type="date" className="datepickerCSS" id="datepicker" value={selectedDateStart} onChange={handleDateStartChange} />
                             </div>
                         </Col>
+
+
+
+
+
+
+
+
 
 
 
@@ -651,10 +930,26 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
                     </div>
                 </div>
                 <hr></hr>
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -702,6 +997,14 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
                 <Col md={3}>
                     <Card className="text-white mb-4" style={{ backgroundImage: 'linear-gradient(to left, #fbcf6e, #ffb751)' }}>
                         <Card.Body>
@@ -732,6 +1035,14 @@ const Doashboard = () => {
                         </Card.Body>
                     </Card>
                 </Col>
+
+
+
+
+
+
+
+
 
 
 
@@ -771,11 +1082,27 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
                     <div>
                         <Dropdown style={{ position: 'relative', fontWeight: 'bold' }} >
                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components" className='DropdownButtonCSS'>
                                 <span style={{ color: 'white' }}>{selectedGoodCode !== null ? selectedGoodCode : "Mã Sản phẩm"}</span>
                             </Dropdown.Toggle>
+
+
+
+
+
+
+
+
 
 
 
@@ -798,6 +1125,14 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
                                 {totalGoods.length === 0 && (
                                     <Dropdown.Item key="empty" disabled>
                                         Không có mặt hàng
@@ -811,12 +1146,24 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                 <Col md={3}>
                     <div>
                         <Dropdown className='ButtonCSSDropdown'>
                             <Dropdown.Toggle variant="primary" id="dropdown-basic">
                                 {selectedYear ? selectedYear : 'Chọn năm'}
                             </Dropdown.Toggle>
+
+
+
+
+
+
+
+
 
 
 
@@ -858,6 +1205,14 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
                         <Col md={6}>
                             <ChartComponent
                                 selectedGoodCode={selectedGoodCode}
@@ -869,6 +1224,10 @@ const Doashboard = () => {
                     </Row>
                 </div>
             </Row>
+
+
+
+
 
 
 
@@ -916,7 +1275,45 @@ const Doashboard = () => {
 
 
 
+
+
+
+
+
+
+
+
 export default Doashboard
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
