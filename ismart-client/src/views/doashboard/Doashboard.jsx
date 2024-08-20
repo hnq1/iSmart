@@ -19,9 +19,15 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { fetchInventoryExport, fetchInventoryImport } from '~/services/InventoryReport';
 
 
+
+
+
+
 const Doashboard = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
+
+
 
 
     const navigate = useNavigate();
@@ -34,8 +40,12 @@ const Doashboard = () => {
     }, [roleId, navigate]);
 
 
+
+
     const [isOpen, setIsOpen] = useState(true);
     const [alerts, setAlerts] = useState([]);
+
+
 
 
     const [totalStorages, setTotalStorages] = useState([]);
@@ -43,8 +53,12 @@ const Doashboard = () => {
     const [selectedStorageId, setSelectedStorageId] = useState(null);
 
 
+
+
     const [selectedDateStart, setSelectedDateStart] = useState(formatDateImport(new Date()));
     const [selectedDateEnd, setSelectedDateEnd] = useState(formatDateImport(new Date()));
+
+
 
 
     const [totalImportOrderByDate, setTotalImportOrderByDate] = useState(0);
@@ -52,9 +66,13 @@ const Doashboard = () => {
     const [mostQuantityGoodImportOrderByDate, setMostQuantityGoodImportOrderByDate] = useState('');
 
 
+
+
     const [totalExportOrderByDate, setTotalExportOrderByDate] = useState(0);
     const [mostGoodExportOrderByDate, setMostGoodExportOrderByDate] = useState('');
     const [mostQuantityGoodExportOrderByDate, setMostQuantityGoodExportOrderByDate] = useState('');
+
+
 
 
     const [totalGoods, setTotalGoods] = useState([]);
@@ -62,8 +80,14 @@ const Doashboard = () => {
     const [selectedGoodId, setSelectedGoodId] = useState(null);
 
 
+
+
     // thông tin của hàng đang được hiển thị trên chart
     const [dataGood, setDataGood] = useState([]);
+
+
+
+
 
 
 
@@ -76,9 +100,13 @@ const Doashboard = () => {
     const [quantityImportOrder, setQuantityImportOrder] = useState([]);
 
 
+
+
     // dữ liệu truyền vào chart
     const [dateExportOrder, setDateExportOrder] = useState([]);
     const [quantityExportOrder, setQuantityExportOrder] = useState([]);
+
+
 
 
     const [totalYear, setTotalYear] = useState(["2024", "2023", "2022"])
@@ -102,18 +130,27 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     const closePopup = () => {
         setIsOpen(false);
     };
 
 
+
+
     useEffect(() => {
         setIsOpen(true);
+
 
         getAllStorages();
         getDataStatisticalImport();
         getDataStatisticalExport();
     }, [])
+
+
 
 
     useEffect(() => {
@@ -127,10 +164,14 @@ const Doashboard = () => {
     }, [selectedStorageIdGood])
 
 
+
+
     useEffect(() => {
         getDataStatisticalExport();
         getDataStatisticalImport();
     }, [selectedDateStart, selectedDateEnd, selectedStorageId])
+
+
 
 
     useEffect(() => {
@@ -140,7 +181,13 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     }, [selectedGoodId, selectedYear])
+
+
 
 
     const getGoodById = async () => {
@@ -157,10 +204,18 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     function fillMissingMonths(data) {
         const monthsWithQuantities = data.map(item => item.month);
         const allMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
         const missingMonths = allMonths.filter(month => !monthsWithQuantities.includes(month));
+
+
+
+
 
 
 
@@ -175,103 +230,239 @@ const Doashboard = () => {
     }
 
 
+
+
     const getHistoryGood = async () => {
-        if (selectedStorageIdGood && selectedGoodCode && selectedYear) {
-            let res = await fetchDataAddChart(selectedStorageIdGood, selectedGoodCode, selectedYear);
-            if (Array.isArray(res)) {
-                const importQuantities = res.map(item => item.imports || 0);
-                setImportQuantity(importQuantities);
-                const exportQuantities = res.map(item => item.exports || 0);
-                setExportQuantity(exportQuantities);
-            } else {
-                console.error("Invalid response from fetchDataAddChart");
+        if (roleId === 1) {
+            if (selectedStorageIdGood && selectedGoodCode && selectedYear) {
+                let res = await fetchDataAddChart(selectedStorageIdGood, selectedGoodCode, selectedYear);
+                console.log("getHistoryGood: ", res);
+                if (Array.isArray(res)) {
+                    const importQuantities = res.map(item => item.imports || 0);
+                    setImportQuantity(importQuantities);
+                    const exportQuantities = res.map(item => item.exports || 0);
+                    setExportQuantity(exportQuantities);
+                } else {
+                    console.error("Invalid response from fetchDataAddChart");
+                }
+            }
+        }
+        else if (roleId === 2 || roleId === 4) {
+            let warehouse = await getWarehouseById(userId);
+            if (warehouse.warehouseId && selectedGoodId && selectedYear) {
+                let res = await fetchDataAddChart(warehouse.warehouseId, selectedGoodId, selectedYear);
+                if (Array.isArray(res)) {
+                    const importQuantities = res.map(item => item.imports || 0);
+                    setImportQuantity(importQuantities);
+                    const exportQuantities = res.map(item => item.exports || 0);
+                    setExportQuantity(exportQuantities);
+                } else {
+                    console.error("Invalid response from fetchDataAddChart");
+                }
             }
         }
     }
+
+
+
+
 
 
 
 
     const getDataStatisticalImport = async () => {
-        let res = await fetchInventoryImport(selectedDateStart, selectedDateEnd, selectedStorageId);
-        if (Array.isArray(res)) {
-            const totalQuantity = res.reduce((sum, item) => sum + item.quantity, 0);
-            setTotalImportOrderByDate(totalQuantity);
-            const quantityMap = res.reduce((acc, item) => {
-                if (item.productId !== 0 && item.productId !== null) {
-                    if (!acc[item.productId]) {
-                        acc[item.productId] = { quantity: 0, productName: item.productName };
+        if (roleId === 1) {
+            let res = await fetchInventoryImport(selectedDateStart, selectedDateEnd, selectedStorageId);
+            if (Array.isArray(res)) {
+                const totalQuantity = res.reduce((sum, item) => sum + item.quantity, 0);
+                setTotalImportOrderByDate(totalQuantity);
+                const quantityMap = res.reduce((acc, item) => {
+                    if (item.productId !== 0 && item.productId !== null) {
+                        if (!acc[item.productId]) {
+                            acc[item.productId] = { quantity: 0, productName: item.productName };
+                        }
+                        acc[item.productId].quantity += item.quantity;
                     }
-                    acc[item.productId].quantity += item.quantity;
+                    return acc;
+                }, {});
+
+
+
+
+                let maxProduct = null;
+                let maxQuantity = 0;
+
+
+
+
+                for (const [productId, data] of Object.entries(quantityMap)) {
+                    if (data.quantity > maxQuantity) {
+                        maxQuantity = data.quantity;
+                        maxProduct = { productId, productName: data.productName, quantity: maxQuantity };
+                    }
                 }
-                return acc;
-            }, {});
-
-
-            let maxProduct = null;
-            let maxQuantity = 0;
-
-
-            for (const [productId, data] of Object.entries(quantityMap)) {
-                if (data.quantity > maxQuantity) {
-                    maxQuantity = data.quantity;
-                    maxProduct = { productId, productName: data.productName, quantity: maxQuantity };
+                if (maxProduct) {
+                    console.log(`Sản phẩm được nhập nhiều nhất: ${maxProduct.productName} với số lượng: ${maxProduct.quantity}`);
+                    setMostGoodImportOrderByDate(maxProduct.productName);
+                    setMostQuantityGoodImportOrderByDate(maxProduct.quantity);
                 }
             }
-            if (maxProduct) {
-                console.log(`Sản phẩm được nhập nhiều nhất: ${maxProduct.productName} với số lượng: ${maxProduct.quantity}`);
-                setMostGoodImportOrderByDate(maxProduct.productName);
-                setMostQuantityGoodImportOrderByDate(maxProduct.quantity);
+        }
+        else if (roleId === 2  || roleId === 4) {
+            let warehouse = await getWarehouseById(userId);
+            let res = await fetchInventoryImport(selectedDateStart, selectedDateEnd, warehouse.warehouseId);
+            if (Array.isArray(res)) {
+                const totalQuantity = res.reduce((sum, item) => sum + item.quantity, 0);
+                setTotalImportOrderByDate(totalQuantity);
+                const quantityMap = res.reduce((acc, item) => {
+                    if (item.productId !== 0 && item.productId !== null) {
+                        if (!acc[item.productId]) {
+                            acc[item.productId] = { quantity: 0, productName: item.productName };
+                        }
+                        acc[item.productId].quantity += item.quantity;
+                    }
+                    return acc;
+                }, {});
+
+
+
+
+                let maxProduct = null;
+                let maxQuantity = 0;
+
+
+
+
+                for (const [productId, data] of Object.entries(quantityMap)) {
+                    if (data.quantity > maxQuantity) {
+                        maxQuantity = data.quantity;
+                        maxProduct = { productId, productName: data.productName, quantity: maxQuantity };
+                    }
+                }
+                if (maxProduct) {
+                    console.log(`Sản phẩm được nhập nhiều nhất: ${maxProduct.productName} với số lượng: ${maxProduct.quantity}`);
+                    setMostGoodImportOrderByDate(maxProduct.productName);
+                    setMostQuantityGoodImportOrderByDate(maxProduct.quantity);
+                }
             }
         }
     };
+
+
+
+
     // lấy số lượng và giá trị xuất hàng
     const getDataStatisticalExport = async () => {
-        let res = await fetchInventoryExport(selectedDateStart, selectedDateEnd, selectedStorageId);
-        if (Array.isArray(res)) {
-            const totalQuantity = res.reduce((sum, item) => sum + item.quantity, 0);
-            setTotalExportOrderByDate(totalQuantity);
-            const quantityMap = res.reduce((acc, item) => {
-                if (item.productId !== 0 && item.productId !== null) {
-                    if (!acc[item.productId]) {
-                        acc[item.productId] = { quantity: 0, productName: item.productName };
+        if (roleId === 1) {
+            let res = await fetchInventoryExport(selectedDateStart, selectedDateEnd, selectedStorageId);
+            if (Array.isArray(res)) {
+                const totalQuantity = res.reduce((sum, item) => sum + item.quantity, 0);
+                setTotalExportOrderByDate(totalQuantity);
+                const quantityMap = res.reduce((acc, item) => {
+                    if (item.productId !== 0 && item.productId !== null) {
+                        if (!acc[item.productId]) {
+                            acc[item.productId] = { quantity: 0, productName: item.productName };
+                        }
+                        acc[item.productId].quantity += item.quantity;
                     }
-                    acc[item.productId].quantity += item.quantity;
+                    return acc;
+                }, {});
+
+
+
+
+                let maxProduct = null;
+                let maxQuantity = 0;
+
+
+
+
+                for (const [productId, data] of Object.entries(quantityMap)) {
+                    if (data.quantity > maxQuantity) {
+                        maxQuantity = data.quantity;
+                        maxProduct = { productId, productName: data.productName, quantity: maxQuantity };
+                    }
                 }
-                return acc;
-            }, {});
-
-
-            let maxProduct = null;
-            let maxQuantity = 0;
-
-
-            for (const [productId, data] of Object.entries(quantityMap)) {
-                if (data.quantity > maxQuantity) {
-                    maxQuantity = data.quantity;
-                    maxProduct = { productId, productName: data.productName, quantity: maxQuantity };
+                if (maxProduct) {
+                    console.log(`Sản phẩm được xuất nhiều nhất: ${maxProduct.productName} với số lượng: ${maxProduct.quantity}`);
+                    setMostGoodExportOrderByDate(maxProduct.productName);
+                    setMostQuantityGoodExportOrderByDate(maxProduct.quantity);
                 }
             }
-            if (maxProduct) {
-                console.log(`Sản phẩm được xuất nhiều nhất: ${maxProduct.productName} với số lượng: ${maxProduct.quantity}`);
-                setMostGoodExportOrderByDate(maxProduct.productName);
-                setMostQuantityGoodExportOrderByDate(maxProduct.quantity);
+        }
+        else if (roleId === 2 || roleId === 4) {
+            let warehouse = await getWarehouseById(userId);
+            console.log("warehouse: ", warehouse.warehouseId);
+            let res = await fetchInventoryExport(selectedDateStart, selectedDateEnd, warehouse.warehouseId);
+            if (Array.isArray(res)) {
+                const totalQuantity = res.reduce((sum, item) => sum + item.quantity, 0);
+                setTotalExportOrderByDate(totalQuantity);
+                const quantityMap = res.reduce((acc, item) => {
+                    if (item.productId !== 0 && item.productId !== null) {
+                        if (!acc[item.productId]) {
+                            acc[item.productId] = { quantity: 0, productName: item.productName };
+                        }
+                        acc[item.productId].quantity += item.quantity;
+                    }
+                    return acc;
+                }, {});
+
+
+
+
+                let maxProduct = null;
+                let maxQuantity = 0;
+
+
+
+
+                for (const [productId, data] of Object.entries(quantityMap)) {
+                    if (data.quantity > maxQuantity) {
+                        maxQuantity = data.quantity;
+                        maxProduct = { productId, productName: data.productName, quantity: maxQuantity };
+                    }
+                }
+                if (maxProduct) {
+                    console.log(`Sản phẩm được xuất nhiều nhất: ${maxProduct.productName} với số lượng: ${maxProduct.quantity}`);
+                    setMostGoodExportOrderByDate(maxProduct.productName);
+                    setMostQuantityGoodExportOrderByDate(maxProduct.quantity);
+                }
             }
         }
     }
 
 
 
+
+
+
+
+
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
 
 
 
 
     const getAllGoods = async () => {
-        if (selectedStorageIdGood) {
-            let res = await fetchAllGoodsInWarehouse(selectedStorageIdGood);
+        if (roleId === 1) {
+            if (selectedStorageIdGood) {
+                let res = await fetchAllGoodsInWarehouse(selectedStorageIdGood);
+                setTotalGoods(res);
+            }
+        }
+        else if (roleId === 2 || roleId === 4) {
+            let warehouse = await getWarehouseById(userId);
+            let res = await fetchAllGoodsInWarehouse(warehouse.warehouseId);
             setTotalGoods(res);
         }
     }
+
+
+
+
 
 
 
@@ -282,11 +473,17 @@ const Doashboard = () => {
     }
 
 
+
+
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalStorages(res);
         setTotalStoragesGood(res);
     }
+
+
+
+
 
 
 
@@ -299,10 +496,18 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     const handleStorageClick = (storage) => {
         setSelectedStorage(storage.warehouseName);
         setSelectedStorageId(storage.warehouseId);
     }
+
+
+
+
 
 
 
@@ -315,9 +520,15 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     const handleDateEndChange = (event) => {
         setSelectedDateEnd(formatDateImport(event.target.value));
     };
+
+
 
 
     const handleStorageGoodClick = (storage) => {
@@ -328,14 +539,24 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     const handleYearSelect = (year) => {
         setSelectedYear(year);
     };
 
 
+
+
     //Demo Dashboard
     const importDates = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     const importQuantities = [100, 150, 120, 170, 140, 160, 100, 150, 120, 170, 140, 16];
+
+
+
+
 
 
 
@@ -347,10 +568,16 @@ const Doashboard = () => {
 
 
 
+
+
+
+
     // Mã sản phẩm và tiêu đề cho biểu đồ
     const productCode = 'exampleGoodCode';
     const importChartTitle = 'Nhập kho';
     const exportChartTitle = 'Xuất kho';
+
+
 
 
     return (<>
@@ -359,19 +586,31 @@ const Doashboard = () => {
                 <div className="">
                     <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Thống kê</h2>
                     <div className="row d-flex align-items-center">
-                        <Col md={2}>
-                            <label className='text-muted'>Chọn kho:</label>
-                            <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả"} variant="success" >
+                        {
+                            (roleId == 1) ?
+
+
+                                <Col md={2}>
+                                    <label className='text-muted'>Chọn kho:</label>
+                                    <DropdownButton className="DropdownButtonCSS ButtonCSSDropdown" title={selectedStorage !== null ? selectedStorage : "Tất cả"} variant="success" >
 
 
 
 
-                                <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả</Dropdown.Item>
-                                {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
-                                    <Dropdown.Item key={`storage ${index}`} eventKey={c.warehouseName} onClick={(e) => handleStorageClick(c, e)}>{c.warehouseName}</Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
+
+
+
+
+                                        <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotal()}>Tất cả</Dropdown.Item>
+                                        {totalStorages && totalStorages.length > 0 && totalStorages.map((c, index) => (
+                                            <Dropdown.Item key={`storage ${index}`} eventKey={c.warehouseName} onClick={(e) => handleStorageClick(c, e)}>{c.warehouseName}</Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+                                : ''
+                        }
+
+
 
 
 
@@ -383,9 +622,17 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                                 <input type="date" className="datepickerCSS" id="datepicker" value={selectedDateStart} onChange={handleDateStartChange} />
                             </div>
                         </Col>
+
+
+
+
 
 
 
@@ -400,10 +647,18 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                     </div>
                 </div>
                 <hr></hr>
             </div>
+
+
+
+
 
 
 
@@ -443,6 +698,10 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                 <Col md={3}>
                     <Card className="text-white mb-4" style={{ backgroundImage: 'linear-gradient(to left, #fbcf6e, #ffb751)' }}>
                         <Card.Body>
@@ -477,26 +736,37 @@ const Doashboard = () => {
 
 
 
+
+
+
+
             </Row>
             <hr></hr>
             <Row>
+                {roleId === 1 ?
+                    <Col md={3}>
+                        <div>
+                            <Dropdown style={{ position: 'relative', fontWeight: 'bold' }}>
+                                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                                    <span style={{ color: 'white' }}>{selectedStorageGood !== null ? selectedStorageGood : "Kho"}</span>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }} className='ButtonCSSDropdown'>
+                                    {totalStoragesGood && totalStoragesGood.length > 0 && totalStoragesGood.map((g, index) => (
+                                        <Dropdown.Item key={`storageGood ${index}`} eventKey={g.warehouseName} onClick={(e) => handleStorageGoodClick(g, e)}>
+                                            {g.warehouseName}
+                                        </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
+                    </Col>
+                    : ''
+                }
                 <Col md={3}>
-                    <div>
-                        <Dropdown style={{ position: 'relative', fontWeight: 'bold' }}>
-                            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                <span style={{ color: 'white' }}>{selectedStorageGood !== null ? selectedStorageGood : "Kho"}</span>
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }} className='ButtonCSSDropdown'>
-                                {totalStoragesGood && totalStoragesGood.length > 0 && totalStoragesGood.map((g, index) => (
-                                    <Dropdown.Item key={`storageGood ${index}`} eventKey={g.warehouseName} onClick={(e) => handleStorageGoodClick(g, e)}>
-                                        {g.warehouseName}
-                                    </Dropdown.Item>
-                                ))}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-                </Col>
-                <Col md={3}>
+
+
+
+
 
 
 
@@ -510,12 +780,20 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                             <Dropdown.Menu as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }} className='ButtonCSSDropdown'>
                                 {totalGoods && totalGoods.length > 0 && totalGoods.map((g, index) => (
                                     <Dropdown.Item key={`good ${index}`} eventKey={g.goodsCode} onClick={(e) => handleGoodClick(g, e)} >
                                         {g.goodsCode}
                                     </Dropdown.Item>
                                 ))}
+
+
+
+
 
 
 
@@ -531,12 +809,18 @@ const Doashboard = () => {
                 </Col>
 
 
+
+
                 <Col md={3}>
                     <div>
                         <Dropdown className='ButtonCSSDropdown'>
                             <Dropdown.Toggle variant="primary" id="dropdown-basic">
                                 {selectedYear ? selectedYear : 'Chọn năm'}
                             </Dropdown.Toggle>
+
+
+
+
 
 
 
@@ -570,6 +854,10 @@ const Doashboard = () => {
 
 
 
+
+
+
+
                         <Col md={6}>
                             <ChartComponent
                                 selectedGoodCode={selectedGoodCode}
@@ -581,6 +869,8 @@ const Doashboard = () => {
                     </Row>
                 </div>
             </Row>
+
+
 
 
             <Modal show={isOpen} onHide={closePopup} size="lg">
@@ -622,7 +912,26 @@ const Doashboard = () => {
 
 
 
+
+
+
+
 export default Doashboard
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
