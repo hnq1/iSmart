@@ -11,13 +11,14 @@ import { format, addDays } from 'date-fns';
 import { formatDateImport, formattedAmount } from "~/validate";
 import { toast } from "react-toastify";
 import uploadImage from "~/services/ImageServices";
-
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 import AddRowDataExportOrder from "./AddRowDataExport";
 import RowDataExportOrder from "./RowDataExport";
 import { set } from "lodash";
 
 const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
 
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const [exportCode, setExportCode] = useState('');
@@ -99,13 +100,27 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
     };
-
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
     // mở modal AddRowDataExport
-    const handleAddRowDataExport = () => {
-        if (selectedWarehouseId) {
-            setIsShowRowDataExport(true);
-        } else {
-            toast.warning("Vui lòng điền kho")
+    const handleAddRowDataExport = async () => {
+        if (roleId === 1) {
+            if (selectedWarehouseId) {
+                setIsShowRowDataExport(true);
+            } else {
+                toast.warning("Vui lòng điền kho")
+            }
+        } else if (roleId === 3) {
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+
+            if (warehouse.warehouseId) {
+                setIsShowRowDataExport(true);
+            } else {
+                toast.info("Không tìm thấy kho cho người dùng này");
+            }
         }
     }
 
@@ -176,13 +191,7 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
     };
 
     const handleAddExportOrder = async () => {
-        // if (!exportCode.trim()) {
-        //     toast.warning("Vui lòng nhập mã đơn hàng");
-        // }
-        // else 
-        if (!selectedWarehouse) {
-            toast.warning("Vui lòng chọn kho xuất hàng");
-        } else if (!selectedDate) {
+        if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày xuất hàng");
             // } else if (totalPrice === 0) {
             //     toast.warning("Vui lòng nhập mặt hàng xuất");
@@ -196,7 +205,11 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
         else {
             const newExportCode = generateExportCode();
             const userId = parseInt(localStorage.getItem('userId'), 10);
-            console.log("userId", userId);
+            let warehouse = await getWarehouseById(userId);
+            const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
+            if (!warehouseIdToUse) {
+                toast.warning("Vui lòng chọn kho hàng!");
+            }
             let isInternalTransfer = false;
             let res = await addNewExportOrder(isInternalTransfer,
                 userId,
@@ -204,14 +217,13 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
                 0,
                 "",
                 formatDateImport(selectedDate),
-                selectedWarehouseId,
+                warehouseIdToUse,
                 "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
                 selectedCustomerId,
                 0
             );
-            console.log("addNewExportOrder:", res);
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
                 if (rowsData && rowsData.length > 0) {
@@ -266,34 +278,31 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
             <Modal.Body>
                 <div className="body-add-new">
                     <Row className="align-items-center">
-                        {/* <Col md={2}>
-                            <div className="form-group ">
-                                <input type="text" className="form-control inputCSS" placeholder="Mã đơn hàng" value={exportCode} onChange={(event) => setExportCode(event.target.value)} />
-                            </div>
-                        </Col> */}
-                        <Col md={2}>
-                            <DropdownButton
-                                className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
-                                variant="success"
-                                style={{ zIndex: 999 }}
-                            >
-                                <Dropdown.Item eventKey=""
-                                    onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-
-                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
-                                    <Dropdown.Item
-                                        key={`warehouse ${index}`}
-                                        eventKey={c.warehouseName}
-                                        onClick={(e) => handleStorageClick(c, e)}
+                        {
+                            (roleId == 1) ?
+                                <Col md={2}>
+                                    <DropdownButton
+                                        className="DropdownButtonCSS ButtonCSSDropdown"
+                                        title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                        variant="success"
+                                        style={{ zIndex: 999 }}
                                     >
-                                        {c.warehouseName}
-                                    </Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
+                                        <Dropdown.Item eventKey=""
+                                            onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
 
-
+                                        {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                            <Dropdown.Item
+                                                key={`warehouse ${index}`}
+                                                eventKey={c.warehouseName}
+                                                onClick={(e) => handleStorageClick(c, e)}
+                                            >
+                                                {c.warehouseName}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+                                : ''
+                        }
 
 
 

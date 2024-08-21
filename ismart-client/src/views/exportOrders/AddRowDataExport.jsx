@@ -5,11 +5,14 @@ import { toast } from "react-toastify";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
+
 
 const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
-
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
     const [quantityInStock, setQuantityInStock] = useState(0);
 
     const [totalGoods, setTotalGoods] = useState([]);
@@ -35,35 +38,62 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         setDataMethod();
     }, [selectedMethod])
     const getAllGoods = async () => {
-        if (selectedStorageId !== null) {
-            let res = await fetchAllGoodsInWarehouse(selectedStorageId);
-            // console.log("getAllGoods: ", res);
-            setTotalGoods(res);
+        if (roleId === 1) {
+            if (selectedStorageId !== null) {
+                let res = await fetchAllGoodsInWarehouse(selectedStorageId);
+                setTotalGoods(res);
+            }
+        } else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            let rs = await getUserIdWarehouse(userId);
+            if (rs !== null) {
+                let res = await fetchAllGoodsInWarehouse(rs[0].warehouseId);
+                setTotalGoods(res);
+            }
         }
     }
 
     const handleGoodClick = async (good, event) => {
-        setSelectedGoodCode(good.goodsCode);
-        setSelectedGoodId(good.goodsId);
-        let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
-        setQuantityInStock(res.inStock);
-        // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
+        if (roleId === 1) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
+        else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let rs = await getUserIdWarehouse(userId);
+            let res = await fetchGoodinWarehouseById(rs[0].warehouseId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
     }
 
 
 
     const handleSelectMethod = async (method) => {
-        if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
-            toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
-            return;
+        if (roleId === 1) {
+            if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
+                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                return;
+            }
+            setSelectedMethod(method);
+            let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
+            setDataMethod(res);
+            setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            // console.log("method:", res[0].importOrderDetailId);
         }
-        setSelectedMethod(method);
-        let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
-        setDataMethod(res);
-        setSelectImportOrderDetailId(res[0].importOrderDetailId);
-        // console.log("method:", res[0].importOrderDetailId);
-
-        console.log("getBatchInventoryForExportgoods:", res);
+        if (roleId === 4 || roleId === 3 || roleId === 2) {
+            let rs = await getUserIdWarehouse(userId);
+            if (!selectedGoodId || !rs[0].warehouseId || quantity <= 0) {
+                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                return;
+            }
+            setSelectedMethod(method);
+            let res = await getBatchInventoryForExportgoods(rs[0].warehouseId, selectedGoodId, quantity, method);
+            setDataMethod(res);
+            setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            // console.log("method:", res[0].importOrderDetail
+        }
     };
 
 
@@ -99,7 +129,6 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
             }));
 
             onChange(exportDataArray);
-            console.log("ExportOrderManual: ", exportDataArray);
             handleCloseModal();
         }
     }

@@ -311,11 +311,6 @@ function ReturnOrderList() {
                                         <th className="align-middle  text-nowrap">Nhà <br />cung cấp</th>
                                         {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
-                                        {/* <th className="align-middle  text-nowrap">Ngày <br />trả hàng</th> */}
-                                        {/* <th className="align-middle  text-nowrap">Kho <br />nhập hàng</th> */}
-                                        {/* <th className="align-middle  text-nowrap">Kho <br />xuất hàng</th> */}
-                                        {/* <th className="align-middle  text-nowrap">Bên <br />giao hàng</th> */}
-                                        {/* <th className="align-middle  text-nowrap">Hình ảnh</th> */}
                                         <th className="align-middle  text-nowrap">Tình trạng</th>
 
                                         <th className="align-middle  text-nowrap">Người <br />xác nhận</th>
@@ -327,7 +322,7 @@ function ReturnOrderList() {
 
                                         {roleId === 3 ? <th className="align-middle  text-nowrap">Tạo BarCode</th> : ''} */}
 
-                                        <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>
+                                        {roleId === 2 || roleId === 1 ? <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th> : ''}
                                     </tr>
                                 </thead>
                                 <tbody>

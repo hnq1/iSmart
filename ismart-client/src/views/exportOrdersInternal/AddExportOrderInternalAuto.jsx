@@ -154,7 +154,6 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
             // Lọc danh sách kho hàng để loại bỏ kho hàng của người dùng hiện tại
             if (uwh && uwh.warehouseId) {
                 allwh = allwh.filter(storage => storage.warehouseId !== uwh.warehouseId);
-                console.log("allwh2: ", allwh);
             }
 
             setTotalWarehouse2(allwh); // Giả sử setTotalWarehouse là hàm setState đã được định nghĩa ở nơi khác
@@ -307,29 +306,30 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
                                 <input type="text" className="form-control inputCSS" placeholder="Mã đơn hàng" value={exportCode} onChange={(event) => setExportCode(event.target.value)} />
                             </div>
                         </Col> */}
+                        {roleId === 1 ?
+                            <Col md={2}>
+                                <DropdownButton
+                                    className="DropdownButtonCSS ButtonCSSDropdown"
+                                    title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
+                                    variant="success"
+                                    style={{ zIndex: 999 }}
+                                >
+                                    <Dropdown.Item eventKey=""
+                                        onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
 
-                        <Col md={2}>
-                            <DropdownButton
-                                className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
-                                variant="success"
-                                style={{ zIndex: 999 }}
-                            >
-                                <Dropdown.Item eventKey=""
-                                    onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
-
-                                {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
-                                    <Dropdown.Item
-                                        key={`warehouse ${index}`}
-                                        eventKey={c.warehouseName}
-                                        onClick={(e) => handleStorageClickImport(c, e)}
-                                    >
-                                        {c.warehouseName}
-                                    </Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
-
+                                    {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
+                                        <Dropdown.Item
+                                            key={`warehouse ${index}`}
+                                            eventKey={c.warehouseName}
+                                            onClick={(e) => handleStorageClickImport(c, e)}
+                                        >
+                                            {c.warehouseName}
+                                        </Dropdown.Item>
+                                    ))}
+                                </DropdownButton>
+                            </Col>
+                            : ''
+                        }
 
                         <Col md={2}>
                             <DropdownButton

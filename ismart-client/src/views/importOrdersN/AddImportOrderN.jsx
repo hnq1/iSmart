@@ -105,7 +105,6 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
             // Lọc danh sách kho hàng để loại bỏ kho hàng của người dùng hiện tại
             if (uwh && uwh.warehouseId) {
                 allwh = allwh.filter(storage => storage.warehouseId !== uwh.warehouseId);
-                console.log("allwh2: ", allwh);
             }
 
             setTotalWarehouse2(allwh); // Giả sử setTotalWarehouse là hàm setState đã được định nghĩa ở nơi khác

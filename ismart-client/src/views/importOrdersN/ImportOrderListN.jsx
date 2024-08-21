@@ -146,7 +146,7 @@ function ImportOrderListN() {
             // console.log("pageSize:", selectedWarehouseId);
             setTotalImportOrder(res.data);
             setTotalPages(res.totalPages);
-        } if (roleId === 2 || roleId === 3) {
+        } if (roleId === 2 || roleId === 3 || roleId === 4) {
             let wh = await getUserIdWarehouse(userId);
             setcurrentPage(page - 1);
             let res = await fetchImportOrdersWithfilter(pageSize, page, wh[0].warehouseId, sortedByStatusId, sortedByDateId, keywordSearch);

@@ -6,7 +6,7 @@ import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
 import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
-
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 
 
 
@@ -14,7 +14,8 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
-
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
 
 
     const [quantityInStock, setQuantityInStock] = useState(0);
@@ -48,61 +49,110 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
     // }, [selectedGoodId])
 
     const getAllGoods = async () => {
-        if (selectedStorageId !== null) {
-            let res = await fetchAllGoodsInWarehouse(selectedStorageId);
-            // console.log("getAllGoods: ", res);
-            setTotalGoods(res);
+        if (roleId === 1) {
+            if (selectedStorageId !== null) {
+                let res = await fetchAllGoodsInWarehouse(selectedStorageId);
+                setTotalGoods(res);
+            }
+        } else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            let rs = await getUserIdWarehouse(userId);
+            if (rs !== null) {
+                let res = await fetchAllGoodsInWarehouse(rs[0].warehouseId);
+                setTotalGoods(res);
+            }
         }
     }
 
 
     const handleGoodClick = async (good, event) => {
-        setSelectedGoodCode(good.goodsCode);
-        setSelectedGoodId(good.goodsId);
-        let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
-        setQuantityInStock(res.inStock);
-        // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
+        if (roleId === 1) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
+        else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let rs = await getUserIdWarehouse(userId);
+            let res = await fetchGoodinWarehouseById(rs[0].warehouseId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
     }
 
-    // const handleChangeTotalQuantity = (event) => {
-    //     setQuantity(event.target.value);
-    // }
 
 
 
     const handleManualClick = async () => {
-        if (!selectedGoodCode) {
-            toast.warning("Vui lòng chọn sản phẩm");
+        if (roleId === 1) {
+            if (!selectedGoodCode) {
+                toast.warning("Vui lòng chọn sản phẩm");
+            }
+            else {
+                setIsManualClick(true);
+
+
+                let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
+                if (m.length === 0) {
+                    // Nếu không có lô hàng nào, hiển thị thông báo
+                    toast.warning("Không có lô hàng nào");
+                } else {
+                    setDataMethod(m);
+                    // const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+
+                    const importOrderDetailIds = m.map(item => ({
+                        importOrderDetailId: item.importOrderDetailId,
+                        batchCode: item.batchCode
+                    }));
+
+                    setSelectImportOrderDetailId(importOrderDetailIds);
+
+
+                    const initialInputQuantities = {};
+                    importOrderDetailIds.forEach((data, index) => {
+                        initialInputQuantities[index] = {
+                            quantity: 0,
+                            importOrderDetailId: data.importOrderDetailId,
+                            batchCode: data.batchCode
+                        };
+                    });
+                    setInputQuantities(initialInputQuantities);
+                }
+            }
         }
-        else {
-            setIsManualClick(true);
+        else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            if (!selectedGoodCode) {
+                toast.warning("Vui lòng chọn sản phẩm");
+            }
+            else {
+                setIsManualClick(true);
+                let rs = await getUserIdWarehouse(userId);
+                let m = await getAvailableBatch(rs[0].warehouseId, selectedGoodId);
+                if (m.length === 0) {
+                    // Nếu không có lô hàng nào, hiển thị thông báo
+                    toast.warning("Không có lô hàng nào");
+                } else {
+                    setDataMethod(m);
+                    // const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+
+                    const importOrderDetailIds = m.map(item => ({
+                        importOrderDetailId: item.importOrderDetailId,
+                        batchCode: item.batchCode
+                    }));
+
+                    setSelectImportOrderDetailId(importOrderDetailIds);
 
 
-            let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
-            if (m.length === 0) {
-                // Nếu không có lô hàng nào, hiển thị thông báo
-                toast.warning("Không có lô hàng nào");
-            } else {
-                setDataMethod(m);
-                // const importOrderDetailIds = m.map(item => item.importOrderDetailId);
-
-                const importOrderDetailIds = m.map(item => ({
-                    importOrderDetailId: item.importOrderDetailId,
-                    batchCode: item.batchCode
-                }));
-
-                setSelectImportOrderDetailId(importOrderDetailIds);
-
-
-                const initialInputQuantities = {};
-                importOrderDetailIds.forEach((data, index) => {
-                    initialInputQuantities[index] = {
-                        quantity: 0,
-                        importOrderDetailId: data.importOrderDetailId,
-                        batchCode: data.batchCode
-                    };
-                });
-                setInputQuantities(initialInputQuantities);
+                    const initialInputQuantities = {};
+                    importOrderDetailIds.forEach((data, index) => {
+                        initialInputQuantities[index] = {
+                            quantity: 0,
+                            importOrderDetailId: data.importOrderDetailId,
+                            batchCode: data.batchCode
+                        };
+                    });
+                    setInputQuantities(initialInputQuantities);
+                }
             }
         }
     }

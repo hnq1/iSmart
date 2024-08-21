@@ -11,13 +11,13 @@ import { format, addDays } from 'date-fns';
 import { formatDateImport, formattedAmount } from "~/validate";
 import { toast } from "react-toastify";
 import uploadImage from "~/services/ImageServices";
-
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 import AddRowDataExportOrderManual from "./AddRowDataExportManual";
 import RowDataExportOrderManual from "./RowDataExportManual";
 import { forEach, set } from "lodash";
 
 const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
-
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const [exportCode, setExportCode] = useState('');
@@ -100,16 +100,31 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
     };
-
-    // mở modal AddRowDataExport
-    const handleAddRowDataExport = () => {
-        if (selectedWarehouseId) {
-            setIsShowRowDataExport(true);
-        } else {
-            toast.warning("Vui lòng điền kho")
-        }
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
     }
 
+    // mở modal AddRowDataExport
+    const handleAddRowDataExport = async () => {
+        if (roleId === 1) {
+            if (selectedWarehouseId) {
+                setIsShowRowDataExport(true);
+            } else {
+                toast.warning("Vui lòng điền kho")
+            }
+        } else if (roleId === 3) {
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+
+            if (warehouse.warehouseId) {
+                console.log("warehouse:  ", warehouse.warehouseId);
+                setIsShowRowDataExport(true);
+            } else {
+                toast.info("Không tìm thấy kho cho người dùng này");
+            }
+        }
+    }
     // xóa rowdata ở rowdataImport
     const deleteRowData = (rowdel) => {
         const updateDataExport = rowsData.filter((item, index) => index !== rowdel);
@@ -178,12 +193,8 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         return `${year}${month}${day}${hours}${minutes}${seconds}`;
     };
     const handleAddExportOrder = async () => {
-        if (!selectedWarehouse) {
-            toast.warning("Vui lòng chọn kho xuất hàng");
-        } else if (!selectedDate) {
+        if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày xuất hàng");
-            // } else if (totalPrice === 0) {
-            //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
         } else if (!selectedCustomer) {
@@ -194,7 +205,11 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         else {
             const newExportCode = generateExportCode();
             const userId = parseInt(localStorage.getItem('userId'), 10);
-            console.log("userId", userId);
+            let warehouse = await getWarehouseById(userId);
+            const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
+            if (!warehouseIdToUse) {
+                toast.warning("Vui lòng chọn kho hàng!");
+            }
             let isInternalTransfer = false;
             let res = await addNewExportOrder(isInternalTransfer,
                 userId,
@@ -202,7 +217,7 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 0,
                 "",
                 formatDateImport(selectedDate),
-                selectedWarehouseId,
+                warehouseIdToUse,
                 "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
@@ -215,13 +230,13 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 // const importOrderDetailIds = rowsData.map(data => parseInt(data.importOrderDetailId, 10));
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
-                        
-                            createNewExportOrderDetail(resExportId,
-                                data.costPrice,
-                                data.goodsId,
-                                data.quantity,
-                                data.importOrderDetailId);
-                        
+
+                        createNewExportOrderDetail(resExportId,
+                            data.costPrice,
+                            data.goodsId,
+                            data.quantity,
+                            data.importOrderDetailId);
+
                     }))
 
                 }
@@ -267,33 +282,30 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
             <Modal.Body>
                 <div className="body-add-new">
                     <Row className="align-items-center">
-                        {/* <Col md={2}>
-                            <div className="form-group ">
-                                <input type="text" className="form-control inputCSS" placeholder="Mã đơn hàng" value={exportCode} onChange={(event) => setExportCode(event.target.value)} />
-                            </div>
-                        </Col> */}
-                        <Col md={2}>
-                            <DropdownButton
-                                className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
-                                variant="success"
-                                style={{ zIndex: 999 }}
-                            >
-                                <Dropdown.Item eventKey=""
-                                    onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
+                        {(roleId == 1) ?
+                            <Col md={2}>
+                                <DropdownButton
+                                    className="DropdownButtonCSS ButtonCSSDropdown"
+                                    title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                    variant="success"
+                                    style={{ zIndex: 999 }}
+                                >
+                                    <Dropdown.Item eventKey=""
+                                        onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
 
-                                {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
-                                    <Dropdown.Item
-                                        key={`warehouse ${index}`}
-                                        eventKey={c.warehouseName}
-                                        onClick={(e) => handleStorageClick(c, e)}
-                                    >
-                                        {c.warehouseName}
-                                    </Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
-
+                                    {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                        <Dropdown.Item
+                                            key={`warehouse ${index}`}
+                                            eventKey={c.warehouseName}
+                                            onClick={(e) => handleStorageClick(c, e)}
+                                        >
+                                            {c.warehouseName}
+                                        </Dropdown.Item>
+                                    ))}
+                                </DropdownButton>
+                            </Col>
+                            : ''
+                        }
 
 
 
