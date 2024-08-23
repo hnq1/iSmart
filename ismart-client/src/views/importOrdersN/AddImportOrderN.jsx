@@ -221,7 +221,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
     // mở addRowDataImport
 
     const handleAddRowDataImport = async () => {
-        if (roleId === 1 ) {
+        if (roleId === 1) {
             if (selectedWarehouseExportId && selectedSupplierId) {
                 setIsShowRowDataImport(true);
             } else {
@@ -286,8 +286,6 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
         // } else 
         if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
-        } else if (!selectedWarehouseImportId) {
-            toast.warning("Vui lòng chọn kho nhập hàng");
         } else if (!selectedWarehouseExportId) {
             toast.warning("Vui lòng chọn kho xuất hàng");
         } else if (!selectedSupplierId) {
@@ -301,7 +299,6 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
-            console.log("warehouseIdToUse: ", warehouseIdToUse);
             // const warehouseDestinationId = selectedWarehouseExportId;
             let isInternalTransfer = true;
             let r = await addNewImportOrder(
@@ -496,7 +493,7 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
                         {renderImportData()}
 
                     </Row>
-                    
+
                 </div>
             </Modal.Body>
             <Modal.Footer>

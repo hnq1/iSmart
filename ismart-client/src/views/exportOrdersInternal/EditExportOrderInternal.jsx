@@ -53,13 +53,11 @@ const ModalEditExportOrderInternal = ({ isShow, handleClose, detailOrderEdit, up
 
             setSelectedDate(formatDateImport(detailOrderEdit.exportedDate));
         }
-        console.log(detailOrderEdit);
 
     }, [detailOrderEdit])
 
     const getTotalOrderDetail = async (exportId) => {
         let res = await getExportOrderDetailByExportId(exportId);
-        console.log(res);
         setRowsData(res);
         setDataDetailOrderEdit(res);
         setTotalPrice(detailOrderEdit.totalPrice);

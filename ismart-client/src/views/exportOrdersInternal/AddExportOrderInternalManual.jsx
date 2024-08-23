@@ -232,14 +232,8 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
     }
 
     const handleAddExportOrder = async () => {
-        // if (!exportCode.trim()) {
-        //     toast.warning("Vui lòng nhập mã đơn hàng");
-
-        // } else
         if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày xuất hàng");
-            // } else if (totalPrice === 0) {
-            //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (rowsData.length === 0) {
             toast.warning("Hãy thêm lô hàng");
         }
@@ -247,7 +241,6 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
             toast.warning("Vui lòng chọn bên giao hàng");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
-            console.log("userId", userId);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
             let isInternalTransfer = true;
@@ -257,17 +250,15 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                 0,
                 "",
                 formatDateImport(selectedDate),
-                selectedWarehouseExportId,
+                warehouseIdToUse,
                 "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
                 selectedCustomerId,
-                warehouseIdToUse
+                selectedWarehouseExportId
             );
-            // console.log("addNewExportOrder:", warehouseIdToUse);
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
-                console.log("resExportId: ", resExportId);
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
 
@@ -321,28 +312,31 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                                 <input type="text" className="form-control inputCSS" placeholder="Mã đơn hàng" value={exportCode} onChange={(event) => setExportCode(event.target.value)} />
                             </div>
                         </Col> */}
-
-                        <Col md={2}>
-                            <DropdownButton
-                                className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
-                                variant="success"
-                                style={{ zIndex: 999 }}
-                            >
-                                <Dropdown.Item eventKey=""
-                                    onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
-
-                                {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
-                                    <Dropdown.Item
-                                        key={`warehouse ${index}`}
-                                        eventKey={c.warehouseName}
-                                        onClick={(e) => handleStorageClickImport(c, e)}
+                        {
+                            roleId === 1 ?
+                                <Col md={2}>
+                                    <DropdownButton
+                                        className="DropdownButtonCSS ButtonCSSDropdown"
+                                        title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
+                                        variant="success"
+                                        style={{ zIndex: 999 }}
                                     >
-                                        {c.warehouseName}
-                                    </Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
+                                        <Dropdown.Item eventKey=""
+                                            onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
+
+                                        {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
+                                            <Dropdown.Item
+                                                key={`warehouse ${index}`}
+                                                eventKey={c.warehouseName}
+                                                onClick={(e) => handleStorageClickImport(c, e)}
+                                            >
+                                                {c.warehouseName}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+                                : ''
+                        }
 
 
                         <Col md={2}>

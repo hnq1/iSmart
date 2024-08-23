@@ -88,13 +88,23 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
     };
 
     // mở modal AddRowDataExport
-    const handleAddRowDataExport = () => {
+    const handleAddRowDataExport = async () => {
+
         if (roleId === 3 || selectedWarehouseExportId) {
             setIsShowRowDataExport(true);
         } else {
             toast.warning("Vui lòng điền kho")
         }
     }
+    // else if (roleId === 3) {
+    //     const userId = parseInt(localStorage.getItem('userId'), 10);
+    //     let warehouse = await getWarehouseById(userId);
+    //     if (warehouse) {
+    //         setIsShowRowDataExport(true);
+    //     } else {
+    //         toast.warning("Vui lòng điền kho")
+    //     }
+    // }
 
     // xóa rowdata ở rowdataImport
     const deleteRowData = (rowdel) => {
@@ -193,10 +203,12 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
 
 
     const handleStorageClickExport = async (warehouse) => {
+
         await getAllStorages1(); //QH
         setSelectedWarehouseExport(warehouse.warehouseName);
         setSelectedWarehouseExportId(warehouse.warehouseId);
-        setTotalWarehouse1(x => x.filter(w => w.warehouseId !== warehouse.warehouseId)); //QH
+        setTotalWarehouse1(x => x.filter(w => w.warehouseId !== warehouse.warehouseId)); //QH  
+
     }
     const getWarehouseById = async (userId) => {
         let res = await getUserIdWarehouse(userId);
@@ -234,27 +246,27 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
             toast.warning("Vui lòng chọn bên giao hàng");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
-            console.log("userId", userId);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
+            if (!warehouseIdToUse) {
+                toast.warning("Vui lòng chọn kho hàng!");
+            }
             let isInternalTransfer = true;
             let res = await addNewExportOrder(isInternalTransfer,
                 userId,
                 generateExportCode(),
                 0,
                 "",
-                formatDateImport(selectedDate),
-                selectedWarehouseExportId,
+                formatDateImport(selectedDate), 
+                warehouseIdToUse,
                 "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
                 selectedCustomerId,
-                warehouseIdToUse
+                selectedWarehouseExportId
             );
-            console.log("addNewExportOrder:", warehouseIdToUse);
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
-                console.log("resExportId: ", resExportId);
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
                         await createNewExportOrderDetail(resExportId,

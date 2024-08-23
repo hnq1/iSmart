@@ -150,7 +150,7 @@ function ImportOrderListN() {
             let wh = await getUserIdWarehouse(userId);
             setcurrentPage(page - 1);
             let res = await fetchImportOrdersWithfilter(pageSize, page, wh[0].warehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-
+            console.log("getImportOrdersN:", res.data);
             setTotalImportOrder(res.data);
             setTotalPages(res.totalPages);
         }
