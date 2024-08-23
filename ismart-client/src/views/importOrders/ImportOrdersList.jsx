@@ -137,8 +137,6 @@ function ImportOrderList() {
             let wh = await getUserIdWarehouse(userId);
             setcurrentPage(page - 1);
             let res = await fetchImportOrdersWithfilter(pageSize, page, wh[0].warehouseId, sortedByStatusId, sortedByDateId, keywordSearch);
-
-
             setTotalImportOrder(res.data);
             setTotalPages(res.totalPages);
         }
@@ -209,7 +207,7 @@ function ImportOrderList() {
         if (currentDate !== formatDate(i.importedDate)) {
             toast.warning("Chưa đến ngày nhập hàng trong hợp đồng bàn giao");
         } else {
-            
+
             setIsShowModelConfirm(true);
             setDataImportOrder(i);
         }
@@ -232,13 +230,13 @@ function ImportOrderList() {
 
     const EditDetailOrder = (order) => {
         if (order.statusType == "Completed" || order.statusType == "Cancel") {
-            
+
             toast.warning("Không thể sửa đơn hàng đã nhập hoặc đã hủy");
-        }else{
+        } else {
             setIsShowEditOrder(true);
-         setDetailOrderEdit(order);
+            setDetailOrderEdit(order);
         }
-        
+
     }
 
 
@@ -250,7 +248,7 @@ function ImportOrderList() {
         if (data.statusType == "Completed" || data.statusType == "Cancel") {
 
             toast.warning("Không thể hủy đơn hàng đã nhập hoặc đã hủy");
-        } 
+        }
         else {
             setIsShowModalCancelImport(true);
             setDataCancelImport(data);
@@ -276,7 +274,7 @@ function ImportOrderList() {
             <div className="container" style={{ maxWidth: "1600px" }}>
                 <div className="row justify-content-center">
                     <div className="col-sm-12">
-                    <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý lô hàng nhập từ nhà cung cấp</h2>
+                        <h2 style={{ color: '#3b3bf5', marginTop: '20px' }}>Quản lý lô hàng nhập từ nhà cung cấp</h2>
 
                         <div className="row no-gutters my-3 d-flex justify-content-between">
                             <Row>
@@ -418,7 +416,7 @@ function ImportOrderList() {
                                             : ''} */}
                                         <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Tuỳ Chọn</th>
 
-                                        {(roleId === 1 || roleId === 2) ?  <th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th> : ''}
+                                        {(roleId === 1 || roleId === 2) ?<th className="align-middle  text-nowrap position-sticky" style={{ right: 0 }}>Hành động</th>: ''}
 
 
 
@@ -456,8 +454,8 @@ function ImportOrderList() {
                                                         <i className="fa-solid fa-pen-to-square actionButtonCSS" title="Chỉnh sửa" onClick={() => EditDetailOrder(i)}></i>
                                                         : ''}
                                                     {(roleId === 1 || roleId === 2) ?
-                                                        <i className="fa-solid fa-ban actionButtonCSS" title="Huỷ đơn hàng" 
-                                                        
+                                                        <i className="fa-solid fa-ban actionButtonCSS" title="Huỷ đơn hàng"
+
                                                             onClick={() => ShowModalCancelImport(i)}></i> : ''}
                                                 </td>
                                                 {(roleId === 1 || roleId === 2) ? <td className='position-sticky ' style={{ right: 0, minWidth: '150px' }}> <button

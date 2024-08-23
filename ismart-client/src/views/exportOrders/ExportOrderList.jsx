@@ -157,7 +157,6 @@ const ExportOrderList = () => {
 
             setTotalExportOrder(res.data);
             setTotalPages(res.totalPages);
-             console.log("fetchExportOrdersWithFilter: ", res.data);
         }
         if (roleId === 2 || roleId === 3 || roleId === 4) {
             setcurrentPage(page - 1);
@@ -167,11 +166,8 @@ const ExportOrderList = () => {
                 "", "",
                 sortedByStatusId,
                 sortedByDateId, keywordSearch);
-
-
             setTotalExportOrder(res.data);
             setTotalPages(res.totalPages);
-            // console.log("fetchExportOrdersWithFilter: ", res.data);
         }
 
     }

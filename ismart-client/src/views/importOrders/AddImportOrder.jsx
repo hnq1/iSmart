@@ -308,9 +308,7 @@ const ModelAddImportOrder = ({ isShow, handleClose, updateTable }) => {
             if (!warehouseIdToUse) {
                 toast.warning("Vui lòng chọn kho hàng!");
             }
-            console.log("warehouseIdToUse: ", warehouseIdToUse);
             let isInternalTransfer = false;
-             console.log("warehouseIdToUse: ", warehouseIdToUse);
             let res = await addNewImportOrder(isInternalTransfer,
                 userId,
                 1,

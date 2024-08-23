@@ -36,7 +36,6 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
     const getAllGoods = async () => {
         if (selectedStorageId !== null) {
             let res = await fetchAllGoodsInWarehouse(selectedStorageId);
-            // console.log("getAllGoods: ", res);
             setTotalGoods(res);
         }
     }
@@ -46,7 +45,6 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
         setSelectedGoodId(good.goodsId);
         let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
         setQuantityInStock(res.inStock);
-        // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
     }
 
 

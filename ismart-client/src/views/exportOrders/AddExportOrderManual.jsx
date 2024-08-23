@@ -16,46 +16,33 @@ import AddRowDataExportOrderManual from "./AddRowDataExportManual";
 import RowDataExportOrderManual from "./RowDataExportManual";
 import { forEach, set } from "lodash";
 
-
 const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-
 
     const [exportCode, setExportCode] = useState('');
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
-
     const [totalDelivery, setTotalDelivery] = useState([]);
     const [selectedDelivery, setSelectedDelivery] = useState(null);
     const [selectedDeliveryId, setSelectedDeliveryId] = useState(null);
-
 
     const [totalCustomer, setTotalCustomer] = useState([]);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
-
     const [minDate, setMinDate] = useState();
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
-
     const [isShowRowDataExport, setIsShowRowDataExport] = useState(false);
-
 
     const [rowsData, setRowsData] = useState([]);
 
-
     const [totalPrice, setTotalPrice] = useState(0);
 
-
     const [imageExportOrder, setImageExportOrder] = useState(null);
-
-
-
-
 
 
 
@@ -66,13 +53,11 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         getAllDelivery();
     }, [])
 
-
     useEffect(() => {
         const currentDate = new Date();
         const formattedDate = format(currentDate, 'yyyy-MM-dd');
         setMinDate(formattedDate);
     }, [])
-
 
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
@@ -80,25 +65,20 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
     }
 
 
-
-
     const handleStorageClickTotal = () => {
         setSelectedWarehouseId("");
         setSelectedWarehouse("Tất cả kho");
     }
-
 
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
     }
 
-
     const getAllDelivery = async () => {
         let res = await fetchDeliveryActive();
         setTotalDelivery(res);
     }
-
 
     const handleDeliveryClick = (delivery, event) => {
         setSelectedDelivery(delivery.deliveryName);
@@ -106,20 +86,16 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         console.log(delivery);
     }
 
-
     const getAllCustomer = async () => {
         let res = await fetchAllCustomer();
         setTotalCustomer(res);
     }
 
 
-
-
     const handleCustomerClick = (c, event) => {
         setSelectedCustomer(c.customerName);
         setSelectedCustomerId(c.customerId);
     }
-
 
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
@@ -128,7 +104,6 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         let res = await getUserIdWarehouse(userId);
         return res[0];
     }
-
 
     // mở modal AddRowDataExport
     const handleAddRowDataExport = async () => {
@@ -141,7 +116,6 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         } else if (roleId === 3) {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
-
 
             if (warehouse.warehouseId) {
                 console.log("warehouse:  ", warehouse.warehouseId);
@@ -159,21 +133,15 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
     }
 
 
-
-
     // nhận data từ AddRowDataExport
     const takeRowDataExportOrder = (exportData) => {
 
-
         const updateDataExport = [...rowsData];
-
 
         console.log(exportData);
 
-
         for (var i = 0; i < exportData.length; i++) {
             const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === exportData[i].importOrderDetailId);
-
 
             if (existingIndex !== -1) {
                 updateDataExport[existingIndex] = exportData[i];
@@ -183,9 +151,7 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         }
         setRowsData(updateDataExport);
 
-
     }
-
 
     // update 1 row data từ RowDataImport
     const updateRowData = (rowUpdate, updateData) => {
@@ -195,7 +161,6 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         setRowsData(updateDataImport);
     }
 
-
     // render rowsData
     const renderExportData = () => {
         return rowsData.map((data, index) => (
@@ -203,18 +168,13 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 <RowDataExportOrderManual key={`rdt${index}`} data={rowsData[index]} index={index}
                     updateRowData={updateRowData} deleteRowData={deleteRowData}
 
-
                 />
             </>
-
 
         ))
 
 
-
-
     }
-
 
     const handleChooseFile = async (event) => {
         const file = event.target.files[0];
@@ -233,12 +193,8 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         return `${year}${month}${day}${hours}${minutes}${seconds}`;
     };
     const handleAddExportOrder = async () => {
-        if (roleId === 1 && !selectedWarehouse) {
-            toast.warning("Vui lòng chọn kho xuất hàng");
-        } else if (!selectedDate) {
+        if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày xuất hàng");
-            // } else if (totalPrice === 0) {
-            //     toast.warning("Vui lòng nhập mặt hàng xuất");
         } else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
         } else if (!selectedCustomer) {
@@ -275,16 +231,13 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
 
-
                         createNewExportOrderDetail(resExportId,
                             data.costPrice,
                             data.goodsId,
                             data.quantity,
                             data.importOrderDetailId);
 
-
                     }))
-
 
                 }
                 toast.success("Thêm lô hàng xuất thành công");
@@ -294,10 +247,8 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 toast.warning("Mã đơn hàng đã tồn tại");
             }
 
-
         }
     }
-
 
     const handleReset = () => {
         setRowsData([]);
@@ -314,16 +265,10 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
         setTotalPrice(0);
     }
 
-
     const handleCloseModal = () => {
         handleReset();
         handleClose();
     }
-
-
-
-
-
 
 
 
@@ -348,7 +293,6 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                                     <Dropdown.Item eventKey=""
                                         onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
 
-
                                     {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
                                         <Dropdown.Item
                                             key={`warehouse ${index}`}
@@ -366,17 +310,12 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
 
 
 
-
-
-
-
                         <Col md={3} >
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                 <Dropdown style={{ position: 'relative' }}>
                                     <Dropdown.Toggle className="ButtonCSSDropdown" as={CustomToggle} id="dropdown-custom-components">
                                         <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedCustomer !== null ? selectedCustomer : "Khách hàng"}</span>
                                     </Dropdown.Toggle>
-
 
                                     <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
                                         {totalCustomer && totalCustomer.length > 0 && totalCustomer.map((s, index) => (
@@ -389,14 +328,12 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                             </div>
                         </Col>
 
-
                         <Col md={2} style={{ width: '220px' }}>
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                 <Dropdown style={{ position: 'relative' }}>
                                     <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                         <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedDelivery !== null ? selectedDelivery : "Bên vận chuyển"}</span>
                                     </Dropdown.Toggle>
-
 
                                     <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
                                         {totalDelivery && totalDelivery.length > 0 && totalDelivery.map((s, index) => (
@@ -409,14 +346,11 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                             </div>
                         </Col>
 
-
                         <Col md={2}>
                             <div>
                                 <input type="date" className="datepickerCSS" id="datepicker" min={minDate} value={selectedDate} onChange={handleDateChange} />
                             </div>
                         </Col>
-
-
 
 
                     </Row>
@@ -432,7 +366,6 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                         </Col>
                     </Row>
                     <Row>
-
 
                         <Col md={3} className="mt-3">
                             <div className="ButtonCSSDropdown">
@@ -450,24 +383,16 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
 
 
 
-
-
-
                     <Row style={{ maxHeight: '400px', overflowY: 'auto' }}>
                         {renderExportData()}
 
-
                     </Row>
-
-
 
 
                 </div>
             </Modal.Body>
 
-
             <Modal.Footer>
-
 
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
@@ -475,17 +400,11 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
             </Modal.Footer>
         </Modal >
 
-
         <AddRowDataExportOrderManual isShow={isShowRowDataExport} selectedStorageId={selectedWarehouseId}
             onChange={(exportData) => takeRowDataExportOrder(exportData)}
             handleClose={() => setIsShowRowDataExport(false)} />
     </>)
 
-
 }
 
-
 export default ModelAddExportOrderManual
-
-
-

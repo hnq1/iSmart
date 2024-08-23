@@ -132,7 +132,7 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
             }
         }
 
-      
+
 
         setRowsData(updateDataExport);
 
@@ -157,16 +157,16 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
 
 
     }
- const generateExportCode = () => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}${month}${day}${hours}${minutes}${seconds}`;
-};
+    const generateExportCode = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}${month}${day}${hours}${minutes}${seconds}`;
+    };
     const wh = async () => {
         if (roleId === 1) {
             getAllStorages1();
@@ -176,7 +176,6 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
             // Lọc danh sách kho hàng để loại bỏ kho hàng của người dùng hiện tại
             if (uwh && uwh.warehouseId) {
                 allwh = allwh.filter(storage => storage.warehouseId !== uwh.warehouseId);
-                console.log("allwh2: ", allwh);
             }
 
             setTotalWarehouse2(allwh); // Giả sử setTotalWarehouse là hàm setState đã được định nghĩa ở nơi khác
@@ -233,22 +232,15 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
     }
 
     const handleAddExportOrder = async () => {
-        // if (!exportCode.trim()) {
-        //     toast.warning("Vui lòng nhập mã đơn hàng");
-
-        // } else
         if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày xuất hàng");
-            // } else if (totalPrice === 0) {
-            //     toast.warning("Vui lòng nhập mặt hàng xuất");
-        }  else if (rowsData.length === 0) {
+        } else if (rowsData.length === 0) {
             toast.warning("Hãy thêm lô hàng");
-        }  
+        }
         else if (!selectedDelivery) {
             toast.warning("Vui lòng chọn bên giao hàng");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
-            console.log("userId", userId);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
             let isInternalTransfer = true;
@@ -258,22 +250,20 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                 0,
                 "",
                 formatDateImport(selectedDate),
-                selectedWarehouseExportId,
+                warehouseIdToUse,
                 "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
-                selectedCustomerId,                
-                warehouseIdToUse
+                selectedCustomerId,
+                selectedWarehouseExportId
             );
-            // console.log("addNewExportOrder:", warehouseIdToUse);
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
-                console.log("resExportId: ", resExportId);
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
-                        
-                            createNewExportOrderDetail(resExportId, data.costPrice, data.goodsId, data.quantity, data.importOrderDetailId);
-                        })
+
+                        createNewExportOrderDetail(resExportId, data.costPrice, data.goodsId, data.quantity, data.importOrderDetailId);
+                    })
                     )
 
                 }
@@ -322,28 +312,31 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                                 <input type="text" className="form-control inputCSS" placeholder="Mã đơn hàng" value={exportCode} onChange={(event) => setExportCode(event.target.value)} />
                             </div>
                         </Col> */}
-
-                        <Col md={2}>
-                            <DropdownButton
-                                className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
-                                variant="success"
-                                style={{ zIndex: 999 }}
-                            >
-                                <Dropdown.Item eventKey=""
-                                    onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
-
-                                {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
-                                    <Dropdown.Item
-                                        key={`warehouse ${index}`}
-                                        eventKey={c.warehouseName}
-                                        onClick={(e) => handleStorageClickImport(c, e)}
+                        {
+                            roleId === 1 ?
+                                <Col md={2}>
+                                    <DropdownButton
+                                        className="DropdownButtonCSS ButtonCSSDropdown"
+                                        title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
+                                        variant="success"
+                                        style={{ zIndex: 999 }}
                                     >
-                                        {c.warehouseName}
-                                    </Dropdown.Item>
-                                ))}
-                            </DropdownButton>
-                        </Col>
+                                        <Dropdown.Item eventKey=""
+                                            onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
+
+                                        {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
+                                            <Dropdown.Item
+                                                key={`warehouse ${index}`}
+                                                eventKey={c.warehouseName}
+                                                onClick={(e) => handleStorageClickImport(c, e)}
+                                            >
+                                                {c.warehouseName}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+                                : ''
+                        }
 
 
                         <Col md={2}>
@@ -456,7 +449,7 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
             </Modal.Body>
 
             <Modal.Footer>
-               
+
                 <Button variant="primary" className="ButtonCSS" onClick={handleAddExportOrder}>
                     Lưu
                 </Button>
