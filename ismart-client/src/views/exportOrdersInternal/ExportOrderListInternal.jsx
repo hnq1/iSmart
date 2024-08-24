@@ -151,6 +151,7 @@ const ExportOrderListInternal = () => {
 
             setTotalExportOrder(res.data);
             setTotalPages(res.totalPages);
+            console.log("getExportOrders: ", res.data);
         }
         if (roleId === 2 || roleId === 3 || roleId === 4) {
             setcurrentPage(page - 1);
@@ -373,7 +374,7 @@ const ExportOrderListInternal = () => {
                                         {/* <th className="align-middle  text-nowrap">Tổng <br />đơn hàng</th> */}
                                         <th className="align-middle  text-nowrap">Ngày <br />tạo đơn</th>
                                         <th className="align-middle  text-nowrap">Ngày <br />xuất hàng</th>
-                                        <th className="align-middle  text-nowrap">Kho<br />nhận hàng</th>
+                                        <th className="align-middle  text-nowrap">Kho<br />nhập hàng</th>
                                         <th className="align-middle  text-nowrap">Kho<br /> xuất hàng</th>
 
                                         <th className="align-middle  text-nowrap">Bên <br />giao hàng</th>
@@ -402,8 +403,8 @@ const ExportOrderListInternal = () => {
                                                 {/* <td className="align-middle">{formattedAmount(i.totalPrice)}</td> */}
                                                 <td className="align-middle">{formatDate(i.createdDate)}</td>
                                                 <td className="align-middle">{i.exportedDate ? formatDate(i.exportedDate) : ""}</td>
-                                                <td className="align-middle">{i.warehouseName}</td>
                                                 <td className="align-middle">{i.warehouseDestinationName}</td>
+                                                <td className="align-middle">{i.warehouseName}</td>
                                                 <td className="align-middle">{i.deliveryName}</td>
 
 

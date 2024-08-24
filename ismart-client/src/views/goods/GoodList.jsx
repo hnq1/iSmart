@@ -456,13 +456,19 @@ function MyTable() {
                                     </div>
                                     : ''
                             }
-                            <div className="col">
-                                <button className="btn btn-success border-left-0 rounded ButtonCSS"
-                                    variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()} >
-                                    <i className="fa-solid fa-file-import"></i>
-                                    &nbsp;&nbsp;&nbsp;Nhập bằng Excel
-                                </button>
-                            </div>
+
+                            
+                            {
+                                (roleId == 1 || roleId == 2) ?
+                                    <div className="col">
+                                        <button className="btn btn-success border-left-0 rounded ButtonCSS"
+                                            variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()} >
+                                            <i className="fa-solid fa-file-import"></i>
+                                            &nbsp;&nbsp;&nbsp;Nhập bằng Excel
+                                        </button>
+                                    </div>
+                                    : ''
+                            }
                         </div>
                     </Row>
 

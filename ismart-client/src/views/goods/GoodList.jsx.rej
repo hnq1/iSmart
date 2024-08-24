@@ -1,9 +1,0 @@
-diff a/ismart-client/src/views/goods/GoodList.jsx b/ismart-client/src/views/goods/GoodList.jsx	(rejected hunks)
-@@ -185,7 +185,6 @@
- 
-     function handleCategoryClick(category) {
-         setSelectedCategory(category.categoryName);
--        setListGoods(res);
-         setSelectedCategoryId(category.categoryId);
-         getGoods(1, pageSize, selectedWarehouseId, category.categoryId, selectedSupplierId, sortedByPriceId, keywordSearch).then(res => {
-             if (!res || res.length === 0) {

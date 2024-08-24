@@ -253,12 +253,12 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                 0,
                 "",
                 formatDateImport(selectedDate),
-                warehouseIdToUse,
+                selectedWarehouseExportId,
                 "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
                 selectedCustomerId,
-                selectedWarehouseExportId
+                warehouseIdToUse
             );
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
