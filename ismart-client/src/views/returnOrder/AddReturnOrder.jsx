@@ -38,6 +38,8 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
+    const [totalCost, setTotalCost] = useState(0);
+
     useEffect(() => {
         getAllStorages();
         getAllDelivery();
@@ -80,7 +82,7 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         console.log("returnOrderData:", returnOrderData);
         const redata = rowsData.findIndex(item => item.goodsId === returnOrderData.goodsId);
 
-        console.log("redata:", redata);
+
         if (redata !== -1) {
             const updateDataImport = [...rowsData];
 
@@ -90,11 +92,10 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
 
             setRowsData(updateDataImport);
             toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
-            console.log("updateDataImport:", updateDataImport);
         } else {
             const updateDataExport = [...rowsData, returnOrderData];
-
             setRowsData(updateDataExport);
+
         }
     }
 
@@ -201,6 +202,7 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedDeliveryId(null);
         setSelectedDate('');
         setRowsData([]);
+        setTotalCost(0);
     }
     const generateReturnCode = () => {
         const date = new Date();
@@ -245,7 +247,7 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                             </Col>
                             <Col md={2} className="mb-3">
                                 <label >&nbsp;</label>
-                                <Button className='form-control ButtonCSS' type='submit'  onClick={handleCreateReturnCode} > Tạo mã đơn </Button>
+                                <Button className='form-control ButtonCSS' type='submit' onClick={handleCreateReturnCode} > Tạo mã đơn </Button>
                             </Col>
                             <div></div>
                             <Col md={2}>

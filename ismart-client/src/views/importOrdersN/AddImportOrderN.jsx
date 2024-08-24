@@ -281,9 +281,6 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
     }
     // Thêm 1 lô hàng 
     const handleAddImportOrder = async () => {
-        // if (!importCode.trim()) {
-        //     toast.warning("Vui lòng nhập mã đơn hàng");
-        // } else 
         if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
         } else if (!selectedWarehouseExportId) {
