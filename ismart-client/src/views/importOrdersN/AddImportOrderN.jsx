@@ -296,7 +296,10 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
-            // const warehouseDestinationId = selectedWarehouseExportId;
+            if (!warehouseIdToUse) {
+                toast.warning("Vui lòng chọn kho nhập hàng");
+                return;
+            }
             let isInternalTransfer = true;
             let r = await addNewImportOrder(
                 isInternalTransfer,

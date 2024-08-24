@@ -120,7 +120,6 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
     const takeRowDataExportOrder = (exportData) => {
         const updateDataExport = [...rowsData];
 
-        console.log(exportData);
 
         for (var i = 0; i < exportData.length; i++) {
             const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === exportData[i].importOrderDetailId);
@@ -243,6 +242,10 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
+            if (!warehouseIdToUse) {
+                toast.warning("Vui lòng chọn kho nhập hàng");
+                return;
+            }
             let isInternalTransfer = true;
             let res = await addNewExportOrder(isInternalTransfer,
                 userId,

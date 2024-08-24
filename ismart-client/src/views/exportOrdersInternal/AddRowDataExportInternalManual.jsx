@@ -55,7 +55,6 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
     const handleManualClick = async () => {
         let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
         setDataMethod(m);
-        console.log(m);
         // Tạo một mảng mới chứa chỉ importOrderDetailId từ mỗi phần tử trong m
         if (m.length > 0) {
             const importOrderDetailIds = m.map(item => item.importOrderDetailId);

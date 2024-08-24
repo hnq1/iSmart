@@ -224,10 +224,8 @@ const ModelAddExportOrderManual = ({ isShow, handleClose, updateTable }) => {
                 selectedCustomerId,
                 0
             );
-            // console.log("addNewExportOrder:", res);
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();
-                // const importOrderDetailIds = rowsData.map(data => parseInt(data.importOrderDetailId, 10));
                 if (rowsData && rowsData.length > 0) {
                     await Promise.all(rowsData.map(async (data, index) => {
 

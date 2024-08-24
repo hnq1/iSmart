@@ -9,12 +9,15 @@ import { addNewReturnOrder, getReturnOrderNewest } from "~/services/ReturnOrderS
 import { createNewReturnOrderDetail } from "~/services/ReturnOrderDetailService";
 import AddRowDataReturnOrderManual from "./AddRowDataReturnOrder";
 import RowDataReturnOrderManual from "./RowDataReturnOrder";
-
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 import ModelAddNote from "./AddNote";
 import { toast } from "react-toastify";
 import { data } from "autoprefixer";
 
 const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
+
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const [returnCode, setReturnCode] = useState('');
     const [note, setNote] = useState('');
@@ -70,7 +73,6 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
     const handleDeliveryClick = (delivery, event) => {
         setSelectedDelivery(delivery.deliveryName);
         setSelectedDeliveryId(delivery.deliveyId);
-        console.log(delivery);
     }
 
 
@@ -78,26 +80,24 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
 
     // nhận dữ liệu từ addRowDataImport
 
+
     const takeRowDataExportOrder = (returnOrderData) => {
-        console.log("returnOrderData:", returnOrderData);
-        const redata = rowsData.findIndex(item => item.goodsId === returnOrderData.goodsId);
+        const updateDataExport = [...rowsData];
 
+        console.log("exportData: ", returnOrderData);
 
-        if (redata !== -1) {
-            const updateDataImport = [...rowsData];
+        for (var i = 0; i < returnOrderData.length; i++) {
+            const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === returnOrderData[i].importOrderDetailId);
 
-
-            // updateDataImport[redata].quantity += returnOrderData.quantity;
-            updateDataImport[redata] = { ...updateDataImport[redata], ...returnOrderData };
-
-            setRowsData(updateDataImport);
-            toast.info("Sản phẩm đã tồn tại trong danh sách, số lượng và thông tin đã được cập nhật.");
-        } else {
-            const updateDataExport = [...rowsData, returnOrderData];
-            setRowsData(updateDataExport);
-
+            if (existingIndex !== -1) {
+                updateDataExport[existingIndex] = returnOrderData[i];
+            } else {
+                updateDataExport.push(returnOrderData[i]);
+            }
         }
+        setRowsData(updateDataExport);
     }
+
 
     const updateRowData = (rowUpdate, updateData) => {
         // console.log(updateData);
@@ -135,13 +135,14 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId);
     }
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
 
     const handleAddReturntOrder = async () => {
         if (!returnCode.trim()) {
             toast.warning("Vui lòng nhập mã đơn hàng");
-        }
-        else if (!selectedWarehouse) {
-            toast.warning("Vui lòng chọn kho hàng");
         } else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày trả hàng");
         } else if (!selectedSupplierId) {
@@ -150,11 +151,17 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
             toast.warning("Phải có ít nhất một chi tiết đơn hàng để tạo đơn hàng xuất.");
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+            const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
+            if (!warehouseIdToUse) {
+                toast.warning("Vui lòng chọn kho hàng");
+                return;
+            }
             let res = await addNewReturnOrder(
                 userId,
                 returnCode,
                 formatDateImport(selectedDate),
-                selectedWarehouseId,
+                warehouseIdToUse,
                 selectedSupplierId,
                 0
             );
@@ -162,20 +169,19 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
             if (res.isSuccess == true) {
                 let returnOrderId = await getReturnOrderNewest();
                 if (rowsData && rowsData.length > 0) {
-                    await Promise.all(rowsData.map(async (data) => {
-                        data.forEach(item => {
-                            createNewReturnOrderDetail(returnOrderId,
-                                item.goodsId,
-                                item.quantity,
-                                item.reason,
-                                item.batchCode);
-                        })
-                    }));
+                    await Promise.all(rowsData.map(async (data, index) => {
 
-                    toast.success("Thêm lô hàng xuất thành công");
-                    updateTable();
-                    handleCloseModal();
+                        createNewReturnOrderDetail(returnOrderId,
+                            data.goodsId,
+                            data.quantity,
+                            data.reason,
+                            data.batchCode);
+                    })
+                    );
                 }
+                toast.success("Thêm lô hàng xuất thành công");
+                updateTable();
+                handleCloseModal();
             } else {
                 toast.warning("Mã đơn hàng đã tồn tại");
             }
@@ -184,13 +190,33 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         }
     }
     // mở modal AddRowDataExport
-    const handleAddRowDataReturn = () => {
-        if (selectedWarehouseId) {
-            setIsShowRowDataReturn(true);
-        } else {
-            toast.warning("Vui lòng điền kho")
+    // const handleAddRowDataReturn = () => {
+    //     if (roleId === 1 && selectedWarehouseId) {
+    //         setIsShowRowDataReturn(true);
+    //     } else {
+    //         toast.warning("Vui lòng điền kho")
+    //     }
+    // }
+
+    const handleAddRowDataReturn = async () => {
+        if (roleId === 1) {
+            if (selectedWarehouseId) {
+                setIsShowRowDataReturn(true);
+            } else {
+                toast.warning("Vui lòng điền kho")
+            }
+        } else if (roleId === 3) {
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+
+            if (warehouse.warehouseId) {
+                setIsShowRowDataReturn(true);
+            } else {
+                toast.info("Không tìm thấy kho cho người dùng này");
+            }
         }
     }
+
     const handleReset = () => {
         setReturnCode('');
         setNote('');
@@ -250,28 +276,31 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
                                 <Button className='form-control ButtonCSS' type='submit' onClick={handleCreateReturnCode} > Tạo mã đơn </Button>
                             </Col>
                             <div></div>
-                            <Col md={2}>
-                                <DropdownButton
-                                    className="DropdownButtonCSS ButtonCSSDropdown"
-                                    title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
-                                    variant="success"
-                                    style={{ zIndex: 999 }}
-                                >
-                                    <Dropdown.Item eventKey=""
-                                        onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
-
-                                    {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
-                                        <Dropdown.Item
-                                            key={`warehouse ${index}`}
-                                            eventKey={c.warehouseName}
-                                            onClick={(e) => handleStorageClick(c, e)}
+                            {
+                                roleId === 1 ?
+                                    <Col md={2}>
+                                        <DropdownButton
+                                            className="DropdownButtonCSS ButtonCSSDropdown"
+                                            title={selectedWarehouse !== null ? selectedWarehouse : "Tất cả Kho"}
+                                            variant="success"
+                                            style={{ zIndex: 999 }}
                                         >
-                                            {c.warehouseName}
-                                        </Dropdown.Item>
-                                    ))}
-                                </DropdownButton>
-                            </Col>
+                                            <Dropdown.Item eventKey=""
+                                                onClick={() => handleStorageClickTotal()}>Tất cả kho</Dropdown.Item>
 
+                                            {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
+                                                <Dropdown.Item
+                                                    key={`warehouse ${index}`}
+                                                    eventKey={c.warehouseName}
+                                                    onClick={(e) => handleStorageClick(c, e)}
+                                                >
+                                                    {c.warehouseName}
+                                                </Dropdown.Item>
+                                            ))}
+                                        </DropdownButton>
+                                    </Col>
+                                    : ''
+                            }
                             <Col md={3}>
                                 <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                     <Dropdown style={{}}>

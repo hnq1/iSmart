@@ -249,7 +249,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
             if (!warehouseIdToUse) {
-                toast.warning("Vui lòng chọn kho hàng!");
+                toast.warning("Vui lòng chọn kho nhập hàng");
             }
             let isInternalTransfer = true;
             let res = await addNewExportOrder(isInternalTransfer,

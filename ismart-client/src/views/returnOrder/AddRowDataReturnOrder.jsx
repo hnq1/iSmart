@@ -5,8 +5,12 @@ import { toast } from "react-toastify";
 import { fetchAllGoodsInWareAndSup } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchByReturnOrder } from "~/services/ImportOrderDetailServices";
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 
 const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, isShow, handleClose, onChange }) => {
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
+
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
     const [quantityInStock, setQuantityInStock] = useState(0);
@@ -28,44 +32,78 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
         setDataMethod(null);
     }, [selectedMethod]);
 
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
+
     const getAllGoods = async () => {
-        if (selectedStorageId !== null && selectedSupplierId != null) {
-            let res = await fetchAllGoodsInWareAndSup(selectedStorageId, selectedSupplierId);
-            setTotalGoods(res);
+        if (roleId === 1) {
+            if (selectedStorageId !== null && selectedSupplierId != null) {
+                let res = await fetchAllGoodsInWareAndSup(selectedStorageId, selectedSupplierId);
+                setTotalGoods(res);
+            }
+        }
+        else if (roleId === 3) {
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+            if (warehouse.warehouseId !== null && selectedSupplierId != null) {
+                let res = await fetchAllGoodsInWareAndSup(warehouse.warehouseId, selectedSupplierId);
+                setTotalGoods(res);
+            }
         }
     };
 
     const handleGoodClick = async (good, event) => {
-        console.log(good.goodsId);
-        setSelectedGoodCode(good.goodsCode);
-        setSelectedGoodId(good.goodsId);
-        let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
-        console.log(res);
-        setQuantityInStock(res.inStock);
-    };
+        if (roleId === 1) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
+        else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let rs = await getUserIdWarehouse(userId);
+            let res = await fetchGoodinWarehouseById(rs[0].warehouseId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
+    }
 
     const handleManualClick = async () => {
-        let m = await getBatchByReturnOrder(selectedStorageId, selectedGoodId);
-        if (m.length === 0) {
-            toast.warning("Không có lô hàng nào");
-        } else {
-            setDataMethod(m);
-            const importOrderDetailIds = m.map(item => item.importOrderDetailId);
-            setSelectImportOrderDetailId(importOrderDetailIds);
+        if (roleId === 1) {
+            let m = await getBatchByReturnOrder(selectedStorageId, selectedGoodId);
+            if (m.length === 0) {
+                toast.warning("Không có lô hàng nào");
+            } else {
+                setDataMethod(m);
+                const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+                setSelectImportOrderDetailId(importOrderDetailIds);
+            }
+        } else if (roleId === 4 || roleId === 3 || roleId === 2) {
+            let rs = await getUserIdWarehouse(userId);
+            let m = await getBatchByReturnOrder(rs[0].warehouseId, selectedGoodId);
+            if (m.length === 0) {
+                toast.warning("Không có lô hàng nào");
+            } else {
+                setDataMethod(m);
+                const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+                setSelectImportOrderDetailId(importOrderDetailIds);
+            }
         }
     };
 
     const handleInputQuantityChange = (index, value) => {
         const importOrderDetailId = selectImportOrderDetailId[index];
         let quantity = Number(value);
-    
+
         // Ensure the quantity is within the allowed range
         if (quantity > dataMethod[index].quantity) {
             quantity = dataMethod[index].quantity;
         } else if (quantity < 0) {
             quantity = 0;
         }
-    
+
         const newInputQuantities = {
             ...inputQuantities,
             [index]: {
@@ -73,10 +111,10 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
                 importOrderDetailId: importOrderDetailId
             }
         };
-    
+
         setInputQuantities(newInputQuantities);
     };
-    
+
 
     const handleInputReasonChange = (index, value) => {
         const importOrderDetailId = selectImportOrderDetailId[index];
@@ -202,7 +240,7 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
                             <td>{d.quantity}</td>
                             <td>{d.location || 'N/A'}</td>
                             <td>
-                           
+
                                 <input
                                     type="number"
                                     className="form-control"
