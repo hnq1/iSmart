@@ -84,12 +84,7 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
         }
         else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
-            let warehouse = await getWarehouseById(userId);
-            const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
-            if (!warehouseIdToUse) {
-                toast.warning("Vui lòng chọn kho hàng");
-                return;
-            }
+
             if (rowsData && rowsData.length > 0) {
                 const inventoryCheckDetailsArray = rowsData.map((data) => {
                     return {
@@ -107,7 +102,14 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
                         ]
                     };
                 });
-                await createInventoryCheck(selectedWarehouseId, selectedDate, "", inventoryCheckDetailsArray);
+                let warehouse = await getWarehouseById(userId);
+                console.log("warehouse", warehouse);
+                const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
+                if (!warehouseIdToUse) {
+                    toast.warning("Vui lòng chọn kho hàng");
+                    return;
+                }
+                await createInventoryCheck(warehouseIdToUse, selectedDate, "", inventoryCheckDetailsArray);
 
                 toast.success("Thêm đơn kiểm kê thành công");
                 updateTableStock(selectedWarehouseId, selectedWarehouse);

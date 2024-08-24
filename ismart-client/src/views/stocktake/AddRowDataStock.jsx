@@ -228,7 +228,6 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
                         ]
                     };
                 });
-            console.log("inputActualQuantityArray: ", inputActualQuantityArray);
             const stockDataArray = inputActualQuantityArray.map(item => ({
                 totalActualQuantity: totalActualQuantity,
                 expectedQuantity: totalQuantity,
@@ -247,7 +246,6 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
             }));
 
             onChange(stockDataArray);
-            console.log("stockDataArray: ", stockDataArray);
             handleCloseModal();
         }
     }

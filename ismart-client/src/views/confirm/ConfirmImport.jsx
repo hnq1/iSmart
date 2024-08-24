@@ -6,7 +6,7 @@ import { getImportOrderByImportId } from "~/services/ImportOrderServices";
 import { toast } from 'react-toastify';
 import { formatDate } from '~/validate';
 
-const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) => {
+const ConfirmImport = ({ isShow, handleClose, dataImportOrder }) => {
     const [totalOrder, setTotalOrder] = useState(null);
     const userId = parseInt(localStorage.getItem('userId'), 10);
 
@@ -28,7 +28,6 @@ const ConfirmImport = ({ isShow, handleClose, dataImportOrder, updateTable }) =>
     const SaveAddImportOrder = async () => {
         let res = await addSuccessFullImportOrder(dataImportOrder.importId);
         toast.success("Xác nhận nhập kho thành công");
-        updateTable();
         handleClose();
     }
 
