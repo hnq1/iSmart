@@ -66,7 +66,7 @@ function NavbarCom() {
         };
     }, []);
 
-    const handleNotificationClick = (index) => {
+    const handleNotificationClick = async (index) => {
         const selectedMessage = unreadMessages[index];
         const idMatch = selectedMessage.match(/ID (\d+)/);
         const codeMatch = selectedMessage.match(/mã (\w+)/);
@@ -76,13 +76,13 @@ function NavbarCom() {
             const code = codeMatch[1];
             localStorage.setItem('importOrderId', Id);
 
-            if (code.startsWith('IM')) {
+            if (roleId === 1 || roleId === 2 && code.startsWith('IM')) {
                 setIsShowModelConfirmImport(true);
                 setDataImportOrder({ importId: Id });
-            } else if (code.startsWith('XH')) {
+            } else if (roleId === 1 || roleId === 2 && code.startsWith('XH')) {
                 setIsShowModelConfirmEmport(true);
                 setDataEmportOrder({ exportId: Id });
-            } else if (code.startsWith('RO')) {
+            } else if (roleId === 1 || roleId === 2 && code.startsWith('RO')) {
                 setIsShowModelConfirmReturn(true);
                 setDataReturnOrder({ returnId: Id });
             }

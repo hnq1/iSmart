@@ -241,7 +241,7 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
         } else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
-            const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
+            const warehouseIdToUse = roleId === 1 ? selectedWarehouseExportId : warehouse.warehouseId;
             if (!warehouseIdToUse) {
                 toast.warning("Vui lòng chọn kho nhập hàng");
                 return;
@@ -253,12 +253,12 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                 0,
                 "",
                 formatDateImport(selectedDate),
-                selectedWarehouseExportId,
+                warehouseIdToUse,
                 "2024-07-03T16:51:26.339Z",
                 selectedDeliveryId,
                 imageExportOrder,
                 selectedCustomerId,
-                warehouseIdToUse
+                selectedWarehouseImportId
             );
             if (res.isSuccess == true) {
                 let resExportId = await fetchExportOrderNewest();

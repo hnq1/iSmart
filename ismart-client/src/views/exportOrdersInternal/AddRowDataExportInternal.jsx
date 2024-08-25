@@ -5,8 +5,12 @@ import { toast } from "react-toastify";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 
 const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose, onChange }) => {
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
+
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
@@ -34,30 +38,63 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
         setDataMethod();
     }, [selectedMethod])
     const getAllGoods = async () => {
-        if (selectedStorageId !== null) {
-            let res = await fetchAllGoodsInWarehouse(selectedStorageId);
-            setTotalGoods(res);
+        if (roleId === 1) {
+            if (selectedStorageId !== null) {
+                let res = await fetchAllGoodsInWarehouse(selectedStorageId);
+                setTotalGoods(res);
+            }
+        } else if (roleId === 3) {
+            const warehouse = await getWarehouseById(userId);
+            if (warehouse.warehouseId !== null) {
+                let res = await fetchAllGoodsInWarehouse(warehouse.warehouseId);
+                setTotalGoods(res);
+            }
         }
     }
 
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
+
     const handleGoodClick = async (good, event) => {
-        setSelectedGoodCode(good.goodsCode);
-        setSelectedGoodId(good.goodsId);
-        let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
-        setQuantityInStock(res.inStock);
+        if (roleId === 1) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        } else if (roleId === 3) {
+            const warehouse = await getWarehouseById(userId);
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let res = await fetchGoodinWarehouseById(warehouse.warehouseId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
     }
 
 
 
     const handleSelectMethod = async (method) => {
-        if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
-            toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
-            return;
+        if (roleId === 1) {
+            if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
+                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                return;
+            }
+            setSelectedMethod(method);
+            let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
+            setDataMethod(res);
+            setSelectImportOrderDetailId(res[0].importOrderDetailId);
+        } else if (roleId === 3) {
+            const warehouse = await getWarehouseById(userId);
+            if (!selectedGoodId || !warehouse.warehouseId || quantity <= 0) {
+                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                return;
+            }
+            setSelectedMethod(method);
+            let res = await getBatchInventoryForExportgoods(warehouse.warehouseId, selectedGoodId, quantity, method);
+            setDataMethod(res);
+            setSelectImportOrderDetailId(res[0].importOrderDetailId);
         }
-        setSelectedMethod(method);
-        let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
-        setDataMethod(res);
-        setSelectImportOrderDetailId(res[0].importOrderDetailId);
     };
 
 
