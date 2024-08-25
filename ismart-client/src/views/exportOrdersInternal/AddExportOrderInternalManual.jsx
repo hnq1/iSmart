@@ -315,46 +315,22 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                                 <input type="text" className="form-control inputCSS" placeholder="Mã đơn hàng" value={exportCode} onChange={(event) => setExportCode(event.target.value)} />
                             </div>
                         </Col> */}
-                        {
-                            roleId === 1 ?
-                                <Col md={2}>
-                                    <DropdownButton
-                                        className="DropdownButtonCSS ButtonCSSDropdown"
-                                        title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
-                                        variant="success"
-                                        style={{ zIndex: 999 }}
-                                    >
-                                        <Dropdown.Item eventKey=""
-                                            onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
-
-                                        {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
-                                            <Dropdown.Item
-                                                key={`warehouse ${index}`}
-                                                eventKey={c.warehouseName}
-                                                onClick={(e) => handleStorageClickImport(c, e)}
-                                            >
-                                                {c.warehouseName}
-                                            </Dropdown.Item>
-                                        ))}
-                                    </DropdownButton>
-                                </Col>
-                                : ''
-                        }
-
 
                         <Col md={2}>
                             <DropdownButton
                                 className="DropdownButtonCSS ButtonCSSDropdown"
-                                title={selectedWarehouseExport !== null ? selectedWarehouseExport : "Tất cả Kho Xuất"}
+                                title={selectedWarehouseImport !== null ? selectedWarehouseImport : "Tất cả Kho Nhập"}
                                 variant="success"
                                 style={{ zIndex: 999 }}
                             >
-                                <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotalExport()}>Tất cả kho Xuất</Dropdown.Item>
-                                {totalWarehouse2 && totalWarehouse2.length > 0 && totalWarehouse2.map((c, index) => (
+                                <Dropdown.Item eventKey=""
+                                    onClick={() => handleStorageClickTotalImport()}>Tất cả kho Nhập</Dropdown.Item>
+
+                                {totalWarehouse1 && totalWarehouse1.length > 0 && totalWarehouse1.map((c, index) => (
                                     <Dropdown.Item
                                         key={`warehouse ${index}`}
                                         eventKey={c.warehouseName}
-                                        onClick={(e) => handleStorageClickExport(c, e)}
+                                        onClick={(e) => handleStorageClickImport(c, e)}
                                     >
                                         {c.warehouseName}
                                     </Dropdown.Item>
@@ -363,6 +339,30 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
                         </Col>
 
 
+                        {
+                            roleId === 1 ?
+                                <Col md={2}>
+                                    <DropdownButton
+                                        className="DropdownButtonCSS ButtonCSSDropdown"
+                                        title={selectedWarehouseExport !== null ? selectedWarehouseExport : "Tất cả Kho Xuất"}
+                                        variant="success"
+                                        style={{ zIndex: 999 }}
+                                    >
+                                        <Dropdown.Item eventKey="" onClick={() => handleStorageClickTotalExport()}>Tất cả kho Xuất</Dropdown.Item>
+                                        {totalWarehouse2 && totalWarehouse2.length > 0 && totalWarehouse2.map((c, index) => (
+                                            <Dropdown.Item
+                                                key={`warehouse ${index}`}
+                                                eventKey={c.warehouseName}
+                                                onClick={(e) => handleStorageClickExport(c, e)}
+                                            >
+                                                {c.warehouseName}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </DropdownButton>
+                                </Col>
+
+                                : ''
+                        }
                         {/* <Col md={3} >
                             <div className="align-middle text-nowrap" style={{ overflow: 'visible' }}>
                                 <Dropdown style={{ position: 'relative' }}>

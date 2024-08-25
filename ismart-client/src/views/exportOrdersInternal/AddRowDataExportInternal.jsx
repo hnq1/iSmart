@@ -35,8 +35,12 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
     // }, [selectedGoodId])
 
     useEffect(() => {
+        handleSelectMethod(selectedMethod);
         setDataMethod();
     }, [selectedMethod])
+
+
+
     const getAllGoods = async () => {
         if (roleId === 1) {
             if (selectedStorageId !== null) {
@@ -70,6 +74,10 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
             let res = await fetchGoodinWarehouseById(warehouse.warehouseId, good.goodsId);
             setQuantityInStock(res.inStock);
         }
+        // Gọi lại handleSelectMethod nếu phương thức đã được chọn
+        if (selectedMethod) {
+            handleSelectMethod(selectedMethod);
+        }
     }
 
 
@@ -82,8 +90,12 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
             }
             setSelectedMethod(method);
             let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
-            setDataMethod(res);
-            setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            if (res && res.length > 0) {
+                setDataMethod(res);
+                setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            } else {
+                toast.warning("Không tìm thấy thông tin lô hàng");
+            }
         } else if (roleId === 3) {
             const warehouse = await getWarehouseById(userId);
             if (!selectedGoodId || !warehouse.warehouseId || quantity <= 0) {
@@ -92,14 +104,23 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
             }
             setSelectedMethod(method);
             let res = await getBatchInventoryForExportgoods(warehouse.warehouseId, selectedGoodId, quantity, method);
-            setDataMethod(res);
-            setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            if (res && res.length > 0) {
+                setDataMethod(res);
+                setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            } else {
+                toast.warning("Không tìm thấy thông tin lô hàng");
+            }
         }
     };
 
 
     const handleChangeQuantity = (event) => {
-        setQuantity(event.target.value);
+        const value = event.target.value;
+        if (!value) {
+            toast.warning("Vui lòng nhập số lượng");
+        } else {
+            setQuantity(value);
+        }
     }
 
 
@@ -107,10 +128,12 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
     const handleConfirmRowData = () => {
         if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm")
-        } else if (quantity === 0) {
-            toast.warning("Vui lòng nhập số lượng lớn hơn 0")
+            // } else if (quantity > 0) {
+            //     toast.warning("Vui lòng nhập số lượng lớn hơn 0")
         } else if (quantity > quantityInStock) {
             toast.warning("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
+        } else if (!Array.isArray(dataMethod) || dataMethod.length === 0) {
+            toast.warning("Vui lòng chọn phương thức xuất kho");
         } else {
             // Tạo mảng từ dataMethod để gửi đi
             const inputQuantitiesArray = dataMethod.map(item => ({
