@@ -55,6 +55,7 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
     };
 
     const handleGoodClick = async (good, event) => {
+        handleReset();
         if (roleId === 1) {
             setSelectedGoodCode(good.goodsCode);
             setSelectedGoodId(good.goodsId);

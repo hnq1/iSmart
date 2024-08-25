@@ -83,9 +83,6 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
 
     const takeRowDataExportOrder = (returnOrderData) => {
         const updateDataExport = [...rowsData];
-
-        console.log("exportData: ", returnOrderData);
-
         for (var i = 0; i < returnOrderData.length; i++) {
             const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === returnOrderData[i].importOrderDetailId);
 
@@ -113,13 +110,13 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
 
     const deleteRowData = (rowdel) => {
         // Loại bỏ bản ghi tại chỉ số rowdel
-        const updateDataImport = rowsData.filter((_, index) => index !== rowdel);
+        const updateDataImport = rowsData.filter((item, index) => index !== rowdel);
         setRowsData(updateDataImport);
     }
     // render rowsData
     const renderReturnData = () => {
         return rowsData.map((data, index) => (
-            <RowDataReturnOrderManual key={index} data={rowsData[index]} index={index}
+            <RowDataReturnOrderManual key={`rdt${index}`} data={rowsData[index]} index={index}
                 deleteRowData={deleteRowData}
                 updateRowData={updateRowData}
             />

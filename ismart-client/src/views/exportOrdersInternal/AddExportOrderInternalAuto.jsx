@@ -109,9 +109,7 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
     // xóa rowdata ở rowdataImport
     const deleteRowData = (rowdel) => {
         const updateDataExport = rowsData.filter((item, index) => index !== rowdel);
-        const deletePrice = rowsData[rowdel].totalOneGoodPrice;
         setRowsData(updateDataExport);
-        setTotalPrice(x => x - deletePrice ? x - deletePrice : 0);
     }
 
 
@@ -119,8 +117,6 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
     const takeRowDataExportOrder = (exportData) => {
 
         const updateDataExport = [...rowsData];
-
-        console.log("exportData: ", exportData);
 
         for (var i = 0; i < exportData.length; i++) {
             const existingIndex = updateDataExport.findIndex(item => item.importOrderDetailId === exportData[i].importOrderDetailId);
@@ -137,7 +133,6 @@ const ModelAddExportOrderInternalAuto = ({ isShow, handleClose, updateTable }) =
 
     // update 1 row data từ RowDataImport
     const updateRowData = (rowUpdate, updateData) => {
-        console.log(updateData);
         const updateDataImport = [...rowsData];
         updateDataImport[rowUpdate] = updateData;
         setTotalPrice(x => x - rowsData[rowUpdate].totalOneGoodPrice + updateData.totalOneGoodPrice);

@@ -38,7 +38,7 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
         setIsShowEditRowData(true);
     };
 
-    const handleDeleteRowData = (item, index) => {
+    const handleDeleteRowData = () => {
         deleteRowData(index);
     }
 
@@ -100,7 +100,7 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
                             <input type="text" className="form-control" value={reason} disabled />
                         </div>
                     </Col>
-                    <Col md={1}>
+                    {/* <Col md={1}>
                         <div className="form-group mb-3 ButtonCSSDropdown">
                             <button
                                 className="btn btn-success border-left-0 rounded "
@@ -110,7 +110,7 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
                                 Sửa
                             </button>
                         </div>
-                    </Col>
+                    </Col> */}
 
                     <Col md={1}>
                         <div className="form-group mb-3 ButtonCSSDropdown red">

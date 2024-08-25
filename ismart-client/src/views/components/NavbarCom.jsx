@@ -76,13 +76,13 @@ function NavbarCom() {
             const code = codeMatch[1];
             localStorage.setItem('importOrderId', Id);
 
-            if (roleId === 1 || roleId === 2 && code.startsWith('IM')) {
+            if (code.startsWith('IM')) {
                 setIsShowModelConfirmImport(true);
                 setDataImportOrder({ importId: Id });
-            } else if (roleId === 1 || roleId === 2 && code.startsWith('XH')) {
+            } else if (code.startsWith('XH')) {
                 setIsShowModelConfirmEmport(true);
                 setDataEmportOrder({ exportId: Id });
-            } else if (roleId === 1 || roleId === 2 && code.startsWith('RO')) {
+            } else if (code.startsWith('RO')) {
                 setIsShowModelConfirmReturn(true);
                 setDataReturnOrder({ returnId: Id });
             }
