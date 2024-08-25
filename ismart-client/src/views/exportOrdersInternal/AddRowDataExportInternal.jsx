@@ -85,7 +85,7 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
     const handleSelectMethod = async (method) => {
         if (roleId === 1) {
             if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
-                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                // toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
                 return;
             }
             setSelectedMethod(method);
@@ -99,7 +99,7 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
         } else if (roleId === 3) {
             const warehouse = await getWarehouseById(userId);
             if (!selectedGoodId || !warehouse.warehouseId || quantity <= 0) {
-                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                // toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
                 return;
             }
             setSelectedMethod(method);

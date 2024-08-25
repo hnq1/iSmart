@@ -97,7 +97,7 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
         }
     }
     const handleInputQuantityChange = (index, value) => {
-        const importOrderDetailId = selectImportOrderDetailId[index];   
+        const importOrderDetailId = selectImportOrderDetailId[index];
         // Điều chỉnh giá trị nếu nhỏ hơn 0 hoặc lớn hơn d.quantity
         let adjustedValue = Number(value);
         if (adjustedValue < 0) {
@@ -131,7 +131,10 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
             toast.warning("Vui lòng chọn sản phẩm");
         } else if (quantity > 0) {
             toast.warning("Vui lòng nhập số lượng lớn hơn 0");
+            
         } else {
+
+            
             // Tạo mảng từ inputQuantities để gửi đi
             const inputQuantitiesArray = Object.keys(inputQuantities).map(key => ({
                 importOrderDetailId: inputQuantities[key].importOrderDetailId,
