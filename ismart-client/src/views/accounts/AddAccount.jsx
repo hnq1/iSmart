@@ -121,6 +121,7 @@ const ModalAddAccount = ({ isShow, handleClose, updateTable }) => {
                     address,
                     image,
                     fullName);
+                    console.log("res",res);
                 if (res.isSuccess) {
                     toast.success("Thêm mới tài khoản thành công");
                     updateTable();

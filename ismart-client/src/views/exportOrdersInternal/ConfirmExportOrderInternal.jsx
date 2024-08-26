@@ -67,14 +67,14 @@ const ConfirmExportOrderInternal = ({ isShow, handleClose, dataImportOrder, upda
                         <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Kho nhập hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseName}</button>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseDestinationName}</button>
                             </div>
                         </Col>
 
                         <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Kho xuất hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseDestinationName}</button>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{dataImportOrder.warehouseName}</button>
                             </div>
                         </Col>
                         <Col md={3}>
