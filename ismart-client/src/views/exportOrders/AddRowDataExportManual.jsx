@@ -215,7 +215,6 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
 
             onChange(exportDataArray);
-            console.log("ExportOrderManual: ", exportDataArray);
             handleCloseModal();
         }
     }
@@ -238,9 +237,9 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
         setIsManualClick(false); // mặc định phương thức xuất kho
     }
-    const isSaveButtonDisabled = () => {
-        return Object.values(inputQuantities).some(item => item.quantity === 0);
-    };
+    // const isSaveButtonDisabled = () => {
+    //     return Object.values(inputQuantities).some(item => item.quantity === 0);
+    // };
     return (
 
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
@@ -360,7 +359,9 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                 </tbody>
             </Table>
             <Modal.Footer>
-                <Button variant="primary" className="ButtonCSS" onClick={handleConfirmRowData} disabled={isSaveButtonDisabled()}>
+                <Button variant="primary" className="ButtonCSS" onClick={handleConfirmRowData} 
+                // disabled={isSaveButtonDisabled()}
+                >
                     Xác nhận xuất kho
                 </Button>
             </Modal.Footer>

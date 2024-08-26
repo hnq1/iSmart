@@ -153,7 +153,6 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
             }));
 
             onChange(exportDataArray);
-            console.log("ExportOrderManual: ", exportDataArray);
             handleCloseModal();
         }
     }

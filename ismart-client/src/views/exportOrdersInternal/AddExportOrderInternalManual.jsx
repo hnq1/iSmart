@@ -139,7 +139,6 @@ const ModelAddExportOrderInternalManual = ({ isShow, handleClose, updateTable })
 
     // update 1 row data từ RowDataImport
     const updateRowData = (rowUpdate, updateData) => {
-        console.log(updateData);
         const updateDataImport = [...rowsData];
         updateDataImport[rowUpdate] = updateData;
         setTotalPrice(x => x - rowsData[rowUpdate].totalOneGoodPrice + updateData.totalOneGoodPrice);
