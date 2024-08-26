@@ -64,38 +64,48 @@ namespace iSmart.Service
             }
         }
 
-      
+
 
 
         public async Task<IEnumerable<ImportReportDto>> GetImportReport(DateTime? startDate, DateTime? endDate, int warehouseId)
         {
-            var query = _context.ImportOrders
-                .Where(io => io.WarehouseId == warehouseId && io.StatusId == 4)
-                .Include(io => io.Warehouse)
-                .Include(io => io.ImportOrderDetails)
-                .ThenInclude(iod => iod.Goods)
-                .AsQueryable();
-
-            if (startDate.HasValue && endDate.HasValue)
+            try
             {
-                endDate = endDate.Value.AddDays(1);
-                query = query.Where(io => io.ImportedDate >= startDate.Value && io.ImportedDate <= endDate.Value);
-            }
+                var query = _context.ImportOrders
+                    .Where(io => io.WarehouseId == warehouseId && io.StatusId == 4)
+                    .Include(io => io.Warehouse)
+                    .Include(io => io.ImportOrderDetails)
+                    .ThenInclude(iod => iod.Goods)
+                    .AsQueryable();
 
-            var importReports = await query
-                .Select(io => new ImportReportDto
+                if (startDate.HasValue && endDate.HasValue)
                 {
-                    TransactionCode = io.ImportCode,
-                    ProductId = io.ImportOrderDetails.Select(iod => iod.GoodsId).FirstOrDefault(),
-                    ProductName = io.ImportOrderDetails.Select(iod => iod.Goods.GoodsCode).FirstOrDefault(),
-                    Quantity = io.ImportOrderDetails.Sum(iod => iod.Quantity),
-                    TransactionDate = (DateTime)io.ImportedDate,
-                    MeasureUnit = io.ImportOrderDetails.Select(iod => iod.Goods.MeasuredUnit).FirstOrDefault()
-                })
-                .ToListAsync();
+                    endDate = endDate.Value.AddDays(1);
+                    query = query.Where(io => io.ImportedDate >= startDate.Value && io.ImportedDate <= endDate.Value);
+                }
 
-            return importReports;
+                var importReports = await query
+                    .SelectMany(io => io.ImportOrderDetails.Select(iod => new ImportReportDto
+                    {
+                        TransactionCode = io.ImportCode,
+                        ProductId = iod.GoodsId,
+                        ProductName = iod.Goods.GoodsCode,
+                        Quantity = iod.Quantity,
+                        MeasureUnit = iod.Goods.MeasuredUnit,
+                        TransactionDate = (DateTime)io.ImportedDate
+                    }))
+                    .ToListAsync();
+
+                return importReports;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
+
+
+
 
         public async Task<IEnumerable<ImportReportDto>> GetImportReportByGoodCode(DateTime? startDate, DateTime? endDate, int warehouseId, string goodCode)
         {
@@ -287,3 +297,5 @@ namespace iSmart.Service
         public int Exports { get; set; }
     }
 }
+
+
