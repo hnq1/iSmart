@@ -51,7 +51,7 @@ namespace iSmart.Service
                 {
                     _context.Add(returnOrder);
                     _context.SaveChanges();
-                    Task.Run(() => _webSocketService.SendMessageAsync($"Đơn hàng xuất kho có mã {returnOrder.ReturnOrderCode} và ID {returnOrder.ReturnOrderId} cần được xác nhận"));
+                    Task.Run(() => _webSocketService.SendMessageAsync($"Đơn hàng xuất kho có mã {returnOrder.ReturnOrderCode} và ID {returnOrder.ReturnOrderId} cần được xác nhận. warehouseId: {request.WarehouseId}"));
                     return new CreateReturnOrderResponse { IsSuccess = true, Message = "Create return order successfully" };
                 }
                 else return new CreateReturnOrderResponse { IsSuccess = false, Message = "Return order code already exists" };
