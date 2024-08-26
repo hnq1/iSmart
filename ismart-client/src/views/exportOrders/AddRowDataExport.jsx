@@ -11,9 +11,12 @@ import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChange }) => {
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
+
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
+
     const [quantityInStock, setQuantityInStock] = useState(0);
+
 
     const [totalGoods, setTotalGoods] = useState([]);
     const [selectedGoodCode, setSelectedGoodCode] = useState(null);
@@ -27,72 +30,77 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
         getAllGoods();
     }, [selectedStorageId])
 
-    // useEffect(() => {
-    //     if (selectedGoodId) {
-    //         let res = getGoodinWarehouseById(selectedGoodId);
-    //     }
 
-    // }, [selectedGoodId])
 
     useEffect(() => {
+        handleSelectMethod(selectedMethod);
         setDataMethod();
     }, [selectedMethod])
+
     const getAllGoods = async () => {
         if (roleId === 1) {
             if (selectedStorageId !== null) {
                 let res = await fetchAllGoodsInWarehouse(selectedStorageId);
                 setTotalGoods(res);
             }
-        } else if (roleId === 4 || roleId === 3 || roleId === 2) {
-            let rs = await getUserIdWarehouse(userId);
-            if (rs !== null) {
-                let res = await fetchAllGoodsInWarehouse(rs[0].warehouseId);
+        } else if (roleId === 3) {
+            let warehouse = await getUserIdWarehouse(userId);
+            if (warehouse[0].warehouseId !== null) {
+                let res = await fetchAllGoodsInWarehouse(warehouse[0].warehouseId);
                 setTotalGoods(res);
             }
         }
     }
 
     const handleGoodClick = async (good, event) => {
+        handleReset();
+
         if (roleId === 1) {
             setSelectedGoodCode(good.goodsCode);
             setSelectedGoodId(good.goodsId);
             let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
             setQuantityInStock(res.inStock);
         }
-        else if (roleId === 4 || roleId === 3 || roleId === 2) {
+        else if (roleId === 3) {
             setSelectedGoodCode(good.goodsCode);
             setSelectedGoodId(good.goodsId);
             let rs = await getUserIdWarehouse(userId);
             let res = await fetchGoodinWarehouseById(rs[0].warehouseId, good.goodsId);
             setQuantityInStock(res.inStock);
         }
-    }
 
+    }
 
 
     const handleSelectMethod = async (method) => {
         if (roleId === 1) {
             if (!selectedGoodId || !selectedStorageId || quantity <= 0) {
-                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                // toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
                 return;
             }
             setSelectedMethod(method);
             let res = await getBatchInventoryForExportgoods(selectedStorageId, selectedGoodId, quantity, method);
-            setDataMethod(res);
-            setSelectImportOrderDetailId(res[0].importOrderDetailId);
-            // console.log("method:", res[0].importOrderDetailId);
+            if (res && res.length > 0) {
+                setDataMethod(res);
+                setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            } else {
+                toast.warning("Không tìm thấy thông tin lô hàng");
+            }
         }
-        if (roleId === 4 || roleId === 3 || roleId === 2) {
+        if (roleId === 3) {
             let rs = await getUserIdWarehouse(userId);
             if (!selectedGoodId || !rs[0].warehouseId || quantity <= 0) {
-                toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
+                // toast.warning("Vui lòng chọn sản phẩm và số lượng trước khi chọn phương thức xuất kho");
                 return;
             }
             setSelectedMethod(method);
             let res = await getBatchInventoryForExportgoods(rs[0].warehouseId, selectedGoodId, quantity, method);
-            setDataMethod(res);
-            setSelectImportOrderDetailId(res[0].importOrderDetailId);
-            // console.log("method:", res[0].importOrderDetail
+            if (res && res.length > 0) {
+                setDataMethod(res);
+                setSelectImportOrderDetailId(res[0].importOrderDetailId);
+            } else {
+                toast.warning("Không tìm thấy thông tin lô hàng");
+            }
         }
     };
 
@@ -110,6 +118,8 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
             toast.warning("Vui lòng nhập số lượng lớn hơn 0")
         } else if (quantity > quantityInStock) {
             toast.warning("Vui lòng nhập số lượng nhỏ hơn số lượng trong kho");
+        } else if (!Array.isArray(dataMethod) || dataMethod.length === 0) {
+            toast.warning("Vui lòng chọn phương thức xuất kho");
         } else {
             // Tạo mảng từ dataMethod để gửi đi
             const inputQuantitiesArray = dataMethod.map(item => ({
@@ -141,8 +151,6 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
 
     const handleReset = () => {
         setSelectedMethod(null);
-        // setSelectedSupplier(null);
-        // setSelectedSupplierId(null);
         setSelectedGoodCode(null);
         setSelectedGoodId(null);
         setQuantityInStock(0);
@@ -173,11 +181,7 @@ const AddRowDataExportOrder = ({ selectedStorageId, isShow, handleClose, onChang
                                     </Dropdown.Item>
                                 ))}
 
-                                {/* {totalGoods.length === 0 && (
-                                    <Dropdown.Item key="empty" disabled>
-                                        Không có mặt hàng
-                                    </Dropdown.Item>
-                                )} */}
+                                
                             </Dropdown.Menu>
                         </Dropdown>
 

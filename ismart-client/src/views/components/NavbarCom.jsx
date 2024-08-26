@@ -66,7 +66,7 @@ function NavbarCom() {
         };
     }, []);
 
-    const handleNotificationClick = (index) => {
+    const handleNotificationClick = async (index) => {
         const selectedMessage = unreadMessages[index];
         const idMatch = selectedMessage.match(/ID (\d+)/);
         const codeMatch = selectedMessage.match(/mã (\w+)/);

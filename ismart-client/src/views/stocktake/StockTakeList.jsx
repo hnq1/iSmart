@@ -13,6 +13,7 @@ import ModalCancelStockTake from './ModalCancelStockTake';
 import { downloadInventoryCheck } from '~/services/StockTakeServices';
 import { formatDate } from '~/validate';
 import { format } from 'date-fns';
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 
 const StockTakeList = () => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
@@ -64,16 +65,25 @@ const StockTakeList = () => {
     }
 
     const getAllStockTake = async (warehouseId) => {
-        let res = await fetchInventoryByWarehouseId(warehouseId);
-        setListStockTake(res);
+        if (roleId === 1) {
+            let res = await fetchInventoryByWarehouseId(warehouseId);
+            setListStockTake(res);
+        } else if (roleId === 4) {
+            let warehouse = await getWarehouseById(userId);
+            let res = await fetchInventoryByWarehouseId(warehouse.warehouseId);
+            setListStockTake(res);
+        }
     }
-
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
     }
 
-    const updateTableStock = (id,warehouseName) => {
+    const updateTableStock = (id, warehouseName) => {
         getAllStockTake(id);
         setSelectedWarehouseId(id);
         setSelectedWarehouse(warehouseName);
@@ -82,7 +92,7 @@ const StockTakeList = () => {
     const handleStorageClick = async (warehouse) => {
         setSelectedWarehouse(warehouse.warehouseName);
         setSelectedWarehouseId(warehouse.warehouseId);
-        updateTableStock(warehouse.warehouseId,warehouse.warehouseName);
+        updateTableStock(warehouse.warehouseId, warehouse.warehouseName);
     }
 
     const handleShowModalDetail = (detail) => {
@@ -106,7 +116,6 @@ const StockTakeList = () => {
     const ShowModalCancelStock = (data) => {
         setIsShowModalCancelStock(true);
         setDataCancelStock(data);
-        console.log(dataCancelStock);
     }
 
     const ConfirmCancel = async (confirm) => {

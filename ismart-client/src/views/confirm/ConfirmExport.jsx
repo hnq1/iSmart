@@ -5,7 +5,7 @@ import { addSuccessFullExportOrder } from "~/services/ExportOrderService";
 import { formatDate } from '~/validate';
 import { fetchExportOrderByExportId } from "~/services/ExportOrderService";
 
-const ConfirmExport = ({ isShow, handleClose, dataEmportOrder, updateTable }) => {
+const ConfirmExport = ({ isShow, handleClose, dataEmportOrder }) => {
     const [totalOrder, setTotalOrder] = useState([]);
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
@@ -35,7 +35,6 @@ const ConfirmExport = ({ isShow, handleClose, dataEmportOrder, updateTable }) =>
 
         } else {
             toast.success("Xác nhận xuất kho thành công");
-            updateTable();
             handleClose();
         }
 

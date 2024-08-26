@@ -65,6 +65,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
 
     const handleGoodClick = async (good, event) => {
+        handleReset();
         if (roleId === 1) {
             setSelectedGoodCode(good.goodsCode);
             setSelectedGoodId(good.goodsId);
@@ -163,6 +164,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
         // Kiểm tra và điều chỉnh giá trị nếu vượt quá d.quantity
         const adjustedValue = Math.min(Number(value), dataMethod[index].actualQuantity);
 
+
         // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
         const newInputQuantities = {
             ...inputQuantities,
@@ -188,7 +190,10 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             toast.warning("Vui lòng chọn sản phẩm");
         } else if (!isManualClick) {
             toast.warning("Vui lòng chọn phương thức xuất kho");
+        } else if (!Array.isArray(dataMethod) || dataMethod.length === 0) {
+            toast.warning("Vui lòng chọn phương thức xuất kho");
         }
+
         else {
             // Tạo mảng từ inputQuantities để gửi đi
             const inputQuantitiesArray = Object.keys(inputQuantities).map(key => ({
@@ -233,7 +238,9 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
         setIsManualClick(false); // mặc định phương thức xuất kho
     }
-
+    const isSaveButtonDisabled = () => {
+        return Object.values(inputQuantities).some(item => item.quantity === 0);
+    };
     return (
 
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
@@ -353,7 +360,7 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                 </tbody>
             </Table>
             <Modal.Footer>
-                <Button variant="primary" className="ButtonCSS" onClick={handleConfirmRowData}>
+                <Button variant="primary" className="ButtonCSS" onClick={handleConfirmRowData} disabled={isSaveButtonDisabled()}>
                     Xác nhận xuất kho
                 </Button>
             </Modal.Footer>

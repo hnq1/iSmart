@@ -34,14 +34,13 @@ const ModalDetailExportOrderInternal = ({ isShow, handleClose, detailOrder }) =>
                         <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Kho nhập hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseName}</button>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseDestinationName}</button>
                             </div>
                         </Col>
-
                         <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Kho xuất hàng</label>
-                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseDestinationName}</button>
+                                <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.warehouseName}</button>
                             </div>
                         </Col>
 

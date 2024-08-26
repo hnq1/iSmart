@@ -27,14 +27,6 @@ import ReactToPrint from 'react-to-print';
 function MyTable() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10);
-    const navigate = useNavigate();
-
-
-    useEffect(() => {
-        if (![1, 2, 4].includes(roleId)) {
-            navigate('/ban-khong-co-quyen-truy-cap'); // Chuyển hướng người dùng không phù hợp
-        }
-    }, [roleId, navigate]);
 
 
     const [pageSize, setPageSize] = useState(15);
@@ -456,13 +448,19 @@ function MyTable() {
                                     </div>
                                     : ''
                             }
-                            <div className="col">
-                                <button className="btn btn-success border-left-0 rounded ButtonCSS"
-                                    variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()} >
-                                    <i className="fa-solid fa-file-import"></i>
-                                    &nbsp;&nbsp;&nbsp;Nhập bằng Excel
-                                </button>
-                            </div>
+
+
+                            {
+                                (roleId == 1 || roleId == 2) ?
+                                    <div className="col">
+                                        <button className="btn btn-success border-left-0 rounded ButtonCSS"
+                                            variant="primary" style={{ zIndex: 999 }} onClick={() => handleImportClick()} >
+                                            <i className="fa-solid fa-file-import"></i>
+                                            &nbsp;&nbsp;&nbsp;Nhập bằng Excel
+                                        </button>
+                                    </div>
+                                    : ''
+                            }
                         </div>
                     </Row>
 
@@ -535,7 +533,7 @@ function MyTable() {
 
                                     <th className="align-middle text-nowrap">BARCODE</th>
                                     <th className="align-middle text-nowrap">LỊCH SỬ<br />HÀNG HÓA</th>
-                                    <th className="align-middle text-nowrap">TUỲ CHỌN</th>
+                                    {(roleId === 1 || roleId === 2) ? <th className="align-middle text-nowrap">TUỲ CHỌN</th> : ''}
 
 
                                 </tr>

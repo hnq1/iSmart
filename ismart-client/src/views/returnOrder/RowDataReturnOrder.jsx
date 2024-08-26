@@ -10,14 +10,27 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
     const [orderData, setOrderData] = useState([]);
     const [odata, setOData] = useState([])
 
+    const [goodsCode, setGoodsCode] = useState();
+    const [quantity, setQuantity] = useState();
+    const [batchCode, setBatchCode] = useState();
+    const [reason, setReason] = useState();
+
+
     useEffect(() => {
-        // Kiểm tra và chuyển đổi dữ liệu thành mảng nếu cần thiết
-        if (Array.isArray(data)) {
-            setOData(data);
-        } else {
-            setOData(Object.values(data));
-        }
-    }, [data]);
+        setGoodsCode(data.goodsCode);
+        setQuantity(data.quantity);
+        setBatchCode(data.batchCode);
+        setReason(data.reason);
+    }, [data])
+    // useEffect(() => {
+    //     // Kiểm tra và chuyển đổi dữ liệu thành mảng nếu cần thiết
+    //     if (Array.isArray(data)) {
+    //         setOData(data);
+    //     } else {
+    //         setOData(Object.values(data));
+    //     }
+    //     console.log("RowDataReturnOrderManual: ", data);
+    // }, [data]);
 
     const handleEditRowData = (item, index) => {
         setOrderData(item);
@@ -25,7 +38,7 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
         setIsShowEditRowData(true);
     };
 
-    const handleDeleteRowData = (item, index) => {
+    const handleDeleteRowData = () => {
         deleteRowData(index);
     }
 
@@ -41,82 +54,85 @@ const RowDataReturnOrderManual = ({ data, index, deleteRowData, updateRowData })
         setIsShowEditRowData(false);
     };
 
-    return (<><Row>
+    return (
+        <>
+            <Row>
 
-        {odata && odata.length > 0 && (
-            <Row className="mb-3">
-                <Col md={3}>
-                    <label>Mã Sản phẩm</label>
-                </Col>
-                <Col md={2}>
-                    <label>Số lượng</label>
-                </Col>
-                <Col md={2}>
-                    <label>Lô hàng</label>
-                </Col>
-                <Col md={2}>
-                    <label>Lý do</label>
-                </Col>
-                <Col md={1}></Col> {/* Cột cho nút Sửa */}
-                <Col md={1}></Col> {/* Cột cho nút Xóa */}
+                {/* {odata && odata.length > 0 && ( */}
+                <Row className="mb-3">
+                    <Col md={3}>
+                        <label>Mã Sản phẩm</label>
+                    </Col>
+                    <Col md={2}>
+                        <label>Số lượng</label>
+                    </Col>
+                    <Col md={2}>
+                        <label>Lô hàng</label>
+                    </Col>
+                    <Col md={2}>
+                        <label>Lý do</label>
+                    </Col>
+                    <Col md={1}></Col> {/* Cột cho nút Sửa */}
+                    <Col md={1}></Col> {/* Cột cho nút Xóa */}
+                </Row>
+                {/* )} */}
+                {/* {odata && odata.length > 0 && odata.map((item, index) => ( */}
+                {/* <Row key={index} className="mb-3"> */}
+                <Row className="mb-3">
+                    <Col md={3}>
+                        <div className="form-group mb-3">
+                            <input type="text" className="form-control" defaultValue={goodsCode} disabled />
+                        </div>
+                    </Col>
+
+                    <Col md={2}>
+                        <div className="form-group mb-3">
+                            <input type="number" className="form-control" value={quantity} disabled />
+                        </div>
+                    </Col>
+                    <Col md={2}>
+                        <div className="form-group mb-3">
+                            <input type="text" className="form-control" defaultValue={batchCode} disabled />
+                        </div>
+                    </Col>
+                    <Col md={2}>
+                        <div className="form-group mb-3">
+                            <input type="text" className="form-control" value={reason} disabled />
+                        </div>
+                    </Col>
+                    {/* <Col md={1}>
+                        <div className="form-group mb-3 ButtonCSSDropdown">
+                            <button
+                                className="btn btn-success border-left-0 rounded "
+                                type="button"
+                                onClick={() => handleEditRowData(data)}
+                            >
+                                Sửa
+                            </button>
+                        </div>
+                    </Col> */}
+
+                    <Col md={1}>
+                        <div className="form-group mb-3 ButtonCSSDropdown red">
+                            <button
+                                className="btn btn-danger border-left-0 rounded "
+                                type="button"
+                                onClick={() => handleDeleteRowData(data)}
+                            >
+                                Xóa
+                            </button>
+                        </div>
+                    </Col>
+                </Row>
+                {/* ))} */}
+
+
+
+
+
             </Row>
-        )}
-        {odata && odata.length > 0 && odata.map((item, index) => (
-            <Row key={index} className="mb-3">
-                <Col md={3}>
-                    <div className="form-group mb-3">
-                        <input type="text" className="form-control" defaultValue={item.goodsCode} disabled />
-                    </div>
-                </Col>
-
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <input type="number" className="form-control" value={item.quantity} disabled />
-                    </div>
-                </Col>
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <input type="text" className="form-control" defaultValue={item.batchCode} disabled />
-                    </div>
-                </Col>
-                <Col md={2}>
-                    <div className="form-group mb-3">
-                        <input type="text" className="form-control" value={item.reason} disabled />
-                    </div>
-                </Col>
-                <Col md={1}>
-                    <div className="form-group mb-3 ButtonCSSDropdown">
-                        <button
-                            className="btn btn-success border-left-0 rounded "
-                            type="button"
-                            onClick={() => handleEditRowData(item, index)}
-                        >
-                            Sửa
-                        </button>
-                    </div>
-                </Col>
-
-                <Col md={1}>
-                    <div className="form-group mb-3 ButtonCSSDropdown red">
-                        <button
-                            className="btn btn-danger border-left-0 rounded "
-                            type="button"
-                            onClick={() => handleDeleteRowData(item, index)}
-                        >
-                            Xóa
-                        </button>
-                    </div>
-                </Col>
-            </Row>
-        ))}
-
-       
-
-
-
-    </Row>
-        <EditRowDataReturnOrder isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={orderData} dataAfterEdit={dataAfterEdit} />
-    </>
+            <EditRowDataReturnOrder isShow={isShowEditRowData} handleClose={() => setIsShowEditRowData(false)} data={orderData} dataAfterEdit={dataAfterEdit} />
+        </>
     )
 }
 

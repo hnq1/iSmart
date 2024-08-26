@@ -281,9 +281,6 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
     }
     // Thêm 1 lô hàng 
     const handleAddImportOrder = async () => {
-        // if (!importCode.trim()) {
-        //     toast.warning("Vui lòng nhập mã đơn hàng");
-        // } else 
         if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày nhập hàng");
         } else if (!selectedWarehouseExportId) {
@@ -299,7 +296,10 @@ const ModelAddImportOrderN = ({ isShow, handleClose, updateTable }) => {
             const userId = parseInt(localStorage.getItem('userId'), 10);
             let warehouse = await getWarehouseById(userId);
             const warehouseIdToUse = roleId === 1 ? selectedWarehouseImportId : warehouse.warehouseId;
-            // const warehouseDestinationId = selectedWarehouseExportId;
+            if (!warehouseIdToUse) {
+                toast.warning("Vui lòng chọn kho nhập hàng");
+                return;
+            }
             let isInternalTransfer = true;
             let r = await addNewImportOrder(
                 isInternalTransfer,

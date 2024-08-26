@@ -5,11 +5,13 @@ import { toast } from "react-toastify";
 import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
-
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 
 
 
 const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) => {
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const [totalGoods, setTotalGoods] = useState([]);
     const [totalBatchs, setTotalBatchs] = useState([]);
@@ -42,51 +44,96 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
     //         setInputActualQuantity(dataMethod.actualQuantity);
     //     }
     // }, [dataMethod]);
-
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
     const getAllGoods = async () => {
-        if (selectedStorageId !== null) {
+        const warehouse = await getWarehouseById(userId);
+        if (roleId === 1 && selectedStorageId !== null) {
             let res = await fetchAllGoodsInWarehouse(selectedStorageId);
+            setTotalGoods(res);
+        }
+        else if (roleId === 4 && warehouse.warehouseId !== null) {
+            let res = await fetchAllGoodsInWarehouse(warehouse.warehouseId);
             setTotalGoods(res);
         }
     }
 
     const handleGoodClick = async (good, event) => {
-        setDataMethod(null);
-        setSelectedGoodCode(good.goodsCode);
-        setSelectedGoodId(good.goodsId);
-        let m = await getAvailableBatch(selectedStorageId, good.goodsId);
-        const totalActualGoodQuantity = m.reduce((sum, item) => sum + item.actualQuantity, 0);
-        setTotalActualQuantity(totalActualGoodQuantity);
-        const totalGoodQuantity = m.reduce((sum, item) => sum + item.quantity, 0);
-        setTotalQuantity(totalGoodQuantity);
-        if (m.length === 0) {
-            toast.warning("Không có lô hàng nào");
-        } else {
-            //setTotalBatchs(m);
-            setDataMethod(m);
-            console.log("mmm", m)
-            const importOrderDetail = m.map(item => ({
-                importOrderDetailId: item.importOrderDetailId,
-                batchCode: item.batchCode,
-                actualQuantity: item.actualQuantity,
-                quantity: item.quantity
-            }));
-            const initialInputQuantities = m.reduce((acc, item, index) => {
-                acc[index] = {
+        if (roleId === 1) {
+            setDataMethod(null);
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let m = await getAvailableBatch(selectedStorageId, good.goodsId);
+            const totalActualGoodQuantity = m.reduce((sum, item) => sum + item.actualQuantity, 0);
+            setTotalActualQuantity(totalActualGoodQuantity);
+            const totalGoodQuantity = m.reduce((sum, item) => sum + item.quantity, 0);
+            setTotalQuantity(totalGoodQuantity);
+            if (m.length === 0) {
+                toast.warning("Không có lô hàng nào");
+            } else {
+                //setTotalBatchs(m);
+                setDataMethod(m);
+                const importOrderDetail = m.map(item => ({
                     importOrderDetailId: item.importOrderDetailId,
-                    actualQuantity: item.actualQuantity,
                     batchCode: item.batchCode,
+                    actualQuantity: item.actualQuantity,
                     quantity: item.quantity
-                };
-                return acc;
-            }, {});
+                }));
+                const initialInputQuantities = m.reduce((acc, item, index) => {
+                    acc[index] = {
+                        importOrderDetailId: item.importOrderDetailId,
+                        actualQuantity: item.actualQuantity,
+                        batchCode: item.batchCode,
+                        quantity: item.quantity
+                    };
+                    return acc;
+                }, {});
 
-            setInputActualQuantity(initialInputQuantities);
-            //console.log("importOrderDetailIds", importOrderDetail)
-            setSelectImportOrderDetailId(importOrderDetail);
+                setInputActualQuantity(initialInputQuantities);
+                //console.log("importOrderDetailIds", importOrderDetail)
+                setSelectImportOrderDetailId(importOrderDetail);
+            }
+        }
+        else if (roleId === 4) {
+            const warehouse = await getWarehouseById(userId);
+            setDataMethod(null);
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let m = await getAvailableBatch(warehouse.warehouseId, good.goodsId);
+            const totalActualGoodQuantity = m.reduce((sum, item) => sum + item.actualQuantity, 0);
+            setTotalActualQuantity(totalActualGoodQuantity);
+            const totalGoodQuantity = m.reduce((sum, item) => sum + item.quantity, 0);
+            setTotalQuantity(totalGoodQuantity);
+            if (m.length === 0) {
+                toast.warning("Không có lô hàng nào");
+            } else {
+                //setTotalBatchs(m);
+                setDataMethod(m);
+                const importOrderDetail = m.map(item => ({
+                    importOrderDetailId: item.importOrderDetailId,
+                    batchCode: item.batchCode,
+                    actualQuantity: item.actualQuantity,
+                    quantity: item.quantity
+                }));
+                const initialInputQuantities = m.reduce((acc, item, index) => {
+                    acc[index] = {
+                        importOrderDetailId: item.importOrderDetailId,
+                        actualQuantity: item.actualQuantity,
+                        batchCode: item.batchCode,
+                        quantity: item.quantity
+                    };
+                    return acc;
+                }, {});
+
+                setInputActualQuantity(initialInputQuantities);
+                //console.log("importOrderDetailIds", importOrderDetail)
+                setSelectImportOrderDetailId(importOrderDetail);
+            }
+
         }
     }
-
     // const handleBatchClick = async (batch, event) => {
     //     setSelectedBatchCode(batch.batchCode);
     //     console.log("res: ", batch);
@@ -181,7 +228,6 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
                         ]
                     };
                 });
-            console.log("inputActualQuantityArray: ", inputActualQuantityArray);
             const stockDataArray = inputActualQuantityArray.map(item => ({
                 totalActualQuantity: totalActualQuantity,
                 expectedQuantity: totalQuantity,
@@ -200,7 +246,6 @@ const AddRowDataStock = ({ selectedStorageId, isShow, handleClose, onChange }) =
             }));
 
             onChange(stockDataArray);
-            console.log("stockDataArray: ", stockDataArray);
             handleCloseModal();
         }
     }

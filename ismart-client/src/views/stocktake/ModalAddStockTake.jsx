@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import AddRowDataStock from "./AddRowDataStock";
 import RowDataStock from "./RowDataStock";
 import { createInventoryCheck } from "~/services/StockTakeServices";
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 
 const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
@@ -51,30 +52,40 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
     };
-
-    const handleAddRowDataStock = () => {
-        if (selectedWarehouseId || warehouseId !== 1) {
-            setIsShowRowDataStock(true);
-        } else {
-            toast.warning("Vui lòng điền kho")
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
+    const handleAddRowDataStock = async () => {
+        if (roleId === 1) {
+            if (selectedWarehouseId) {
+                setIsShowRowDataStock(true);
+            } else {
+                toast.warning("Vui lòng điền kho")
+            }
+        } else if (roleId === 4) {
+            const userId = parseInt(localStorage.getItem('userId'), 10);
+            let warehouse = await getWarehouseById(userId);
+            if (warehouse) {
+                setIsShowRowDataStock(true);
+            } else {
+                toast.info("Không tìm thấy kho cho người dùng này");
+            }
         }
     }
 
 
 
     const handleSave = async () => {
-        if (!selectedWarehouse) {
-            toast.warning("Vui lòng chọn kho ");
-        } else if (!selectedDate) {
+        if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày");
         } else if (rowsData.length === 0) {
             toast.warning("Hãy thêm sản phẩm");
         }
         else {
             const userId = parseInt(localStorage.getItem('userId'), 10);
-            console.log("rowsDatarowsDatarowsDatarowsData", rowsData);
+
             if (rowsData && rowsData.length > 0) {
-                console.log("rowsData", rowsData)
                 const inventoryCheckDetailsArray = rowsData.map((data) => {
                     return {
                         goodCode: data.goodsCode,
@@ -91,8 +102,14 @@ const ModalAddStockTake = ({ isShow, handleClose, updateTableStock }) => {
                         ]
                     };
                 });
-                console.log("inventoryCheckDetailsArray", inventoryCheckDetailsArray)
-                await createInventoryCheck(selectedWarehouseId, selectedDate, "", inventoryCheckDetailsArray);
+                let warehouse = await getWarehouseById(userId);
+                console.log("warehouse", warehouse);
+                const warehouseIdToUse = roleId === 1 ? selectedWarehouseId : warehouse.warehouseId;
+                if (!warehouseIdToUse) {
+                    toast.warning("Vui lòng chọn kho hàng");
+                    return;
+                }
+                await createInventoryCheck(warehouseIdToUse, selectedDate, "", inventoryCheckDetailsArray);
 
                 toast.success("Thêm đơn kiểm kê thành công");
                 updateTableStock(selectedWarehouseId, selectedWarehouse);

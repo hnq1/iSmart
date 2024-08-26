@@ -81,25 +81,27 @@ const Sidebar = () => {
                         }
 
 
-                        {
-                            (roleId == 1 || roleId == 2 || roleId == 4) ?
-                                <Nav.Item className="mb-2">
-                                    <Nav.Link as={Link} to="/danh-sach-mat-hang"
-                                        className={`align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between rounded-3 ${selectedItem === '/danh-sach-mat-hang' ? 'ButtonCSS text-white' : ''}`} style={{ width: 180 }}
-                                        onClick={() => handleSelectItem('/danh-sach-mat-hang')}
-                                    >
-                                        <div className="d-flex" style={{ marginLeft: 15 }}>
-                                            <div style={{ width: 30 }}>
-                                                <i className="fa-solid fa-cookie"></i>
-                                            </div>
-                                            <div>
-                                                <span className="ms-1 d-none d-sm-inline">Hàng hóa</span>
-                                            </div>
-                                        </div>
-                                    </Nav.Link>
-                                </Nav.Item>
-                                : ''
-                        }
+
+
+                        <Nav.Item className="mb-2">
+                            <Nav.Link as={Link} to="/danh-sach-mat-hang"
+                                className={`align-middle sidebar-item text-sidebar px-0 d-flex justify-content-between rounded-3
+                                    ${selectedItem === '/danh-sach-mat-hang' ?
+                                        'ButtonCSS text-white' : ''}`} style={{ width: 180 }}
+                                onClick={() => handleSelectItem('/danh-sach-mat-hang')}
+                            >
+                                <div className="d-flex" style={{ marginLeft: 15 }}>
+                                    <div style={{ width: 30 }}>
+                                        <i className="fa-solid fa-cookie"></i>
+                                    </div>
+                                    <div>
+                                        <span className="ms-1 d-none d-sm-inline">Hàng hóa</span>
+                                    </div>
+                                </div>
+                            </Nav.Link>
+                        </Nav.Item>
+
+
 
 
 

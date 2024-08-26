@@ -6,8 +6,11 @@ import { fetchAllGoodsInWarehouse } from "~/services/GoodServices";
 import { fetchGoodinWarehouseById } from "~/services/GoodServices";
 import { getBatchInventoryForExportgoods } from "~/services/ImportOrderDetailServices";
 import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
+import { getUserIdWarehouse } from "~/services/UserWarehouseServices";
 
 const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handleClose, onChange }) => {
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
     const [costPrice, setCostPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
 
@@ -31,43 +34,70 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
     }, [selectedMethod, selectedGoodId])
 
     const getAllGoods = async () => {
-        if (selectedStorageId !== null) {
-            let res = await fetchAllGoodsInWarehouse(selectedStorageId);
-            // console.log("getAllGoods: ", res);
-            setTotalGoods(res);
+        if (roleId === 1) {
+            if (selectedStorageId !== null) {
+                let res = await fetchAllGoodsInWarehouse(selectedStorageId);
+                setTotalGoods(res);
+            }
+        } else if (roleId === 3) {
+            const warehouse = await getWarehouseById(userId);
+            if (warehouse.warehouseId !== null) {
+                let res = await fetchAllGoodsInWarehouse(warehouse.warehouseId);
+                setTotalGoods(res);
+            }
         }
     }
 
-    const handleGoodClick = async (good, event) => {
-        setSelectedGoodCode(good.goodsCode);
-        setSelectedGoodId(good.goodsId);
-        let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
-        setQuantityInStock(res.inStock);
-        // console.log("selectedGoodId: ", selectedStorageId, good.goodsId);
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
     }
 
-    // const handleChangeTotalQuantity = (event) => {
-    //     setQuantity(event.target.value);
-    // }
+    const handleGoodClick = async (good, event) => {
+        if (roleId === 1) {
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let res = await fetchGoodinWarehouseById(selectedStorageId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        } else if (roleId === 3) {
+            const warehouse = await getWarehouseById(userId);
+            setSelectedGoodCode(good.goodsCode);
+            setSelectedGoodId(good.goodsId);
+            let res = await fetchGoodinWarehouseById(warehouse.warehouseId, good.goodsId);
+            setQuantityInStock(res.inStock);
+        }
+        // Gọi lại handleSelectMethod nếu phương thức đã được chọn
+        if (selectedMethod) {
+            handleManualClick(selectedMethod);
+        }
+    }
 
 
 
     const handleManualClick = async () => {
-        let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
-        setDataMethod(m);
-        console.log(m);
-        // Tạo một mảng mới chứa chỉ importOrderDetailId từ mỗi phần tử trong m
-        if (m.length > 0) {
-            const importOrderDetailIds = m.map(item => item.importOrderDetailId);
-            setSelectImportOrderDetailId(importOrderDetailIds);
-            console.log("importOrderDetailId: ", importOrderDetailIds);
-        }
+        if (roleId === 1) {
+            let m = await getAvailableBatch(selectedStorageId, selectedGoodId);
+            setDataMethod(m);
+            // Tạo một mảng mới chứa chỉ importOrderDetailId từ mỗi phần tử trong m
+            if (m.length > 0) {
+                const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+                setSelectImportOrderDetailId(importOrderDetailIds);
 
+            }
+        } else if (roleId === 3) {
+            const warehouse = await getWarehouseById(userId);
+            let m = await getAvailableBatch(warehouse.warehouseId, selectedGoodId);
+            setDataMethod(m);
+            // Tạo một mảng mới chứa chỉ importOrderDetailId từ mỗi phần tử trong m
+            if (m.length > 0) {
+                const importOrderDetailIds = m.map(item => item.importOrderDetailId);
+                setSelectImportOrderDetailId(importOrderDetailIds);
+
+            }
+        }
     }
     const handleInputQuantityChange = (index, value) => {
         const importOrderDetailId = selectImportOrderDetailId[index];
-        console.log("importOrderDetailId: ", importOrderDetailId);
-        
         // Điều chỉnh giá trị nếu nhỏ hơn 0 hoặc lớn hơn d.quantity
         let adjustedValue = Number(value);
         if (adjustedValue < 0) {
@@ -75,7 +105,7 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
         } else if (adjustedValue > dataMethod[index].quantity) {
             adjustedValue = dataMethod[index].quantity;
         }
-        
+
         // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
         const newInputQuantities = {
             ...inputQuantities,
@@ -85,14 +115,13 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
             }
         };
         setInputQuantities(newInputQuantities);
-        console.log("newInputQuantities: ", newInputQuantities);
-    
+
         // Hiển thị thông báo nếu giá trị nhập vào lớn hơn d.quantity
         if (Number(value) > dataMethod[index].quantity) {
             toast.warning("Phải nhập số lượng nhỏ hơn hoặc bằng số lượng hiện có!");
         }
     }
-    
+
 
 
 
@@ -100,9 +129,12 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
     const handleConfirmRowData = () => {
         if (!selectedGoodCode) {
             toast.warning("Vui lòng chọn sản phẩm");
-            // } else if (quantity === 0) {
-            //     toast.warning("Vui lòng nhập số lượng lớn hơn 0");
+        } else if (quantity > 0) {
+            toast.warning("Vui lòng nhập số lượng lớn hơn 0");
+            
         } else {
+
+            
             // Tạo mảng từ inputQuantities để gửi đi
             const inputQuantitiesArray = Object.keys(inputQuantities).map(key => ({
                 importOrderDetailId: inputQuantities[key].importOrderDetailId,
@@ -223,7 +255,7 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
                     </tr>
                 </thead>
                 <tbody>
-                    { dataMethod && dataMethod.length > 0 && dataMethod.map((d, index) => (
+                    {dataMethod && dataMethod.length > 0 && dataMethod.map((d, index) => (
                         <tr key={index}>
                             <td>{d.batchCode}</td>
                             <td>{new Date(d.manufactureDate).toLocaleDateString()}</td>

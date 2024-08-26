@@ -220,7 +220,7 @@ namespace iSmart.Service
                     _context.Add(importOrder);
                     _context.SaveChanges();
                     // Gửi thông điệp qua WebSocket
-                    Task.Run(() => _webSocketService.SendMessageAsync($"Đơn hàng xuất kho có mã {importOrder.ImportCode} và ID {importOrder.ImportId} cần được xác nhận"));
+                    Task.Run(() => _webSocketService.SendMessageAsync($"Đơn hàng xuất kho có mã {importOrder.ImportCode} và ID {importOrder.ImportId} cần được xác nhận. warehouseId: {i.WarehouseId}"));
                     return new CreateImportOrderResponse { IsSuccess = true, Message = "Tạo đơn hàng nhập kho thành công" };
                 }
                 else
