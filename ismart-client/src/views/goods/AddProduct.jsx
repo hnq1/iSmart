@@ -174,9 +174,9 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         const trimmedGoodName = goodName ? goodName.trim() : '';
         const trimmedGoodCode = goodCode ? goodCode.trim() : '';
         const trimmedDescription = description ? description.trim() : '';
-        if (!selectedWarehouseId) {
-            toast.warning("Vui lòng chọn kho");
-        } else if (!measuredUnit) {
+        const maxStockNumber = Number(maxStock);
+        const minStockNumber = Number(minStock);
+        if (!measuredUnit) {
             toast.warning("Vui lòng chọn đơn vị");
         }
         else if (!trimmedGoodName) {
@@ -201,18 +201,21 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         else if (warrantyTime <= 0) {
             toast.warning("Vui lòng chọn thời gian bảo hành lớn hơn 0");
         }
-        else if (maxStock <= 0) {
+        else if (maxStockNumber <= 0) {
             toast.warning("Vui lòng nhập số lượng tối đa lớn hơn 0");
-        } else if (minStock <= 0) {
+        } else if (minStockNumber <= 0) {
             toast.warning("Vui lòng nhập số lượng tối thiểu lớn hơn 0");
         } else if (!trimmedDescription.trim()) {
             toast.warning("Vui lòng nhập mô tả chi tiết không được để trống");
-        } else if (maxStock <= minStock) {
+        } else if (maxStockNumber <= minStockNumber) {
             toast.warning("Vui lòng nhập số lượng tối đa lớn hơn số lượng tối thiểu");
         }
         else {
             let res;
             if (roleId === 1) {
+                if (!selectedWarehouseId) {
+                    toast.warning("Vui lòng chọn kho");
+                }
                 res = await addGoodinAdmin(selectedWarehouseId,
                     goodName, goodCode, selectedCategoryId,
                     description,
