@@ -379,12 +379,6 @@ const ModelAddExportOrderAuto = ({ isShow, handleClose, updateTable }) => {
 
 
 
-
-
-
-
-
-
                     <Row style={{ maxHeight: '400px', overflowY: 'auto' }}>
                         {renderExportData()}
 

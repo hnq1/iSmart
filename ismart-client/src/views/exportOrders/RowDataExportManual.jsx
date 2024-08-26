@@ -74,7 +74,7 @@ const RowDataExportOrderManual = ({ data, index, deleteRowData, updateRowData })
         </Col>
 
 
-        <Col md={1}>
+        {/* <Col md={1}>
             <div className="form-group mb-3 ButtonCSSDropdown">
                 <button
                     className="btn btn-success border-left-0 rounded mt-4"
@@ -84,7 +84,7 @@ const RowDataExportOrderManual = ({ data, index, deleteRowData, updateRowData })
                     Sửa
                 </button>
             </div>
-        </Col>
+        </Col> */}
 
         <Col md={1}>
             <div className="form-group mb-3 ButtonCSSDropdown red">

@@ -18,6 +18,7 @@ function NavbarCom() {
 
     const userId = parseInt(localStorage.getItem('userId'), 10);
     const roleId = parseInt(localStorage.getItem('roleId'), 10); // Lấy roleId từ localStorage
+    const warehouseId = parseInt(localStorage.getItem('warehouseId'), 10); // Lấy warehouseId từ localStorage
     const [showNotifications, setShowNotifications] = useState(false);
 
     const [unreadMessages, setUnreadMessages] = useState([]);  // Chứa các thông báo chưa đọc
@@ -49,12 +50,28 @@ function NavbarCom() {
         socket.onmessage = (event) => {
             const message = event.data;
             const idMatch = message.match(/ID (\d+)/);
+            const roleId = parseInt(localStorage.getItem('roleId'), 10);
+            const localWarehouseId = parseInt(localStorage.getItem('warehouseId'), 10);
 
             if (idMatch) {
                 const importId = idMatch[1];
                 localStorage.setItem('importOrderId', importId);
 
-                setUnreadMessages(prevMessages => [...prevMessages, message]);
+                if (roleId === 1) {
+                    setUnreadMessages(prevMessages => [...prevMessages, message]);
+                } else if (roleId === 2) {
+                    const warehouseIdMatch = message.match(/warehouseId: (\d+)/);
+                    if (warehouseIdMatch) {
+                        const messageWarehouseId = parseInt(warehouseIdMatch[1], 10);
+                        if (messageWarehouseId === localWarehouseId) {
+                            setUnreadMessages(prevMessages => [...prevMessages, message]);
+                        } else {
+                            console.warn("Message warehouseId does not match local warehouseId: ", message);
+                        }
+                    } else {
+                        console.warn("Message does not contain a valid warehouseId: ", message);
+                    }
+                }
             } else {
                 console.warn("Message does not contain a valid ID: ", message);
                 setUnreadMessages(prevMessages => [...prevMessages, message]);
@@ -74,6 +91,8 @@ function NavbarCom() {
         if (idMatch && codeMatch) {
             const Id = idMatch[1];
             const code = codeMatch[1];
+
+
             localStorage.setItem('importOrderId', Id);
 
             if (code.startsWith('IM')) {
@@ -94,8 +113,9 @@ function NavbarCom() {
         }
     };
 
+
     const renderNotificationMessage = (message) => {
-        return message.replace(/ID \d+/, '').trim();
+        return message.replace(/ID \d+/, '').replace(/warehouseId: \d+/, '').trim();
     };
 
     const handleLogout = () => {

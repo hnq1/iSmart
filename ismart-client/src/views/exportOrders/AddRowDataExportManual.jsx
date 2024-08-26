@@ -192,14 +192,21 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
             toast.warning("Vui lòng chọn phương thức xuất kho");
         } else if (!Array.isArray(dataMethod) || dataMethod.length === 0) {
             toast.warning("Vui lòng chọn phương thức xuất kho");
-        }
+        } else {
+            // Lọc các lô hàng có số lượng lớn hơn 0
+            const validQuantities = Object.values(inputQuantities).filter(item => item.quantity > 0);
 
-        else {
-            // Tạo mảng từ inputQuantities để gửi đi
-            const inputQuantitiesArray = Object.keys(inputQuantities).map(key => ({
-                importOrderDetailId: inputQuantities[key].importOrderDetailId,
-                quantity: inputQuantities[key].quantity,
-                batchCode: inputQuantities[key].batchCode
+            // Kiểm tra nếu không có lô hàng nào có số lượng lớn hơn 0
+            if (validQuantities.length === 0) {
+                toast.warning("Số lượng nhập vào phải lớn hơn 0");
+                return;
+            }
+
+            // Tạo mảng từ validQuantities để gửi đi
+            const inputQuantitiesArray = validQuantities.map(item => ({
+                importOrderDetailId: item.importOrderDetailId,
+                quantity: item.quantity,
+                batchCode: item.batchCode
             }));
 
             // Tạo mảng mới với thông tin sản phẩm cho mỗi importOrderDetailId
@@ -210,15 +217,12 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                 quantity: item.quantity,
                 importOrderDetailId: item.importOrderDetailId,
                 batchCode: item.batchCode
-
             }));
 
-
             onChange(exportDataArray);
-            console.log("ExportOrderManual: ", exportDataArray);
             handleCloseModal();
         }
-    }
+    };
 
     const handleCloseModal = () => {
         handleReset();
@@ -238,9 +242,9 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
 
         setIsManualClick(false); // mặc định phương thức xuất kho
     }
-    const isSaveButtonDisabled = () => {
-        return Object.values(inputQuantities).some(item => item.quantity === 0);
-    };
+    // const isSaveButtonDisabled = () => {
+    //     return Object.values(inputQuantities).some(item => item.quantity === 0);
+    // };
     return (
 
         <Modal show={isShow} onHide={handleCloseModal} size="xl">
@@ -360,7 +364,9 @@ const AddRowDataExportOrderManual = ({ selectedStorageId, isShow, handleClose, o
                 </tbody>
             </Table>
             <Modal.Footer>
-                <Button variant="primary" className="ButtonCSS" onClick={handleConfirmRowData} disabled={isSaveButtonDisabled()}>
+                <Button variant="primary" className="ButtonCSS" onClick={handleConfirmRowData}
+                // disabled={isSaveButtonDisabled()}
+                >
                     Xác nhận xuất kho
                 </Button>
             </Modal.Footer>

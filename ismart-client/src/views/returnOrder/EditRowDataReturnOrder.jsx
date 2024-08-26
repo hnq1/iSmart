@@ -87,32 +87,6 @@ const EditRowDataReturnOrder = ({ isShow, handleClose, data, dataAfterEdit }) =>
                     </div>
                 </Col>
 
-              
-                {/* <Col md={2}>
-                    <div className="form-group mb-3">
-                        <label >Mã lô hàng</label>
-                        <input type="text" className="form-control" value={batchCode} onChange={handleChangeBatchCode} />
-                    </div>
-                </Col> */}
-                {/* <Col md={3}>
-                    <div className="form-group mb-3">
-                        <label >Nhà cung cấp</label>
-                        <input type="text" className="form-control" value={supplierName} disabled />
-                    </div>
-                </Col> */}
-
-                {/* <Col md={3}>
-                    <div className="form-group mb-3">
-                        <label >Ngày sản xuất</label>
-                        <input type="date" className="form-control" value={manufactureDate} onChange={handleChangemMnufactureDate} />
-                    </div>
-                </Col>
-                <Col md={3}>
-                    <div className="form-group mb-3">
-                        <label >Ngày hết hạn</label>
-                        <input type="date" className="form-control" value={expiryDate} on onChange={handleChangeExpiryDate} />
-                    </div>
-                </Col> */}
 
 
             </Row>
