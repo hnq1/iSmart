@@ -210,10 +210,10 @@ namespace iSmart.Service
 
             return new ResponseInventoryCheckDTO
             {
-                AccountantName = inventoryCheck.Warehouse.UserWarehouses.FirstOrDefault(i => i.User.RoleId == 4)?.User.UserName,
+                AccountantName = inventoryCheck.Warehouse.UserWarehouses.FirstOrDefault(i => i.User.RoleId == 4)?.User.FullName,
                 WarehouseName = inventoryCheck.Warehouse.WarehouseName,
                 WarehouseAddress = inventoryCheck.Warehouse.WarehouseAddress,
-                WarehouseManagerName = inventoryCheck.Warehouse.UserWarehouses.FirstOrDefault(i => i.User.RoleId == 2)?.User.UserName,
+                WarehouseManagerName = inventoryCheck.Warehouse.UserWarehouses.FirstOrDefault(i => i.User.RoleId == 2)?.User.FullName,
                 CheckDate = inventoryCheck.CheckDate,
                 Detail = groupedDetails
             };

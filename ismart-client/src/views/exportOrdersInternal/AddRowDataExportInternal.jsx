@@ -258,7 +258,7 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
                         <th>Mã Lô Hàng</th>
                         <th>Ngày Sản Xuất</th>
                         <th>Ngày Hết Hạn</th>
-                        <th>Ngày Nhập Lô</th>
+                        {/* <th>Ngày Nhập Lô</th> */}
                         <th>Số Lượng</th>
                         <th>Vị Trí Trong Kho</th>
                     </tr>
@@ -269,7 +269,7 @@ const AddRowDataExportOrderInternal = ({ selectedStorageId, isShow, handleClose,
                             <td>{d.batchCode}</td>
                             <td>{new Date(d.manufactureDate).toLocaleDateString()}</td>
                             <td>{new Date(d.expiryDate).toLocaleDateString()}</td>
-                            <td>{new Date(d.importDate).toLocaleDateString()}</td>
+                            {/* <td>{new Date(d.importDate).toLocaleDateString()}</td> */}
                             <td>{d.quantity}</td>
                             <td>{d.location || 'N/A'}</td>
                         </tr>
