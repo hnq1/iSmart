@@ -102,8 +102,8 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
         let adjustedValue = Number(value);
         if (adjustedValue < 0) {
             adjustedValue = 0;
-        } else if (adjustedValue > dataMethod[index].quantity) {
-            adjustedValue = dataMethod[index].quantity;
+        } else if (adjustedValue > dataMethod[index].actualQuantity) {
+            adjustedValue = dataMethod[index].actualQuantity;
         }
 
         // Cập nhật inputQuantities với key là index, và value là object chứa quantity và importOrderDetailId
@@ -115,9 +115,9 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
             }
         };
         setInputQuantities(newInputQuantities);
-
+        console.log("quantity",dataMethod[index].actualQuantity)
         // Hiển thị thông báo nếu giá trị nhập vào lớn hơn d.quantity
-        if (Number(value) > dataMethod[index].quantity) {
+        if (Number(value) > dataMethod[index].actualQuantity) {
             toast.warning("Phải nhập số lượng nhỏ hơn hoặc bằng số lượng hiện có!");
         }
     }
@@ -266,7 +266,7 @@ const AddRowDataExportOrderInternalManual = ({ selectedStorageId, isShow, handle
                                 <input
                                     type="number"
                                     min={0}
-                                    max={d.quantity}
+                                    max={d.actualQuantity}
 
                                     className="form-control"
                                     value={inputQuantities[index]?.quantity || '0'}

@@ -41,13 +41,13 @@ const ModalDetailOrderN = ({ isShow, handleClose, detailOrder }) => {
                             </div>
                         </Col>
 
-                       
-                        <Col md={3}>
+
+                        {/* <Col md={3}>
                             <div className="form-group mb-3">
                                 <label >Nhà cung cấp</label>
                                 <button type="button" className="btn btn-success border-left-0 rounded ButtonCSS" >{detailOrder.supplierName}</button>
                             </div>
-                        </Col>
+                        </Col> */}
 
                         <Col md={3}>
                             <div className="form-group mb-3">
