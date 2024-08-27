@@ -9,13 +9,14 @@ import ModelAddReturnOrder from "./AddReturnOrder";
 import ModalDetailReturnOrder from "./DetailReturnOrder";
 import ModalConfirm from "./ModalConfirm";
 import ModalEditReturnOrder from "./EditDataReturnOrder";
-
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 import { data } from 'autoprefixer';
 import { toast } from 'react-toastify';
 
 
 function ReturnOrderList() {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
+    const userId = parseInt(localStorage.getItem('userId'), 10);
 
     const [totalWarehouse, setTotalWarehouse] = useState([]);
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
@@ -123,14 +124,27 @@ function ReturnOrderList() {
     }
 
     const getReturnOrders = async (page, pageSize = 15, sortedByStatusId, sortedByDateId, keywordSearch) => {
-        setcurrentPage(page - 1);
-        let res = await fetchReturnOrdersWithFilter(
-            pageSize, page, selectedWarehouseId,
-            "",
-            sortedByStatusId,
-            sortedByDateId, keywordSearch);
-        setListReturnOrder(res.data);
-        setTotalPages(res.totalPages);
+        if (roleId === 1) {
+            setcurrentPage(page - 1);
+            let res = await fetchReturnOrdersWithFilter(
+                pageSize, page, selectedWarehouseId,
+                "",
+                sortedByStatusId,
+                sortedByDateId, keywordSearch);
+            setListReturnOrder(res.data);
+            setTotalPages(res.totalPages);
+        } else if (roleId === 2 || roleId === 3 || roleId === 4) {
+            let warehouse = await getUserIdWarehouse(userId);
+
+            setcurrentPage(page - 1);
+            let res = await fetchReturnOrdersWithFilter(
+                pageSize, page, warehouse[0].warehouseId,
+                "",
+                sortedByStatusId,
+                sortedByDateId, keywordSearch);
+            setListReturnOrder(res.data);
+            setTotalPages(res.totalPages);
+        }
     }
 
     const ShowDetailOrder = (oid) => {
