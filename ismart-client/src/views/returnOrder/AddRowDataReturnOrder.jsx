@@ -74,8 +74,9 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
     const handleManualClick = async () => {
         if (roleId === 1) {
             let m = await getBatchByReturnOrder(selectedStorageId, selectedGoodId);
-            if (m.length === 0) {
+            if (!Array.isArray(m) || m.length === 0) {
                 toast.warning("Không có lô hàng nào");
+                setDataMethod([]); // Đảm bảo dataMethod là một mảng rỗng
             } else {
                 setDataMethod(m);
                 const importOrderDetailIds = m.map(item => item.importOrderDetailId);
@@ -84,8 +85,9 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
         } else if (roleId === 4 || roleId === 3 || roleId === 2) {
             let rs = await getUserIdWarehouse(userId);
             let m = await getBatchByReturnOrder(rs[0].warehouseId, selectedGoodId);
-            if (m.length === 0) {
+            if (!Array.isArray(m) || m.length === 0) {
                 toast.warning("Không có lô hàng nào");
+                setDataMethod([]); // Đảm bảo dataMethod là một mảng rỗng
             } else {
                 setDataMethod(m);
                 const importOrderDetailIds = m.map(item => item.importOrderDetailId);
@@ -233,7 +235,7 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
                     </tr>
                 </thead>
                 <tbody>
-                    {dataMethod && dataMethod.map((d, index) => (
+                    {Array.isArray(dataMethod) && dataMethod.map((d, index) => (
                         <tr key={index}>
                             <td>{d.batchCode}</td>
                             <td>{new Date(d.manufactureDate).toLocaleDateString()}</td>
@@ -241,7 +243,6 @@ const AddRowDataReturnOrderManual = ({ selectedStorageId, selectedSupplierId, is
                             <td>{d.quantity}</td>
                             <td>{d.location || 'N/A'}</td>
                             <td>
-
                                 <input
                                     type="number"
                                     className="form-control"

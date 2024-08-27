@@ -5,7 +5,11 @@ import { UserContext } from './context/UserContext'
 import AppRoutes from './routes/AppRoutes';
 function App() {
     const { loginContext } = useContext(UserContext);
-
+    useEffect(() => {
+        // Xóa hết dữ liệu trên localStorage khi bắt đầu chạy ứng dụng
+        localStorage.clear();
+    }, []);
+    
     useEffect(() => {
         if (localStorage.getItem('token')) {
             loginContext(localStorage.getItem('userName'), localStorage.getItem('token'))

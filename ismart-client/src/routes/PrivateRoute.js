@@ -1,8 +1,7 @@
-import { Routes, Route } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+
+import { useContext,  useState } from 'react';
 import { UserContext } from '../context/UserContext';
-import Alert from 'react-bootstrap/Alert';
-import Button from 'react-bootstrap/Button';
+
 
 
 const PrivateRoute = (props) => {
@@ -10,7 +9,6 @@ const PrivateRoute = (props) => {
     const [show, setShow] = useState(true);
     if (user) {
         return <>
-
             {props.children}
         </>
     }
