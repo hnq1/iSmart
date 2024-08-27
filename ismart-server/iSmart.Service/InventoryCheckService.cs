@@ -243,7 +243,7 @@ namespace iSmart.Service
                     {
                         throw new Exception($"Goods with ID {inventoryBatch.GoodsId} not found in warehouse {inventoryBatch.Import.WarehouseId}.");
                     }
-
+                    inventoryBatch.Quantity += (quantity - inventoryBatch.ActualQuantity);
                     // Cập nhật số lượng hàng hóa trong kho
                     goodsWarehouse.Quantity += (quantity - inventoryBatch.ActualQuantity); // Adjust based on difference
 

@@ -306,7 +306,7 @@ namespace iSmart.Service
         {
             try
             {
-                var batchGoods = (List<BatchInventoryDTO>)_context.ImportOrderDetails.Include(i => i.Import).Include(i => i.Goods).Where(i => i.Import.StatusId == 4 && i.GoodsId == goodId && i.Import.WarehouseId == warehouseId && i.Import.SupplierId != 1)
+                var batchGoods = (List<BatchInventoryDTO>)_context.ImportOrderDetails.Include(i => i.Import).Include(i => i.Goods).Where(i => i.Import.StatusId == 4 && i.GoodsId == goodId && i.Import.WarehouseId == warehouseId && i.Import.SupplierId != 1&& i.ActualQuantity!=0)
                     .Select(s => new BatchInventoryDTO
                     {
                         ImportOrderDetailId = s.DetailId,

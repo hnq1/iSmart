@@ -883,7 +883,7 @@ const Doashboard = () => {
                         <ul>
                             {alerts.map((alert, index) => (
                                 <li key={index}
-                                    style={{ listStyleType: '" __ "' }}>
+                                    style={{ listStyleType: '"  "' }}>
                                     <p></p>
                                     {/* <p>Mã hàng: {alert.goodCode}</p>
                             <p>Tên hàng: {alert.goodName}</p>

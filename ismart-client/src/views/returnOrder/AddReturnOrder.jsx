@@ -136,13 +136,17 @@ const ModelAddReturnOrder = ({ isShow, handleClose, updateTable }) => {
         let res = await getUserIdWarehouse(userId);
         return res[0];
     }
-
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const handleAddReturntOrder = async () => {
         if (!returnCode.trim()) {
             toast.warning("Vui lòng nhập mã đơn hàng");
         } else if (!selectedDate) {
             toast.warning("Vui lòng nhập ngày trả hàng");
-        } else if (!selectedSupplierId) {
+        }else if (new Date(selectedDate) < today) {
+            toast.warning("Ngày trả hàng không thể nhỏ hơn thời điểm hiện tại");
+        }
+         else if (!selectedSupplierId) {
             toast.warning("Vui lòng chọn nhà cung cấp");
         } else if (!rowsData || rowsData.length === 0) {
             toast.warning("Phải có ít nhất một chi tiết đơn hàng để tạo đơn hàng xuất.");

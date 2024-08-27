@@ -65,7 +65,7 @@ function ReturnOrderList() {
 
     useEffect(() => {
         // Đảm bảo rằng getReturnOrders được gọi mỗi khi có sự thay đổi cần thiết
-        getReturnOrders(1, pageSize, sortedByStatusId, sortedByDateId, keywordSearch);
+        getReturnOrders(1, pageSize, sortedByStatusId, sortedByDateId, keywordSearch, selectedWarehouseId);
     }, [pageSize, selectedWarehouseId, sortedByStatusId, sortedByDateId, keywordSearch, update]);
 
     const getAllStorages = async () => {

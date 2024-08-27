@@ -115,7 +115,7 @@ namespace iSmart.API.Controllers
                         {
                             return BadRequest("Chi tiết nhập hàng không tồn tại.");
                         }
-
+                        importDetail.Quantity -= total;
                         importDetail.ActualQuantity -= total;
                     }
 

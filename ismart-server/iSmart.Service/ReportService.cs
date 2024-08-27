@@ -171,7 +171,7 @@ namespace iSmart.Service
                     .ToListAsync();
 
                 var exportReportsQuery = _context.ExportOrders
-                    .Where(eo => eo.WarehouseId == warehouseId)
+                    .Where(eo => eo.WarehouseId == warehouseId && eo.StatusId == 4)
                     .Include(eo => eo.ExportOrderDetails)
                     .ThenInclude(eod => eod.Goods)
                     .AsQueryable();
@@ -240,7 +240,7 @@ namespace iSmart.Service
 
                 // Lấy dữ liệu xuất khẩu
                 var exportQuery = _context.ExportOrders
-                    .Where(eo => eo.WarehouseId == warehouseId && eo.ExportOrderDetails.Any(eod => eod.Goods.GoodsCode == goodCode))
+                    .Where(eo => eo.WarehouseId == warehouseId && eo.StatusId == 4 && eo.ExportOrderDetails.Any(eod => eod.Goods.GoodsCode == goodCode))
                     .Include(eo => eo.ExportOrderDetails)
                     .ThenInclude(eod => eod.Goods)
                     .AsQueryable();
