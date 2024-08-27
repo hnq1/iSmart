@@ -51,7 +51,7 @@ const RowDataExportOrderInternal = ({ data, index, deleteRowData, updateRowData 
                 <input type="number" className="form-control" defaultValue={quantity} disabled />
             </div>
         </Col>
-        <Col md={1}>
+        {/* <Col md={1}>
             <div className="form-group mb-3 ButtonCSSDropdown">
                 <button
                     className="btn btn-success border-left-0 rounded mt-4"
@@ -61,7 +61,7 @@ const RowDataExportOrderInternal = ({ data, index, deleteRowData, updateRowData 
                     Sửa
                 </button>
             </div>
-        </Col>
+        </Col> */}
 
         <Col md={1}>
             <div className="form-group mb-3 ButtonCSSDropdown red">
