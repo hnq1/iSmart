@@ -3,11 +3,13 @@ import { Modal, Button, Table } from "react-bootstrap"
 import { fetchHistoryGood } from "~/services/GoodServices";
 import { formatDate } from "~/validate";
 import { getAvailableBatch } from "~/services/ImportOrderDetailServices";
-
+import { getUserIdWarehouse } from '~/services/UserWarehouseServices';
 
 
 
 const ModalGoodHistory = ({ isShow, dataGood, handleClose, warehouseId }) => {
+    const userId = parseInt(localStorage.getItem('userId'), 10);
+    const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const [goodHistory, setGoodHistory] = useState([]);
 
 
@@ -15,11 +17,22 @@ const ModalGoodHistory = ({ isShow, dataGood, handleClose, warehouseId }) => {
         getHistoryGood();
     }, [warehouseId, dataGood.goodsId])
 
-
+    const getWarehouseById = async (userId) => {
+        let res = await getUserIdWarehouse(userId);
+        return res[0];
+    }
     const getHistoryGood = async () => {
-        let res = await getAvailableBatch(warehouseId, dataGood.goodsId);
-        console.log("getAvailableBatch", res);
-        setGoodHistory(res);
+        if (roleId === 1) {
+            let res = await getAvailableBatch(warehouseId, dataGood.goodsId);
+
+            setGoodHistory(res);
+        } else if (roleId === 2 || roleId === 3 || roleId === 4) {
+            let warehouse = await getWarehouseById(userId);
+
+            let res = await getAvailableBatch(warehouse.warehouseId, dataGood.goodsId);
+
+            setGoodHistory(res);
+        }
     }
     const handleCloseModal = () => {
         handleClose();
