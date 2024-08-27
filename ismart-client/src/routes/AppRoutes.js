@@ -33,7 +33,6 @@ import ReturnOrderList from '~/views/returnOrder/ReturnOrderList';
 
 
 const AppRoutes = () => {
-    const roleId = parseInt(localStorage.getItem('RoleId'), 10);
 
     return (
         <>
@@ -44,12 +43,7 @@ const AppRoutes = () => {
                         <Login />
                     }
                 />
-                <Route
-                    path="/dang-nhap"
-                    element={
-                        <Login />
-                    }
-                />
+                <Route path="/dang-nhap" element={<Login />} />
                 <Route
                     path="/quen-mat-khau"
                     element={
