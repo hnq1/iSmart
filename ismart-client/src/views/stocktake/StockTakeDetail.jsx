@@ -31,7 +31,6 @@ const StockTakeDetail = ({ handleClose, isShow, detailData }) => {
         setTotalStockTake(detailData.inventoryCheckDetails);
         //getAllGoods();
         getAllStorages();
-        console.log('detailData.inventoryCheckDetails: ', detailData.inventoryCheckDetails);
         getAllBatch();
     }, [detailData])
 

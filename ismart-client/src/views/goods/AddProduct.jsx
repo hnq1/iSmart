@@ -11,15 +11,9 @@ import { toast } from 'react-toastify';
 
 
 
-
-
-
-
 function ModalAddGood({ isShow, handleClose, updateTable }) {
     const roleId = parseInt(localStorage.getItem('roleId'), 10);
     const userId = parseInt(localStorage.getItem('userId'), 10); // Lấy userId từ local storage
-
-
 
 
     const [totalCategories, setTotalCategories] = useState([]);
@@ -27,13 +21,9 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
 
-
-
     const [totalSuppliers, setTotalSuppliers] = useState([]);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [selectedSupplierId, setSelectedSupplierId] = useState(null);
-
-
 
 
     const [totalWarehouse, setTotalWarehouse] = useState([]);
@@ -41,12 +31,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 
 
-
-
     const [goodName, setGoodName] = useState("");
     const [goodCode, setGoodCode] = useState('');
-
-
 
 
     const [warrantyTime, setWarrantyTime] = useState(0);
@@ -59,26 +45,21 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     const [createdDate, setCreatedDate] = useState(new Date().toISOString().split('T')[0]);
     const [barCode, setBarCode] = useState('');
 
-
     useEffect(() => {
         getAllStorages();
         getAllCategories();
         getAllSuppliers();
     }, [])
 
-
     const getAllStorages = async () => {
         let res = await fetchAllStorages();
         setTotalWarehouse(res);
     }
 
-
     const getAllCategories = async () => {
         let res = await fetchAllCategories();
         setTotalCategories(res);
     }
-
-
 
 
     const handleCategoryClick = (category, event) => {
@@ -87,22 +68,16 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     }
 
 
-
-
     const getAllSuppliers = async () => {
         let res = await fetchAllSupplierActive();
         setTotalSuppliers(res);
     }
 
 
-
-
     const handleSupplierClick = (supplier, event) => {
         setSelectedSupplier(supplier.supplierName);
         setSelectedSupplierId(supplier.supplierId)
     }
-
-
 
 
     const handleChooseFile = async (event) => {
@@ -113,14 +88,10 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     }
 
 
-
-
     const handleStorageTotalClick = () => {
         setSelectedWarehouse("Tất cả Kho");
         setSelectedWarehouseId("");
     }
-
-
 
 
     const handleStorageClick = (warehouse) => {
@@ -129,13 +100,9 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     }
 
 
-
-
     const handleGoodName = (event) => {
         setGoodName(event.target.value);
     }
-
-
 
 
     const handleGoodCode = (event) => {
@@ -143,35 +110,27 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     }
 
 
-
-
     const handleChangeWarranty = (event) => {
         setWarrantyTime(event.target.value);
     }
-
-
 
 
     const handleChangeDescription = (event) => {
         setDescription(event.target.value);
     }
 
-
     const handleUnitClick = (unit) => {
         setMeasuredUnit(unit);
     }
-
 
     const handleChangeCreatedDate = (event) => {
         setCreatedDate(event.target.value);
     }
 
-
     const handleCloseModal = () => {
         handleReset();
         handleClose();
     }
-
 
     const handleReset = () => {
         setSelectedCategoryId(null);
@@ -192,14 +151,12 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         setImageGood(null);
     }
 
-
     const generateBarcode = () => {
         const countryCode = "893";
         const year = new Date().getFullYear().toString().slice(2);
         const paddedProductCode = goodCode.toString();
         return `${countryCode}-${year}-${paddedProductCode}`;
     };
-
 
     const handleCreateBarcode = () => {
         const trimmedGoodCode = goodCode ? goodCode.trim() : '';
@@ -209,11 +166,8 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
         else {
             setBarCode(generateBarcode());
 
-
         }
     }
-
-
 
 
     const handleSave = async () => {
@@ -303,8 +257,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
     }
 
 
-
-
     return (
         <Modal show={isShow} onHide={handleCloseModal} size="xs">
             <Modal.Header closeButton>
@@ -324,8 +276,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                                         style={{ zIndex: 999 }}
                                     >
                                         <Dropdown.Item eventKey="Tất cả Kho" onClick={handleStorageTotalClick}>Tất cả Kho</Dropdown.Item>
-
-
 
 
                                         {totalWarehouse && totalWarehouse.length > 0 && totalWarehouse.map((c, index) => (
@@ -353,21 +303,13 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 
 
 
-
-
-
-
                                 <Dropdown.Item eventKey="Kilogram" onClick={(e) => handleUnitClick("Kg", e)}>Kilogram</Dropdown.Item>
                                 <Dropdown.Item eventKey="Thùng" onClick={(e) => handleUnitClick("Thùng", e)}>Thùng</Dropdown.Item>
                             </DropdownButton>
                         </Col>
 
 
-
-
                     </Row>
-
-
 
 
                     <Row style={{ marginTop: '15px' }}>
@@ -377,8 +319,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                         </Col>
 
 
-
-
                         <Col md={6}>
                             <label >Mã hàng </label>
                             <input type="text" className="form-control inputCSS" aria-describedby="emailHelp" value={goodCode} onChange={handleGoodCode} />
@@ -386,21 +326,15 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                     </Row>
 
 
-
-
                     <Row style={{ marginTop: '15px' }}>
                         <Col md={6}>
                             <label >Danh mục</label>
-
-
 
 
                             <Dropdown style={{ position: 'relative' }}>
                                 <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                     <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedCategory !== null ? selectedCategory : "Danh mục"}</span>
                                 </Dropdown.Toggle>
-
-
 
 
                                 <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
@@ -414,16 +348,12 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                         </Col>
 
 
-
-
                         <Col md={6}>
                             <label >Nhà cung cấp </label>
                             <Dropdown style={{ position: 'relative' }}>
                                 <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                     <span style={{ color: 'white', fontWeight: 'bold' }}>{selectedSupplier !== null ? selectedSupplier : "Nhà cung cấp"}</span>
                                 </Dropdown.Toggle>
-
-
 
 
                                 <Dropdown.Menu className="ButtonCSSDropdown" as={CustomMenu} style={{ position: 'absolute', zIndex: '9999' }}>
@@ -435,8 +365,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                                 </Dropdown.Menu>
                             </Dropdown>
                         </Col>
-
-
 
 
                     </Row>
@@ -480,8 +408,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                         <label >Hình ảnh </label>
 
 
-
-
                         <Col md={12}>
                             <div>
                                 <input
@@ -493,8 +419,6 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
                             </div>
                         </Col>
                     </Row>
-
-
 
 
                 </div>
@@ -512,16 +436,7 @@ function ModalAddGood({ isShow, handleClose, updateTable }) {
 }
 
 
-
-
 export default ModalAddGood;
-
-
-
-
-
-
-
 
 
 

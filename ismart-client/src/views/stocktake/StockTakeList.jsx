@@ -68,7 +68,7 @@ const StockTakeList = () => {
         if (roleId === 1) {
             let res = await fetchInventoryByWarehouseId(warehouseId);
             setListStockTake(res);
-        } else if (roleId === 4) {
+        } else if (roleId === 2 || roleId === 4) {
             let warehouse = await getWarehouseById(userId);
             let res = await fetchInventoryByWarehouseId(warehouse.warehouseId);
             setListStockTake(res);
